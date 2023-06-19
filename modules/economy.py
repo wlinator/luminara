@@ -31,8 +31,12 @@ class Economy(commands.Cog):
     )
     @commands.check(universal.channel_check)
     async def balance(self, ctx):
-        cash_balance = Currency.get_cash_balance(ctx.author.id)
-        special_balance = Currency.get_special_balance(ctx.author.id)
+
+        # Currency handler
+        ctx_currency = Currency(ctx.author.id)
+
+        cash_balance = ctx_currency.cash
+        special_balance = ctx_currency.special
 
         await ctx.respond(embed=economy_embeds.currency_balance(ctx, cash_balance, special_balance))
 
@@ -52,34 +56,31 @@ class Economy(commands.Cog):
         elif user.bot:
             return await ctx.respond(embed=economy_embeds.give_bot_error(currency))
 
+        # Currency handler
+        ctx_currency = Currency(ctx.author.id)
+        target_currency = Currency(user.id)
+
         try:
             if currency == "cash":
-                author_cash_balance = Currency.get_cash_balance(ctx.author.id)
+                author_cash_balance = ctx_currency.cash
 
                 if author_cash_balance < amount or author_cash_balance <= 0:
                     return await ctx.respond(embed=economy_embeds.not_enough_cash())
 
-                target_cash_balance = Currency.get_cash_balance(user.id)
-
-                target_new_cash_balance = target_cash_balance + amount
-                author_new_cash_balance = author_cash_balance - amount
-
-                Currency.update_cash_balance(user.id, target_new_cash_balance)
-                Currency.update_cash_balance(ctx.author.id, author_new_cash_balance)
+                target_currency.add_cash(amount)
+                ctx_currency.take_cash(amount)
 
             elif currency == special_balance_name:
-                author_special_balance = Currency.get_special_balance(ctx.author.id)
+                author_special_balance = ctx_currency.special
 
                 if author_special_balance < amount or author_special_balance <= 0:
                     return await ctx.respond(embed=economy_embeds.not_enough_special_balance())
 
-                target_special_balance = Currency.get_special_balance(user.id)
+                target_currency.add_special(amount)
+                ctx_currency.take_cash(amount)
 
-                target_new_special_balance = target_special_balance + amount
-                author_new_special_balance = author_special_balance - amount
-
-                Currency.update_special_balance(user.id, target_new_special_balance)
-                Currency.update_special_balance(ctx.author.id, author_new_special_balance)
+            ctx_currency.push()
+            target_currency.push()
 
         except Exception as e:
             await ctx.channel.respond("Something funky happened.. Tell Tess.", ephemeral=True)
@@ -95,7 +96,11 @@ class Economy(commands.Cog):
     )
     @commands.check(universal.channel_check)
     async def exchange(self, ctx, *, amount: discord.Option(int)):
-        author_special_balance = Currency.get_special_balance(ctx.author.id)
+
+        # Currency handler
+        ctx_currency = Currency(ctx.author.id)
+
+        author_special_balance = ctx_currency.special
 
         if author_special_balance < amount or author_special_balance <= 0:
             return await ctx.respond(embed=economy_embeds.not_enough_special_balance())
@@ -105,11 +110,11 @@ class Economy(commands.Cog):
         await view.wait()
 
         if view.clickedConfirm:
-            author_new_special_balance = author_special_balance - amount
-            author_new_cash_balance = Currency.get_cash_balance(ctx.author.id) + (amount * 1000)
+            exchange_rate = 1000
 
-            Currency.update_cash_balance(ctx.author.id, author_new_cash_balance)
-            Currency.update_special_balance(ctx.author.id, author_new_special_balance)
+            ctx_currency.add_cash(amount * exchange_rate)
+            ctx_currency.take_special(amount)
+            ctx_currency.push()
 
             return await ctx.edit(embed=economy_embeds.exchange_done(amount))
 
@@ -127,16 +132,17 @@ class Economy(commands.Cog):
                     currency: discord.Option(choices=["cash_balance", "special_balance"]),
                     amount: discord.Option(int)):
 
+        # Currency handler
+        target_currency = Currency(user.id)
+
         try:
             if currency == "cash_balance":
-                current_cash_balance = Currency.get_cash_balance(user.id)
-                new_cash_balance = int(current_cash_balance) + amount
-                Currency.update_cash_balance(user.id, new_cash_balance)
+                target_currency.add_cash(amount)
 
             else:
-                current_special_balance = Currency.get_special_balance(user.id)
-                new_special_balance = int(current_special_balance) + amount
-                Currency.update_special_balance(user.id, new_special_balance)
+                target_currency.add_special(amount)
+
+            target_currency.push()
 
         except Exception as e:
             await ctx.channel.respond("Something went wrong. Check console.", ephemeral=True)
@@ -156,12 +162,15 @@ class Economy(commands.Cog):
         amount = json_data["daily_reward"]
         current_time = time.time()
 
+        # Currency handler
+        ctx_currency = Currency(ctx.author.id)
+
         if can_claim:
             await ctx.respond(embed=economy_embeds.daily_claim(amount))
 
             # give money
-            current_cash_balance = Currency.get_cash_balance(ctx.author.id)
-            Currency.update_cash_balance(ctx.author.id, current_cash_balance + amount)
+            ctx_currency.add_cash(amount)
+            ctx_currency.push()
 
             # push daily to DB
             daily = Dailies(

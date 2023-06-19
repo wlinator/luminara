@@ -24,12 +24,6 @@ class Currency:
         if self.special < 0:
             self.special = 0
 
-    def get_cash(self):
-        return self.cash
-
-    def get_special(self):
-        return self.special
-
     def push(self):
         query = """
         UPDATE currency
@@ -37,7 +31,7 @@ class Currency:
         WHERE user_id = ?
         """
 
-        database.execute_query(query, (round(self.cash, 2), round(self.special, 2), self.user_id))
+        database.execute_query(query, (round(self.cash), round(self.special), self.user_id))
 
     @staticmethod
     def fetch_or_create_balance(user_id):
@@ -47,7 +41,10 @@ class Currency:
         WHERE user_id = ? 
         """
 
-        (cash_balance, special_balance) = database.select_query(query, (user_id,))[0]
+        try:
+            (cash_balance, special_balance) = database.select_query(query, (user_id,))[0]
+        except (IndexError, TypeError):
+            (cash_balance, special_balance) = (None, None)
 
         # if the user doesn't have a balance yet -> create one
         # additionally if for some reason a balance becomes Null

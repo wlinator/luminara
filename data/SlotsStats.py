@@ -12,7 +12,7 @@ class SlotsStats:
         self.spin_type = spin_type
         self.icons = json.dumps(icons)
 
-    def push_one(self):
+    def push(self):
         query = """
         INSERT INTO stats_slots (user_id, is_won, bet, payout, spin_type, icons)
         VALUES (?, ?, ?, ?, ?, ?)

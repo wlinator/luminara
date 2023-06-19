@@ -26,25 +26,6 @@ class Gambling(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
-    # @commands.slash_command(
-    #     name="coinflip",
-    #     description="Flip a coin and bet on the outcome.",
-    #     guild_only=True
-    # )
-    # @commands.check(universal.channel_check)
-    # @commands.check(universal.beta_check)
-    # async def coinflip(self, ctx, *, side: discord.Option(choices=["heads", "tails"]), bet: discord.Option(int)):
-    #     player_cash_balance = Currency.get_cash_balance(ctx.author.id)
-    #     if bet > player_cash_balance:
-    #         await ctx.respond(embed=economy_embeds.not_enough_cash())
-    #         return
-    #
-    #     side_list = ["heads", "tails"]
-    #     throw_side = random.choice(side_list)
-    #
-    #     if throw_side is side:
-    #         await ctx.respond(embed=economy_embeds.coinflip())
-
     @commands.slash_command(
         name="blackjack",
         description="Start a game of blackjack.",
@@ -58,8 +39,11 @@ class Gambling(commands.Cog):
             await ctx.respond(embed=economy_embeds.already_playing("BlackJack"))
             return
 
+        # Currency handler
+        ctx_currency = Currency(ctx.author.id)
+
         # check if the user has enough cash
-        player_cash_balance = Currency.get_cash_balance(ctx.author.id)
+        player_cash_balance = ctx_currency.cash
         if bet > player_cash_balance or bet <= 0:
             await ctx.respond(embed=economy_embeds.not_enough_cash())
             return
@@ -128,7 +112,8 @@ class Gambling(commands.Cog):
 
             # change balance
             if status == "player_busted" or status == "dealer_won":
-                Currency.update_cash_balance(ctx.author.id, player_cash_balance - bet)
+                ctx_currency.take_cash(bet)
+                ctx_currency.push()
 
                 # push stats (low priority)
                 stats = BlackJackStats(
@@ -139,15 +124,18 @@ class Gambling(commands.Cog):
                     hand_player=player_hand,
                     hand_dealer=dealer_hand
                 )
-                stats.push_one()
+                stats.push()
 
             elif status == "timed_out":
                 await ctx.send(embed=economy_embeds.out_of_time(), content=ctx.author.mention)
+                ctx_currency.take_cash(bet)
+                ctx_currency.push()
 
             else:
                 # bet multiplier
                 payout = bet * 1.2
-                Currency.update_cash_balance(ctx.author.id, player_cash_balance + payout)
+                ctx_currency.add_cash(payout)
+                ctx_currency.push()
 
                 # push stats (low priority)
                 stats = BlackJackStats(
@@ -158,7 +146,7 @@ class Gambling(commands.Cog):
                     hand_player=player_hand,
                     hand_dealer=dealer_hand
                 )
-                stats.push_one()
+                stats.push()
 
         except Exception as e:
             await ctx.respond(embed=embeds.command_error_1())
@@ -176,8 +164,11 @@ class Gambling(commands.Cog):
     @commands.check(universal.channel_check)
     async def slots(self, ctx, *, bet: discord.Option(int)):
 
+        # Currency handler
+        ctx_currency = Currency(ctx.author.id)
+
         # check if the user has enough cash
-        player_cash_balance = Currency.get_cash_balance(ctx.author.id)
+        player_cash_balance = ctx_currency.cash
         if bet > player_cash_balance or bet <= 0:
             await ctx.respond(embed=economy_embeds.not_enough_cash())
             return
@@ -207,7 +198,10 @@ class Gambling(commands.Cog):
                        allowed_mentions=discord.AllowedMentions.none())
 
         # user payout
-        Currency.update_cash_balance(ctx.author.id, player_cash_balance + payout)
+        if payout >= 0:
+            ctx_currency.add_cash(payout)
+        else:
+            ctx_currency.take_cash(payout)
 
         # push stats (low priority)
         if payout <= 0:
@@ -222,7 +216,8 @@ class Gambling(commands.Cog):
             icons=results
         )
 
-        stats.push_one()
+        ctx_currency.push()
+        stats.push()
 
     @commands.slash_command(
         name="duel",
@@ -238,13 +233,17 @@ class Gambling(commands.Cog):
         elif opponent.bot:
             return await ctx.respond(content="You cannot duel a bot.")
 
+        # Currency handler
+        challenger_currency = Currency(ctx.author.id)
+        opponent_currency = Currency(opponent.id)
+
         # check if challenger has enough cash
-        challenger_cash_balance = Currency.get_cash_balance(challenger.id)
+        challenger_cash_balance = challenger_currency.cash
         if bet > challenger_cash_balance or bet <= 0:
             return await ctx.respond(embed=economy_embeds.not_enough_cash())
 
         # if opponent doesn't have sufficient money, the bet will become the opponent's cash
-        opponent_cash_balance = Currency.get_cash_balance(opponent.id)
+        opponent_cash_balance = opponent_currency.cash
         all_in = ""
         if opponent_cash_balance <= 0:
             return await ctx.respond(f"Woops, you can't do that because **{opponent.name}** has no money.")
@@ -272,18 +271,21 @@ class Gambling(commands.Cog):
 
             # payouts
             if winner == challenger:
-                Currency.update_cash_balance(challenger.id, challenger_cash_balance + bet)
-                Currency.update_cash_balance(opponent.id, opponent_cash_balance - bet)
+                challenger_currency.add_cash(bet)
+                opponent_currency.take_cash(bet)
 
             elif winner == opponent:
-                Currency.update_cash_balance(opponent.id, opponent_cash_balance + bet)
-                Currency.update_cash_balance(challenger.id, challenger_cash_balance - bet)
+                opponent_currency.add_cash(bet)
+                challenger_currency.take_cash(bet)
 
         elif view.clickedDeny:
             await ctx.edit(content=f"**{opponent.name}** canceled the duel.")
 
         else:
             await ctx.edit(content=f"Time ran out.")
+
+        challenger_currency.push()
+        opponent_currency.push()
 
 
 def setup(sbbot):
