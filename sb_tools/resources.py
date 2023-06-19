@@ -1,0 +1,5 @@
+__title__ = "RCU"
+__version__ = "1.2.17"
+__author__ = "Esther J. J."
+__author_email__ = "dokimakimaki@gmail.com"
+__license__ = "GNU GENERAL PUBLIC LICENSE v2"
