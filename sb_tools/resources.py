@@ -1,5 +1,19 @@
+import subprocess
+
+
+def get_latest_git_tag():
+    try:
+        command = ['git', 'describe', '--abbrev=0', '--tags']
+        output = subprocess.check_output(command).decode().strip()
+        return output
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+        return "BETA"
+
+
 __title__ = "RCU"
-__version__ = "1.2.17"
+__version__ = get_latest_git_tag()
 __author__ = "Esther J. J."
 __author_email__ = "dokimakimaki@gmail.com"
 __license__ = "GNU GENERAL PUBLIC LICENSE v2"
