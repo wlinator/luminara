@@ -12,7 +12,7 @@ class BlackJackStats:
         self.hand_player = json.dumps(hand_player)
         self.hand_dealer = json.dumps(hand_dealer)
 
-    def push_one(self):
+    def push(self):
         query = """
         INSERT INTO stats_bj (user_id, is_won, bet, payout, hand_player, hand_dealer)
         VALUES (?, ?, ?, ?, ?, ?)

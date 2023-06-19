@@ -47,11 +47,13 @@ class Leveling(commands.Cog):
             if new_level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
                 await Xp.assign_level_role(message.author, new_level)
 
+            # Currency handler
+            user_currency = Currency(user_id)
+
             # award a special_balance_currency
             amount = 1
-            current_special_balance = Currency.get_special_balance(user_id)
-            new_special_balance = int(current_special_balance) + amount
-            Currency.update_special_balance(user_id, new_special_balance)
+            user_currency.add_special(amount)
+            user_currency.push()
 
         else:
             # user gained XP but not new level
