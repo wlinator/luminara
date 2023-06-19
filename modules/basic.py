@@ -26,12 +26,12 @@ class Basic(commands.Cog):
     )
     @commands.check(universal.owner_check)
     async def restart(self, ctx):
-        try:
-            output = subprocess.check_output(["/bin/bash", "racu_update.sh"])
-        except subprocess.CalledProcessError as e:
-            output = f"ERROR!!!\n{e.output.decode()}"
+        await ctx.respond(content="Restarting..", ephemeral=True)
 
-        await ctx.respond(f"Script executed:\n```\n{output}\n```", ephemeral=True)
+        try:
+            print(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing the script: {e.output.decode()}")
 
     @commands.slash_command(
         name="intro",
