@@ -1,4 +1,5 @@
 import asyncio
+import subprocess
 
 import discord
 from discord.ext import commands
@@ -17,6 +18,20 @@ class Basic(commands.Cog):
     @commands.check(universal.channel_check)
     async def ping(self, ctx):
         await ctx.respond(f"SB latency: {round(self.bot.latency * 1000, 2)} ms")
+
+    @commands.slash_command(
+        name="restart",
+        description="Restart and update the bot - owner only command.",
+        guild_only=True
+    )
+    @commands.check(universal.owner_check)
+    async def restart(self, ctx):
+        try:
+            output = subprocess.check_output(["/bin/bash", "racu_update.sh"])
+        except subprocess.CalledProcessError as e:
+            output = f"ERROR!!!\n{e.output.decode()}"
+
+        await ctx.respond(f"Script executed:\n```\n{output}\n```", ephemeral=True)
 
     @commands.slash_command(
         name="intro",
