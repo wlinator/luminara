@@ -1,6 +1,5 @@
 import json
 import os
-import time
 
 import discord
 from discord.ext import commands
@@ -158,38 +157,14 @@ class Economy(commands.Cog):
     )
     @commands.check(universal.channel_check)
     async def daily(self, ctx):
-        (can_claim, next_claim) = Dailies.cooldown_check(ctx.author.id)
-        amount = json_data["daily_reward"]
-        current_time = time.time()
+        ctx_daily = Dailies(ctx.author.id)
 
-        # Currency handler
-        ctx_currency = Currency(ctx.author.id)
-
-        if can_claim:
-            await ctx.respond(embed=economy_embeds.daily_claim(amount))
-
-            # give money
-            ctx_currency.add_cash(amount)
-            ctx_currency.push()
-
-            # push daily to DB
-            daily = Dailies(
-                user_id=ctx.author.id,
-                claimed_at=current_time,
-                next_available=current_time + json_data["daily_cooldown"]
-            )
-            daily.push()
+        if ctx_daily.can_be_claimed():
+            ctx_daily.refresh()
+            await ctx.respond(embed=economy_embeds.daily_claim(ctx_daily.amount, ctx_daily.streak))
 
         else:
-            cooldown = next_claim - current_time
-
-            hours = int(cooldown // 3600)
-            minutes = int((cooldown % 3600) // 60)
-            seconds = int(cooldown % 60)
-
-            cooldown_text = f"{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}"
-
-            await ctx.respond(embed=economy_embeds.daily_wait(cooldown_text))
+            await ctx.respond(embed=economy_embeds.daily_wait())
 
 
 def setup(sbbot):
