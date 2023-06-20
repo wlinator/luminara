@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import pytz
 
+from data.Currency import Currency
 from db import database
 
 with open("json/economy.json") as file:
@@ -39,6 +40,10 @@ class Dailies:
         """
         values = (self.user_id, self.amount, self.claimed_at, self.streak)
         database.execute_query(query, values)
+
+        cash = Currency(self.user_id)
+        cash.add_cash(self.amount)
+        cash.push()
 
     def can_be_claimed(self):
         if self.claimed_at is None:
