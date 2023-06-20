@@ -38,7 +38,7 @@ class Currency:
         query = """
         SELECT cash_balance, special_balance
         FROM currency
-        WHERE user_id = ? 
+        WHERE user_id = ?
         """
 
         try:
@@ -49,7 +49,7 @@ class Currency:
         # if the user doesn't have a balance yet -> create one
         # additionally if for some reason a balance becomes Null
         # re-generate the user's balance as fallback.
-        if not cash_balance or not special_balance:
+        if cash_balance is None or special_balance is None:
             query = """
             INSERT INTO currency (user_id, cash_balance, special_balance)
             VALUES (?, 50, 3)
