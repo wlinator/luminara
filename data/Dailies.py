@@ -1,5 +1,7 @@
 import json
-import time
+from datetime import datetime, timedelta
+
+import pytz
 
 from db import database
 
@@ -8,27 +10,57 @@ with open("json/economy.json") as file:
 
 
 class Dailies:
-    def __init__(self, user_id, claimed_at, next_available):
+    def __init__(self, user_id):
         self.user_id = user_id
         self.amount = json_data["daily_reward"]
-        self.claimed_at = claimed_at
-        self.next_available = next_available
+        self.tz = pytz.timezone('US/Eastern')
 
-    def push(self):
+        data = Dailies.get_data(user_id)
+
+        if data[0] is not None:
+            self.claimed_at = datetime.fromisoformat(data[0])
+        else:
+            # set date as yesterday to pretend as a valid claimed_at.
+            self.claimed_at = datetime.now(tz=self.tz) - timedelta(days=1)
+
+        self.streak = int(data[1])
+
+    def refresh(self):
+        if self.streak_check():
+            self.streak += 1
+        else:
+            self.streak = 1
+
+        self.claimed_at = datetime.now(tz=self.tz).isoformat()
+
         query = """
-        INSERT INTO dailies (user_id, amount, claimed_at, next_available)
+        INSERT INTO dailies (user_id, amount, claimed_at, streak)
         VALUES (?, ?, ?, ?)
         """
-
-        values = (self.user_id, self.amount, self.claimed_at, self.next_available)
-
+        values = (self.user_id, self.amount, self.claimed_at, self.streak)
         database.execute_query(query, values)
 
+    def can_be_claimed(self):
+        if self.claimed_at is None:
+            return True
+
+        else:
+            check_time = datetime.now(tz=self.tz).replace(hour=7, minute=0, second=0, microsecond=0)
+
+            if self.claimed_at < check_time:
+                return True
+
+        return False
+
+    def streak_check(self):
+        yesterday = datetime.now(tz=self.tz) - timedelta(days=1)
+        return self.claimed_at.date() == yesterday.date()
+
     @staticmethod
-    def cooldown_check(user_id):
+    def get_data(user_id):
         query = """
-        SELECT next_available
-        FROM dailies
+        SELECT claimed_at, streak 
+        FROM dailies 
         WHERE id = (
             SELECT MAX(id)
             FROM dailies
@@ -36,11 +68,9 @@ class Dailies:
         )
         """
 
-        values = (user_id,)
-        result = database.select_query_one(query, values)
-        current_time = time.time()
+        try:
+            (claimed_at, streak) = database.select_query(query, (user_id,))[0]
+        except (IndexError, TypeError):
+            (claimed_at, streak) = None, 0
 
-        if result and current_time < result:
-            return False, result
-
-        return True, result
+        return claimed_at, streak

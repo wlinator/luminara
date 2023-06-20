@@ -104,7 +104,6 @@ class Basic(commands.Cog):
                 if len(nickname) > 100:
                     nickname = nickname[:100]
                 nickname = nickname.replace("\n", " ")
-                print(f"New form info for {ctx.author.name}: nickname {nickname}")
 
                 # START AGE
                 await ctx.send(embed=embeds.simple_question_5("How old are you?"),
@@ -116,7 +115,6 @@ class Basic(commands.Cog):
                     if len(age) > 5:
                         age = age[:5]
                     age = age.replace("\n", " ")
-                    print(f"New form info for {ctx.author.name}: age {age}")
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
@@ -126,7 +124,6 @@ class Basic(commands.Cog):
 
                     await view.wait()
                     location = view.location
-                    print(f"New form info for {ctx.author.name}: location {location}")
 
                     if not view.location:
                         await ctx.send(embed=embeds.no_time())
@@ -143,7 +140,6 @@ class Basic(commands.Cog):
                         if len(pronouns) > 30:
                             pronouns = pronouns[:30]
                         pronouns = pronouns.replace("\n", " ")
-                        print(f"New form info for {ctx.author.name}: pronouns {pronouns}")
 
                         # START LIKES
                         await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
@@ -155,7 +151,6 @@ class Basic(commands.Cog):
                             if len(likes) > 300:
                                 likes = likes[:300]
                             likes = likes.replace("\n", " ")
-                            print(f"New form info for {ctx.author.name}: likes {likes}")
 
                             # START DISLIKES
                             await ctx.send(embed=embeds.simple_question_300("Dislikes"),
@@ -167,7 +162,6 @@ class Basic(commands.Cog):
                                 if len(dislikes) > 300:
                                     dislikes = dislikes[:300]
                                 dislikes = dislikes.replace("\n", " ")
-                                print(f"New form info for {ctx.author.name}: dislikes {dislikes}")
 
                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
                                 em = embeds.final_embed_short(ctx, nickname, age, location, pronouns, likes, dislikes)
@@ -216,7 +210,6 @@ class Basic(commands.Cog):
                 if len(nickname) > 100:
                     nickname = nickname[:100]
                 nickname = nickname.replace("\n", " ")
-                print(f"New form info for {ctx.author.name}: nickname {nickname}")
 
                 # START AGE
                 await ctx.send(embed=embeds.simple_question_5("How old are you?"),
@@ -228,7 +221,6 @@ class Basic(commands.Cog):
                     if len(age) > 5:
                         age = age[:5]
                     age = age.replace("\n", " ")
-                    print(f"New form info for {ctx.author.name}: age {age}")
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
@@ -238,7 +230,6 @@ class Basic(commands.Cog):
 
                     await view.wait()
                     location = view.location
-                    print(f"New form info for {ctx.author.name}: location {location}")
 
                     if not view.location:
                         await ctx.send(embed=embeds.no_time())
@@ -256,7 +247,6 @@ class Basic(commands.Cog):
                         if len(languages) > 30:
                             languages = languages[:30]
                         languages = languages.replace("\n", " ")
-                        print(f"New form info for {ctx.author.name}: languages {languages}")
 
                         # START PRONOUNS
                         await ctx.send(
@@ -269,7 +259,6 @@ class Basic(commands.Cog):
                             if len(pronouns) > 30:
                                 pronouns = pronouns[:30]
                             pronouns = pronouns.replace("\n", " ")
-                            print(f"New form info for {ctx.author.name}: pronouns {pronouns}")
 
                             # START SEXUALITY
                             await ctx.send(
@@ -282,7 +271,6 @@ class Basic(commands.Cog):
                                 if len(sexuality) > 30:
                                     sexuality = sexuality[:30]
                                 sexuality = sexuality.replace("\n", " ")
-                                print(f"New form info for {ctx.author.name}: sexuality {sexuality}")
 
                                 # START RELATIONSHIP_STATUS
                                 await ctx.send(
@@ -296,8 +284,6 @@ class Basic(commands.Cog):
                                     if len(relationship_status) > 30:
                                         relationship_status = relationship_status[:30]
                                     relationship_status = relationship_status.replace("\n", " ")
-                                    print(
-                                        f"New form info for {ctx.author.name}: relationship_status {relationship_status}")
 
                                     # START LIKES
                                     await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
@@ -309,7 +295,6 @@ class Basic(commands.Cog):
                                         if len(likes) > 300:
                                             likes = likes[:300]
                                         likes = likes.replace("\n", " ")
-                                        print(f"New form info for {ctx.author.name}: likes {likes}")
 
                                         # START DISLIKES
                                         await ctx.send(embed=embeds.simple_question_300("Dislikes"),
@@ -322,7 +307,6 @@ class Basic(commands.Cog):
                                             if len(dislikes) > 300:
                                                 dislikes = dislikes[:300]
                                             dislikes = dislikes.replace("\n", " ")
-                                            print(f"New form info for {ctx.author.name}: dislikes {dislikes}")
 
                                             # START EXTRA
                                             await ctx.send(embed=embeds.simple_question_300(
@@ -337,7 +321,6 @@ class Basic(commands.Cog):
                                                 if len(extra) > 300:
                                                     extra = extra[:300]
                                                 extra = extra.replace("\n", " ")
-                                                print(f"New form info for {ctx.author.name}: extra {extra}")
 
                                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
                                                 em = embeds.final_embed_extended(ctx, nickname, age, location,

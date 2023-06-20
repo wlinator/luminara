@@ -329,19 +329,23 @@ def slots_finished(ctx, payout_type, multiplier, bet, results, sbbot):
     return embed
 
 
-def daily_claim(amount):
+def daily_claim(amount, streak):
     embed = discord.Embed(
         color=discord.Color.green(),
         description=f"You claimed your daily reward of **{cash_balance_name}{amount}**."
     )
 
+    if streak > 1:
+        embed.set_footer(text=f"You're on a streak of {streak} days!")
+
     return embed
 
 
-def daily_wait(time):
+def daily_wait():
     embed = discord.Embed(
         color=discord.Color.red(),
-        description=f"You can't claim that yet! Please wait **{time}**."
+        description=f"You've already claimed your daily reward."
     )
+    embed.set_footer(text="Reset is at 7 AM Eastern!")
 
     return embed
