@@ -69,4 +69,6 @@ def sync_database():
     database.execute_query(stats_slots)
     database.execute_query(stats_duel)
 
+    database.execute_query("DROP TABLE IF EXISTS dailies")
+
     print("On startup: database synced.")
