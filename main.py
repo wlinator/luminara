@@ -11,14 +11,17 @@ import logging
 import os
 
 import discord
-from discord.ext import commands
 from dotenv import load_dotenv
 
 import db.tables
 import sb_tools.resources
+from config import json_loader
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv('.env')
+
+# load all strings.en-US.json strings
+strings = json_loader.load_strings()
 
 sbbot = discord.Bot(
     owner_id=os.getenv('OWNER_ID'),

@@ -18,7 +18,7 @@ active_blackjack_games = {}
 special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
 cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
-with open("json/economy.json") as file:
+with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
