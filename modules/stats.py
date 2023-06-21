@@ -27,7 +27,8 @@ class Stats(commands.Cog):
 
     @stats.command(
         name="all",
-        description="Show the stats for all Racu users."
+        description="Show the stats for all Racu users.",
+        guild_only=True
     )
     # @commands.check(universal.channel_check)
     @commands.check(universal.beta_check)
@@ -69,7 +70,8 @@ class Stats(commands.Cog):
 
     @stats.command(
         name="me",
-        description="Show your personal Racu stats."
+        description="Show your personal Racu stats.",
+        guild_only=True
     )
     # @commands.check(universal.channel_check)
     @commands.check(universal.beta_check)
