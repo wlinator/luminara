@@ -39,7 +39,7 @@ class Stats(commands.Cog):
 
         # calculate data
         roi = ((bj_total_payout - bj_total_investment) / bj_total_investment) * 100
-        roi = round(roi, 2)
+        roi = round(roi, 3)
 
         # output
         embed = discord.Embed(
@@ -50,8 +50,8 @@ class Stats(commands.Cog):
                             bj_games_amount,
                             bj_winning_games_amount,
                             bj_losing_games_amount,
-                            bj_total_investment,
-                            bj_total_payout,
+                            round(bj_total_investment),
+                            round(bj_total_payout),
                             roi
                         ))
 
