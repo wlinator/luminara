@@ -50,9 +50,10 @@ class Dailies:
             return True
 
         else:
-            check_time = datetime.now(tz=self.tz).replace(hour=7, minute=0, second=0, microsecond=0)
+            time_now = datetime.now(tz=self.tz)
+            reset_time = time_now.replace(hour=7, minute=0, second=0, microsecond=0)
 
-            if self.claimed_at < check_time:
+            if self.claimed_at < reset_time < time_now:
                 return True
 
         return False
