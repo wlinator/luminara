@@ -123,23 +123,3 @@ def level_command_message(ctx, level, xp, next_level_xp, rank):
     embed.set_footer(text=f"The Rave Cave | Server Rank: #{rank}")
     embed.set_thumbnail(url=ctx.author.avatar.url)
     return embed
-
-
-async def leaderboard_message(ctx, leaderboard):
-    embed = discord.Embed(
-        color=0xadcca6
-    )
-    embed.set_author(name="Rave Cave Leaderboard",
-                     icon_url="https://cdn.discordapp.com/icons/719227135151046699/"
-                              "49df8c284382af9dbcfd629c8eadc52c.webp?size=96")
-    embed.set_footer(text=f"Do /level to see your rank.")
-    embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
-    for i, (user_id, xp, level, rank, xp_needed_for_next_level) in enumerate(leaderboard[:5], start=1):
-        member = await ctx.guild.fetch_member(user_id)
-        embed.add_field(
-            name=f"#{rank} - {member.name}",
-            value=f"level: `{level}`\nxp: `{xp}/{xp_needed_for_next_level}`",
-            inline=False
-        )
-
-    return embed
