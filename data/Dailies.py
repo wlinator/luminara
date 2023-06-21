@@ -22,7 +22,8 @@ class Dailies:
             self.claimed_at = datetime.fromisoformat(data[0])
         else:
             # set date as yesterday to pretend as a valid claimed_at.
-            self.claimed_at = datetime.now(tz=self.tz) - timedelta(days=1)
+            self.claimed_at = datetime.now(tz=self.tz) - timedelta(days=2)
+            print(self.claimed_at)
 
         self.streak = int(data[1])
 
@@ -53,7 +54,10 @@ class Dailies:
             time_now = datetime.now(tz=self.tz)
             reset_time = time_now.replace(hour=7, minute=0, second=0, microsecond=0)
 
-            if self.claimed_at < reset_time < time_now:
+            if time_now < reset_time:
+                reset_time -= timedelta(days=1)
+
+            if self.claimed_at < reset_time <= time_now:
                 return True
 
         return False
