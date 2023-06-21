@@ -1,7 +1,7 @@
-import discord
-from discord.ext import commands
-from dotenv import load_dotenv
 import os
+
+import discord
+from dotenv import load_dotenv
 
 load_dotenv('.env')
 
@@ -25,7 +25,7 @@ async def beta_check(ctx):
                                           f"fine-tuning to ensure the best experience for all users. Stay tuned for its "
                                           f"official release.",
                               color=discord.Color.red())
-        await ctx.respond(embed=embed)
+        await ctx.respond(embed=embed, ephemeral=True)
         return False
 
     return True
@@ -36,7 +36,7 @@ async def owner_check(ctx):
     if ctx.author.id != int(owner_id):
         embed = discord.Embed(description=f"Only Tess can do this command.",
                               color=discord.Color.red())
-        await ctx.respond(embed=embed)
+        await ctx.respond(embed=embed, ephemeral=True)
         return False
 
     return True

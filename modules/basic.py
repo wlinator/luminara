@@ -13,7 +13,8 @@ class Basic(commands.Cog):
 
     @commands.slash_command(
         name="ping",
-        description="Show the bot's latency."
+        description="Show the bot's latency.",
+        guild_only=True
     )
     @commands.check(universal.channel_check)
     async def ping(self, ctx):

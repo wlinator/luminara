@@ -15,16 +15,13 @@ def create_connection():
 def execute_query(query, values=None):
     conn = create_connection()
     cursor = conn.cursor()
-    try:
-        if values:
-            cursor.execute(query, values)
-        else:
-            cursor.execute(query)
 
-        conn.commit()
-    except Error as e:
-        print("'execute_query()' Error occurred: {}".format(e))
+    if values:
+        cursor.execute(query, values)
+    else:
+        cursor.execute(query)
 
+    conn.commit()
     return cursor
 
 
@@ -32,30 +29,22 @@ def select_query(query, values=None):
     conn = create_connection()
     cursor = conn.cursor()
 
-    try:
-        if values:
-            return cursor.execute(query, values).fetchall()
-        else:
-            return cursor.execute(query).fetchall()
-
-    except Error as e:
-        return f"ERROR: {e}"
+    if values:
+        return cursor.execute(query, values).fetchall()
+    else:
+        return cursor.execute(query).fetchall()
 
 
 def select_query_one(query, values=None):
     conn = create_connection()
     cursor = conn.cursor()
 
-    try:
-        if values:
-            output = cursor.execute(query, values).fetchone()
-        else:
-            output = cursor.execute(query).fetchone()
+    if values:
+        output = cursor.execute(query, values).fetchone()
+    else:
+        output = cursor.execute(query).fetchone()
 
-        if output:
-            return output[0]
+    if output:
+        return output[0]
 
-        return None
-
-    except Error as e:
-        return f"ERROR: {e}"
+    return None
