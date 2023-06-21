@@ -38,7 +38,8 @@ class Stats(commands.Cog):
         (bj_total_investment, bj_total_payout) = BlackJackStats.get_investment_and_payout()
 
         # calculate data
-        ROI = ((bj_total_payout - bj_total_investment) / bj_total_investment) * 100
+        roi = ((bj_total_payout - bj_total_investment) / bj_total_investment) * 100
+        roi = round(roi, 2)
 
         # output
         embed = discord.Embed(
@@ -49,7 +50,9 @@ class Stats(commands.Cog):
                             bj_games_amount,
                             bj_winning_games_amount,
                             bj_losing_games_amount,
-                            ROI
+                            bj_total_investment,
+                            bj_total_payout,
+                            roi
                         ))
 
         await ctx.respond(embed=embed)
