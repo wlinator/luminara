@@ -23,6 +23,35 @@ class BlackJackStats:
         database.execute_query(query, values)
 
     @staticmethod
+    def count_games(user_id=None):
+        if not user_id:
+            # count ALL blackjack games
+            query = "SELECT COUNT(*) FROM stats_bj"
+            amount = database.select_query_one(query)
+            return amount
+
+    @staticmethod
+    def get_investment_and_payout(user_id=None):
+        if not user_id:
+            # return from ALL blackjack games
+            query = "SELECT SUM(bet), SUM(payout) FROM stats_bj"
+            (investment, payout) = database.select_query(query)[0]
+            return investment, payout
+
+    @staticmethod
+    def get_winning_and_losing_amount(user_id=None):
+        if not user_id:
+            # return from ALL blackjack games
+            query = """
+            SELECT
+                SUM(CASE WHEN is_won = 1 THEN 1 ELSE 0 END) AS winning,
+                SUM(CASE WHEN is_won = 0 THEN 1 ELSE 0 END) AS losing
+            FROM stats_bj;
+            """
+            (winning, losing) = database.select_query(query)[0]
+            return winning, losing
+
+    @staticmethod
     def fetch_all():
         query = "SELECT * FROM stats_bj"
         rows = database.select_query(query)

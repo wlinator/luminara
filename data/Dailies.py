@@ -6,7 +6,7 @@ import pytz
 from data.Currency import Currency
 from db import database
 
-with open("json/economy.json") as file:
+with open("config/economy.json") as file:
     json_data = json.load(file)
 
 

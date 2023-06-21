@@ -12,7 +12,7 @@ cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
 est = pytz.timezone('US/Eastern')
 
-with open("json/economy.json") as file:
+with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
