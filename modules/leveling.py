@@ -1,5 +1,6 @@
 import time
 
+import discord
 from discord.ext import commands
 
 from data.Currency import Currency
@@ -88,7 +89,28 @@ class Leveling(commands.Cog):
     @commands.check(universal.channel_check)
     async def leaderboard(self, ctx):
         leaderboard = Xp.load_leaderboard()
-        embed = await embeds.leaderboard_message(ctx, leaderboard)
+
+        embed = discord.Embed(
+            color=0xadcca6
+        )
+        embed.set_author(name="Rave Cave Leaderboard",
+                         icon_url="https://cdn.discordapp.com/icons/719227135151046699/"
+                                  "49df8c284382af9dbcfd629c8eadc52c.webp?size=96")
+        embed.set_footer(text=f"Do /level to see your rank.")
+        embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
+        for i, (user_id, xp, level, rank, xp_needed_for_next_level) in enumerate(leaderboard[:5], start=1):
+            try:
+                member = await ctx.guild.fetch_member(user_id)
+                name = member.name
+            except:
+                name = "Unknown User"
+
+            embed.add_field(
+                name=f"#{rank} - {name}",
+                value=f"level: `{level}`\nxp: `{xp}/{xp_needed_for_next_level}`",
+                inline=False
+            )
+
         await ctx.respond(embed=embed)
 
 
