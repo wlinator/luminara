@@ -31,9 +31,13 @@
   "duel_results": "{1} wins **{2}{3}**\n{4} loses this bet.",
   "duel_cancel": "**{0}** canceled the duel.",
   "duel_time": "Time ran out.",
-  "stats_all_title": "All Racu Stats",
-  "stats_all_blackjack": "BlackJack Stats",
-  "stats_all_gambling_value": "**{0}** - # of games\n**{1}** - wins (#)\n**{2}** - losses (#)\n**{3}%** - ROI ($)",
-  "stats_all_gambling_value2": "Racu has logged **{0}** games.\n**{1}** of those were won by players!\nThe dealer beat you in **{2}** games.\nReturn of investment: **{3}%**",
-  "stats_all_gambling_value3": "Games played: **{0}**\nGames won: **{1}**\nGames lost: **{2}**\nTotal bets/payouts: `${3}` / `${4}`\nProfit margin: **{5}**%"
+  "stats_all_title": "Total Racu Stats - {0}",
+  "stats_all_footer": "Want to see your own stats? Do '/stats me'.",
+  "stats_games": "Games played: {0}",
+  "stats_games_valuet": "Games played: **{0}**\nGames won: **{1}**\nGames lost: **{2}**",
+  "stats_games_value": "`{0}` wins & `{1}` losses.",
+  "stats_cashflow": "Cashflow",
+  "stats_cashflow_value": "Total bets/payouts: `${0}` / `${1}`",
+  "stats_roi": "Return of investment",
+  "stats_roi_value": "Profit margin: **{0}**%"
 }
