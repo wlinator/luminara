@@ -17,6 +17,30 @@ CREATE TABLE IF NOT EXISTS currency (
 )
 """
 
+item_table = """
+CREATE TABLE IF NOT EXISTS item (
+    item_id INTEGER PRIMARY KEY,
+    id_name TEXT,
+    display_name TEXT,
+    description TEXT,
+    image_url TEXT,
+    emote_id INTEGER,
+    quote TEXT,
+    type TEXT
+)
+"""
+
+inventory_table = """
+CREATE TABLE IF NOT EXISTS inventory (
+    user_id INTEGER,
+    item_id INTEGER,
+    quantity INTEGER,
+
+    PRIMARY KEY (user_id, item_id),
+    FOREIGN KEY (item_id) REFERENCES item (item_id)
+)
+"""
+
 dailies_table = """
 CREATE TABLE IF NOT EXISTS dailies (
     id INTEGER PRIMARY KEY,
@@ -64,6 +88,8 @@ CREATE TABLE IF NOT EXISTS stats_duel (
 def sync_database():
     database.execute_query(xp_table)
     database.execute_query(currency_table)
+    database.execute_query(item_table)
+    database.execute_query(inventory_table)
     database.execute_query(dailies_table)
     database.execute_query(stats_bj)
     database.execute_query(stats_slots)

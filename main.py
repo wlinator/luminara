@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 import db.tables
 import sb_tools.resources
 from config import json_loader
+from data.Item import Item
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv('.env')
@@ -37,6 +38,7 @@ async def on_ready():
     # wait until the bot is ready
     # then sync the sqlite3 database
     db.tables.sync_database()
+    Item.insert_items()
 
     """
     https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready
