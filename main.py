@@ -20,8 +20,9 @@ from config import json_loader
 logging.basicConfig(level=logging.INFO)
 load_dotenv('.env')
 
-# load all strings.en-US.json strings
+# load all json
 strings = json_loader.load_strings()
+economy_config = json_loader.load_economy_config()
 
 sbbot = discord.Bot(
     owner_id=os.getenv('OWNER_ID'),

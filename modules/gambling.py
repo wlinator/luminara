@@ -1,5 +1,4 @@
 import asyncio
-import json
 import os
 import random
 
@@ -10,6 +9,7 @@ from dotenv import load_dotenv
 from data.BlackJackStats import BlackJackStats
 from data.Currency import Currency
 from data.SlotsStats import SlotsStats
+from main import economy_config
 from sb_tools import economy_embeds, economy_functions, universal, interaction, embeds
 
 load_dotenv('.env')
@@ -17,9 +17,6 @@ load_dotenv('.env')
 active_blackjack_games = {}
 special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
 cash_balance_name = os.getenv("CASH_BALANCE_NAME")
-
-with open("config/economy.json") as file:
-    json_data = json.load(file)
 
 
 class Gambling(commands.Cog):
@@ -133,7 +130,7 @@ class Gambling(commands.Cog):
 
             else:
                 # bet multiplier
-                payout = bet * 1.2
+                payout = bet * float(economy_config["blackjack"]["reward_multiplier"])
                 ctx_currency.add_cash(payout)
                 ctx_currency.push()
 
@@ -262,8 +259,8 @@ class Gambling(commands.Cog):
         if view.clickedConfirm:
             winner = random.choice([challenger, opponent])
             loser = opponent if winner == challenger else challenger
-            combat_message = random.choice(json_data["duel"]["combat_messages"]).format(f"**{winner.name}**",
-                                                                                        f"**{loser.name}**")
+            combat_message = random.choice(economy_config["duel"]["combat_messages"]).format(f"**{winner.name}**",
+                                                                                             f"**{loser.name}**")
 
             await ctx.respond(content=f"{combat_message}\n\n"
                                       f"{winner.mention} wins **{cash_balance_name}{bet}**\n"
