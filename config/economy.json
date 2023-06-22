@@ -4,10 +4,10 @@
   "daily_reward": 50,
   "blackjack": {
     "emotes": {
-      "hit_id": 1119262723285467156,
-      "stand_id": 1118923298298929154
+      "hit": "<:hit:1119262723285467156>",
+      "stand": "<:stand:1118923298298929154>"
     },
-    "reward_multiplier": 1,
+    "reward_multiplier": 1.5,
     "deck_suits": [
       "♠",
       "♡",

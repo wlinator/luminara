@@ -1,10 +1,12 @@
 import random
 from collections import Counter
 
+from main import economy_config
+
 
 def blackjack_get_new_deck():
-    suits = ['♠', '♡', '♢', '♣']
-    ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+    suits = economy_config["blackjack"]["deck_suits"]
+    ranks = economy_config["blackjack"]["deck_ranks"]
     deck = []
     for suit in suits:
         for rank in ranks:
