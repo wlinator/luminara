@@ -8,7 +8,7 @@ from data.Xp import Xp
 from sb_tools import embeds, universal, level_messages, reactions, xp_functions
 
 
-class Leveling(commands.Cog):
+class LevelingCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
@@ -115,4 +115,4 @@ class Leveling(commands.Cog):
 
 
 def setup(sbbot):
-    sbbot.add_cog(Leveling(sbbot))
+    sbbot.add_cog(LevelingCog(sbbot))

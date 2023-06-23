@@ -7,7 +7,7 @@ from discord.ext import commands
 from sb_tools import interaction, embeds, universal
 
 
-class Basic(commands.Cog):
+class BasicCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
@@ -385,4 +385,4 @@ class Basic(commands.Cog):
 
 
 def setup(sbbot):
-    sbbot.add_cog(Basic(sbbot))
+    sbbot.add_cog(BasicCog(sbbot))

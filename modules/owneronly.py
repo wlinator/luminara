@@ -19,7 +19,7 @@ with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
-class OwnerOnly(commands.Cog):
+class OwnerOnlyCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
@@ -57,4 +57,4 @@ class OwnerOnly(commands.Cog):
 
 
 def setup(sbbot):
-    sbbot.add_cog(OwnerOnly(sbbot))
+    sbbot.add_cog(OwnerOnlyCog(sbbot))
