@@ -19,7 +19,7 @@ with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
-class Economy(commands.Cog):
+class EconomyCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
@@ -168,4 +168,4 @@ class Economy(commands.Cog):
 
 
 def setup(sbbot):
-    sbbot.add_cog(Economy(sbbot))
+    sbbot.add_cog(EconomyCog(sbbot))

@@ -19,7 +19,7 @@ special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
 cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
 
-class Gambling(commands.Cog):
+class GamblingCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
@@ -286,4 +286,4 @@ class Gambling(commands.Cog):
 
 
 def setup(sbbot):
-    sbbot.add_cog(Gambling(sbbot))
+    sbbot.add_cog(GamblingCog(sbbot))
