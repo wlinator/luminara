@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS currency (
 
 item_table = """
 CREATE TABLE IF NOT EXISTS item (
-    item_id INTEGER PRIMARY KEY,
-    id_name TEXT,
+    id INTEGER PRIMARY KEY,
+    name TEXT,
     display_name TEXT,
     description TEXT,
     image_url TEXT,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS inventory (
     quantity INTEGER,
 
     PRIMARY KEY (user_id, item_id),
-    FOREIGN KEY (item_id) REFERENCES item (item_id)
+    FOREIGN KEY (item_id) REFERENCES item (id)
 )
 """
 
