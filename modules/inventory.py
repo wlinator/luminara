@@ -5,7 +5,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
 from data.Inventory import Inventory
 from sb_tools import universal
 
@@ -33,10 +32,12 @@ class InventoryCog(commands.Cog):
         inventory = Inventory(ctx.author.id)
         inventory_dict = inventory.get_inventory()
 
-        currency = Currency(ctx.author.id)
-        balance = currency.cash
+        description = "You don't have any items!" if inventory_dict == {} else None
 
-        embed = discord.Embed(description=f"**Balance: ${balance}**")
+        embed = discord.Embed(
+            color=discord.Color.embed_background(),
+            description=description
+        )
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
 
         for item, quantity in inventory_dict.items():
@@ -44,6 +45,7 @@ class InventoryCog(commands.Cog):
             embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
                             value=f"*— Amount: `{quantity}`*",
                             inline=False)
+            embed.set_footer(text="for more info do /item")
 
         await ctx.respond(embed=embed)
 

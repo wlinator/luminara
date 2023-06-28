@@ -37,7 +37,15 @@ class EconomyCog(commands.Cog):
         cash_balance = ctx_currency.cash
         special_balance = ctx_currency.special
 
-        await ctx.respond(embed=economy_embeds.currency_balance(ctx, cash_balance, special_balance))
+        embed = discord.Embed(
+            color=discord.Color.embed_background(),
+            description=f"**Cash**: {cash_balance_name}{cash_balance}\n"
+                        f"**{special_balance_name.capitalize()}**: {special_balance}"
+        )
+        embed.set_author(name=f"{ctx.author.name}'s wallet", icon_url=ctx.author.avatar.url)
+        embed.set_footer(text=f"Level up to earn {special_balance_name}!")
+
+        await ctx.respond(embed=embed)
 
     @commands.slash_command(
         name="give",

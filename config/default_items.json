@@ -1,15 +1,15 @@
 {
   "apple": {
-    "id_name": "apple",
+    "name": "apple",
     "display_name": "apple",
     "description": "This is just an apple.. An item used for testing.",
     "image_url": "https://i.imgur.com/ykQO3sH.png",
     "emote_id": 1121491265658306692,
-    "quote": "The rarest item in Racu, you *literally* can't get this.",
+    "quote": "The rarest item in Racu, you literally can't get this.",
     "type": "collectable"
   },
   "tester_badge": {
-    "id_name": "tester_badge",
+    "name": "tester_badge",
     "display_name": "tester badge",
     "description": "A badge awarded to the people who helped make Racu.",
     "image_url": "https://i.imgur.com/Z8zQXuQ.png",

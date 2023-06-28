@@ -20,7 +20,7 @@ class Inventory:
         VALUES (?, ?, COALESCE((SELECT quantity FROM inventory WHERE user_id = ? AND item_id = ?), 0) + ?)
         """
 
-        database.execute_query(query, (self.user_id, item.item_id, self.user_id, item.item_id, quantity))
+        database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
 
     def get_inventory(self):
         query = "SELECT item_id, quantity FROM inventory WHERE user_id = ? AND quantity > 0"
@@ -32,15 +32,9 @@ class Inventory:
             item = Item.Item(item_id)
             items_dict[item] = quantity
 
-        print(items_dict)
         return items_dict
 
     def get_item_quantity(self, item: Item.Item):
-        query = "SELECT quantity FROM inventory WHERE user_id = ? AND item_id = ?"
-
-        result = database.select_query_one(query, (self.user_id, item.item_id))
-
-        if result:
-            return result[0]
-
-        return 0
+        query = "SELECT COALESCE(quantity, 0) FROM inventory WHERE user_id = ? AND item_id = ?"
+        result = database.select_query_one(query, (self.user_id, item.id))
+        return result

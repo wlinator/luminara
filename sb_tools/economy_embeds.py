@@ -16,16 +16,6 @@ with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
-def currency_balance(ctx, cash_balance, special_balance):
-    embed = discord.Embed(
-        description=f"**Cash**: {cash_balance_name}{cash_balance}\n"
-                    f"**{special_balance_name.capitalize()}**: {special_balance}"
-    )
-    embed.set_author(name=f"{ctx.author.name}'s wallet", icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Level up to earn {special_balance_name}!")
-    return embed
-
-
 def award(user, currency, amount):
     reward = f"{amount}"
     if currency == "cash_balance":
