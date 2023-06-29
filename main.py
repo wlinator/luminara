@@ -75,5 +75,33 @@ async def on_message(message):
     await reaction_handler.handle_message(message)
 
 
+@sbbot.event
+async def on_member_join(member):
+    welcome_channel_id = 721862236112420915
+    rules_channel_id = 719665850373898290
+    self_roles_channel_id = 719665892652220536
+    introductions_channel_id = 973619250507972618
+
+    guild = member.guild
+
+    if guild.id != 719227135151046699:
+        return
+
+    rules_channel = guild.get_channel(rules_channel_id)
+    self_roles_channel = guild.get_channel(self_roles_channel_id)
+    introductions_channel = guild.get_channel(introductions_channel_id)
+
+    embed = discord.Embed(
+        color=discord.Color.embed_background(),
+        description=f"_ _\n**Welcome** to **Kaiju's Rave Cave** ↓↓↓\n"
+                    f"[rules]({rules_channel.jump_url}) - "
+                    f"[self roles]({self_roles_channel.jump_url}) - "
+                    f"[introductions]({introductions_channel.jump_url})\n_ _"
+    )
+    embed.set_thumbnail(url=member.avatar.url)
+
+    await guild.get_channel(welcome_channel_id).send(embed=embed, content=member.mention)
+
+
 load_cogs()
 sbbot.run(os.getenv('TOKEN'))
