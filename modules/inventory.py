@@ -52,7 +52,7 @@ class InventoryCog(commands.Cog):
             else:
                 emote = self.bot.get_emoji(item.emote_id)
                 embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
-                                value=f"*— Amount: `{quantity}`*",
+                                value=f"*— amount: `{quantity}`*",
                                 inline=False)
         embed.set_footer(text="for more info do /item")
 
