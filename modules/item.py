@@ -28,7 +28,7 @@ class ItemCog(commands.Cog):
         description="View the information about a specific item.",
         guild_only=True
     )
-    @commands.check(universal.beta_check)
+    @commands.check(universal.channel_check)
     async def item_command(self, ctx, *, item: discord.Option(choices=Item.get_all_item_names())):
         # create item object from choice
         item = Item.get_item_by_display_name(item)
