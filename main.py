@@ -26,6 +26,7 @@ load_dotenv('.env')
 # load all json
 strings = json_loader.load_strings()
 economy_config = json_loader.load_economy_config()
+reactions = json_loader.load_reactions()
 
 sbbot = discord.Bot(
     owner_id=os.getenv('OWNER_ID'),
@@ -70,7 +71,7 @@ async def on_message(message):
     xp_handler = XPHandler()
     await xp_handler.process_xp(message)
 
-    reaction_handler = ReactionHandler()
+    reaction_handler = ReactionHandler(reactions)
     await reaction_handler.handle_message(message)
 
 
