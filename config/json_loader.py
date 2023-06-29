@@ -13,3 +13,10 @@ def load_economy_config(path="config/economy.json"):
         data = json.load(file)
 
     return data
+
+
+def load_reactions(path="config/reactions.json"):
+    with open(path, 'r') as file:
+        data = json.load(file)
+
+    return data
