@@ -17,6 +17,7 @@ import db.tables
 import sb_tools.resources
 from config import json_loader
 from data.Item import Item
+from handlers.XPHandler import XPHandler
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv('.env')
@@ -58,6 +59,15 @@ async def on_ready():
     This function isn't guaranteed to only be called once.
     Event is called when RESUME request fails.
     """
+
+
+@sbbot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    xp_handler = XPHandler()
+    await xp_handler.process_xp(message)
 
 
 load_cogs()
