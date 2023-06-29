@@ -33,12 +33,25 @@ sbbot = discord.Bot(
 )
 
 
+def load_cogs(reload=False):
+    for filename in os.listdir('./modules'):
+        if filename.endswith('.py'):
+            if not reload:
+                sbbot.load_extension(f'modules.{filename[:-3]}')
+            else:
+                sbbot.reload_extension(f'modules.{filename[:-3]}')
+                print(f"Module '{filename}' ready.")
+
+
 @sbbot.event
 async def on_ready():
     # wait until the bot is ready
     # then sync the sqlite3 database
     db.tables.sync_database()
     Item.insert_items()
+
+    # reload all cogs to sync db parameters
+    load_cogs(reload=True)
 
     """
     https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready
@@ -47,8 +60,5 @@ async def on_ready():
     """
 
 
-for filename in os.listdir('./modules'):
-    if filename.endswith('.py'):
-        sbbot.load_extension(f'modules.{filename[:-3]}')
-
+load_cogs()
 sbbot.run(os.getenv('TOKEN'))
