@@ -83,3 +83,9 @@ class Item:
         query = "SELECT id FROM item WHERE display_name = ?"
         item_id = database.select_query_one(query, (display_name,))
         return Item(item_id)
+
+    @staticmethod
+    def get_item_by_name(name):
+        query = "SELECT id FROM item WHERE name = ?"
+        item_id = database.select_query_one(query, (name,))
+        return Item(item_id)
