@@ -52,7 +52,7 @@ class ItemCog(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.embed_background(),
-            title=f"{emote} {item.display_name}",
+            title=f"{emote} {item.display_name.capitalize()}",
             description=description
         )
         embed.add_field(name="Value", value=f"`/shop` cost: **{shop_cost}**\n`/sell` value: **{sell_value}**",
