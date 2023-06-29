@@ -71,8 +71,8 @@ class ItemCog(commands.Cog):
     )
     @commands.check(universal.owner_check)
     async def gift(self, ctx, *,
-                   item: discord.Option(choices=Item.get_all_item_names()),
                    user: discord.Option(discord.Member),
+                   item: discord.Option(choices=Item.get_all_item_names()),
                    quantity: discord.Option(int)):
 
         try:
