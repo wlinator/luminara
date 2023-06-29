@@ -164,6 +164,11 @@ def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer
         title_text = "YOU LOST!"
         thumbnail_url = "https://i.imgur.com/rc68c43.png"
         color = discord.Color.red()
+    
+    elif status == "player_won_21":
+        title_text = "YOU WON!"
+        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
+        color = discord.Color.green()
 
     elif status == "player_blackjack":
         you_text = "You | BlackJack"
