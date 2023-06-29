@@ -41,11 +41,20 @@ class InventoryCog(commands.Cog):
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
 
         for item, quantity in inventory_dict.items():
-            emote = self.bot.get_emoji(item.emote_id)
-            embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
-                            value=f"*— Amount: `{quantity}`*",
-                            inline=False)
-            embed.set_footer(text="for more info do /item")
+            if item.name.endswith("_badge"):
+
+                if not embed.description:
+                    embed.description = "**Badges:** "
+
+                emote = self.bot.get_emoji(item.emote_id)
+                embed.description += f"{emote} "
+
+            else:
+                emote = self.bot.get_emoji(item.emote_id)
+                embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
+                                value=f"*— Amount: `{quantity}`*",
+                                inline=False)
+        embed.set_footer(text="for more info do /item")
 
         await ctx.respond(embed=embed)
 
