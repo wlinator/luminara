@@ -52,7 +52,6 @@ class GamblingCog(commands.Cog):
             player_hand = []
             dealer_hand = []
             deck = economy_functions.blackjack_get_new_deck()
-            view = interaction.BlackJackButtons(ctx)
 
             # deal initial cards (player draws two & dealer one)
             player_hand.append(economy_functions.blackjack_deal_card(deck))
@@ -63,7 +62,8 @@ class GamblingCog(commands.Cog):
             player_hand_value = economy_functions.blackjack_calculate_hand_value(player_hand)
             dealer_hand_value = economy_functions.blackjack_calculate_hand_value(dealer_hand)
 
-            status = "game_start"
+            status = "game_start" if player_hand_value != 21 else "player_blackjack"
+            view = interaction.BlackJackButtons(ctx) if status == "game_start" else None
 
             await ctx.respond(embed=economy_embeds.blackjack_show(ctx, bet, player_hand,
                                                                   dealer_hand, player_hand_value,
@@ -80,6 +80,8 @@ class GamblingCog(commands.Cog):
 
                     if player_hand_value > 21:
                         status = "player_busted"
+                    elif player_hand_value == 21:
+                        status = "player_blackjack"
 
                 elif view.clickedStand:
                     # player stands, dealer draws cards until he wins OR busts
