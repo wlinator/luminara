@@ -17,6 +17,7 @@ import db.tables
 import sb_tools.resources
 from config import json_loader
 from data.Item import Item
+from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
 
 logging.basicConfig(level=logging.INFO)
@@ -68,6 +69,9 @@ async def on_message(message):
 
     xp_handler = XPHandler()
     await xp_handler.process_xp(message)
+
+    reaction_handler = ReactionHandler()
+    await reaction_handler.handle_message(message)
 
 
 load_cogs()
