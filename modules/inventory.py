@@ -27,7 +27,7 @@ class InventoryCog(commands.Cog):
         description="Display your inventory.",
         guild_only=True
     )
-    @commands.check(universal.beta_check)
+    @commands.check(universal.channel_check)
     async def inventory(self, ctx):
         inventory = Inventory(ctx.author.id)
         inventory_dict = inventory.get_inventory()
