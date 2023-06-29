@@ -16,5 +16,14 @@
     "emote_id": 1121491902370418869,
     "quote": "Thank you for the support <3",
     "type": "collectable"
+  },
+  "bitch_coin": {
+    "name": "bitch_coin",
+    "display_name": "bitch coin",
+    "description": "A coin worth just as much as the number of bitches you have.",
+    "image_url": "https://i.imgur.com/Ztj9ZMB.png",
+    "emote_id": 1124044941702733925,
+    "quote": "You may still be bitchless but at least you have this coin.",
+    "tyoe": "collectable"
   }
 }
