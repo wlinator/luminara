@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import discord
@@ -37,6 +38,19 @@ async def owner_check(ctx):
         embed = discord.Embed(description=f"Only Tess can do this command.",
                               color=discord.Color.red())
         await ctx.respond(embed=embed, ephemeral=True)
+        return False
+
+    return True
+
+
+async def eightball_check(message):
+    desired_channel_id = 1118587309365940407
+
+    if message.channel.id != desired_channel_id:
+        channel_mention = f"<#{desired_channel_id}>"
+        bot_reply = await message.reply(f"You can only ask Racu questions in {channel_mention}.")
+        await asyncio.sleep(5)
+        await bot_reply.delete()
         return False
 
     return True
