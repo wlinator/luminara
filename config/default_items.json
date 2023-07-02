@@ -25,5 +25,14 @@
     "emote_id": 1124044941702733925,
     "quote": "You may still be bitchless but at least you have this coin.",
     "type": "collectable"
+  },
+  "rave_coin": {
+    "name": "rave_coin",
+    "display_name": "ravecoin",
+    "description": "Awarded on winning a bet of $9,000 or more.",
+    "image_url": "https://i.imgur.com/iROwZ6T.png",
+    "emote_id": 1125357545180110878,
+    "quote": "IT'S OVER 9000!!!",
+    "type": "collectable"
   }
 }

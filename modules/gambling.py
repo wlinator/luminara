@@ -8,9 +8,8 @@ from dotenv import load_dotenv
 
 from data.BlackJackStats import BlackJackStats
 from data.Currency import Currency
-from data.Inventory import Inventory
-from data.Item import Item
 from data.SlotsStats import SlotsStats
+from handlers.ItemHandler import ItemHandler
 from main import economy_config
 from sb_tools import economy_embeds, economy_functions, universal, interaction, embeds
 
@@ -138,21 +137,9 @@ class GamblingCog(commands.Cog):
                 ctx_currency.add_cash(payout)
                 ctx_currency.push()
 
-                if status == "player_blackjack":
-                    # if 21 -> add item
-                    inventory = Inventory(ctx.author.id)
-                    item = Item.get_item_by_name("bitch_coin")
-                    inventory.add_item(item)
-
-                    embed = discord.Embed(
-                        color=discord.Color.embed_background(),
-                        title="You hit a BlackJack!",
-                        description=f"Yous a bitch for winning with a natural hand so I gave you 1 "
-                                    f"**{item.display_name}**."
-                    )
-                    embed.set_footer(text="Take a look in /inventory")
-
-                    await ctx.respond(embed=embed)
+                item_reward = ItemHandler(ctx)
+                await item_reward.rave_coin(is_won=True, bet=bet)
+                await item_reward.bitch_coin(status=status)
 
                 # push stats (low priority)
                 stats = BlackJackStats(
