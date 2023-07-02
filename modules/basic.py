@@ -23,7 +23,6 @@ class BasicCog(commands.Cog):
     async def ping(self, ctx):
         ping = round(self.bot.latency * 1000, 2)
         await ctx.respond(f"SB latency: {ping} ms")
-        racu_logs.info(f"{ctx.author.name} used the ping command. | ping: {ping} ms")
 
     @commands.slash_command(
         name="restart",
@@ -33,7 +32,6 @@ class BasicCog(commands.Cog):
     @commands.check(universal.owner_check)
     async def restart(self, ctx):
         await ctx.respond(content="Restarting..", ephemeral=True)
-        racu_logs.info(f"{ctx.author.name} used the restart command.")
 
         try:
             racu_logs.info(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
@@ -47,8 +45,6 @@ class BasicCog(commands.Cog):
     )
     @commands.dm_only()
     async def intro(self, ctx):
-        racu_logs.info(f"{ctx.author.name} used the intro command.")
-
         guild_id = 719227135151046699
         channel_id = 973619250507972618
         muted_role_id = 754895743151505489
