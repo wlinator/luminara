@@ -190,9 +190,14 @@ async def on_application_command_completion(ctx) -> None:
 
 
 @sbbot.event
-async def on_application_command_error(ctx, error):
-    racu_logs.error(f"on_command_error (check debug log): {error}", exc_info=False)
-    racu_logs.debug(f"on_command_error (w/ stacktrace): {error}", exc_info=True)
+async def on_application_command_error(ctx, error) -> None:
+    racu_logs.error(f"on_application_command_error (check debug log): {error}", exc_info=False)
+    racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
+
+
+@sbbot.event
+async def on_error(event: str, *args, **kwargs) -> None:
+    racu_logs.error(f"on_error: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
 
 
 # load all json
