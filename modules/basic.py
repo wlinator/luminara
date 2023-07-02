@@ -1,10 +1,13 @@
 import asyncio
+import logging
 import subprocess
 
 import discord
 from discord.ext import commands
 
 from sb_tools import interaction, embeds, universal
+
+racu_logs = logging.getLogger('Racu.Core')
 
 
 class BasicCog(commands.Cog):
@@ -18,7 +21,8 @@ class BasicCog(commands.Cog):
     )
     @commands.check(universal.channel_check)
     async def ping(self, ctx):
-        await ctx.respond(f"SB latency: {round(self.bot.latency * 1000, 2)} ms")
+        ping = round(self.bot.latency * 1000, 2)
+        await ctx.respond(f"SB latency: {ping} ms")
 
     @commands.slash_command(
         name="restart",
@@ -30,9 +34,9 @@ class BasicCog(commands.Cog):
         await ctx.respond(content="Restarting..", ephemeral=True)
 
         try:
-            print(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
+            racu_logs.info(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
         except subprocess.CalledProcessError as e:
-            print(f"Error executing the script: {e.output.decode()}")
+            racu_logs.error(f"Error executing the script: {e.output.decode()}")
 
     @commands.slash_command(
         name="intro",
@@ -62,11 +66,13 @@ class BasicCog(commands.Cog):
             em = discord.Embed(description="You're muted in the Rave Cave. You can't perform this command.",
                                color=0xadcca6)
             await ctx.respond(embed=em)
+            racu_logs.warning(f"{ctx.author.name} couldn't do the intro command: Muted in the Race Cave")
             return
 
         elif member and not discord.utils.get(member.roles, id=719995790319157279):
             em = discord.Embed(description="It seems that you don't have permission to do that!")
             await ctx.respond(embed=em)
+            racu_logs.warning(f"{ctx.author.name} couldn't do the intro command: No Permissions")
             return
 
         embed = discord.Embed(color=0xadcca6,
@@ -95,6 +101,7 @@ class BasicCog(commands.Cog):
             return message.author == ctx.author and isinstance(message.channel, discord.DMChannel)
 
         if view.clickedShort:
+            racu_logs.debug(f"{ctx.author.name} clicked Short Intro")
 
             # START NICKNAME
             await ctx.send(embed=embeds.simple_question_first("How would you like to be identified in the server?"))
@@ -105,6 +112,7 @@ class BasicCog(commands.Cog):
                 if len(nickname) > 100:
                     nickname = nickname[:100]
                 nickname = nickname.replace("\n", " ")
+                racu_logs.debug(f"{ctx.author.name} nickname: {nickname}")
 
                 # START AGE
                 await ctx.send(embed=embeds.simple_question_5("How old are you?"),
@@ -116,6 +124,7 @@ class BasicCog(commands.Cog):
                     if len(age) > 5:
                         age = age[:5]
                     age = age.replace("\n", " ")
+                    racu_logs.debug(f"{ctx.author.name} age: {age}")
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
@@ -129,6 +138,8 @@ class BasicCog(commands.Cog):
                     if not view.location:
                         await ctx.send(embed=embeds.no_time())
                         return
+
+                    racu_logs.debug(f"{ctx.author.name} location: {location}")
 
                     # START PRONOUNS
                     await ctx.send(
@@ -141,6 +152,7 @@ class BasicCog(commands.Cog):
                         if len(pronouns) > 30:
                             pronouns = pronouns[:30]
                         pronouns = pronouns.replace("\n", " ")
+                        racu_logs.debug(f"{ctx.author.name} pronouns: {pronouns}")
 
                         # START LIKES
                         await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
@@ -152,6 +164,7 @@ class BasicCog(commands.Cog):
                             if len(likes) > 300:
                                 likes = likes[:300]
                             likes = likes.replace("\n", " ")
+                            racu_logs.debug(f"{ctx.author.name} likes: {likes}")
 
                             # START DISLIKES
                             await ctx.send(embed=embeds.simple_question_300("Dislikes"),
@@ -163,6 +176,7 @@ class BasicCog(commands.Cog):
                                 if len(dislikes) > 300:
                                     dislikes = dislikes[:300]
                                 dislikes = dislikes.replace("\n", " ")
+                                racu_logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
 
                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
                                 em = embeds.final_embed_short(ctx, nickname, age, location, pronouns, likes, dislikes)
@@ -175,32 +189,41 @@ class BasicCog(commands.Cog):
                                     intro_channel = guild.get_channel(channel_id)
                                     await intro_channel.send(embed=em, content=f"Introduction of <@{ctx.author.id}>")
                                     await ctx.send(embed=embeds.final_confirmation(channel_id))
+                                    racu_logs.info(f"{ctx.author.name} Intro Sent")
                                     return
                                 else:
                                     await ctx.send(embed=embeds.no_time())
+                                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                     return
 
                             except asyncio.TimeoutError:
                                 await ctx.send(embed=embeds.no_time())
+                                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                 return
 
                         except asyncio.TimeoutError:
                             await ctx.send(embed=embeds.no_time())
+                            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                             return
 
                     except asyncio.TimeoutError:
                         await ctx.send(embed=embeds.no_time())
+                        racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                         return
 
                 except asyncio.TimeoutError:
                     await ctx.send(embed=embeds.no_time())
+                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                     return
 
             except asyncio.TimeoutError:
                 await ctx.send(embed=embeds.no_time())
+                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                 return
 
         elif view.clickedLong:
+            racu_logs.debug(f"{ctx.author.name} clicked Long Intro")
+
             # START NICKNAME
             await ctx.send(embed=embeds.simple_question_first_extended(
                 "How would you like to be identified in the server?"))
@@ -211,6 +234,7 @@ class BasicCog(commands.Cog):
                 if len(nickname) > 100:
                     nickname = nickname[:100]
                 nickname = nickname.replace("\n", " ")
+                racu_logs.debug(f"{ctx.author.name} nickname: {nickname}")
 
                 # START AGE
                 await ctx.send(embed=embeds.simple_question_5("How old are you?"),
@@ -222,6 +246,7 @@ class BasicCog(commands.Cog):
                     if len(age) > 5:
                         age = age[:5]
                     age = age.replace("\n", " ")
+                    racu_logs.debug(f"{ctx.author.name} age: {age}")
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
@@ -235,6 +260,8 @@ class BasicCog(commands.Cog):
                     if not view.location:
                         await ctx.send(embed=embeds.no_time())
                         return
+
+                    racu_logs.debug(f"{ctx.author.name} location: {location}")
 
                     # START LANGUAGES
                     await ctx.send(
@@ -248,6 +275,7 @@ class BasicCog(commands.Cog):
                         if len(languages) > 30:
                             languages = languages[:30]
                         languages = languages.replace("\n", " ")
+                        racu_logs.debug(f"{ctx.author.name} languages: {languages}")
 
                         # START PRONOUNS
                         await ctx.send(
@@ -260,6 +288,7 @@ class BasicCog(commands.Cog):
                             if len(pronouns) > 30:
                                 pronouns = pronouns[:30]
                             pronouns = pronouns.replace("\n", " ")
+                            racu_logs.debug(f"{ctx.author.name} pronouns: {pronouns}")
 
                             # START SEXUALITY
                             await ctx.send(
@@ -272,6 +301,7 @@ class BasicCog(commands.Cog):
                                 if len(sexuality) > 30:
                                     sexuality = sexuality[:30]
                                 sexuality = sexuality.replace("\n", " ")
+                                racu_logs.debug(f"{ctx.author.name} sexuality: {sexuality}")
 
                                 # START RELATIONSHIP_STATUS
                                 await ctx.send(
@@ -285,6 +315,7 @@ class BasicCog(commands.Cog):
                                     if len(relationship_status) > 30:
                                         relationship_status = relationship_status[:30]
                                     relationship_status = relationship_status.replace("\n", " ")
+                                    racu_logs.debug(f"{ctx.author.name} relationship_status: {relationship_status}")
 
                                     # START LIKES
                                     await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
@@ -296,6 +327,7 @@ class BasicCog(commands.Cog):
                                         if len(likes) > 300:
                                             likes = likes[:300]
                                         likes = likes.replace("\n", " ")
+                                        racu_logs.debug(f"{ctx.author.name} likes: {likes}")
 
                                         # START DISLIKES
                                         await ctx.send(embed=embeds.simple_question_300("Dislikes"),
@@ -308,6 +340,7 @@ class BasicCog(commands.Cog):
                                             if len(dislikes) > 300:
                                                 dislikes = dislikes[:300]
                                             dislikes = dislikes.replace("\n", " ")
+                                            racu_logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
 
                                             # START EXTRA
                                             await ctx.send(embed=embeds.simple_question_300(
@@ -322,6 +355,7 @@ class BasicCog(commands.Cog):
                                                 if len(extra) > 300:
                                                     extra = extra[:300]
                                                 extra = extra.replace("\n", " ")
+                                                racu_logs.debug(f"{ctx.author.name} extra: {extra}")
 
                                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
                                                 em = embeds.final_embed_extended(ctx, nickname, age, location,
@@ -339,48 +373,60 @@ class BasicCog(commands.Cog):
                                                     await intro_channel.send(embed=em,
                                                                              content=f"Introduction of <@{ctx.author.id}>")
                                                     await ctx.send(embed=embeds.final_confirmation(channel_id))
+                                                    racu_logs.info(f"{ctx.author.name} Intro Sent")
                                                     return
                                                 else:
                                                     await ctx.send(embed=embeds.no_time())
+                                                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                                     return
 
                                             except asyncio.TimeoutError:
                                                 await ctx.send(embed=embeds.no_time())
+                                                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                                 return
 
                                         except asyncio.TimeoutError:
                                             await ctx.send(embed=embeds.no_time())
+                                            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                             return
 
                                     except asyncio.TimeoutError:
                                         await ctx.send(embed=embeds.no_time())
+                                        racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                         return
 
                                 except asyncio.TimeoutError:
                                     await ctx.send(embed=embeds.no_time())
+                                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                     return
 
                             except asyncio.TimeoutError:
                                 await ctx.send(embed=embeds.no_time())
+                                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                                 return
 
                         except asyncio.TimeoutError:
                             await ctx.send(embed=embeds.no_time())
+                            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                             return
 
                     except asyncio.TimeoutError:
                         await ctx.send(embed=embeds.no_time())
+                        racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                         return
 
                 except asyncio.TimeoutError:
                     await ctx.send(embed=embeds.no_time())
+                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                     return
 
             except asyncio.TimeoutError:
                 await ctx.send(embed=embeds.no_time())
+                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
                 return
         else:
             await ctx.send(embed=embeds.no_time())
+            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
             return
 
 
