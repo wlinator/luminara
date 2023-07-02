@@ -1,4 +1,8 @@
+import logging
+
 from db import database
+
+racu_logs = logging.getLogger('Racu.Core')
 
 xp_table = """
 CREATE TABLE IF NOT EXISTS xp (
@@ -95,4 +99,4 @@ def sync_database():
     database.execute_query(stats_slots)
     database.execute_query(stats_duel)
 
-    print("On startup: database synced.")
+    racu_logs.info("Database was synced.")

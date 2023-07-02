@@ -9,8 +9,10 @@ SPECIAL_BALANCE_NAME=
 
 import logging
 import os
+from datetime import datetime
 
 import discord
+import pytz
 from dotenv import load_dotenv
 
 import db.tables
@@ -20,7 +22,50 @@ from data.Item import Item
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
 
-logging.basicConfig(level=logging.INFO)
+
+class RacuFormatter(logging.Formatter):
+    def converter(self, timestamp):
+        tz = pytz.timezone('US/Eastern')
+        converted_time = datetime.fromtimestamp(timestamp, tz)
+        return converted_time
+
+    def formatTime(self, record, datefmt=None):
+        timestamp = self.converter(record.created)
+        if datefmt:
+            return timestamp.strftime(datefmt)
+        else:
+            return str(timestamp)
+
+
+def setup_logger():
+    # Initialize the logger
+    logger = logging.getLogger('Racu.Core')
+    if logger.handlers:
+        # Handlers already exist, no need to add more
+        return logger
+
+    logger.setLevel(logging.DEBUG)
+
+    # Create console handler and set level and formatter
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    console_formatter = RacuFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
+                                      datefmt='%Y-%m-%d %H:%M:%S')
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
+
+    # Create file handler and set level and formatter
+    file_handler = logging.FileHandler('racu.log')
+    file_handler.setLevel(logging.DEBUG)
+    file_formatter = RacuFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
+                                   datefmt='%Y-%m-%d %H:%M:%S')
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
+
+    return logger
+
+
+racu_logs = setup_logger()
 load_dotenv('.env')
 
 # load all json
@@ -43,7 +88,7 @@ def load_cogs(reload=False):
                 sbbot.load_extension(f'modules.{filename[:-3]}')
             else:
                 sbbot.reload_extension(f'modules.{filename[:-3]}')
-                print(f"Module '{filename}' ready.")
+                racu_logs.info(f"Module {filename} loaded.")
 
 
 @sbbot.event
@@ -55,6 +100,7 @@ async def on_ready():
 
     # reload all cogs to sync db parameters
     load_cogs(reload=True)
+    racu_logs.info("RACU IS BOOTED/READY")
 
     """
     https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready

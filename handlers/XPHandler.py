@@ -1,8 +1,11 @@
+import logging
 import time
 
 from data.Currency import Currency
 from data.Xp import Xp
 from sb_tools import level_messages
+
+racu_logs = logging.getLogger('Racu.Core')
 
 
 class XPHandler:
@@ -15,7 +18,7 @@ class XPHandler:
         xp = Xp(user_id)
 
         if xp.ctime and current_time < xp.ctime:
-            print(f"XP UPDATE --- {message.author.name} sent a message but is on XP cooldown.")
+            racu_logs.info(f"XP UPDATE --- {message.author.name} sent a message but is on XP cooldown.")
             return
 
         new_xp = xp.xp + xp.xp_gain
@@ -37,11 +40,11 @@ class XPHandler:
             user_currency.add_special(1)
             user_currency.push()
 
-            print(f"XP UPDATE --- {message.author.name} leveled up; new_level = {xp.level}.")
+            racu_logs.info(f"XP UPDATE --- {message.author.name} leveled up; new_level = {xp.level}.")
 
         else:
             xp.xp += xp.xp_gain
-            print(f"XP UPDATE --- {message.author.name} gained {xp.xp_gain} XP; new_xp = {new_xp}.")
+            racu_logs.info(f"XP UPDATE --- {message.author.name} gained {xp.xp_gain} XP; new_xp = {new_xp}.")
 
         xp.ctime = current_time + xp.new_cooldown
         xp.push()
@@ -70,7 +73,6 @@ class XPHandler:
         guild = user.guild
 
         if guild.id != 719227135151046699:
-            print("Not Rave Cave -> no level-up role")
             return
 
         current_level_role = None
