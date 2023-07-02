@@ -1,10 +1,13 @@
 import asyncio
+import logging
 import subprocess
 
 import discord
 from discord.ext import commands
 
 from sb_tools import interaction, embeds, universal
+
+racu_logs = logging.getLogger('Racu.Core')
 
 
 class BasicCog(commands.Cog):
@@ -30,9 +33,9 @@ class BasicCog(commands.Cog):
         await ctx.respond(content="Restarting..", ephemeral=True)
 
         try:
-            print(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
+            racu_logs.info(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
         except subprocess.CalledProcessError as e:
-            print(f"Error executing the script: {e.output.decode()}")
+            racu_logs.error(f"Error executing the script: {e.output.decode()}")
 
     @commands.slash_command(
         name="intro",

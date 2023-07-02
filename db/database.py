@@ -1,12 +1,15 @@
+import logging
 import sqlite3
 from sqlite3 import Error
+
+racu_logs = logging.getLogger('Racu.Core')
 
 
 def create_connection():
     try:
         conn = sqlite3.connect("db/rcu.db")
     except Error as e:
-        print("'create_connection()' Error occurred: {}".format(e))
+        racu_logs.error("'create_connection()' Error occurred: {}".format(e))
         return
 
     return conn
