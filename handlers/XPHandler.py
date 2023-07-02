@@ -18,7 +18,7 @@ class XPHandler:
         xp = Xp(user_id)
 
         if xp.ctime and current_time < xp.ctime:
-            racu_logs.info(f"XP UPDATE --- {message.author.name} sent a message but is on XP cooldown.")
+            racu_logs.debug(f"XP UPDATE --- {message.author.name} sent a message but is on XP cooldown.")
             return
 
         new_xp = xp.xp + xp.xp_gain
