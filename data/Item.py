@@ -1,7 +1,10 @@
 import json
+import logging
 import sqlite3
 
 from db import database
+
+racu_logs = logging.getLogger('Racu.Core')
 
 
 class Item:
@@ -59,7 +62,7 @@ class Item:
             database.execute_query(query,
                                    (index, name, display_name, description, image_url, emote_id, quote, item_type))
 
-        print("Items inserted into the database successfully.")
+        racu_logs.info("Items inserted into the database successfully.")
 
     @staticmethod
     def get_all_item_names():
@@ -75,7 +78,7 @@ class Item:
             return item_names
 
         except sqlite3.Error:
-            print(sqlite3.Error)
+            racu_logs.error(sqlite3.Error)
             return []
 
     @staticmethod
