@@ -9,6 +9,7 @@ SPECIAL_BALANCE_NAME=
 
 import logging
 import os
+import platform
 import re
 from datetime import datetime
 
@@ -98,19 +99,21 @@ def setup_logger():
     logger.addHandler(info_file_handler)
 
     logger.propagate = False
+    logging.captureWarnings(True)
+
     return logger
+
+
+racu_logs = setup_logger()
 
 
 @sbbot.event
 async def on_ready():
-    # wait until the bot is ready
-    # then sync the sqlite3 database
-    # db.tables.sync_database()
-    # Item.insert_items()
-
-    # reload all cogs to sync db parameters
-    # load_cogs(reload=True)
-    racu_logs.info("RACU IS BOOTED/READY")
+    racu_logs.info(f"Logged in as {sbbot.user.name}")
+    racu_logs.info(f"discord.py API version: {discord.__version__}")
+    racu_logs.info(f"Python version: {platform.python_version()}")
+    racu_logs.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
+    racu_logs.info("-----------------------------------------")
 
     """
     https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready
@@ -124,11 +127,16 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    xp_handler = XPHandler()
-    await xp_handler.process_xp(message)
+    try:
+        xp_handler = XPHandler()
+        await xp_handler.process_xp(message)
 
-    reaction_handler = ReactionHandler(reactions)
-    await reaction_handler.handle_message(message)
+        reaction_handler = ReactionHandler(reactions)
+        await reaction_handler.handle_message(message)
+
+    except Exception as error:
+        racu_logs.error(f"on_message (check debug log): {error}", exc_info=False)
+        racu_logs.debug(f"on_message (w/ stacktrace): {error}", exc_info=True)
 
 
 @sbbot.event
@@ -159,7 +167,35 @@ async def on_member_join(member):
     await guild.get_channel(welcome_channel_id).send(embed=embed, content=member.mention)
 
 
-racu_logs = setup_logger()
+@sbbot.event
+async def on_application_command_completion(ctx) -> None:
+    """
+    This code is executed when a slash_command has been successfully executed.
+    :param ctx:
+    :return:
+    """
+    full_command_name = ctx.command.qualified_name
+    split = full_command_name.split(" ")
+    executed_command = str(split[0])
+
+    if ctx.guild is not None:
+        racu_logs.info(
+            f"Executed {executed_command} command in {ctx.guild.name} (ID: {ctx.guild.id}) "
+            f"by {ctx.author} (ID: {ctx.author.id})"
+        )
+    else:
+        racu_logs.info(
+            f"Executed {executed_command} command by {ctx.author} (ID: {ctx.author.id}) in DMs."
+        )
+
+
+# async def on_application_command_error(ctx, error) -> None:
+#     racu_logs.error(f"on_command_error (check debug log): {error}", exc_info=False)
+#     racu_logs.debug(f"on_command_error (w/ stacktrace): {error}", exc_info=True)
+
+# async def on_error(event: str, *args, **kwargs) -> None:
+#     racu_logs.error(f"on_command_error (check debug log): {event}")
+
 
 # load all json
 strings = json_loader.load_strings()
