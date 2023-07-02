@@ -41,6 +41,16 @@ CREATE TABLE IF NOT EXISTS inventory (
 )
 """
 
+shop_item_table = """
+CREATE TABLE IF NOT EXISTS ShopItem (
+    item_id INTEGER PRIMARY KEY,
+    price INTEGER,
+    price_special INTEGER,
+    worth INTEGER,
+    description TEXT
+)
+"""
+
 dailies_table = """
 CREATE TABLE IF NOT EXISTS dailies (
     id INTEGER PRIMARY KEY,
@@ -90,6 +100,7 @@ def sync_database():
     database.execute_query(currency_table)
     database.execute_query(item_table)
     database.execute_query(inventory_table)
+    database.execute_query(shop_item_table)
     database.execute_query(dailies_table)
     database.execute_query(stats_bj)
     database.execute_query(stats_slots)
