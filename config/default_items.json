@@ -6,7 +6,7 @@
     "image_url": "https://i.imgur.com/ykQO3sH.png",
     "emote_id": 1121491265658306692,
     "quote": "The rarest item in Racu, you literally can't get this.",
-    "type": "collectable"
+    "type": "collectible"
   },
   "tester_badge": {
     "name": "tester_badge",
@@ -24,7 +24,7 @@
     "image_url": "https://i.imgur.com/Ztj9ZMB.png",
     "emote_id": 1124044941702733925,
     "quote": "You may still be bitchless but at least you have this coin.",
-    "type": "collectable"
+    "type": "collectible"
   },
   "rave_coin": {
     "name": "rave_coin",
@@ -33,7 +33,7 @@
     "image_url": "https://i.imgur.com/iROwZ6T.png",
     "emote_id": 1125357545180110878,
     "quote": "IT'S OVER 9000!!!",
-    "type": "collectable"
+    "type": "collectible"
   },
   "admin_badge": {
     "name": "admin_badge",
