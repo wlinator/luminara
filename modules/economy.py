@@ -84,7 +84,7 @@ class EconomyCog(commands.Cog):
                     return await ctx.respond(embed=economy_embeds.not_enough_special_balance())
 
                 target_currency.add_special(amount)
-                ctx_currency.take_cash(amount)
+                ctx_currency.take_special(amount)
 
             ctx_currency.push()
             target_currency.push()
