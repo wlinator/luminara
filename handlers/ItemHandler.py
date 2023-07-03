@@ -1,7 +1,11 @@
+import logging
+
 import discord
 
 from data.Inventory import Inventory
 from data.Item import Item
+
+racu_logs = logging.getLogger('Racu.Core')
 
 
 class ItemHandler:
@@ -22,7 +26,8 @@ class ItemHandler:
                             f"You've been awarded 1 **{item.display_name}**."
             )
 
-            return await self.ctx.respond(embed=embed)
+            await self.ctx.respond(embed=embed)
+            return racu_logs.info(f"{self.ctx.author.name} won 1 rave_coin (bet > 9000)")
 
     async def bitch_coin(self, status):
         if status == "player_blackjack":
@@ -39,4 +44,5 @@ class ItemHandler:
             )
             embed.set_footer(text="Take a look in /inventory")
 
-            return await self.ctx.respond(embed=embed)
+            await self.ctx.respond(embed=embed)
+            return racu_logs.info(f"{self.ctx.author.name} won 1 bitch_coin (player_blackjack)")
