@@ -15,7 +15,7 @@
     "image_url": "https://i.imgur.com/Z8zQXuQ.png",
     "emote_id": 1121491902370418869,
     "quote": "Thank you for the support <3",
-    "type": "collectable"
+    "type": "badge"
   },
   "bitch_coin": {
     "name": "bitch_coin",
@@ -34,5 +34,14 @@
     "emote_id": 1125357545180110878,
     "quote": "IT'S OVER 9000!!!",
     "type": "collectable"
+  },
+  "admin_badge": {
+    "name": "admin_badge",
+    "display_name": "admin badge",
+    "description": "A badge given to bot administrators, used by the bot to identify developer privileges.",
+    "image_url": "https://i.imgur.com/2krfanS.png",
+    "emote_id": 1125371605485371442,
+    "quote": "admin_bagde",
+    "type": "badge"
   }
 }
