@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from data.Inventory import Inventory
 from data.Item import Item
+from data.ShopItem import ShopItem
 from sb_tools import universal
 
 load_dotenv('.env')
@@ -33,8 +34,16 @@ class ItemCog(commands.Cog):
         # create item object from choice
         item = Item.get_item_by_display_name(item)
         amount = item.get_quantity(ctx.author.id)
-        shop_cost = "N/A"
-        sell_value = "N/A"
+
+        shop_item = ShopItem(item)
+        price = "can't be bought" if shop_item.price <= 0 else f"${shop_item.price}"
+        worth = "can't be sold" if shop_item.worth <= 0 else f"${shop_item.worth}"
+
+        if shop_item.price_special > 0:
+            if price == "can't be bought":
+                price = f"{shop_item.price_special} {special_balance_name}"
+            else:
+                price += f" or {shop_item.price_special} {special_balance_name}"
 
         emote = self.bot.get_emoji(item.emote_id)
 
@@ -55,8 +64,9 @@ class ItemCog(commands.Cog):
             title=f"{emote} {item.display_name.capitalize()}",
             description=description
         )
-        embed.add_field(name="Value", value=f"`/shop` cost: **{shop_cost}**\n`/sell` value: **{sell_value}**",
-                        inline=False)
+
+        embed.add_field(name="Value", value=f"`/shop` price: **{price}**\n`/sell` value: **{worth}**", inline=False)
+
         embed.add_field(name="Description", value=item.description, inline=False)
         embed.set_thumbnail(url=item.image_url)
         embed.set_footer(text=f"type: {item.type}")
