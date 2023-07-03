@@ -41,7 +41,7 @@ class InventoryCog(commands.Cog):
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
 
         for item, quantity in inventory_dict.items():
-            if item.name.endswith("_badge"):
+            if item.type == "badge":
 
                 if not embed.description:
                     embed.description = "**Badges:** "
