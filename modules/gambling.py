@@ -211,6 +211,9 @@ class GamblingCog(commands.Cog):
         if payout <= 0:
             payout = 0
 
+        item_reward = ItemHandler(ctx)
+        await item_reward.rave_coin(is_won=is_won, bet=bet)
+
         stats = SlotsStats(
             user_id=ctx.author.id,
             is_won=is_won,
