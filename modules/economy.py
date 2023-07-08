@@ -1,4 +1,5 @@
 import json
+import locale
 import os
 
 import discord
@@ -34,8 +35,9 @@ class EconomyCog(commands.Cog):
         # Currency handler
         ctx_currency = Currency(ctx.author.id)
 
-        cash_balance = ctx_currency.cash
-        special_balance = ctx_currency.special
+        locale.setlocale(locale.LC_ALL, '')
+        cash_balance = locale.format_string("%d", ctx_currency.cash, grouping=True)
+        special_balance = locale.format_string("%d", ctx_currency.special, grouping=True)
 
         embed = discord.Embed(
             color=discord.Color.embed_background(),
