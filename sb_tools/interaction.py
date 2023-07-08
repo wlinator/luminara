@@ -179,6 +179,25 @@ class DuelChallenge(View):
         else:
             return True
 
+
+class LocationOptions(discord.ui.View):
+    def __init__(self, ctx):
+        super().__init__(timeout=120)
+        self.ctx = ctx
+        self.location = None
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+            await self.message.edit(view=None)
+
+    async def interaction_check(self, interaction) -> bool:
+        if interaction.user != self.ctx.author:
+            await interaction.response.send_message("You can't use this menu, it's someone else's!", ephemeral=True)
+            return False
+        else:
+            return True
+
     @discord.ui.select(
         min_values=1,
         max_values=1,
