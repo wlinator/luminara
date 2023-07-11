@@ -1,5 +1,9 @@
+import logging
+
 from data import Item
 from db import database
+
+racu_logs = logging.getLogger('Racu.Core')
 
 
 class Inventory:
@@ -38,3 +42,25 @@ class Inventory:
         query = "SELECT COALESCE(quantity, 0) FROM inventory WHERE user_id = ? AND item_id = ?"
         result = database.select_query_one(query, (self.user_id, item.id))
         return result
+
+    def get_sell_data(self):
+        query = """
+                SELECT item.display_name
+                FROM inventory
+                JOIN ShopItem ON inventory.item_id = ShopItem.item_id
+                JOIN item ON inventory.item_id = item.id
+                WHERE inventory.user_id = ? AND inventory.quantity > 0 AND ShopItem.worth > 0
+                """
+
+        try:
+            item_names = []
+            results = database.select_query(query, (self.user_id,))
+
+            for item in results:
+                item_names.append(item[0])
+
+            return item_names
+
+        except Exception as e:
+            racu_logs.error(e)
+            return []
