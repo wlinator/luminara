@@ -40,6 +40,15 @@ class Item:
 
         return quantity
 
+    def get_item_worth(self):
+        query = """
+                SELECT worth
+                FROM ShopItem
+                WHERE item_id = ?
+                """
+
+        return database.select_query_one(query, (self.id,))
+
     @staticmethod
     def insert_items():
         with open("config/default_items.json", 'r') as file:

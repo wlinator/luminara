@@ -26,6 +26,14 @@ class Inventory:
 
         database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
 
+    def take_item(self, item: Item.Item, quantity=1):
+        query = """
+                INSERT OR REPLACE INTO inventory (user_id, item_id, quantity)
+                VALUES (?, ?, COALESCE((SELECT quantity FROM inventory WHERE user_id = ? AND item_id = ?) - ?, 0))
+                """
+
+        database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
+
     def get_inventory(self):
         query = "SELECT item_id, quantity FROM inventory WHERE user_id = ? AND quantity > 0"
         results = database.select_query(query, (self.user_id,))

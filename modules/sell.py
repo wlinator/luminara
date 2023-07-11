@@ -6,9 +6,10 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from data.Currency import Currency
 from data.Inventory import Inventory
 from data.Item import Item
-from sb_tools import universal
+from sb_tools import universal, interaction
 
 racu_logs = logging.getLogger('Racu.Core')
 
@@ -94,7 +95,7 @@ class SellCog(commands.Cog):
         items = inv.get_sell_data()
 
         def response_check(message):
-            return message.author == ctx.author
+            return message.author == ctx.author and message.channel == ctx.channel
 
         if not items:
             embed = discord.Embed(
@@ -121,6 +122,11 @@ class SellCog(commands.Cog):
             amount_to_sell = 0
 
             if quantity == 1:
+                embed = discord.Embed(
+                    color=discord.Color.embed_background(),
+                    description=f"You selected **{item.display_name}**, you have this item only once."
+                )
+                await ctx.edit(embed=embed)
                 amount_to_sell = 1
 
             elif quantity > 1:
@@ -160,7 +166,40 @@ class SellCog(commands.Cog):
                 embed.set_footer(text="It shouldn't have showed up in the list, my apologies.")
                 return await ctx.edit(embed=embed)
 
-            print(amount_to_sell)
+            """
+            Item & amount selection finished.
+            Get price, confirmation message & handle balances.
+            """
+            currency = Currency(ctx.author.id)
+            worth = item.get_item_worth()
+            total = worth * amount_to_sell
+            view = interaction.ExchangeConfirmation(ctx)
+            embed = discord.Embed(
+                color=discord.Color.embed_background(),
+                description=f"You're about to sell **{amount_to_sell} {item.display_name}(s)** for **${total}**. "
+                            f"Are you absolutely sure about this?"
+            )
+            message = await ctx.respond(embed=embed, view=view, content=ctx.author.mention)
+            await view.wait()
+
+            if view.clickedConfirm:
+
+                try:
+                    currency.cash += total
+                    currency.push()
+                    inv.take_item(item, amount_to_sell)
+
+                    embed = discord.Embed(
+                        color=discord.Color.green(),
+                        description=f"You have successfully sold "
+                                    f"**{amount_to_sell} {item.display_name}(s)** for **${total}**."
+                    )
+                    await message.edit(embed=embed, view=None)
+
+                except Exception as e:
+                    await ctx.respond("Something went wrong, let Tess know about this.")
+                    racu_logs.error(f"/sell post-confirmation error: {e}")
+                    return
 
         else:
             embed = discord.Embed(
