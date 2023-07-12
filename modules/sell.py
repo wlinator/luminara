@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from data.Currency import Currency
 from data.Inventory import Inventory
 from data.Item import Item
-from sb_tools import universal, interaction
+from sb_tools import interaction, universal
 
 racu_logs = logging.getLogger('Racu.Core')
 
@@ -200,6 +200,9 @@ class SellCog(commands.Cog):
                     await ctx.respond("Something went wrong, let Tess know about this.")
                     racu_logs.error(f"/sell post-confirmation error: {e}")
                     return
+
+            else:
+                return await message.edit(embed=None, content=f"**{ctx.author.name}** canceled the command.")
 
         else:
             embed = discord.Embed(
