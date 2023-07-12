@@ -13,8 +13,10 @@ with open("config/economy.json") as file:
 class Dailies:
     def __init__(self, user_id):
         self.user_id = user_id
-        self.amount = json_data["daily_reward"]
+        self.amount = 0
         self.tz = pytz.timezone('US/Eastern')
+        self.time_now = datetime.now(tz=self.tz)
+        self.reset_time = self.time_now.replace(hour=7, minute=0, second=0, microsecond=0)
 
         data = Dailies.get_data(user_id)
 
@@ -28,12 +30,8 @@ class Dailies:
         self.streak = int(data[1])
 
     def refresh(self):
-        if self.streak_check():
-            self.streak += 1
-        else:
-            self.streak = 1
-
-        self.claimed_at = datetime.now(tz=self.tz).isoformat()
+        if self.amount == 0:
+            self.amount = json_data["daily_reward"]
 
         query = """
         INSERT INTO dailies (user_id, amount, claimed_at, streak)
@@ -51,20 +49,21 @@ class Dailies:
             return True
 
         else:
-            time_now = datetime.now(tz=self.tz)
-            reset_time = time_now.replace(hour=7, minute=0, second=0, microsecond=0)
 
-            if time_now < reset_time:
-                reset_time -= timedelta(days=1)
+            if self.time_now < self.reset_time:
+                self.reset_time -= timedelta(days=1)
 
-            if self.claimed_at < reset_time <= time_now:
+            if self.claimed_at < self.reset_time <= self.time_now:
                 return True
 
         return False
 
     def streak_check(self):
         yesterday = datetime.now(tz=self.tz) - timedelta(days=1)
-        return self.claimed_at.date() == yesterday.date()
+        today = datetime.now(tz=self.tz)
+
+        return self.claimed_at.date() == yesterday.date() or \
+            (self.claimed_at.date() == today.date() and self.claimed_at < self.reset_time)
 
     @staticmethod
     def get_data(user_id):

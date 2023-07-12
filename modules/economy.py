@@ -7,7 +7,6 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from data.Currency import Currency
-from data.Dailies import Dailies
 from sb_tools import economy_embeds, universal, interaction
 
 load_dotenv('.env')
@@ -159,22 +158,6 @@ class EconomyCog(commands.Cog):
             return
 
         await ctx.respond(embed=economy_embeds.award(user, currency, amount))
-
-    @commands.slash_command(
-        name="daily",
-        description="Claim your daily cash!",
-        guild_only=True
-    )
-    @commands.check(universal.channel_check)
-    async def daily(self, ctx):
-        ctx_daily = Dailies(ctx.author.id)
-
-        if ctx_daily.can_be_claimed():
-            ctx_daily.refresh()
-            await ctx.respond(embed=economy_embeds.daily_claim(ctx_daily.amount, ctx_daily.streak))
-
-        else:
-            await ctx.respond(embed=economy_embeds.daily_wait())
 
 
 def setup(sbbot):
