@@ -58,3 +58,18 @@ class Currency:
             return 50, 3
 
         return cash_balance, special_balance
+
+    @staticmethod
+    def load_leaderboard():
+        query = "SELECT user_id, cash_balance FROM currency ORDER BY cash_balance DESC"
+        data = database.select_query(query)
+
+        leaderboard = []
+        rank = 1
+        for row in data:
+            row_user_id = row[0]
+            cash_balance = row[1]
+            leaderboard.append((row_user_id, cash_balance, rank))
+            rank += 1
+
+        return leaderboard
