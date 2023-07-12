@@ -17,6 +17,7 @@ from datetime import datetime
 
 import discord
 import pytz
+from discord.ext import commands
 from dotenv import load_dotenv
 
 import db.tables
@@ -193,8 +194,22 @@ async def on_application_command_completion(ctx) -> None:
 
 @sbbot.event
 async def on_application_command_error(ctx, error) -> None:
-    racu_logs.error(f"on_application_command_error (check debug log): {error}", exc_info=False)
-    racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
+    if isinstance(error, commands.CommandOnCooldown):
+
+        seconds = error.retry_after
+        minutes = seconds // 60
+        seconds %= 60
+        cooldown = "{:02d}:{:02d}".format(int(minutes), int(seconds))
+
+        await ctx.respond(
+            f"⏳ | **{ctx.author.name}** you are on cooldown. "
+            f"You can use this command again in **{cooldown}**.")
+
+        racu_logs.info(f"commands.CommandOnCooldown | {ctx.author.name}")
+
+    else:
+        racu_logs.error(f"on_application_command_error (check debug log): {error}", exc_info=False)
+        racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
 
 
 @sbbot.event

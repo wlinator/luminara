@@ -20,7 +20,8 @@ class LeaderboardCog(commands.Cog):
         description="Are ya winning' son?",
         guild_only=True
     )
-    @commands.check(universal.beta_check)
+    @commands.check(universal.channel_check)
+    @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard(self, ctx):
         xp_lb = Xp.load_leaderboard()
         cash_lb = Currency.load_leaderboard()
@@ -28,7 +29,7 @@ class LeaderboardCog(commands.Cog):
         embed = discord.Embed(
             color=discord.Color.embed_background(),
         )
-        embed.set_author(name="Rave Cave Leaderboard", icon_url=ctx.guild.icon)
+        embed.set_author(name="Rave Cave Leaderboard", icon_url=ctx.guild.icon or "https://i.imgur.com/79XfsbS.png")
         embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
         embed.set_footer(text=f"Do /level to see your rank.")
 
