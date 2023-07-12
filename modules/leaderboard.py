@@ -29,7 +29,10 @@ class LeaderboardCog(commands.Cog):
         embed = discord.Embed(
             color=discord.Color.embed_background(),
         )
-        embed.set_author(name="Rave Cave Leaderboard", icon_url=ctx.guild.icon or "https://i.imgur.com/79XfsbS.png")
+
+        icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+
+        embed.set_author(name="Rave Cave Leaderboard", icon_url=icon)
         embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
         embed.set_footer(text=f"Do /level to see your rank.")
 
