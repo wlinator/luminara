@@ -39,5 +39,8 @@
   "stats_cashflow": "Cashflow",
   "stats_cashflow_value": "Total bets/payouts: `${0}` / `${1}`",
   "stats_roi": "Return of investment",
-  "stats_roi_value": "Profit margin: **{0}**%"
+  "stats_roi_value": "Profit margin: **{0}**%",
+  "daily_no_claim": "**{0}** your daily reward has already been redeemed.",
+  "daily_claim": "\uD83D\uDCB8 | Hey **{0}**, here is your daily reward of **${1}**!",
+  "daily_streak": "\uD83D\uDCC5 | You're on a streak of **{0} days**!"
 }
