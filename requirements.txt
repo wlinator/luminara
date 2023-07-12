@@ -2,3 +2,4 @@ py-cord==2.4.1
 python-dotenv==1.0.0
 setuptools==67.8.0
 pytz==2023.3
+dropbox==11.36.2
