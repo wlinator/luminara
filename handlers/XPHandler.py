@@ -1,11 +1,19 @@
 import logging
 import time
 
+from config import json_loader
 from data.Currency import Currency
 from data.Xp import Xp
-from sb_tools import level_messages
 
 racu_logs = logging.getLogger('Racu.Core')
+strings = json_loader.load_strings()
+
+
+def level_message(level, author):
+    if level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
+        return strings["level_up_reward"].format(author.name, level)
+    else:
+        return strings["level_up"].format(author.name, level)
 
 
 class XPHandler:
@@ -33,7 +41,7 @@ class XPHandler:
             xp.level += 1
             xp.xp = 0
 
-            await message.channel.send(content=f"<@{user_id}> {level_messages.load_level_message(xp.level)}")
+            await message.reply(content=level_message(xp.level, message.author))
 
             if xp.level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
                 await self.assign_level_role(message.author, xp.level)
