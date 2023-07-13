@@ -13,6 +13,7 @@ import logging
 import os
 import platform
 import re
+import time
 from datetime import datetime
 
 import discord
@@ -30,8 +31,22 @@ from handlers.XPHandler import XPHandler
 sbbot = discord.Bot(
     owner_id=os.getenv('OWNER_ID'),
     intents=discord.Intents.all(),
-    activity=discord.Game(f"v{sb_tools.resources.__version__}"),
-    status=discord.Status.do_not_disturb
+    activity=discord.Activity(
+        name="Kaiju's Rave Cave",
+        type=discord.ActivityType.listening,
+        state=f"v{sb_tools.resources.__version__}",
+        timestamps={
+            "start": time.time()
+        },
+        details="/daily | /level | /leaderboard",
+        assets={
+            "large_image": "ravecoin",
+            "large_text": "Coins art by geardiabolus",
+            "small_image": "admin_badge",
+            "small_text": f"Made by {sb_tools.resources.__author__}",
+        }
+    ),
+    status=discord.Status.online
 )
 
 
