@@ -12,7 +12,7 @@ def get_latest_git_tag():
         return "BETA"
 
 
-__title__ = "RCU"
+__title__ = "Racu"
 __version__ = get_latest_git_tag()
 __author__ = "Esther J. J."
 __author_email__ = "dokimakimaki@gmail.com"
