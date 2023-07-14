@@ -1,4 +1,3 @@
-import asyncio
 import os
 import random
 
@@ -8,7 +7,6 @@ from dotenv import load_dotenv
 
 from data.BlackJackStats import BlackJackStats
 from data.Currency import Currency
-from data.SlotsStats import SlotsStats
 from handlers.ItemHandler import ItemHandler
 from main import economy_config
 from sb_tools import economy_embeds, economy_functions, universal, interaction, embeds
@@ -53,6 +51,7 @@ class GamblingCog(commands.Cog):
             player_hand = []
             dealer_hand = []
             deck = economy_functions.blackjack_get_new_deck()
+            multiplier = float(economy_config["blackjack"]["reward_multiplier"])
 
             # deal initial cards (player draws two & dealer one)
             player_hand.append(economy_functions.blackjack_deal_card(deck))
@@ -133,7 +132,7 @@ class GamblingCog(commands.Cog):
 
             else:
                 # bet multiplier
-                payout = bet * float(economy_config["blackjack"]["reward_multiplier"])
+                payout = bet * multiplier if not status == "player_blackjack" else bet * 2
                 ctx_currency.add_cash(payout)
                 ctx_currency.push()
 
@@ -159,72 +158,6 @@ class GamblingCog(commands.Cog):
         finally:
             # remove player from active games list
             del active_blackjack_games[ctx.author.id]
-
-    @commands.slash_command(
-        name="slots",
-        descriptions="Spin the slots for a chance to win the jackpot!",
-        guild_only=True
-    )
-    @commands.check(universal.channel_check)
-    async def slots(self, ctx, *, bet: discord.Option(int)):
-
-        # Currency handler
-        ctx_currency = Currency(ctx.author.id)
-
-        # check if the user has enough cash
-        player_cash_balance = ctx_currency.cash
-        if bet > player_cash_balance or bet <= 0:
-            await ctx.respond(embed=economy_embeds.not_enough_cash())
-            return
-
-        # calculate the results before the command is shown
-        results = [random.randint(0, 6) for i in range(3)]
-        calculated_results = economy_functions.calculate_slots_results(bet, results)
-
-        type = calculated_results[0]
-        payout = calculated_results[1]
-        multiplier = calculated_results[2]
-        is_won = True
-
-        if type == "lost":
-            is_won = False
-
-        # start with default "spinning" embed
-        await ctx.respond(embed=economy_embeds.slots_spinning(ctx, 3, bet, results, self.bot))
-        await asyncio.sleep(1)
-        await ctx.edit(embed=economy_embeds.slots_spinning(ctx, 2, bet, results, self.bot),
-                       allowed_mentions=discord.AllowedMentions.none())
-        await asyncio.sleep(1)
-        await ctx.edit(embed=economy_embeds.slots_spinning(ctx, 1, bet, results, self.bot),
-                       allowed_mentions=discord.AllowedMentions.none())
-        await asyncio.sleep(1)
-        await ctx.edit(embed=economy_embeds.slots_finished(ctx, type, multiplier, bet, results, self.bot),
-                       allowed_mentions=discord.AllowedMentions.none())
-
-        # user payout
-        if payout >= 0:
-            ctx_currency.add_cash(payout)
-        else:
-            ctx_currency.take_cash(payout)
-
-        # push stats (low priority)
-        if payout <= 0:
-            payout = 0
-
-        item_reward = ItemHandler(ctx)
-        await item_reward.rave_coin(is_won=is_won, bet=bet)
-
-        stats = SlotsStats(
-            user_id=ctx.author.id,
-            is_won=is_won,
-            bet=bet,
-            payout=payout,
-            spin_type=type,
-            icons=results
-        )
-
-        ctx_currency.push()
-        stats.push()
 
     @commands.slash_command(
         name="duel",

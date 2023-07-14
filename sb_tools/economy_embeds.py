@@ -164,7 +164,7 @@ def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer
         title_text = "YOU LOST!"
         thumbnail_url = "https://i.imgur.com/rc68c43.png"
         color = discord.Color.red()
-    
+
     elif status == "player_won_21":
         title_text = "YOU WON!"
         thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
@@ -196,136 +196,6 @@ def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer
 
     if thumbnail_url:
         embed.set_thumbnail(url=thumbnail_url)
-
-    return embed
-
-
-def slots_spinning(ctx, spinning_icons_amount, bet, results, sbbot):
-    first_slots_emote = sbbot.get_emoji(json_data["slots"]["emotes"][f"slots_{results[0]}_id"])
-    second_slots_emote = sbbot.get_emoji(json_data["slots"]["emotes"][f"slots_{results[1]}_id"])
-    slots_animated_emote = sbbot.get_emoji(json_data["slots"]["emotes"][f"slots_animated_id"])
-
-    decoration = json_data["slots"]["emotes"]
-    S_Wide = sbbot.get_emoji(decoration["S_Wide"])
-    L_Wide = sbbot.get_emoji(decoration["L_Wide"])
-    O_Wide = sbbot.get_emoji(decoration["O_Wide"])
-    T_Wide = sbbot.get_emoji(decoration["T_Wide"])
-
-    CBorderBLeft = sbbot.get_emoji(decoration["CBorderBLeft"])
-    CBorderBRight = sbbot.get_emoji(decoration["CBorderBRight"])
-    CBorderTLeft = sbbot.get_emoji(decoration["CBorderTLeft"])
-    CBorderTRight = sbbot.get_emoji(decoration["CBorderTRight"])
-    HBorderB = sbbot.get_emoji(decoration["HBorderB"])
-    HBorderT = sbbot.get_emoji(decoration["HBorderT"])
-    VBorder = sbbot.get_emoji(decoration["VBorder"])
-
-    Blank = sbbot.get_emoji(decoration["Blank"])
-
-    current_time = datetime.datetime.now(est).strftime("%I:%M %p")
-    one = slots_animated_emote
-    two = slots_animated_emote
-    three = slots_animated_emote
-
-    if spinning_icons_amount == 3:
-        pass
-    elif spinning_icons_amount == 2:
-        one = first_slots_emote
-    elif spinning_icons_amount == 1:
-        one = first_slots_emote
-        two = second_slots_emote
-
-    description = f"🎰{S_Wide}{L_Wide}{O_Wide}{T_Wide}{S_Wide}🎰\n" \
-                  f"{CBorderTLeft}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{CBorderTRight}\n" \
-                  f"{VBorder}{one}{VBorder}{two}{VBorder}{three}{VBorder}\n" \
-                  f"{CBorderBLeft}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{CBorderBRight}\n" \
-                  f"{Blank}{Blank}❓❓❓{Blank}{Blank}{Blank}"
-
-    embed = discord.Embed(
-        description=description
-    )
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Bet {cash_balance_name}{bet} • jackpot = x5 • {current_time}",
-                     icon_url="https://i.imgur.com/wFsgSnr.png")
-
-    return embed
-
-
-def slots_finished(ctx, payout_type, multiplier, bet, results, sbbot):
-    first_slots_emote = sbbot.get_emoji(json_data["slots"]["emotes"][f"slots_{results[0]}_id"])
-    second_slots_emote = sbbot.get_emoji(json_data["slots"]["emotes"][f"slots_{results[1]}_id"])
-    third_slots_emote = sbbot.get_emoji(json_data["slots"]["emotes"][f"slots_{results[2]}_id"])
-    current_time = datetime.datetime.now(est).strftime("%I:%M %p")
-
-    decoration = json_data["slots"]["emotes"]
-    S_Wide = sbbot.get_emoji(decoration["S_Wide"])
-    L_Wide = sbbot.get_emoji(decoration["L_Wide"])
-    O_Wide = sbbot.get_emoji(decoration["O_Wide"])
-    T_Wide = sbbot.get_emoji(decoration["T_Wide"])
-
-    CBorderBLeft = sbbot.get_emoji(decoration["CBorderBLeft"])
-    CBorderBRight = sbbot.get_emoji(decoration["CBorderBRight"])
-    CBorderTLeft = sbbot.get_emoji(decoration["CBorderTLeft"])
-    CBorderTRight = sbbot.get_emoji(decoration["CBorderTRight"])
-    HBorderB = sbbot.get_emoji(decoration["HBorderB"])
-    HBorderT = sbbot.get_emoji(decoration["HBorderT"])
-    VBorder = sbbot.get_emoji(decoration["VBorder"])
-
-    WSmall = sbbot.get_emoji(decoration["WSmall"])
-    ISmall = sbbot.get_emoji(decoration["ISmall"])
-    NSmall = sbbot.get_emoji(decoration["NSmall"])
-
-    LCentered = sbbot.get_emoji(decoration["LCentered"])
-    OCentered = sbbot.get_emoji(decoration["OCentered"])
-    SCentered = sbbot.get_emoji(decoration["SCentered"])
-    ECentered = sbbot.get_emoji(decoration["ECentered"])
-
-    Blank = sbbot.get_emoji(decoration["Blank"])
-    lost_emoji = sbbot.get_emoji(decoration["lost"])
-
-    field_name = "You lost."
-    field_value = f"You lost **{cash_balance_name}{bet}**."
-    color = discord.Color.red()
-    is_lost = True
-
-    if payout_type == "pair":
-        field_name = "Pair"
-        field_value = f"You won **{cash_balance_name}{bet * multiplier}**."
-        is_lost = False
-        discord.Color.dark_green()
-    elif payout_type == "three_of_a_kind":
-        field_name = "3 of a kind"
-        field_value = f"You won **{cash_balance_name}{bet * multiplier}**."
-        is_lost = False
-        discord.Color.dark_green()
-    elif payout_type == "three_diamonds":
-        field_name = "Triple Diamonds!"
-        field_value = f"You won **{cash_balance_name}{bet * multiplier}**."
-        is_lost = False
-        discord.Color.green()
-    elif payout_type == "jackpot":
-        field_name = "JACKPOT!!"
-        field_value = f"You won **{cash_balance_name}{bet * multiplier}**."
-        is_lost = False
-        discord.Color.green()
-
-    description = f"🎰{S_Wide}{L_Wide}{O_Wide}{T_Wide}{S_Wide}🎰\n" \
-                  f"{CBorderTLeft}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{CBorderTRight}\n" \
-                  f"{VBorder}{first_slots_emote}{VBorder}{second_slots_emote}{VBorder}{third_slots_emote}{VBorder}\n" \
-                  f"{CBorderBLeft}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{CBorderBRight}"
-
-    if is_lost:
-        description += f"\n{Blank}{LCentered}{OCentered}{SCentered}{ECentered}{lost_emoji}{Blank}"
-    else:
-        description += f"\n{Blank}🎉{WSmall}{ISmall}{NSmall}🎉{Blank}"
-
-    embed = discord.Embed(
-        color=color,
-        description=description
-    )
-    embed.add_field(name=field_name, value=field_value)
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Bet {cash_balance_name}{bet} • jackpot = x5 • {current_time}",
-                     icon_url="https://i.imgur.com/wFsgSnr.png")
 
     return embed
 
