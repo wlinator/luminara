@@ -1,4 +1,5 @@
 import logging
+import random
 import time
 
 from config import json_loader
@@ -7,6 +8,7 @@ from data.Xp import Xp
 
 racu_logs = logging.getLogger('Racu.Core')
 strings = json_loader.load_strings()
+level_messages = json_loader.load_levels()
 
 
 def level_message(level, author):
@@ -14,6 +16,27 @@ def level_message(level, author):
         return strings["level_up_reward"].format(author.name, level)
     else:
         return strings["level_up"].format(author.name, level)
+
+
+def level_messages_v2(level, author):
+    if level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
+        return strings["level_up_reward"].format(author.name, level)
+
+    level_range = None
+    for key in level_messages.keys():
+        start, end = map(int, key.split('-'))
+        if start <= level <= end:
+            level_range = key
+            break
+
+    if level_range is None:
+        # not in range of JSON
+        return strings["level_up"].format(author.name, level)
+
+    message_list = level_messages[level_range]
+    random_message = random.choice(message_list)
+    start_string = strings["level_up_prefix"].format(author.name)
+    return start_string + random_message.format(level)
 
 
 class XPHandler:
@@ -41,10 +64,13 @@ class XPHandler:
             xp.level += 1
             xp.xp = 0
 
-            await message.reply(content=level_message(xp.level, message.author))
+            await message.reply(content=level_messages(xp.level, message.author))
 
             if xp.level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
-                await self.assign_level_role(message.author, xp.level)
+                try:
+                    await self.assign_level_role(message.author, xp.level)
+                except Exception as error:
+                    racu_logs.error(f"Assign level role FAILED; {error}")
 
             """
             AWARD CURRENY_SPECIAL ON LEVEL-UP

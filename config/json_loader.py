@@ -12,6 +12,14 @@ def load_strings(path="config/strings.en-US.json"):
     return data
 
 
+def load_levels(path="config/levels.en-US.json"):
+    with open(path, 'r') as file:
+        data = json.load(file)
+
+    racu_logs.debug(f"{path} was loaded.")
+    return data
+
+
 def load_economy_config(path="config/economy.json"):
     with open(path, 'r') as file:
         data = json.load(file)
