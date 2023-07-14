@@ -21,3 +21,32 @@ class SlotsStats:
         values = (self.user_id, self.is_won, self.bet, self.payout, self.spin_type, self.icons)
 
         database.execute_query(query, values)
+
+    @staticmethod
+    def get_user_stats(user_id):
+        query = """
+        SELECT
+            COUNT(*) AS amount_of_games,
+            SUM(bet) AS total_bet,
+            SUM(payout) AS total_payout,
+            SUM(CASE WHEN spin_type = 'pair' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_pair,
+            SUM(CASE WHEN spin_type = 'three_of_a_kind' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_three_of_a_kind,
+            SUM(CASE WHEN spin_type = 'three_diamonds' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_three_diamonds,
+            SUM(CASE WHEN spin_type = 'jackpot' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_jackpot
+        FROM stats_slots
+        WHERE user_id = ?
+        """
+
+        (amount_of_games, total_bet,
+         total_payout, games_won_pair, games_won_three_of_a_kind,
+         games_won_three_diamonds, games_won_jackpot) = database.select_query(query, (user_id,))[0]
+
+        return {
+            "amount_of_games": amount_of_games,
+            "total_bet": total_bet,
+            "total_payout": total_payout,
+            "games_won_pair": games_won_pair,
+            "games_won_three_of_a_kind": games_won_three_of_a_kind,
+            "games_won_three_diamonds": games_won_three_diamonds,
+            "games_won_jackpot": games_won_jackpot
+        }

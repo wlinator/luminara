@@ -1,4 +1,5 @@
 import json
+import locale
 import os
 
 import discord
@@ -6,7 +7,8 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from data.BlackJackStats import BlackJackStats
-from main import strings
+from data.SlotsStats import SlotsStats
+from main import strings, economy_config
 from sb_tools import universal
 
 load_dotenv('.env')
@@ -23,60 +25,54 @@ class StatsCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
-    stats = discord.SlashCommandGroup("stats", "Racu stats.")
-
-    @stats.command(
-        name="all",
-        description="Show the stats for all Racu users.",
+    @commands.slash_command(
+        name="stats",
+        description="Display your stats (BETA)",
         guild_only=True
     )
-    # @commands.check(universal.channel_check)
-    @commands.check(universal.beta_check)
-    async def all(self, ctx, type: discord.Option(choices=["BlackJack"])):
-        if type == "BlackJack":
-            # collect data
-            bj_games_amount = BlackJackStats.count_games()
-            (bj_winning_games_amount, bj_losing_games_amount) = BlackJackStats.get_winning_and_losing_amount()
-            (bj_total_investment, bj_total_payout) = BlackJackStats.get_investment_and_payout()
+    @commands.check(universal.channel_check)
+    async def stats(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
+        output = ""
 
-            # calculate data
-            roi = ((bj_total_payout - bj_total_investment) / bj_total_investment) * 100
-            roi = round(roi, 3)
+        if game == "BlackJack":
+            stats = BlackJackStats.get_user_stats(ctx.author.id)
 
-            # output
-            embed = discord.Embed(
-                title=strings["stats_all_title"].format("BlackJack")
+            # amount formatting
+            locale.setlocale(locale.LC_ALL, '')
+            total_bet = locale.format_string("%d", stats["total_bet"], grouping=True)
+            total_payout = locale.format_string("%d", stats["total_payout"], grouping=True)
+
+            # output = f"{ctx.author.name}'s racu stats\n\n"
+            output = strings["stats_blackjack"].format(
+                stats["amount_of_games"],
+                total_bet,
+                stats["winning_amount"],
+                total_payout
             )
-            embed.add_field(inline=False,
-                            name=strings["stats_games"].format(bj_games_amount),
-                            value=strings["stats_games_value"].format(
-                                bj_winning_games_amount,
-                                bj_losing_games_amount
-                            ))
-            embed.add_field(inline=False,
-                            name=strings["stats_cashflow"],
-                            value=strings["stats_cashflow_value"].format(
-                                round(bj_total_investment),
-                                round(bj_total_payout)
-                            ))
-            embed.add_field(inline=False,
-                            name=strings["stats_roi"],
-                            value=strings["stats_roi_value"].format(
-                                roi
-                            ))
-            embed.set_footer(text=strings["stats_all_footer"])
 
-            await ctx.respond(embed=embed)
+        elif game == "Slots":
+            stats = SlotsStats.get_user_stats(ctx.author.id)
 
-    @stats.command(
-        name="me",
-        description="Show your personal Racu stats.",
-        guild_only=True
-    )
-    # @commands.check(universal.channel_check)
-    @commands.check(universal.beta_check)
-    async def me(self, ctx):
-        pass
+            # amount formatting
+            locale.setlocale(locale.LC_ALL, '')
+            total_bet = locale.format_string("%d", stats["total_bet"], grouping=True)
+            total_payout = locale.format_string("%d", stats["total_payout"], grouping=True)
+
+            output = strings["stats_slots"].format(stats["amount_of_games"], total_bet, total_payout)
+            output += "\n\n"
+
+            pair_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_0_id"])
+            three_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_4_id"])
+            diamonds_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_5_id"])
+            seven_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_6_id"])
+
+            output += f"{pair_emote} | **{stats['games_won_pair']}** pairs.\n"
+            output += f"{three_emote} | **{stats['games_won_three_of_a_kind']}** three-of-a-kinds.\n"
+            output += f"{diamonds_emote} | **{stats['games_won_three_diamonds']}** triple diamonds.\n"
+            output += f"{seven_emote} | **{stats['games_won_jackpot']}** jackpots."
+
+        output += "\n\n *This command is still in beta, stats may be slightly inaccurate.*"
+        await ctx.respond(content=output)
 
 
 def setup(sbbot):
