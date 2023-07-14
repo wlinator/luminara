@@ -7,7 +7,7 @@
       "hit": "<:hit:1119262723285467156>",
       "stand": "<:stand:1118923298298929154>"
     },
-    "reward_multiplier": 1.5,
+    "reward_multiplier": 1.2,
     "deck_suits": [
       "♠",
       "♡",
@@ -62,10 +62,10 @@
       "lost": 1119288454212243607
     },
     "reward_multipliers": {
-      "pair": 1,
-      "three_of_a_kind": 3,
-      "three_diamonds": 4,
-      "jackpot": 5
+      "pair": 1.5,
+      "three_of_a_kind": 4,
+      "three_diamonds": 6,
+      "jackpot": 15
     }
   },
   "duel": {

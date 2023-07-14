@@ -1,5 +1,4 @@
 import random
-from collections import Counter
 
 from main import economy_config
 
@@ -49,36 +48,3 @@ def blackjack_calculate_hand_value(hand):
         value -= 10 * aces_count
 
     return value
-
-
-def calculate_slots_results(bet, results):
-    type = None
-    multiplier = None
-
-    # count occurrences of each item in the list
-    counts = Counter(results)
-
-    # no icons match
-    if len(counts) == 3:
-        type = "lost"
-        multiplier = -1
-
-    # pairs
-    elif len(counts) == 2:
-        type = "pair"
-        multiplier = 1
-
-    # 3 of a kind
-    elif len(counts) == 1:
-        if results[0] == 5:
-            type = "three_diamonds"
-            multiplier = 4
-        elif results[0] == 6:
-            type = "jackpot"
-            multiplier = 5
-        else:
-            type = "three_of_a_kind"
-            multiplier = 3
-
-    payout = bet * multiplier
-    return type, payout, multiplier
