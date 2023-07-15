@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import subprocess
 
 import discord
@@ -31,6 +32,18 @@ class BasicCog(commands.Cog):
     )
     @commands.check(universal.owner_check)
     async def restart(self, ctx):
+
+        try:
+            logs_dir = "logs"
+            for filename in os.listdir(logs_dir):
+                file_path = os.path.join(logs_dir, filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, "w"):
+                        pass
+
+        except Exception as err:
+            racu_logs.error("Failed to delete logs: ", err)
+
         await ctx.respond(content="Restarting..", ephemeral=True)
 
         try:
