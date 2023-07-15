@@ -4,7 +4,7 @@
 # cd .
 
 # Stash any local changes
-git stash
+# git stash
 
 # Fetch the latest changes from the remote repository
 git fetch
