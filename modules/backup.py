@@ -2,15 +2,23 @@ import logging
 import os
 from datetime import datetime
 
-import dropbox.files
+import dropbox
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
 racu_logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 
-dropbox_token = os.getenv("DROPBOX_TOKEN")
+oauth2_refresh_token = os.getenv("DBX_OAUTH2_REFRESH_TOKEN")
+app_key = os.getenv("DBX_APP_KEY")
+app_secret = os.getenv("DBX_APP_SECRET")
 instance = os.getenv("INSTANCE")
+
+dbx = dropbox.Dropbox(
+    app_key=app_key,
+    app_secret=app_secret,
+    oauth2_refresh_token=oauth2_refresh_token
+)
 
 
 async def create_db_backup(dbx, path="db/rcu.db"):
@@ -42,8 +50,6 @@ class BackupCog(commands.Cog):
 
         if instance.lower() == "main":
             try:
-                dbx = dropbox.Dropbox(dropbox_token)
-
                 await create_db_backup(dbx)
                 await backup_cleanup(dbx)
 
