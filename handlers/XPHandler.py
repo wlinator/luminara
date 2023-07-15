@@ -19,6 +19,14 @@ def level_message(level, author):
 
 
 def level_messages_v2(level, author):
+    """
+    v2 of the level messages, randomized output from JSON.
+    Checks if the level is within a bracket -> generic fallback
+    :param level:
+    :param author:
+    :return:
+    """
+
     if level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
         return strings["level_up_reward"].format(author.name, level)
 
@@ -64,7 +72,14 @@ class XPHandler:
             xp.level += 1
             xp.xp = 0
 
-            await message.reply(content=level_messages(xp.level, message.author))
+            try:
+                lvl_message = level_messages_v2(xp.level, message.author)
+            except Exception as err:
+                # fallback to v1 (generic leveling)
+                lvl_message = level_messages(xp.level, message.author)
+                racu_logs.error("level_messages v1 fallback was triggered: ", err)
+
+            await message.reply(content=lvl_message)
 
             if xp.level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
                 try:
