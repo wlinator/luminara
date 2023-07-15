@@ -49,7 +49,7 @@ class BasicCog(commands.Cog):
         try:
             racu_logs.info(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
         except subprocess.CalledProcessError as e:
-            racu_logs.error(f"Error executing the script: {e.output.decode()}")
+            racu_logs.debug(e.output.decode())
 
     @commands.slash_command(
         name="intro",
