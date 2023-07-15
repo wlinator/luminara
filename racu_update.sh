@@ -7,7 +7,7 @@
 # git stash
 
 # Fetch the latest changes from the remote repository
-git fetch
+git fetch 1>/dev/null 2>&1
 
 # Get the current branch
 current_branch=$(git symbolic-ref --short HEAD)
@@ -15,7 +15,7 @@ current_branch=$(git symbolic-ref --short HEAD)
 # Check if the branch is behind the remote branch
 if [ -n "$(git rev-list --left-only --count origin/$current_branch...HEAD)" ]; then
     # Pull the latest changes
-    git pull
+    git pull 1>/dev/null 2>&1
 
     # Check if there are any merge conflicts
     if [ -n "$(git ls-files --unmerged)" ]; then
