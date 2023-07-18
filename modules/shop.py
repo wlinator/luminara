@@ -1,11 +1,11 @@
 import json
-import locale
 import os
 
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from data.Currency import Currency
 from data.ShopItem import ShopItem
 from sb_tools import universal
 
@@ -39,16 +39,13 @@ class ShopCog(commands.Cog):
 
         for item in shop:
             emoji = self.bot.get_emoji(item.item.emote_id)
-            locale.setlocale(locale.LC_ALL, '')
 
             if item.price != 0 and item.price_special != 0:
-                item.price = locale.format_string("%d", item.price, grouping=True)
-                price = f"${item.price} *or* {item.price_special} {special_balance_name}"
+                price = f"${Currency.format(item.price)} *or* {Currency.format(item.price_special)} {special_balance_name}"
             elif item.price == 0:
                 price = f"{item.price_special} {special_balance_name}"
             else:
-                item.price = locale.format_string("%d", item.price, grouping=True)
-                price = f"${item.price}"
+                price = f"${Currency.format(item.price)}"
 
             embed.add_field(name=f"{emoji} {item.item.display_name} - {price}",
                             value=f"\n*{item.description}*",
