@@ -1,5 +1,4 @@
 import json
-import locale
 import os
 
 import discord
@@ -7,6 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from data.BlackJackStats import BlackJackStats
+from data.Currency import Currency
 from data.SlotsStats import SlotsStats
 from main import strings, economy_config
 from sb_tools import universal
@@ -38,9 +38,8 @@ class StatsCog(commands.Cog):
             stats = BlackJackStats.get_user_stats(ctx.author.id)
 
             # amount formatting
-            locale.setlocale(locale.LC_ALL, '')
-            total_bet = locale.format_string("%d", stats["total_bet"], grouping=True)
-            total_payout = locale.format_string("%d", stats["total_payout"], grouping=True)
+            total_bet = Currency.format_human(stats["total_bet"])
+            total_payout = Currency.format_human(stats["total_payout"])
 
             # output = f"{ctx.author.name}'s racu stats\n\n"
             output = strings["stats_blackjack"].format(
@@ -54,9 +53,8 @@ class StatsCog(commands.Cog):
             stats = SlotsStats.get_user_stats(ctx.author.id)
 
             # amount formatting
-            locale.setlocale(locale.LC_ALL, '')
-            total_bet = locale.format_string("%d", stats["total_bet"], grouping=True)
-            total_payout = locale.format_string("%d", stats["total_payout"], grouping=True)
+            total_bet = Currency.format_human(stats["total_bet"])
+            total_payout = Currency.format_human(stats["total_payout"])
 
             output = strings["stats_slots"].format(stats["amount_of_games"], total_bet, total_payout)
             output += "\n\n"
