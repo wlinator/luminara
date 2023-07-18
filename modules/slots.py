@@ -103,7 +103,7 @@ def slots_spinning(ctx, spinning_icons_amount, bet, results, sbbot):
     return embed
 
 
-def slots_finished(ctx, payout_type, multiplier, bet, results, sbbot):
+def slots_finished(ctx, payout_type, multiplier, bet, payout, results, sbbot):
     first_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[0]}_id"])
     second_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[1]}_id"])
     third_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[2]}_id"])
@@ -142,22 +142,22 @@ def slots_finished(ctx, payout_type, multiplier, bet, results, sbbot):
 
     if payout_type == "pair":
         field_name = "Pair"
-        field_value = f"You won **${bet * multiplier}**."
+        field_value = f"You won **${payout}**."
         is_lost = False
         discord.Color.dark_green()
     elif payout_type == "three_of_a_kind":
         field_name = "3 of a kind"
-        field_value = f"You won **${bet * multiplier}**."
+        field_value = f"You won **${payout}**."
         is_lost = False
         discord.Color.dark_green()
     elif payout_type == "three_diamonds":
         field_name = "Triple Diamonds!"
-        field_value = f"You won **${bet * multiplier}**."
+        field_value = f"You won **${payout}**."
         is_lost = False
         discord.Color.green()
     elif payout_type == "jackpot":
         field_name = "JACKPOT!!"
-        field_value = f"You won **${bet * multiplier}**."
+        field_value = f"You won **${payout}**."
         is_lost = False
         discord.Color.green()
 
@@ -215,15 +215,16 @@ class SlotsCog(commands.Cog):
             is_won = False
 
         # start with default "spinning" embed
-        await ctx.respond(embed=slots_spinning(ctx, 3, bet, results, self.bot))
+        await ctx.respond(embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, self.bot))
         await asyncio.sleep(1)
 
         for i in range(2, 0, -1):
-            await ctx.edit(embed=slots_spinning(ctx, i, bet, results, self.bot))
+            await ctx.edit(embed=slots_spinning(ctx, i, Currency.format_human(bet), results, self.bot))
             await asyncio.sleep(1)
 
         # output final result
-        await ctx.edit(embed=slots_finished(ctx, type, multiplier, bet, results, self.bot))
+        await ctx.edit(embed=slots_finished(ctx, type, multiplier, Currency.format_human(bet),
+                                            Currency.format_human(payout), results, self.bot))
 
         # user payout
         if payout > 0:
