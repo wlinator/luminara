@@ -1,4 +1,3 @@
-import locale
 import logging
 
 import discord
@@ -66,10 +65,7 @@ class LeaderboardCog(commands.Cog):
                 name = "Unknown User"
                 racu_logs.debug(f"Currency Leaderboard: Unknown User, {error}")
 
-            locale.setlocale(locale.LC_ALL, '')
-            cash_balance = locale.format_string("%d", cash_balance, grouping=True)
-
-            value += f"${cash_balance} - {name}\n"
+            value += f"${Currency.format_human(cash_balance)} - {name}\n"
 
         embed.add_field(
             name=f"Top Five Wealth",

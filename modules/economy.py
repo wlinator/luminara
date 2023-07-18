@@ -1,5 +1,4 @@
 import json
-import locale
 import os
 
 import discord
@@ -34,9 +33,8 @@ class EconomyCog(commands.Cog):
         # Currency handler
         ctx_currency = Currency(ctx.author.id)
 
-        locale.setlocale(locale.LC_ALL, '')
-        cash_balance = locale.format_string("%d", ctx_currency.cash, grouping=True)
-        special_balance = locale.format_string("%d", ctx_currency.special, grouping=True)
+        cash_balance = Currency.format(ctx_currency.cash)
+        special_balance = Currency.format(ctx_currency.special)
 
         embed = discord.Embed(
             color=discord.Color.embed_background(),
@@ -95,7 +93,7 @@ class EconomyCog(commands.Cog):
             print(e)
             return
 
-        await ctx.respond(embed=economy_embeds.give(ctx, user, currency, amount))
+        await ctx.respond(embed=economy_embeds.give(ctx, user, currency, Currency.format(amount)))
 
     @commands.slash_command(
         name="exchange",
@@ -114,7 +112,7 @@ class EconomyCog(commands.Cog):
             return await ctx.respond(embed=economy_embeds.not_enough_special_balance())
 
         view = interaction.ExchangeConfirmation(ctx)
-        await ctx.respond(embed=economy_embeds.exchange_confirmation(amount), view=view)
+        await ctx.respond(embed=economy_embeds.exchange_confirmation(Currency.format(amount)), view=view)
         await view.wait()
 
         if view.clickedConfirm:
@@ -124,7 +122,7 @@ class EconomyCog(commands.Cog):
             ctx_currency.take_special(amount)
             ctx_currency.push()
 
-            return await ctx.edit(embed=economy_embeds.exchange_done(amount))
+            return await ctx.edit(embed=economy_embeds.exchange_done(Currency.format(amount)))
 
         await ctx.edit(embed=economy_embeds.exchange_stopped())
 
@@ -157,7 +155,7 @@ class EconomyCog(commands.Cog):
             print(e)
             return
 
-        await ctx.respond(embed=economy_embeds.award(user, currency, amount))
+        await ctx.respond(embed=economy_embeds.award(user, currency, Currency.format(amount)))
 
 
 def setup(sbbot):

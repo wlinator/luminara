@@ -65,7 +65,7 @@ class GamblingCog(commands.Cog):
             status = "game_start" if player_hand_value != 21 else "player_blackjack"
             view = interaction.BlackJackButtons(ctx) if status == "game_start" else None
 
-            await ctx.respond(embed=economy_embeds.blackjack_show(ctx, bet, player_hand,
+            await ctx.respond(embed=economy_embeds.blackjack_show(ctx, Currency.format_human(bet), player_hand,
                                                                   dealer_hand, player_hand_value,
                                                                   dealer_hand_value, status=status), view=view,
                               content=ctx.author.mention)
@@ -195,7 +195,7 @@ class GamblingCog(commands.Cog):
         view = interaction.DuelChallenge(opponent)
 
         await ctx.respond(
-            content=f"**{challenger.name}** challenges {opponent.mention} to a duel ({cash_balance_name}{bet}{all_in})\n"
+            content=f"**{challenger.name}** challenges {opponent.mention} to a duel ({cash_balance_name}{Currency.format(bet)}{all_in})\n"
                     f"Use the buttons to accept/deny (challenge expires after 60s)", view=view)
         await view.wait()
 
@@ -206,7 +206,7 @@ class GamblingCog(commands.Cog):
                                                                                              f"**{loser.name}**")
 
             await ctx.respond(content=f"{combat_message}\n\n"
-                                      f"{winner.mention} wins **{cash_balance_name}{bet}**\n"
+                                      f"{winner.mention} wins **{cash_balance_name}{Currency.format(bet)}**\n"
                                       f"{loser.mention} loses this bet.")
 
             # payouts

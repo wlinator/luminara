@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from data.Currency import Currency
 from data.Inventory import Inventory
 from data.Item import Item
 from data.ShopItem import ShopItem
@@ -36,8 +37,8 @@ class ItemCog(commands.Cog):
         amount = item.get_quantity(ctx.author.id)
 
         shop_item = ShopItem(item)
-        price = "can't be bought" if shop_item.price <= 0 else f"${shop_item.price}"
-        worth = "can't be sold" if shop_item.worth <= 0 else f"${shop_item.worth}"
+        price = "can't be bought" if shop_item.price <= 0 else f"${Currency.format(shop_item.price)}"
+        worth = "can't be sold" if shop_item.worth <= 0 else f"${Currency.format(shop_item.worth)}"
 
         if shop_item.price_special > 0:
             if price == "can't be bought":
