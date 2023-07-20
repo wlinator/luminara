@@ -93,24 +93,6 @@ def out_of_time():
     return embed
 
 
-def exchange_confirmation(amount):
-    embed = discord.Embed(
-        description=f"You're about to sell {amount} {special_balance_name} for {cash_balance_name}{amount * 1000}. "
-                    f"Are you absolutely sure about this? Keep in mind that repurchasing {special_balance_name} "
-                    f"later is considerably more expensive."
-    )
-    return embed
-
-
-def exchange_done(amount):
-    embed = discord.Embed(
-        color=discord.Color.green(),
-        description=f"You successfully exchanged **{amount} {special_balance_name}** "
-                    f"for **{cash_balance_name}{amount * 1000}**."
-    )
-    return embed
-
-
 def exchange_stopped():
     embed = discord.Embed(
         color=discord.Color.red(),

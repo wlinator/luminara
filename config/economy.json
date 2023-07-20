@@ -2,6 +2,7 @@
   "emotes_guild_id": 1038051105642401812,
   "rc_guild_id": 719227135151046699,
   "daily_reward": 50,
+  "exchange_rate": 75000,
   "blackjack": {
     "emotes": {
       "hit": "<:hit:1119262723285467156>",

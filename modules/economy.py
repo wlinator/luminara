@@ -6,11 +6,10 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from data.Currency import Currency
-from sb_tools import economy_embeds, universal, interaction
+from sb_tools import economy_embeds, universal
 
 load_dotenv('.env')
 
-active_blackjack_games = {}
 special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
 cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
@@ -94,37 +93,6 @@ class EconomyCog(commands.Cog):
             return
 
         await ctx.respond(embed=economy_embeds.give(ctx, user, currency, Currency.format(amount)))
-
-    @commands.slash_command(
-        name="exchange",
-        description=f"Exchange {special_balance_name} for cash.",
-        guild_only=True
-    )
-    @commands.check(universal.channel_check)
-    async def exchange(self, ctx, *, amount: discord.Option(int)):
-
-        # Currency handler
-        ctx_currency = Currency(ctx.author.id)
-
-        author_special_balance = ctx_currency.special
-
-        if author_special_balance < amount or author_special_balance <= 0:
-            return await ctx.respond(embed=economy_embeds.not_enough_special_balance())
-
-        view = interaction.ExchangeConfirmation(ctx)
-        await ctx.respond(embed=economy_embeds.exchange_confirmation(Currency.format(amount)), view=view)
-        await view.wait()
-
-        if view.clickedConfirm:
-            exchange_rate = 1000
-
-            ctx_currency.add_cash(amount * exchange_rate)
-            ctx_currency.take_special(amount)
-            ctx_currency.push()
-
-            return await ctx.edit(embed=economy_embeds.exchange_done(Currency.format(amount)))
-
-        await ctx.edit(embed=economy_embeds.exchange_stopped())
 
     @commands.slash_command(
         name="award",
