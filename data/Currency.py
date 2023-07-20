@@ -89,4 +89,17 @@ class Currency:
             magnitude += 1
             num /= 1000.0
 
-        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
+        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'),
+                             ['', 'K', 'M', 'B', 'T', 'Q', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'][magnitude])
+
+        # A Thousand = K
+        # Million = M
+        # Billion = B
+        # Trillion = T
+        # Quadrillion: Q
+        # Quintillion: Qi
+        # Sextillion: Sx
+        # Septillion: Sp
+        # Octillion: Oc
+        # Nonillion: No
+        # Decillion: Dc
