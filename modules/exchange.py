@@ -48,14 +48,15 @@ class ExchangeCog(commands.Cog):
             ctx_currency.take_special(amount)
             ctx_currency.push()
 
-            embed = discord.Embed(
-                color=discord.Color.green(),
-                description=f"You successfully exchanged **{amount} {special_balance_name}** "
-                            f"for **{cash_balance_name}{Currency.format(total)}**."
-            )
+            embed.colour = discord.Color.green()
+            embed.description = f"You successfully exchanged **{amount} {special_balance_name}** " \
+                                f"for **{cash_balance_name}{Currency.format(total)}**."
+
             return await ctx.edit(embed=embed)
 
-        await ctx.edit(embed=economy_embeds.exchange_stopped())
+        embed.colour = discord.Color.red()
+        embed.description = "The exchange was canceled."
+        await ctx.edit(embed=embed)
 
 
 def setup(sbbot):
