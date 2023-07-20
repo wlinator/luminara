@@ -10,7 +10,7 @@ from discord.ext import commands
 from data.Currency import Currency
 from data.SlotsStats import SlotsStats
 from handlers.ItemHandler import ItemHandler
-from main import economy_config
+from main import economy_config, strings
 from sb_tools import economy_embeds, universal
 
 est = pytz.timezone('US/Eastern')
@@ -203,6 +203,12 @@ class SlotsCog(commands.Cog):
         if bet > player_cash_balance or bet <= 0:
             await ctx.respond(embed=economy_embeds.not_enough_cash())
             return
+
+        # check if the bet exceeds the bet limit
+        bet_limit = int(economy_config["bet_limit"])
+        if abs(bet) > bet_limit:
+            message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
+            return await ctx.respond(content=message)
 
         # calculate the results before the command is shown
         results = [random.randint(0, 6) for _ in range(3)]

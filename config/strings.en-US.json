@@ -47,5 +47,6 @@
   "daily_streak": "\uD83D\uDCC5 | You're on a streak of **{0} days**!",
   "level_up": "\uD83D\uDCC8 | **{0}** you have reached **Level {1}**",
   "level_up_prefix": "\uD83D\uDCC8 | **{0}** ",
-  "level_up_reward": "\uD83C\uDD99 | **{0}** congratulations! You've reached **Level {1}** and earned a new level role!"
+  "level_up_reward": "\uD83C\uDD99 | **{0}** congratulations! You've reached **Level {1}** and earned a new level role!",
+  "bet_limit": "❌ | **{0}** you cannot place any bets above **${1}**."
 }
