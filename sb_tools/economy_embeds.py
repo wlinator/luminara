@@ -93,14 +93,6 @@ def out_of_time():
     return embed
 
 
-def exchange_stopped():
-    embed = discord.Embed(
-        color=discord.Color.red(),
-        description="The exchange was canceled because you clicked \"Stop\" or ran out of time."
-    )
-    return embed
-
-
 def coinflip(ctx, guess_side, throw_side, bet):
     embed = discord.Embed(
         title=f"You bet {cash_balance_name}{bet} on {guess_side}."
@@ -113,13 +105,6 @@ def coinflip(ctx, guess_side, throw_side, bet):
         embed.set_thumbnail(url="https://media.tenor.com/kK8D7hQXX5wAAAAC/coins-tails.gif")
 
     return embed
-
-
-def coinflip_finished(side, status):
-    color = None
-
-    if status == "success":
-        color = discord.Color.green()
 
 
 def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer_hand_value, status):
@@ -178,27 +163,5 @@ def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer
 
     if thumbnail_url:
         embed.set_thumbnail(url=thumbnail_url)
-
-    return embed
-
-
-def daily_claim(amount, streak):
-    embed = discord.Embed(
-        color=discord.Color.green(),
-        description=f"You claimed your daily reward of **{cash_balance_name}{amount}**."
-    )
-
-    if streak > 1:
-        embed.set_footer(text=f"You're on a streak of {streak} days!")
-
-    return embed
-
-
-def daily_wait():
-    embed = discord.Embed(
-        color=discord.Color.red(),
-        description=f"You've already claimed your daily reward."
-    )
-    embed.set_footer(text="Reset is at 7 AM Eastern!")
 
     return embed
