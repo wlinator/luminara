@@ -103,7 +103,8 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
         embed.set_thumbnail(url=thumbnail_url)
 
     embed.add_field(name=name,
-                    value=value)
+                    value=value,
+                    inline=False)
     embed.colour = color
 
     return embed
@@ -159,6 +160,7 @@ class BlackJackCog(commands.Cog):
             player_hand_value = economy_functions.blackjack_calculate_hand_value(player_hand)
             dealer_hand_value = economy_functions.blackjack_calculate_hand_value(dealer_hand)
 
+            player_hand_value = 21
             status = "game_start" if player_hand_value != 21 else "player_blackjack"
             view = interaction.BlackJackButtons(ctx)
             playing_embed = False
@@ -226,7 +228,7 @@ class BlackJackCog(commands.Cog):
             field = await item_reward.bitch_coin(status, field)
 
             if field is not "":
-                embed.add_field(name="Extra Rewards", value=field)
+                embed.add_field(name="Extra Rewards", value=field, inline=False)
 
             if playing_embed:
                 await ctx.edit(embed=embed, view=None, content=ctx.author.mention)
