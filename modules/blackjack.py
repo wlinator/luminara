@@ -160,7 +160,6 @@ class BlackJackCog(commands.Cog):
             player_hand_value = economy_functions.blackjack_calculate_hand_value(player_hand)
             dealer_hand_value = economy_functions.blackjack_calculate_hand_value(dealer_hand)
 
-            player_hand_value = 21
             status = "game_start" if player_hand_value != 21 else "player_blackjack"
             view = interaction.BlackJackButtons(ctx)
             playing_embed = False
