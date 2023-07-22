@@ -1,4 +1,3 @@
-import datetime
 import json
 import os
 
@@ -103,65 +102,5 @@ def coinflip(ctx, guess_side, throw_side, bet):
         embed.set_thumbnail(url="https://media.tenor.com/nEu74vu_sT4AAAAC/heads-coinflip.gif")
     else:
         embed.set_thumbnail(url="https://media.tenor.com/kK8D7hQXX5wAAAAC/coins-tails.gif")
-
-    return embed
-
-
-def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer_hand_value, status):
-    current_time = datetime.datetime.now(est).strftime("%I:%M %p")
-    you_text = "You"
-    dealer_text = "Dealer"
-    title_text = "BlackJack"
-    thumbnail_url = None
-    color = discord.Color.dark_orange()
-
-    if status == "player_busted":
-        you_text = "You | BUSTED"
-        title_text = "YOU LOST!"
-        thumbnail_url = "https://i.imgur.com/rc68c43.png"
-        color = discord.Color.red()
-
-    elif status == "dealer_busted":
-        dealer_text = "Dealer | BUSTED"
-        title_text = "YOU WON!"
-        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
-        color = discord.Color.green()
-
-    elif status == "dealer_won":
-        title_text = "YOU LOST!"
-        thumbnail_url = "https://i.imgur.com/rc68c43.png"
-        color = discord.Color.red()
-
-    elif status == "player_won_21":
-        title_text = "YOU WON!"
-        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
-        color = discord.Color.green()
-
-    elif status == "player_blackjack":
-        you_text = "You | BlackJack"
-        title_text = "YOU WON!"
-        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
-        color = discord.Color.green()
-
-    embed = discord.Embed(
-        title=title_text,
-        color=color
-    )
-    embed.add_field(name=you_text, value=f"**Score: {player_hand_value}**\n"
-                                         f"*Hand: {' + '.join(player_hand)}*")
-
-    if len(dealer_hand) < 2:
-        embed.add_field(name=dealer_text, value=f"**Score: {dealer_hand_value}**\n"
-                                                f"*Hand: {dealer_hand[0]} + ??*", inline=False)
-    else:
-        embed.add_field(name=dealer_text, value=f"**Score: {dealer_hand_value}**\n"
-                                                f"*Hand: {' + '.join(dealer_hand)}*", inline=False)
-
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Bet {cash_balance_name}{bet} • deck shuffled • Today at {current_time}",
-                     icon_url="https://i.imgur.com/96jPPXO.png")
-
-    if thumbnail_url:
-        embed.set_thumbnail(url=thumbnail_url)
 
     return embed

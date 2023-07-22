@@ -16,6 +16,12 @@ from sb_tools import economy_embeds, universal
 est = pytz.timezone('US/Eastern')
 
 
+def get_emotes(sbbot):
+    decoration = economy_config["slots"]["emotes"]
+    emojis = {name: sbbot.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
+    return emojis
+
+
 def calculate_slots_results(bet, results):
     type = None
     multiplier = None
@@ -53,26 +59,10 @@ def calculate_slots_results(bet, results):
     return type, int(payout), multiplier
 
 
-def slots_spinning(ctx, spinning_icons_amount, bet, results, sbbot):
-    first_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[0]}_id"])
-    second_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[1]}_id"])
-    slots_animated_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_animated_id"])
-
-    decoration = economy_config["slots"]["emotes"]
-    S_Wide = sbbot.get_emoji(decoration["S_Wide"])
-    L_Wide = sbbot.get_emoji(decoration["L_Wide"])
-    O_Wide = sbbot.get_emoji(decoration["O_Wide"])
-    T_Wide = sbbot.get_emoji(decoration["T_Wide"])
-
-    CBorderBLeft = sbbot.get_emoji(decoration["CBorderBLeft"])
-    CBorderBRight = sbbot.get_emoji(decoration["CBorderBRight"])
-    CBorderTLeft = sbbot.get_emoji(decoration["CBorderTLeft"])
-    CBorderTRight = sbbot.get_emoji(decoration["CBorderTRight"])
-    HBorderB = sbbot.get_emoji(decoration["HBorderB"])
-    HBorderT = sbbot.get_emoji(decoration["HBorderT"])
-    VBorder = sbbot.get_emoji(decoration["VBorder"])
-
-    Blank = sbbot.get_emoji(decoration["Blank"])
+def slots_spinning(ctx, spinning_icons_amount, bet, results, emojis):
+    first_slots_emote = emojis.get(f"slots_{results[0]}_id")
+    second_slots_emote = emojis.get(f"slots_{results[1]}_id")
+    slots_animated_emote = emojis.get("slots_animated_id")
 
     current_time = datetime.datetime.now(est).strftime("%I:%M %p")
     one = slots_animated_emote
@@ -87,11 +77,14 @@ def slots_spinning(ctx, spinning_icons_amount, bet, results, sbbot):
         one = first_slots_emote
         two = second_slots_emote
 
-    description = f"🎰{S_Wide}{L_Wide}{O_Wide}{T_Wide}{S_Wide}🎰\n" \
-                  f"{CBorderTLeft}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{CBorderTRight}\n" \
-                  f"{VBorder}{one}{VBorder}{two}{VBorder}{three}{VBorder}\n" \
-                  f"{CBorderBLeft}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{CBorderBRight}\n" \
-                  f"{Blank}{Blank}❓❓❓{Blank}{Blank}{Blank}"
+    description = f"🎰{emojis['S_Wide']}{emojis['L_Wide']}{emojis['O_Wide']}{emojis['T_Wide']}{emojis['S_Wide']}🎰\n" \
+                  f"{emojis['CBorderTLeft']}{emojis['HBorderT']}{emojis['HBorderT']}{emojis['HBorderT']}" \
+                  f"{emojis['HBorderT']}{emojis['HBorderT']}{emojis['CBorderTRight']}\n" \
+                  f"{emojis['VBorder']}{one}{emojis['VBorder']}{two}{emojis['VBorder']}" \
+                  f"{three}{emojis['VBorder']}\n" \
+                  f"{emojis['CBorderBLeft']}{emojis['HBorderB']}{emojis['HBorderB']}{emojis['HBorderB']}" \
+                  f"{emojis['HBorderB']}{emojis['HBorderB']}{emojis['CBorderBRight']}\n" \
+                  f"{emojis['Blank']}{emojis['Blank']}❓❓❓{emojis['Blank']}{emojis['Blank']}{emojis['Blank']}"
 
     embed = discord.Embed(
         description=description
@@ -103,37 +96,11 @@ def slots_spinning(ctx, spinning_icons_amount, bet, results, sbbot):
     return embed
 
 
-def slots_finished(ctx, payout_type, multiplier, bet, payout, results, sbbot):
-    first_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[0]}_id"])
-    second_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[1]}_id"])
-    third_slots_emote = sbbot.get_emoji(economy_config["slots"]["emotes"][f"slots_{results[2]}_id"])
+def slots_finished(ctx, payout_type, bet, payout, results, emojis):
+    first_slots_emote = emojis.get(f"slots_{results[0]}_id")
+    second_slots_emote = emojis.get(f"slots_{results[1]}_id")
+    third_slots_emote = emojis.get(f"slots_{results[2]}_id")
     current_time = datetime.datetime.now(est).strftime("%I:%M %p")
-
-    decoration = economy_config["slots"]["emotes"]
-    S_Wide = sbbot.get_emoji(decoration["S_Wide"])
-    L_Wide = sbbot.get_emoji(decoration["L_Wide"])
-    O_Wide = sbbot.get_emoji(decoration["O_Wide"])
-    T_Wide = sbbot.get_emoji(decoration["T_Wide"])
-
-    CBorderBLeft = sbbot.get_emoji(decoration["CBorderBLeft"])
-    CBorderBRight = sbbot.get_emoji(decoration["CBorderBRight"])
-    CBorderTLeft = sbbot.get_emoji(decoration["CBorderTLeft"])
-    CBorderTRight = sbbot.get_emoji(decoration["CBorderTRight"])
-    HBorderB = sbbot.get_emoji(decoration["HBorderB"])
-    HBorderT = sbbot.get_emoji(decoration["HBorderT"])
-    VBorder = sbbot.get_emoji(decoration["VBorder"])
-
-    WSmall = sbbot.get_emoji(decoration["WSmall"])
-    ISmall = sbbot.get_emoji(decoration["ISmall"])
-    NSmall = sbbot.get_emoji(decoration["NSmall"])
-
-    LCentered = sbbot.get_emoji(decoration["LCentered"])
-    OCentered = sbbot.get_emoji(decoration["OCentered"])
-    SCentered = sbbot.get_emoji(decoration["SCentered"])
-    ECentered = sbbot.get_emoji(decoration["ECentered"])
-
-    Blank = sbbot.get_emoji(decoration["Blank"])
-    lost_emoji = sbbot.get_emoji(decoration["lost"])
 
     field_name = "You lost."
     field_value = f"You lost **${bet}**."
@@ -144,32 +111,36 @@ def slots_finished(ctx, payout_type, multiplier, bet, payout, results, sbbot):
         field_name = "Pair"
         field_value = f"You won **${payout}**."
         is_lost = False
-        discord.Color.dark_green()
+        color = discord.Color.dark_green()
     elif payout_type == "three_of_a_kind":
         field_name = "3 of a kind"
         field_value = f"You won **${payout}**."
         is_lost = False
-        discord.Color.dark_green()
+        color = discord.Color.dark_green()
     elif payout_type == "three_diamonds":
         field_name = "Triple Diamonds!"
         field_value = f"You won **${payout}**."
         is_lost = False
-        discord.Color.green()
+        color = discord.Color.green()
     elif payout_type == "jackpot":
         field_name = "JACKPOT!!"
         field_value = f"You won **${payout}**."
         is_lost = False
-        discord.Color.green()
+        color = discord.Color.green()
 
-    description = f"🎰{S_Wide}{L_Wide}{O_Wide}{T_Wide}{S_Wide}🎰\n" \
-                  f"{CBorderTLeft}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{HBorderT}{CBorderTRight}\n" \
-                  f"{VBorder}{first_slots_emote}{VBorder}{second_slots_emote}{VBorder}{third_slots_emote}{VBorder}\n" \
-                  f"{CBorderBLeft}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{HBorderB}{CBorderBRight}"
+    description = f"🎰{emojis['S_Wide']}{emojis['L_Wide']}{emojis['O_Wide']}{emojis['T_Wide']}{emojis['S_Wide']}🎰\n" \
+                  f"{emojis['CBorderTLeft']}{emojis['HBorderT']}{emojis['HBorderT']}{emojis['HBorderT']}" \
+                  f"{emojis['HBorderT']}{emojis['HBorderT']}{emojis['CBorderTRight']}\n" \
+                  f"{emojis['VBorder']}{first_slots_emote}{emojis['VBorder']}{second_slots_emote}" \
+                  f"{emojis['VBorder']}{third_slots_emote}{emojis['VBorder']}\n" \
+                  f"{emojis['CBorderBLeft']}{emojis['HBorderB']}{emojis['HBorderB']}{emojis['HBorderB']}" \
+                  f"{emojis['HBorderB']}{emojis['HBorderB']}{emojis['CBorderBRight']}"
 
     if is_lost:
-        description += f"\n{Blank}{LCentered}{OCentered}{SCentered}{ECentered}{lost_emoji}{Blank}"
+        description += f"\n{emojis['Blank']}{emojis['LCentered']}{emojis['OCentered']}{emojis['SCentered']}" \
+                       f"{emojis['ECentered']}{emojis['lost']}{emojis['Blank']}"
     else:
-        description += f"\n{Blank}🎉{WSmall}{ISmall}{NSmall}🎉{Blank}"
+        description += f"\n{emojis['Blank']}🎉{emojis['WSmall']}{emojis['ISmall']}{emojis['NSmall']}🎉{emojis['Blank']}"
 
     embed = discord.Embed(
         color=color,
@@ -177,7 +148,7 @@ def slots_finished(ctx, payout_type, multiplier, bet, payout, results, sbbot):
     )
     embed.add_field(name=field_name, value=field_value)
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Bet ${bet} • jackpot = x15 • {current_time}",
+    embed.set_footer(text=f"Game finished • {current_time}",
                      icon_url="https://i.imgur.com/wFsgSnr.png")
 
     return embed
@@ -220,17 +191,28 @@ class SlotsCog(commands.Cog):
         if type == "lost":
             is_won = False
 
+        # only get the emojis once
+        emojis = get_emotes(self.bot)
+
         # start with default "spinning" embed
-        await ctx.respond(embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, self.bot))
+        await ctx.respond(embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, emojis))
         await asyncio.sleep(1)
 
         for i in range(2, 0, -1):
-            await ctx.edit(embed=slots_spinning(ctx, i, Currency.format_human(bet), results, self.bot))
+            await ctx.edit(embed=slots_spinning(ctx, i, Currency.format_human(bet), results, emojis))
             await asyncio.sleep(1)
 
         # output final result
-        await ctx.edit(embed=slots_finished(ctx, type, multiplier, Currency.format_human(bet),
-                                            Currency.format_human(payout), results, self.bot))
+        finished_output = slots_finished(ctx, type, Currency.format_human(bet),
+                                         Currency.format_human(payout), results, emojis)
+
+        item_reward = ItemHandler(ctx)
+        field = await item_reward.rave_coin(is_won=is_won, bet=bet, field="")
+
+        if field is not "":
+            finished_output.add_field(name="Extra Rewards", value=field)
+
+        await ctx.edit(embed=finished_output)
 
         # user payout
         if payout > 0:
@@ -238,8 +220,8 @@ class SlotsCog(commands.Cog):
         else:
             ctx_currency.take_cash(bet)
 
-        item_reward = ItemHandler(ctx)
-        await item_reward.rave_coin(is_won=is_won, bet=bet)
+        # item_reward = ItemHandler(ctx)
+        # await item_reward.rave_coin(is_won=is_won, bet=bet)
 
         stats = SlotsStats(
             user_id=ctx.author.id,
