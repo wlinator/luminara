@@ -146,7 +146,7 @@ def slots_finished(ctx, payout_type, bet, payout, results, emojis):
         color=color,
         description=description
     )
-    embed.add_field(name=field_name, value=field_value)
+    embed.add_field(name=field_name, value=field_value, inline=False)
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
     embed.set_footer(text=f"Game finished • {current_time}",
                      icon_url="https://i.imgur.com/wFsgSnr.png")
@@ -210,7 +210,7 @@ class SlotsCog(commands.Cog):
         field = await item_reward.rave_coin(is_won=is_won, bet=bet, field="")
 
         if field is not "":
-            finished_output.add_field(name="Extra Rewards", value=field)
+            finished_output.add_field(name="Extra Rewards", value=field, inline=False)
 
         await ctx.edit(embed=finished_output)
 
