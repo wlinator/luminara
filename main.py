@@ -246,11 +246,12 @@ loaded_modules = set()
 
 def load_cogs():
     for filename in os.listdir('./modules'):
+
+        if filename in loaded_modules:
+            continue  # module is already loaded
+
         if filename.endswith('.py'):
             module_name = f'modules.{filename[:-3]}'
-
-            # if module_name in sys.modules:
-            #     continue  # Module is already loaded
 
             try:
                 sbbot.load_extension(module_name)
