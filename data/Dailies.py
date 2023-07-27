@@ -59,11 +59,19 @@ class Dailies:
         return False
 
     def streak_check(self):
-        yesterday = datetime.now(tz=self.tz) - timedelta(days=1)
-        today = datetime.now(tz=self.tz)
+        """
+        Three checks are performed, only one has to return True.
+        1. the daily was claimed yesterday
+        2. the daily was claimed the day before yesterday (users no longer lose their dailies as fast)
+        3. the daily was claimed today but before the reset time (see __init__)
+        :return:
+        """
 
-        return self.claimed_at.date() == yesterday.date() or \
-            (self.claimed_at.date() == today.date() and self.claimed_at < self.reset_time)
+        check_1 = self.claimed_at.date() == (self.time_now - timedelta(days=1)).date()
+        check_2 = self.claimed_at.date() == (self.time_now - timedelta(days=2)).date()
+        check_3 = self.claimed_at.date() == self.time_now.date() and self.claimed_at < self.reset_time
+
+        return check_1 or check_2 or check_3
 
     @staticmethod
     def get_data(user_id):
