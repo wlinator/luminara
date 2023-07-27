@@ -8,7 +8,7 @@ from sb_tools import universal
 racu_logs = logging.getLogger('Racu.Core')
 
 
-class BasicCog(commands.Cog):
+class PingCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
 
@@ -23,4 +23,4 @@ class BasicCog(commands.Cog):
 
 
 def setup(sbbot):
-    sbbot.add_cog(BasicCog(sbbot))
+    sbbot.add_cog(PingCog(sbbot))
