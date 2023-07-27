@@ -1,5 +1,5 @@
 {
-  "ping_latency": "Racu latency: {0} ms",
+  "ping": "\uD83C\uDFD3 | **{0}** I'm online.",
   "restarting": "Restarting Racu...",
   "restart_error": "Error executing the script: {0}",
   "intro_muted": "You're muted in the Rave Cave. You can't perform this command.",

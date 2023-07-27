@@ -16,16 +16,6 @@ class BasicCog(commands.Cog):
         self.bot = sbbot
 
     @commands.slash_command(
-        name="ping",
-        description="Show the bot's latency.",
-        guild_only=True
-    )
-    @commands.check(universal.channel_check)
-    async def ping(self, ctx):
-        ping = round(self.bot.latency * 1000, 2)
-        await ctx.respond(f"SB latency: {ping} ms")
-
-    @commands.slash_command(
         name="restart",
         description="Restart and update the bot - owner only command.",
         guild_only=True
