@@ -9,7 +9,6 @@ SPECIAL_BALANCE_NAME=
 DBX_OAUTH2_REFRESH_TOKEN=
 DBX_APP_KEY=
 DBX_APP_SECRET=
-
 """
 
 import logging
@@ -275,5 +274,5 @@ if __name__ == '__main__':
     db.tables.sync_database()
     Item.insert_items()
 
-load_cogs()
-sbbot.run(os.getenv('TOKEN'))
+    load_cogs()
+    sbbot.run(os.getenv('TOKEN'))
