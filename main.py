@@ -220,7 +220,8 @@ async def on_application_command_error(ctx, error) -> None:
 
         await ctx.respond(
             f"⏳ | **{ctx.author.name}** you are on cooldown. "
-            f"You can use this command again in **{cooldown}**.")
+            f"You can use this command again in **{cooldown}**.",
+            ephemeral=True)
 
         racu_logs.info(f"commands.CommandOnCooldown | {ctx.author.name}")
 
