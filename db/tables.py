@@ -98,6 +98,13 @@ CREATE TABLE IF NOT EXISTS stats_duel (
 )
 """
 
+birthdays_table = """
+CREATE TABLE IF NOT EXISTS birthdays (
+    user_id INTEGER PRIMARY KEY,
+    birthday REAL
+)
+"""
+
 
 def sync_database():
     database.execute_query(xp_table)
@@ -109,5 +116,6 @@ def sync_database():
     database.execute_query(stats_bj)
     database.execute_query(stats_slots)
     database.execute_query(stats_duel)
+    database.execute_query(birthdays_table)
 
     racu_logs.info("Database was synced.")
