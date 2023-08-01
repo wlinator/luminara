@@ -81,22 +81,35 @@ class BirthdayCog(commands.Cog):
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
 
-        wait_time = BirthdayCog.seconds_until(7, 0)
+        wait_time = BirthdayCog.seconds_until(6, 15)
         racu_logs.info(f"daily_birthday_check(): Waiting until 7 AM Eastern: {wait_time}")
         await asyncio.sleep(wait_time)
 
         birthday_ids = Birthday.today()
 
         if birthday_ids:
-            channel_id = 741021558172287099
-            channel = await self.bot.fetch_channel(channel_id)
+            guild_id = 719227135151046699  # Kaiju's Rave Cave
+            channel_id = 741021558172287099  # Birthdays channel
+
+            guild = await self.bot.fetch_guild(guild_id)
+            channel = await guild.fetch_channel(channel_id)
 
             for user_id in birthday_ids:
-                user = self.bot.fetch_user(user_id)
-                message = random.choice(messages["birthday_messages"])
-                await channel.send(message.format(f"<@{user_id}>"))
 
-                racu_logs.info(f"daily_birthday_check(): Sent message for USER ID: {user_id}")
+                try:
+                    user = await guild.fetch_member(user_id)
+                    print(user)
+
+                    message = random.choice(messages["birthday_messages"])
+                    await channel.send(message.format(user.mention))
+
+                    racu_logs.info(f"daily_birthday_check(): Sent message for USER ID: {user_id}")
+
+                except discord.HTTPException:
+                    racu_logs.info(f"daily_birthday_check(): Not sent because USER ID {user_id} not in Guild.")
+
+                except Exception as err:
+                    racu_logs.error(f"daily_birthday_check(): Something went wrong: {err}")
 
         else:
             racu_logs.info("daily_birthday_check(): No Birthdays Today.")
