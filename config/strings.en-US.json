@@ -50,5 +50,6 @@
   "level_up_reward": "\uD83C\uDD99 | **{0}** congratulations! You've reached **Level {1}** and earned a new level role!",
   "bet_limit": "❌ | **{0}** you cannot place any bets above **${1}**.",
   "birthday_invalid_date": "❌ | **{0}** the date you entered is invalid.",
-  "birthday_set": "✅ | **{0}** your birthday was set to **{1} {2}**."
+  "birthday_set": "✅ | **{0}** your birthday was set to **{1} {2}**.",
+  "birthday_override": "✅ | **{0}** you set the birthday of user **{1}** to **{2} {3}**."
 }

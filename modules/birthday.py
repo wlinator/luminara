@@ -6,6 +6,7 @@ import random
 
 import discord
 import pytz
+from discord import default_permissions
 from discord.ext import commands, tasks
 
 from config import json_loader
@@ -51,6 +52,31 @@ class BirthdayCog(commands.Cog):
         birthday.set(date_obj)
 
         await ctx.respond(strings["birthday_set"].format(ctx.author.name, month, day), ephemeral=True)
+
+    @commands.slash_command(
+        name="override-birthday",
+        description="Override a birthday - requires Manage Server.",
+        guild_only=True
+    )
+    @default_permissions(manage_guild=True)
+    async def override_birthday(self, ctx, *,
+                                user: discord.Option(discord.Member),
+                                month: discord.Option(choices=months),
+                                day: discord.Option(int)):
+        leap_year = 2020
+        month_index = months.index(month) + 1
+        max_days = calendar.monthrange(leap_year, month_index)[1]
+
+        if not (1 <= day <= max_days):
+            return await ctx.respond(strings["birthday_invalid_date"].format(ctx.author.name), ephemeral=True)
+
+        date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
+        date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+
+        birthday = Birthday(user.id)
+        birthday.set(date_obj)
+
+        await ctx.respond(strings["birthday_override"].format(ctx.author.name, user.name, month, day))
 
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
