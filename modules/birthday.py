@@ -81,7 +81,7 @@ class BirthdayCog(commands.Cog):
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
 
-        wait_time = BirthdayCog.seconds_until(6, 15)
+        wait_time = BirthdayCog.seconds_until(7, 0)
         racu_logs.info(f"daily_birthday_check(): Waiting until 7 AM Eastern: {wait_time}")
         await asyncio.sleep(wait_time)
 
