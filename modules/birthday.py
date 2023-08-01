@@ -1,10 +1,14 @@
+import asyncio
 import calendar
 import datetime
 import logging
+import random
 
 import discord
-from discord.ext import commands
+import pytz
+from discord.ext import commands, tasks
 
+from config import json_loader
 from data.Birthday import Birthday
 from main import strings
 
@@ -16,10 +20,13 @@ months = [
     "September", "October", "November", "December"
 ]
 
+messages = json_loader.load_birthday_messages()
+
 
 class BirthdayCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
+        self.daily_birthday_check.start()
 
     @commands.slash_command(
         name="birthday",
@@ -45,9 +52,47 @@ class BirthdayCog(commands.Cog):
 
         await ctx.respond(strings["birthday_set"].format(ctx.author.name, month, day), ephemeral=True)
 
-    def daily_birthday_check(self):
-        # check if someone's birthday is today
-        pass
+    @tasks.loop(hours=23, minutes=55)
+    async def daily_birthday_check(self):
+
+        wait_time = BirthdayCog.seconds_until(7, 0)
+        racu_logs.info(f"daily_birthday_check(): Waiting until 7 AM Eastern: {wait_time}")
+        await asyncio.sleep(wait_time)
+
+        birthday_ids = Birthday.today()
+
+        if birthday_ids:
+            channel_id = 741021558172287099
+            channel = await self.bot.fetch_channel(channel_id)
+
+            for user_id in birthday_ids:
+                user = self.bot.fetch_user(user_id)
+                message = random.choice(messages["birthday_messages"])
+                await channel.send(message.format(f"<@{user_id}>"))
+
+                racu_logs.info(f"daily_birthday_check(): Sent message for USER ID: {user_id}")
+
+        else:
+            racu_logs.info("daily_birthday_check(): No Birthdays Today.")
+
+    @staticmethod
+    def seconds_until(hours, minutes):
+        eastern_timezone = pytz.timezone('US/Eastern')
+
+        now = datetime.datetime.now(eastern_timezone)
+
+        # Create a datetime object for the given time in the Eastern Timezone
+        given_time = datetime.time(hours, minutes)
+        future_exec = eastern_timezone.localize(datetime.datetime.combine(now, given_time))
+
+        # If the given time is before the current time, add one day to the future execution time
+        if future_exec < now:
+            future_exec += datetime.timedelta(days=1)
+
+        # Calculate the time difference in seconds
+        seconds_until_execution = (future_exec - now).total_seconds()
+
+        return seconds_until_execution
 
 
 def setup(sbbot):
