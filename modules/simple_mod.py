@@ -36,18 +36,51 @@ class SimpleModCog(commands.Cog):
         if not hierarchy_check(ctx.author, target):
             return await ctx.respond(content=strings["error_hierarchy"].format(ctx.author.name), ephemeral=True)
 
+        dm_channel = False
+
         try:
             await ctx.guild.kick(user=target, reason=f"moderator: {ctx.author.name}")
             await ctx.respond(strings["mod_kick"].format(ctx.author.name, target.name))
 
-            try:
-                await target.send(strings["mod_kick_dm"].format(target.name, ctx.guild.name))
-            except Exception as err:
-                racu_logs.info(f"error during kick command (DM): {err}")
+            dm_channel = True
+            await target.send(strings["mod_kick_dm"].format(target.name, ctx.guild.name))
 
         except Exception as err:
-            await ctx.respond(strings["error_mod_invoke_error"].format(ctx.author.name), ephemeral=True)
+            if not dm_channel:
+                await ctx.respond(strings["error_mod_invoke_error"].format(ctx.author.name), ephemeral=True)
+
             racu_logs.info(f"error during kick command: {err}")
+
+    @commands.slash_command(
+        name="ban",
+        description="Ban a member.",
+        guild_only=True
+    )
+    @commands.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    async def ban_command(self, ctx, *, target: discord.Member, delete_messages: discord.Option(bool)):
+
+        if not hierarchy_check(ctx.author, target):
+            return await ctx.respond(content=strings["error_hierarchy"].format(ctx.author.name), ephemeral=True)
+
+        dm_channel = False
+        seconds = 0
+
+        if delete_messages:
+            seconds = 604800
+
+        try:
+            await ctx.guild.ban(user=target, reason=f"moderator: {ctx.author.name}", delete_message_seconds=seconds)
+            await ctx.respond(strings["mod_ban"].format(ctx.author.name, target.name))
+
+            dm_channel = True
+            await target.send(strings["mod_ban_dm"].format(target.name, ctx.guild.name))
+
+        except Exception as err:
+            if not dm_channel:
+                await ctx.respond(strings["error_mod_invoke_error"].format(ctx.author.name), ephemeral=True)
+
+            racu_logs.info(f"error during ban command: {err}")
 
 
 def setup(sbbot):
