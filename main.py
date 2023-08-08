@@ -225,6 +225,14 @@ async def on_application_command_error(ctx, error) -> None:
 
         racu_logs.info(f"commands.CommandOnCooldown | {ctx.author.name}")
 
+    elif isinstance(error, commands.MissingPermissions):
+        await ctx.respond(strings["error_missing_permissions"].format(ctx.author.name), ephemeral=True)
+        racu_logs.info(f"commands.MissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
+
+    elif isinstance(error, commands.BotMissingPermissions):
+        await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
+        racu_logs.info(f"commands.BotMissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
+
     else:
         racu_logs.error(f"on_application_command_error (check debug log): {error}", exc_info=False)
         racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
