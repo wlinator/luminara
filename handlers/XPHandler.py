@@ -53,8 +53,8 @@ class XPHandler:
 
     async def process_xp(self, message):
 
-        if message.channel.id == 746796138195058788:
-            racu_logs.info(f"No XP gain - spam channel. | user {message.author.name}")
+        if message.channel.id == 746796138195058788 or message.channel.id == 814590778650263604:
+            racu_logs.info(f"No XP gain - blacklisted channel. | user {message.author.name}")
             return
 
         current_time = time.time()
