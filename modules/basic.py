@@ -72,11 +72,11 @@ class BasicCog(commands.Cog):
             racu_logs.warning(f"{ctx.author.name} couldn't do the intro command: Muted in the Race Cave")
             return
 
-        elif member and not discord.utils.get(member.roles, id=719995790319157279):
-            em = discord.Embed(description="It seems that you don't have permission to do that!")
-            await ctx.respond(embed=em)
-            racu_logs.warning(f"{ctx.author.name} couldn't do the intro command: No Permissions")
-            return
+        # elif member and not discord.utils.get(member.roles, id=719995790319157279):
+        #     em = discord.Embed(description="It seems that you don't have permission to do that!")
+        #     await ctx.respond(embed=em)
+        #     racu_logs.warning(f"{ctx.author.name} couldn't do the intro command: No Permissions")
+        #     return
 
         embed = discord.Embed(color=0xadcca6,
                               title=f"Hey {ctx.author.name}!",
