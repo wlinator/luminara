@@ -51,7 +51,7 @@
   "stats_roi_value": "Profit margin: **{0}**%",
   "stats_blackjack": "\uD83C\uDCCF | You've played **{0}** games of BlackJack, betting a total of **${1}**. You won **{2}** of those games with a total payout of **${3}**.",
   "stats_slots": "\uD83C\uDFB0 | You've played **{0}** games of Slots, betting a total of **${1}**. Your total payout was **${2}**.",
-  "daily_no_claim": "**{0}** your daily reward has already been redeemed.",
+  "daily_no_claim": "❌ | **{0}** please wait. Your daily reward can be claimed again <t:{1}:R>.",
   "daily_claim": "\uD83D\uDCB8 | Hey **{0}**, here is your daily reward of **${1}**!",
   "daily_streak": "\uD83D\uDCC5 | You're on a streak of **{0} days**!",
   "level_up": "\uD83D\uDCC8 | **{0}** you have reached **Level {1}**",

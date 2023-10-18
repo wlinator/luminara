@@ -5,13 +5,13 @@ import logging
 import random
 
 import discord
-import pytz
 from discord import default_permissions
 from discord.ext import commands, tasks
 
 from config import json_loader
 from data.Birthday import Birthday
 from main import strings
+from utils import time
 
 racu_logs = logging.getLogger('Racu.Core')
 
@@ -81,7 +81,7 @@ class BirthdayCog(commands.Cog):
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
 
-        wait_time = BirthdayCog.seconds_until(7, 0)
+        wait_time = time.seconds_until(7, 0)
         racu_logs.info(f"daily_birthday_check(): Waiting until 7 AM Eastern: {wait_time}")
         await asyncio.sleep(wait_time)
 
@@ -113,25 +113,6 @@ class BirthdayCog(commands.Cog):
 
         else:
             racu_logs.info("daily_birthday_check(): No Birthdays Today.")
-
-    @staticmethod
-    def seconds_until(hours, minutes):
-        eastern_timezone = pytz.timezone('US/Eastern')
-
-        now = datetime.datetime.now(eastern_timezone)
-
-        # Create a datetime object for the given time in the Eastern Timezone
-        given_time = datetime.time(hours, minutes)
-        future_exec = eastern_timezone.localize(datetime.datetime.combine(now, given_time))
-
-        # If the given time is before the current time, add one day to the future execution time
-        if future_exec < now:
-            future_exec += datetime.timedelta(days=1)
-
-        # Calculate the time difference in seconds
-        seconds_until_execution = (future_exec - now).total_seconds()
-
-        return seconds_until_execution
 
 
 def setup(sbbot):

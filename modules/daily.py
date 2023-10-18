@@ -1,13 +1,17 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+import utils.time
 from data.Dailies import Dailies
 from main import strings
 from sb_tools import universal
+import utils
+import time
 
 load_dotenv('.env')
 
@@ -32,7 +36,11 @@ class DailyCog(commands.Cog):
         ctx_daily = Dailies(ctx.author.id)
 
         if not ctx_daily.can_be_claimed():
-            return await ctx.respond(content=strings["daily_no_claim"].format(ctx.author.name))
+            wait_time = datetime.now() + timedelta(seconds=utils.time.seconds_until(7,0))
+            # unix_time = time.mktime(wait_time.timetuple())
+            unix_time = int(round(wait_time.timestamp()))
+
+            return await ctx.respond(content=strings["daily_no_claim"].format(ctx.author.name, unix_time))
 
         ctx_daily.streak = ctx_daily.streak + 1 if ctx_daily.streak_check() else 1
         ctx_daily.claimed_at = datetime.now(tz=ctx_daily.tz).isoformat()
