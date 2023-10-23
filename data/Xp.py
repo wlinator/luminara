@@ -24,13 +24,13 @@ class Xp:
     def push(self):
         query = """
                 UPDATE xp
-                SET user_xp = ?, user_level = ?, cooldown = ?
-                WHERE user_id = ?
+                SET user_xp = %s, user_level = %s, cooldown = %s
+                WHERE user_id = %s
                 """
         database.execute_query(query, (self.xp, self.level, self.ctime, self.user_id))
 
     def fetch_or_create_xp(self):
-        query = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = ?"
+        query = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = %s"
 
         try:
             (user_xp, user_level, cooldown) = database.select_query(query, (self.user_id,))[0]
@@ -40,7 +40,7 @@ class Xp:
         if any(var is None for var in [user_xp, user_level, cooldown]):
             query = """
                     INSERT INTO xp (user_id, user_xp, user_level, cooldown)
-                    VALUES (?, 0, 0, ?)
+                    VALUES (%s, 0, 0, %s)
                     """
             database.execute_query(query, (self.user_id, time.time()))
             (user_xp, user_level, cooldown) = (0, 0, time.time())

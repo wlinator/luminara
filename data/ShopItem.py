@@ -18,22 +18,22 @@ class ShopItem:
         """
 
     def set_price(self, price):
-        query = "UPDATE ShopItem SET price = ? WHERE item_id = ?"
+        query = "UPDATE ShopItem SET price = %s WHERE item_id = %s"
         database.execute_query(query, (price, self.item.id))
         self.price = price
 
     def set_price_special(self, price_special):
-        query = "UPDATE ShopItem SET price_special = ? WHERE item_id = ?"
+        query = "UPDATE ShopItem SET price_special = %s WHERE item_id = %s"
         database.execute_query(query, (price_special, self.item.id))
         self.price_special = price_special
 
     def set_worth(self, worth):
-        query = "UPDATE ShopItem SET worth = ? WHERE item_id = ?"
+        query = "UPDATE ShopItem SET worth = %s WHERE item_id = %s"
         database.execute_query(query, (worth, self.item.id))
         self.worth = worth
 
     def set_description(self, description):
-        query = "UPDATE ShopItem SET description = ? WHERE item_id = ?"
+        query = "UPDATE ShopItem SET description = %s WHERE item_id = %s"
         database.execute_query(query, (description, self.item.id))
         self.description = description
 
@@ -41,7 +41,7 @@ class ShopItem:
         query = """
                 SELECT price, price_special, worth, description
                 FROM ShopItem
-                WHERE item_id = ?
+                WHERE item_id = %s
                 """
 
         try:
@@ -49,7 +49,7 @@ class ShopItem:
         except (IndexError, TypeError):
             query = """
                                 INSERT INTO ShopItem (item_id, price, price_special, worth, description)
-                                VALUES (?, 0, 0, 0, "placeholder_descr")
+                                VALUES (%s, 0, 0, 0, "placeholder_descr")
                                 """
             database.execute_query(query, (self.item.id,))
             (price, price_special, worth, description) = 0, 0, 0, "placeholder_descr"

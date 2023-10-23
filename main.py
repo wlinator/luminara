@@ -9,6 +9,9 @@ SPECIAL_BALANCE_NAME=
 DBX_OAUTH2_REFRESH_TOKEN=
 DBX_APP_KEY=
 DBX_APP_SECRET=
+MARIADB_USER=
+MARIADB_PASSWORD=
+MARIADB_ROOT_PASSWORD=
 """
 
 import logging
@@ -280,8 +283,8 @@ if __name__ == '__main__':
     load_dotenv('.env')
 
     # load db
-    db.tables.sync_database()
-    Item.insert_items()
+    # db.tables.sync_database()
+    # Item.insert_items()
 
     load_cogs()
     sbbot.run(os.getenv('TOKEN'))

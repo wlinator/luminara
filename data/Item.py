@@ -25,7 +25,7 @@ class Item:
         query = """
         SELECT name, display_name, description, image_url, emote_id, quote, type
         FROM item
-        WHERE id = ?
+        WHERE id = %s
         """
 
         data = database.select_query(query, (self.id,))[0]
@@ -33,7 +33,7 @@ class Item:
 
     def get_quantity(self, author_id):
         query = """
-                SELECT COALESCE((SELECT quantity FROM inventory WHERE user_id = ? AND item_id = ?), 0) AS quantity
+                SELECT COALESCE((SELECT quantity FROM inventory WHERE user_id = %s AND item_id = %s), 0) AS quantity
                 """
 
         quantity = database.select_query_one(query, (author_id, self.id))
@@ -44,7 +44,7 @@ class Item:
         query = """
                 SELECT worth
                 FROM ShopItem
-                WHERE item_id = ?
+                WHERE item_id = %s
                 """
 
         return database.select_query_one(query, (self.id,))
@@ -66,7 +66,7 @@ class Item:
             query = """
                     INSERT OR REPLACE INTO item 
                     (id, name, display_name, description, image_url, emote_id, quote, type)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     """
             database.execute_query(query,
                                    (index, name, display_name, description, image_url, emote_id, quote, item_type))
@@ -92,12 +92,12 @@ class Item:
 
     @staticmethod
     def get_item_by_display_name(display_name):
-        query = "SELECT id FROM item WHERE display_name = ?"
+        query = "SELECT id FROM item WHERE display_name = %s"
         item_id = database.select_query_one(query, (display_name,))
         return Item(item_id)
 
     @staticmethod
     def get_item_by_name(name):
-        query = "SELECT id FROM item WHERE name = ?"
+        query = "SELECT id FROM item WHERE name = %s"
         item_id = database.select_query_one(query, (name,))
         return Item(item_id)
