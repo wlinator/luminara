@@ -11,9 +11,9 @@ class Birthday:
 
     def set(self, birthday):
         query = """
-                INSERT OR REPLACE INTO birthdays
-                (user_id, birthday)
+                INSERT INTO birthdays (user_id, birthday)
                 VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE birthday = VALUES(birthday);
                 """
 
         database.execute_query(query, (self.user_id, birthday))

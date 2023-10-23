@@ -55,7 +55,7 @@ class BackupCog(commands.Cog):
     @tasks.loop(hours=1)
     async def do_backup(self):
 
-        if instance.lower() == "beta":
+        if instance.lower() == "main":
             try:
                 await create_db_backup(dbx)
                 await backup_cleanup(dbx)
