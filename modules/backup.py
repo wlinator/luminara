@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 from datetime import datetime
 
 import dropbox
@@ -13,6 +14,8 @@ oauth2_refresh_token = os.getenv("DBX_OAUTH2_REFRESH_TOKEN")
 app_key = os.getenv("DBX_APP_KEY")
 app_secret = os.getenv("DBX_APP_SECRET")
 instance = os.getenv("INSTANCE")
+mariadb_user = os.getenv("MARIADB_USER")
+mariadb_password = os.getenv("MARIADB_PASSWORD")
 
 dbx = dropbox.Dropbox(
     app_key=app_key,
@@ -23,11 +26,14 @@ dbx = dropbox.Dropbox(
 
 async def create_db_backup(dbx, path="db/rcu.db"):
     backup_name = datetime.today().strftime('%Y-%m-%d_%H%M')
-    backup_name += f"_racu.db"
+    backup_name += f"_racu.sql"
 
-    with open(path, "rb") as f:
-        data = f.read()
-        dbx.files_upload(data, f"/{backup_name}")
+    command = f"mariadb-dump --user={mariadb_user} --password={mariadb_password} " \
+              f"--host=db --single-transaction --all-databases"
+
+    output = subprocess.check_output(command, shell=True)
+
+    dbx.files_upload(output, f"/{backup_name}")
 
 
 async def backup_cleanup(dbx):
@@ -56,7 +62,7 @@ class BackupCog(commands.Cog):
                 racu_logs.info("DB Dropbox backup success.")
 
             except Exception as error:
-                racu_logs.error("DB Dropbox backup failed.")
+                racu_logs.error(f"DB Dropbox backup failed. {error}")
                 racu_logs.debug(f"Dropbox failure: {error}")
         else:
             racu_logs.info("No backup was made, instance not \"MAIN\".")

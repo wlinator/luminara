@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
-    apt-get install -y locales && \
+    apt-get install -y locales mariadb-client && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure locales
 
