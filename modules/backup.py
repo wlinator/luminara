@@ -29,11 +29,12 @@ async def create_db_backup(dbx, path="db/rcu.db"):
     backup_name += f"_racu.sql"
 
     command = f"mariadb-dump --user={mariadb_user} --password={mariadb_password} " \
-              f"--host=db --single-transaction --all-databases"
+              f"--host=db --single-transaction --all-databases > ./db/init/2-data.sql"
 
-    output = subprocess.check_output(command, shell=True)
+    subprocess.check_output(command, shell=True)
 
-    dbx.files_upload(output, f"/{backup_name}")
+    with open("./db/init/2-data.sql", "rb") as f:
+        dbx.files_upload(f.read(), f"/{backup_name}")
 
 
 async def backup_cleanup(dbx):
@@ -54,7 +55,7 @@ class BackupCog(commands.Cog):
     @tasks.loop(hours=1)
     async def do_backup(self):
 
-        if instance.lower() == "main":
+        if instance.lower() == "beta":
             try:
                 await create_db_backup(dbx)
                 await backup_cleanup(dbx)
