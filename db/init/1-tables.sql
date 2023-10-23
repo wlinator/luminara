@@ -4,7 +4,7 @@ CREATE TABLE xp (
     user_id BIGINT PRIMARY KEY NOT NULL,
     user_xp INT NOT NULL,
     user_level INT NOT NULL,
-    cooldown FLOAT
+    cooldown DECIMAL(15,2)
 );
 
 CREATE TABLE currency (
