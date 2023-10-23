@@ -29,8 +29,8 @@ class Currency:
     def push(self):
         query = """
         UPDATE currency
-        SET cash_balance = ?, special_balance = ?
-        WHERE user_id = ?
+        SET cash_balance = %s, special_balance = %s
+        WHERE user_id = %s
         """
 
         database.execute_query(query, (round(self.cash), round(self.special), self.user_id))
@@ -40,7 +40,7 @@ class Currency:
         query = """
         SELECT cash_balance, special_balance
         FROM currency
-        WHERE user_id = ?
+        WHERE user_id = %s
         """
 
         try:
@@ -54,7 +54,7 @@ class Currency:
         if cash_balance is None or special_balance is None:
             query = """
             INSERT INTO currency (user_id, cash_balance, special_balance)
-            VALUES (?, 50, 3)
+            VALUES (%s, 50, 3)
             """
             database.execute_query(query, (user_id,))
             return 50, 3

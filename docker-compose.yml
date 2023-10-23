@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+    core:
+        build: .
+        restart: always
+        depends_on:
+            db:
+                condition: service_healthy
+
+    db:
+        image: mariadb
+        restart: always
+        environment:
+            MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+            MARIADB_USER: ${MARIADB_USER}
+            MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+            MARIADB_DATABASE: racudb
+        volumes:
+            - ./db/init:/docker-entrypoint-initdb.d/
+            - ./db/data:/var/lib/mysql
+        ports:
+            - 3306:3306
+        healthcheck:
+            test: [ "CMD", "mariadb", "-h", "localhost", "-u", "${MARIADB_USER}", "-p${MARIADB_PASSWORD}", "-e", "SELECT 1" ]
+            interval: 10s
+            timeout: 10s
+            retries: 5
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080

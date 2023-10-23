@@ -15,7 +15,7 @@ class SlotsStats:
     def push(self):
         query = """
         INSERT INTO stats_slots (user_id, is_won, bet, payout, spin_type, icons)
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s)
         """
 
         values = (self.user_id, self.is_won, self.bet, self.payout, self.spin_type, self.icons)
@@ -34,7 +34,7 @@ class SlotsStats:
             SUM(CASE WHEN spin_type = 'three_diamonds' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_three_diamonds,
             SUM(CASE WHEN spin_type = 'jackpot' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_jackpot
         FROM stats_slots
-        WHERE user_id = ?
+        WHERE user_id = %s
         """
 
         (amount_of_games, total_bet,

@@ -34,7 +34,7 @@ class Dailies:
 
         query = """
         INSERT INTO dailies (user_id, amount, claimed_at, streak)
-        VALUES (?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s)
         """
         values = (self.user_id, self.amount, self.claimed_at, self.streak)
         database.execute_query(query, values)
@@ -80,7 +80,7 @@ class Dailies:
         WHERE id = (
             SELECT MAX(id)
             FROM dailies
-            WHERE user_id = ?
+            WHERE user_id = %s
         )
         """
 

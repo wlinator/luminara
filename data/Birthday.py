@@ -13,7 +13,7 @@ class Birthday:
         query = """
                 INSERT OR REPLACE INTO birthdays
                 (user_id, birthday)
-                VALUES (?, ?)
+                VALUES (%s, %s)
                 """
 
         database.execute_query(query, (self.user_id, birthday))
@@ -23,7 +23,7 @@ class Birthday:
         query = """
                 SELECT user_id
                 FROM birthdays
-                WHERE strftime('%m-%d', birthday) = ?
+                WHERE strftime('%m-%d', birthday) = %s
                 """
 
         tz = pytz.timezone('US/Eastern')

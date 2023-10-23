@@ -5,3 +5,6 @@ __pycache__/
 *.db
 .env
 *.log
+
+db/data/
+db/init/2-data.sql
