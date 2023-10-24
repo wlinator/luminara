@@ -3,12 +3,11 @@ import discord
 from data.Xp import Xp
 
 
-def command_error_1():
+def command_error_1(error):
     embed = discord.Embed(
         color=discord.Color.red(),
-        description="I'm not even sure how you reached this error but here we are. Try the command again."
+        description=f"Something went wrong.\n```{error}```"
     )
-    embed.set_footer(text="And tell Tess!!!")
 
     return embed
 

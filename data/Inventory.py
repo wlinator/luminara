@@ -20,17 +20,23 @@ class Inventory:
         """
 
         query = """
-        INSERT OR REPLACE INTO inventory (user_id, item_id, quantity)
-        VALUES (%s, %s, COALESCE((SELECT quantity FROM inventory WHERE user_id = %s AND item_id = %s), 0) + %s)
+        INSERT INTO inventory (user_id, item_id, quantity)
+        VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE quantity = quantity + %s;
         """
 
-        database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
+        database.execute_query(query, (self.user_id, item.id, abs(quantity), abs(quantity)))
 
     def take_item(self, item: Item.Item, quantity=1):
+
         query = """
-                INSERT OR REPLACE INTO inventory (user_id, item_id, quantity)
-                VALUES (%s, %s, COALESCE((SELECT quantity FROM inventory WHERE user_id = %s AND item_id = %s) - %s, 0))
-                """
+        INSERT INTO inventory (user_id, item_id, quantity)
+        VALUES (%s, %s, 0)
+        ON DUPLICATE KEY UPDATE quantity = CASE
+            WHEN quantity - %s < 0 THEN 0
+            ELSE quantity - %s
+        END;
+        """
 
         database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
 

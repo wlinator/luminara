@@ -64,7 +64,7 @@ class Item:
             item_type = item_data["type"]
 
             query = """
-                    INSERT OR REPLACE INTO item 
+                    REPLACE INTO item 
                     (id, name, display_name, description, image_url, emote_id, quote, type)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     """
