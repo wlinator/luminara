@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 
+import logging
 import discord
 import pytz
 from discord.ext import commands
@@ -12,6 +13,7 @@ from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
 from sb_tools import economy_embeds, economy_functions, universal, interaction, embeds
 
+racu_logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 est = pytz.timezone('US/Eastern')
 
@@ -272,8 +274,8 @@ class BlackJackCog(commands.Cog):
                 stats.push()
 
         except Exception as e:
-            await ctx.respond(embed=embeds.command_error_1())
-            print("Something went wrong in the gambling command:\n", e)
+            await ctx.respond(embed=embeds.command_error_1(e))
+            racu_logs.error("Something went wrong in the gambling command: ", e)
 
         finally:
             # remove player from active games list
