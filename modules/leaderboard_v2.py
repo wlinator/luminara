@@ -146,7 +146,7 @@ class LeaderboardCommandView(discord.ui.View):
             value = ""
             for i, (user_id, xp, level, rank, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
                 try:
-                    member = await ctx.guild.fetch_member(user_id)
+                    member = await self.ctx.guild.fetch_member(user_id)
                     name = member.name
 
                 except Exception as error:
@@ -169,7 +169,7 @@ class LeaderboardCommandView(discord.ui.View):
             value = ""
             for i, (user_id, cash_balance, special_balance, rank) in enumerate(cash_lb[:5], start=1):
                 try:
-                    member = await ctx.guild.fetch_member(user_id)
+                    member = await self.ctx.guild.fetch_member(user_id)
                     name = member.name
 
                 except Exception as error:
@@ -191,7 +191,7 @@ class LeaderboardCommandView(discord.ui.View):
 
             for i, (user_id, streak, claimed_at, rank) in enumerate(daily_lb[:5], start=1):
                 try:
-                    member = await ctx.guild.fetch_member(user_id)
+                    member = await self.ctx.guild.fetch_member(user_id)
                     name = member.name
 
                 except Exception as error:
