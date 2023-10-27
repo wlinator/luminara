@@ -63,7 +63,7 @@ class Currency:
 
     @staticmethod
     def load_leaderboard():
-        query = "SELECT user_id, cash_balance FROM currency ORDER BY cash_balance DESC"
+        query = "SELECT user_id, cash_balance, special_balance FROM currency ORDER BY cash_balance DESC"
         data = database.select_query(query)
 
         leaderboard = []
@@ -71,7 +71,8 @@ class Currency:
         for row in data:
             row_user_id = row[0]
             cash_balance = row[1]
-            leaderboard.append((row_user_id, cash_balance, rank))
+            special_balance = row[2]
+            leaderboard.append((row_user_id, cash_balance, special_balance, rank))
             rank += 1
 
         return leaderboard
