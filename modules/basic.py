@@ -16,32 +16,6 @@ class BasicCog(commands.Cog):
         self.bot = sbbot
 
     @commands.slash_command(
-        name="restart",
-        description="Restart and update the bot - owner only command.",
-        guild_only=True
-    )
-    @commands.check(universal.owner_check)
-    async def restart(self, ctx):
-
-        try:
-            logs_dir = "logs"
-            for filename in os.listdir(logs_dir):
-                file_path = os.path.join(logs_dir, filename)
-                if os.path.isfile(file_path):
-                    with open(file_path, "w"):
-                        pass
-
-        except Exception as err:
-            racu_logs.error("Failed to delete logs: ", err)
-
-        await ctx.respond(content="Restarting..", ephemeral=True)
-
-        try:
-            racu_logs.info(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
-        except subprocess.CalledProcessError as e:
-            racu_logs.debug(e.output.decode())
-
-    @commands.slash_command(
         name="intro",
         guild_only=False,
         description="This command can only be done in DMs."
