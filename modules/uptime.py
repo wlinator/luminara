@@ -21,7 +21,7 @@ class UptimeCog(commands.Cog):
         difference = int(round(current_time - self.start_time))
 
         text = str(datetime.timedelta(seconds=difference))
-        await ctx.send(content=strings["uptime"].format(ctx.author.name, text))
+        await ctx.respond(content=strings["uptime"].format(ctx.author.name, text))
 
 
 def setup(sbbot):
