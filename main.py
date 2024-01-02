@@ -195,38 +195,38 @@ async def on_application_command_completion(ctx) -> None:
         )
 
 
-# @sbbot.event
-# async def on_application_command_error(ctx, error) -> None:
-#     if isinstance(error, commands.CommandOnCooldown):
+@sbbot.event
+async def on_application_command_error(ctx, error) -> None:
+    if isinstance(error, commands.CommandOnCooldown):
 
-#         seconds = error.retry_after
-#         minutes = seconds // 60
-#         seconds %= 60
-#         cooldown = "{:02d}:{:02d}".format(int(minutes), int(seconds))
+        seconds = error.retry_after
+        minutes = seconds // 60
+        seconds %= 60
+        cooldown = "{:02d}:{:02d}".format(int(minutes), int(seconds))
 
-#         await ctx.respond(
-#             f"⏳ | **{ctx.author.name}** you are on cooldown. "
-#             f"You can use this command again in **{cooldown}**.",
-#             ephemeral=True)
+        await ctx.respond(
+            f"⏳ | **{ctx.author.name}** you are on cooldown. "
+            f"You can use this command again in **{cooldown}**.",
+            ephemeral=True)
 
-#         racu_logs.info(f"commands.CommandOnCooldown | {ctx.author.name}")
+        racu_logs.info(f"commands.CommandOnCooldown | {ctx.author.name}")
 
-#     elif isinstance(error, commands.MissingPermissions):
-#         await ctx.respond(strings["error_missing_permissions"].format(ctx.author.name), ephemeral=True)
-#         racu_logs.info(f"commands.MissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
+    elif isinstance(error, commands.MissingPermissions):
+        await ctx.respond(strings["error_missing_permissions"].format(ctx.author.name), ephemeral=True)
+        racu_logs.info(f"commands.MissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
 
-#     elif isinstance(error, commands.BotMissingPermissions):
-#         await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
-#         racu_logs.info(f"commands.BotMissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
+    elif isinstance(error, commands.BotMissingPermissions):
+        await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
+        racu_logs.info(f"commands.BotMissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
 
-#     else:
-#         racu_logs.error(f"on_application_command_error (check debug log): {error}", exc_info=False)
-#         racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
+    else:
+        racu_logs.error(f"on_application_command_error (check debug log): {error}", exc_info=False)
+        racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
 
 
-# @sbbot.event
-# async def on_error(event: str, *args, **kwargs) -> None:
-#     racu_logs.error(f"on_error: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
+@sbbot.event
+async def on_error(event: str, *args, **kwargs) -> None:
+    racu_logs.error(f"on_error: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
 
 
 # load all json
