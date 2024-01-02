@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 import utils.time
 from data.Dailies import Dailies
+from data.Currency import Currency
 from main import strings
 from sb_tools import universal
 import utils
@@ -37,18 +38,17 @@ class DailyCog(commands.Cog):
 
         if not ctx_daily.can_be_claimed():
             wait_time = datetime.now() + timedelta(seconds=utils.time.seconds_until(7,0))
-            # unix_time = time.mktime(wait_time.timetuple())
             unix_time = int(round(wait_time.timestamp()))
 
             return await ctx.respond(content=strings["daily_no_claim"].format(ctx.author.name, unix_time))
 
         ctx_daily.streak = ctx_daily.streak + 1 if ctx_daily.streak_check() else 1
         ctx_daily.claimed_at = datetime.now(tz=ctx_daily.tz).isoformat()
-        ctx_daily.amount = int(50 * (1.2 * (ctx_daily.streak - 1)))
+        ctx_daily.amount = int(100 * (12 * (ctx_daily.streak - 1)))
 
         ctx_daily.refresh()
 
-        output = strings["daily_claim"].format(ctx.author.name, ctx_daily.amount)
+        output = strings["daily_claim"].format(ctx.author.name, Currency.format(ctx_daily.amount))
 
         if ctx_daily.streak > 1:
             output += "\n" + strings["daily_streak"].format(ctx_daily.streak)
