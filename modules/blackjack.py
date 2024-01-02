@@ -139,10 +139,10 @@ class BlackJackCog(commands.Cog):
             return
 
         # check if the bet exceeds the bet limit
-        bet_limit = int(economy_config["bet_limit"])
-        if abs(bet) > bet_limit:
-            message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
-            return await ctx.respond(content=message)
+        # bet_limit = int(economy_config["bet_limit"])
+        # if abs(bet) > bet_limit:
+        #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
+        #     return await ctx.respond(content=message)
 
         active_blackjack_games[ctx.author.id] = True
 

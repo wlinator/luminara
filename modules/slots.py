@@ -175,11 +175,11 @@ class SlotsCog(commands.Cog):
             await ctx.respond(embed=economy_embeds.not_enough_cash())
             return
 
-        # check if the bet exceeds the bet limit
-        bet_limit = int(economy_config["bet_limit"])
-        if abs(bet) > bet_limit:
-            message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
-            return await ctx.respond(content=message)
+        # # check if the bet exceeds the bet limit
+        # bet_limit = int(economy_config["bet_limit"])
+        # if abs(bet) > bet_limit:
+        #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
+        #     return await ctx.respond(content=message)
 
         # calculate the results before the command is shown
         results = [random.randint(0, 6) for _ in range(3)]
