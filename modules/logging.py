@@ -21,6 +21,11 @@ class LoggingCog(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        """
+        Called when a message is deleted. If the message is not found in the internal message cache, then this event
+        will not be called. Messages might not be in cache if the message is too old or the client is participating
+        in high traffic guilds.
+        """
 
         if message.guild.id != rc_guild_id:
             return
@@ -41,9 +46,8 @@ class LoggingCog(commands.Cog):
 
         embed = discord.Embed(
             color = discord.Color.orange(),
-            description = f"**Message sent by {author.mention} deleted in <#{message.channel.id}>.**"
+            description = f"**Message sent by {author.mention} deleted in {message.channel.mention}.**"
         )
-
         embed.set_author(name=author.name, icon_url=author.display_avatar)
         embed.add_field(name="Message ID", value=f"```\n{message.id}\n```", inline=False)
         embed.add_field(name="Content", value=f"```\n{content}\n```", inline=False)
@@ -57,6 +61,11 @@ class LoggingCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
+        """
+        Called when a Message receives an update event. If the message is not found in the internal message cache,
+        then these events will not be called. Messages might not be in cache if the message is too old or the client
+        is participating in high traffic guilds.
+        """
 
         if after.guild.id != rc_guild_id:
             return
@@ -66,9 +75,8 @@ class LoggingCog(commands.Cog):
 
         embed = discord.Embed(
             color = discord.Color.yellow(),
-            description = f"**Message sent by {author.mention} edited in <#{after.channel.id}>.**"
+            description = f"**Message sent by {author.mention} edited in {after.channel.mention}.**"
         )
-
         embed.set_author(name=author.name, icon_url = author.display_avatar)
         embed.add_field(name="Message ID", value=f"```\n{after.id}\n```", inline=False)
         embed.add_field(name="Before", value=f"```\n{before.clean_content}\n```", inline=False)
@@ -79,6 +87,9 @@ class LoggingCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
+        """
+        Called when User gets banned from a Guild.
+        """
 
         if guild.id != rc_guild_id:
             return
@@ -97,6 +108,9 @@ class LoggingCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
+        """
+        Called when a User gets unbanned from a Guild.
+        """
 
         if guild.id != rc_guild_id:
             return
@@ -113,8 +127,62 @@ class LoggingCog(commands.Cog):
 
         await guild.get_channel(logging_channel_id).send(embed=embed)
 
+    @commands.Cog.listener()
+    async def on_guild_channel_update(self, before, after):
+        """
+        Called whenever a guild channel is updated. e.g. changed name, topic, permissions.
+        """
 
+        if after.guild.id != rc_guild_id:
+            return
 
+        current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
+
+        embed = discord.Embed(
+            color = discord.Color.light_grey(),
+            description = f"**✏️ {after.mention} (#{after.name}) has been updated.**"
+        )
+        embed.set_footer(text=current_time)
+
+        await after.guild.get_channel(logging_channel_id).send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_channel_create(self, channel):
+        """
+        Called whenever a guild channel is created.
+        """
+
+        if channel.guild.id != rc_guild_id:
+            return
+
+        current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
+
+        embed = discord.Embed(
+            color = discord.Color.light_grey(),
+            description = f"**🏗️ {channel.mention} (#{channel.name}) has been created.**"
+        )
+        embed.set_footer(text=current_time)
+
+        await channel.guild.get_channel(logging_channel_id).send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_channel_delete(self, channel):
+        """
+        Called whenever a guild channel is deleted.
+        """
+
+        if channel.guild.id != rc_guild_id:
+            return
+
+        current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
+
+        embed = discord.Embed(
+            color = discord.Color.light_grey(),
+            description = f"**🗑️ The channel \"#{channel.name}\" has been deleted.**"
+        )
+        embed.set_footer(text=current_time)
+
+        await channel.guild.get_channel(logging_channel_id).send(embed=embed)
 
 def setup(sbbot):
     sbbot.add_cog(LoggingCog(sbbot))
