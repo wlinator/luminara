@@ -10,6 +10,9 @@ load_dotenv('.env')
 
 
 class Xp:
+    """
+    Stores and retrieves XP from the database for a given user.
+    """
     def __init__(self, user_id):
         self.user_id = user_id
         self.xp = None
@@ -22,6 +25,9 @@ class Xp:
         self.load_gain_data()
 
     def push(self):
+        """
+        Updates the XP and cooldown for a user.
+        """
         query = """
                 UPDATE xp
                 SET user_xp = %s, user_level = %s, cooldown = %s
@@ -30,6 +36,9 @@ class Xp:
         database.execute_query(query, (self.xp, self.level, self.ctime, self.user_id))
 
     def fetch_or_create_xp(self):
+        """
+        Gets a user's XP from the database or inserts a new row if it doesn't exist yet.
+        """
         query = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = %s"
 
         try:
@@ -50,6 +59,12 @@ class Xp:
         self.ctime = cooldown
 
     def load_gain_data(self):
+        """
+        Returns all values needed to calculate XP gain per message.
+
+        - xp_gain = a random number from an env var list
+        - cooldown = time in seconds
+        """
         xp_gain = list(map(int, os.getenv("XP_GAIN").split(",")))
         cooldown = list(map(int, os.getenv("COOLDOWN").split(",")))
 
@@ -57,6 +72,9 @@ class Xp:
         self.new_cooldown = random.choice(cooldown)
 
     def calculate_rank(self):
+        """
+        Checks which rank a user is, globally
+        """
         query = "SELECT user_id, user_xp, user_level FROM xp ORDER BY user_level DESC, user_xp DESC"
         data = database.select_query(query)
 
@@ -79,6 +97,9 @@ class Xp:
 
     @staticmethod
     def load_leaderboard():
+        """
+        Returns the global XP leaderboard
+        """
         query = "SELECT user_id, user_xp, user_level FROM xp ORDER BY user_level DESC, user_xp DESC"
         data = database.select_query(query)
 
@@ -96,6 +117,9 @@ class Xp:
 
     @staticmethod
     def generate_progress_bar(current_value, target_value, bar_length=10):
+        """
+        Generates an XP progress bar based on the current level and XP.
+        """
         progress = current_value / target_value
         filled_length = int(bar_length * progress)
         empty_length = bar_length - filled_length
@@ -104,6 +128,9 @@ class Xp:
 
     @staticmethod
     def xp_needed_for_next_level(current_level):
+        """
+        Calculates the amount of XP needed to go to the next level, based on the current level.
+        """
         formula_mapping = {
             (10, 19): lambda level: 12 * level + 27,
             (20, 29): lambda level: 15 * level + 27,

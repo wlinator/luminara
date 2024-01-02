@@ -4,6 +4,9 @@ from db import database
 
 
 class SlotsStats:
+    """
+    Handles statistics for the /slots command
+    """
     def __init__(self, user_id, is_won, bet, payout, spin_type, icons):
         self.user_id = user_id
         self.is_won = is_won
@@ -13,6 +16,9 @@ class SlotsStats:
         self.icons = json.dumps(icons)
 
     def push(self):
+        """
+        Insert the data from any given slots game into the database
+        """
         query = """
         INSERT INTO stats_slots (user_id, is_won, bet, payout, spin_type, icons)
         VALUES (%s, %s, %s, %s, %s, %s)
@@ -24,6 +30,9 @@ class SlotsStats:
 
     @staticmethod
     def get_user_stats(user_id):
+        """
+        Retrieve the Slots stats for a given user from the database.
+        """
         query = """
         SELECT
             COUNT(*) AS amount_of_games,
