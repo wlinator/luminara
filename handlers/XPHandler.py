@@ -27,7 +27,8 @@ def level_messages_v2(level, author):
     :return:
     """
 
-    if level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
+    # checks if level is a multiple of 5 within the range of 5 to 100 (inclusive)
+    if level % 5 == 0 and 5 <= level <= 100:
         return strings["level_up_reward"].format(author.name, level)
 
     level_range = None
@@ -80,8 +81,9 @@ class XPHandler:
                 racu_logs.error("level_messages v1 fallback was triggered: ", err)
 
             await message.reply(content=lvl_message)
-
-            if xp.level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
+            
+            # checks if xp.level is a multiple of 5 within the range of 5 to 100 (inclusive)
+            if xp.level % 5 == 0 and 5 <= xp.level <= 100:
                 try:
                     await self.assign_level_role(message.author, xp.level)
                 except Exception as error:
@@ -121,6 +123,16 @@ class XPHandler:
             "level_40": 1118491622045405287,
             "level_45": 1118491650721853500,
             "level_50": 1118491681004732466,
+            "level_55": 1191681166848303135,
+            "level_60": 1191681220145319956,
+            "level_65": 1191681253322264587,
+            "level_70": 1191681274180554792,
+            "level_75": 1191681293277216859,
+            "level_80": 1191681312269017180,
+            "level_85": 1191681337560662086,
+            "level_90": 1191681359995998209,
+            "level_95": 1191681384113262683,
+            "level_100": 1191681405445492778,
             # Add more level roles as needed
         }
 
