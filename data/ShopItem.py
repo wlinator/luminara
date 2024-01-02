@@ -3,6 +3,9 @@ from db import database
 
 
 class ShopItem:
+    """
+    Unused as of v1.5
+    """
     def __init__(self, item: Item):
         self.item = item
         self.price = None
