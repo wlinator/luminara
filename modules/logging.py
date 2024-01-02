@@ -27,7 +27,7 @@ class LoggingCog(commands.Cog):
         in high traffic guilds.
         """
 
-        if message.guild.id != rc_guild_id:
+        if message.guild.id != rc_guild_id or message.author.bot:
             return
 
         author = message.author
@@ -67,7 +67,7 @@ class LoggingCog(commands.Cog):
         is participating in high traffic guilds.
         """
 
-        if after.guild.id != rc_guild_id:
+        if after.guild.id != rc_guild_id or message.author.bot:
             return
 
         author = after.author # same as before.author
@@ -91,7 +91,7 @@ class LoggingCog(commands.Cog):
         Called when User gets banned from a Guild.
         """
 
-        if guild.id != rc_guild_id:
+        if guild.id != rc_guild_id or message.author.bot:
             return
 
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
@@ -112,7 +112,7 @@ class LoggingCog(commands.Cog):
         Called when a User gets unbanned from a Guild.
         """
 
-        if guild.id != rc_guild_id:
+        if guild.id != rc_guild_id or message.author.bot:
             return
 
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
@@ -133,7 +133,7 @@ class LoggingCog(commands.Cog):
         Called whenever a guild channel is updated. e.g. changed name, topic, permissions.
         """
 
-        if after.guild.id != rc_guild_id:
+        if after.guild.id != rc_guild_id or message.author.bot:
             return
 
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
@@ -152,7 +152,7 @@ class LoggingCog(commands.Cog):
         Called whenever a guild channel is created.
         """
 
-        if channel.guild.id != rc_guild_id:
+        if channel.guild.id != rc_guild_id or message.author.bot:
             return
 
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
@@ -171,7 +171,7 @@ class LoggingCog(commands.Cog):
         Called whenever a guild channel is deleted.
         """
 
-        if channel.guild.id != rc_guild_id:
+        if channel.guild.id != rc_guild_id or message.author.bot:
             return
 
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
