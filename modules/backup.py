@@ -17,11 +17,15 @@ instance = os.getenv("INSTANCE")
 mariadb_user = os.getenv("MARIADB_USER")
 mariadb_password = os.getenv("MARIADB_PASSWORD")
 
-dbx = dropbox.Dropbox(
-    app_key=app_key,
-    app_secret=app_secret,
-    oauth2_refresh_token=oauth2_refresh_token
-)
+if instance.lower() == "main":
+    dbx = dropbox.Dropbox(
+        app_key=app_key,
+        app_secret=app_secret,
+        oauth2_refresh_token=oauth2_refresh_token
+    )
+else:
+    # can be ignored
+    dbx = None
 
 
 async def create_db_backup(dbx, path="db/rcu.db"):
