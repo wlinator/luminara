@@ -175,13 +175,13 @@ async def on_application_command_completion(ctx) -> None:
         #     f"Executed {executed_command} command in {ctx.guild.name} (ID: {ctx.guild.id}) "
         #     f"by {ctx.author} (ID: {ctx.author.id})"
         # )
-        racu_logs.info(f"[CommandHandler] {ctx.author} successfully did \"/{executed_command}\". "
+        racu_logs.info(f"[CommandHandler] {ctx.author.name} successfully did \"/{executed_command}\". "
                        f"| guild: {ctx.guild.name} ")
     else:
         # racu_logs.info(
         #     f"Executed {executed_command} command by {ctx.author} (ID: {ctx.author.id}) in DMs."
         # )
-        racu_logs.info(f"[CommandHandler] {ctx.author} successfully did \"/{executed_command}\". | direct message")
+        racu_logs.info(f"[CommandHandler] {ctx.author.name} successfully did \"/{executed_command}\". | direct message")
 
 
 @sbbot.event
