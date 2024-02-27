@@ -281,6 +281,6 @@ if __name__ == '__main__':
     racu_logs.info("\n")
 
     # replace all items, if there are any changes they will be overwritten
-    Item.insert_items()
+    # Item.insert_items()
 
     sbbot.run(os.getenv('TOKEN'))
