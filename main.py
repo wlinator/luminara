@@ -2,6 +2,7 @@ import logging
 import os
 import platform
 import re
+import sys
 import time
 from datetime import datetime
 
@@ -15,6 +16,9 @@ from config import json_loader
 from data.Item import Item
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
+
+load_dotenv('.env')
+instance = os.getenv("INSTANCE")
 
 sbbot = discord.Bot(
     owner_id=os.getenv('OWNER_ID'),
@@ -133,6 +137,10 @@ async def on_message(message):
     if message.author.bot:
         return
 
+    # remove if debugging leveling or reaction handler:
+    if instance.lower() != "main":
+        return
+
     try:
         xp_handler = XPHandler()
         await xp_handler.process_xp(message)
@@ -167,7 +175,6 @@ async def on_member_join(member):
     )
 
     embed.set_thumbnail(url=member.display_avatar)
-
 
     await guild.get_channel(welcome_channel_id).send(embed=embed, content=member.mention)
 
@@ -219,13 +226,16 @@ async def on_application_command_error(ctx, error) -> None:
         racu_logs.info(f"commands.BotMissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
 
     else:
-        racu_logs.error(f"on_application_command_error (check debug log): {error}", exc_info=False)
-        racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
+        racu_logs.error(f"on_application_command_error: {error}", exc_info=True)
+
+        # if you use this, set "exc_info" to False above
+        # racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
 
 
 @sbbot.event
 async def on_error(event: str, *args, **kwargs) -> None:
-    racu_logs.error(f"on_error: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
+    racu_logs.error(f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
+    racu_logs.error(f"on_error EXCEPTION: {sys.exc_info()}")
 
 
 # load all json
@@ -265,13 +275,12 @@ if __name__ == '__main__':
     racu_logs.info("RACU IS BOOTING")
     racu_logs.info("\n")
 
-    load_dotenv('.env')
-
-    # replace all items, if there are any changes they will be overwritten
-    Item.insert_items()
-
     load_cogs()
 
     # empty line to separate modules from system info in logs
     racu_logs.info("\n")
+
+    # replace all items, if there are any changes they will be overwritten
+    Item.insert_items()
+
     sbbot.run(os.getenv('TOKEN'))
