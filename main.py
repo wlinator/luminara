@@ -10,7 +10,6 @@ import pytz
 from discord.ext import commands
 from dotenv import load_dotenv
 
-import db.tables
 import sb_tools.resources
 from config import json_loader
 from data.Item import Item
@@ -268,9 +267,8 @@ if __name__ == '__main__':
 
     load_dotenv('.env')
 
-    # load db
-    # db.tables.sync_database()
-    # Item.insert_items()
+    # replace all items, if there are any changes they will be overwritten
+    Item.insert_items()
 
     load_cogs()
 
