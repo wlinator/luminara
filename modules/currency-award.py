@@ -17,33 +17,9 @@ with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
-class EconomyCog(commands.Cog):
+class AwardCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
-
-    @commands.slash_command(
-        name="balance",
-        description="See how much cash you have.",
-        guild_only=True
-    )
-    @commands.check(universal.channel_check)
-    async def balance(self, ctx):
-
-        # Currency handler
-        ctx_currency = Currency(ctx.author.id)
-
-        cash_balance = Currency.format(ctx_currency.cash)
-        special_balance = Currency.format(ctx_currency.special)
-
-        embed = discord.Embed(
-            color=discord.Color.embed_background(),
-            description=f"**Cash**: {cash_balance_name}{cash_balance}\n"
-                        f"**{special_balance_name.capitalize()}**: {special_balance}"
-        )
-        embed.set_author(name=f"{ctx.author.name}'s wallet", icon_url=ctx.author.avatar.url)
-        embed.set_footer(text=f"Level up to earn {special_balance_name}!")
-
-        await ctx.respond(embed=embed)
 
     @commands.slash_command(
         name="give",
@@ -127,4 +103,4 @@ class EconomyCog(commands.Cog):
 
 
 def setup(sbbot):
-    sbbot.add_cog(EconomyCog(sbbot))
+    sbbot.add_cog(AwardCog(sbbot))
