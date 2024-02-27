@@ -239,7 +239,8 @@ loaded_modules = set()
 
 
 def load_cogs():
-    for filename in os.listdir('./modules'):
+    # sort modules alphabetically purely for an easier overview in logs
+    for filename in sorted(os.listdir('./modules')):
 
         if filename in loaded_modules:
             continue  # module is already loaded

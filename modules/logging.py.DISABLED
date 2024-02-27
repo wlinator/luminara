@@ -18,7 +18,7 @@ rc_guild_id = economy_config["rc_guild_id"]
 class LoggingCog(commands.Cog):
     def __init__(self, sbbot):
         self.bot = sbbot
-    
+
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         """
@@ -45,8 +45,8 @@ class LoggingCog(commands.Cog):
             attachment_list += f"{attachment.content_type} | {attachment.proxy_url}\n"
 
         embed = discord.Embed(
-            color = discord.Color.orange(),
-            description = f"**Message sent by {author.mention} deleted in {message.channel.mention}.**"
+            color=discord.Color.orange(),
+            description=f"**Message sent by {author.mention} deleted in {message.channel.mention}.**"
         )
         embed.set_author(name=author.name, icon_url=author.display_avatar)
         embed.add_field(name="Message ID", value=f"```\n{message.id}\n```", inline=False)
@@ -70,14 +70,14 @@ class LoggingCog(commands.Cog):
         if after.guild.id != rc_guild_id or message.author.bot:
             return
 
-        author = after.author # same as before.author
+        author = after.author  # same as before.author
         edit_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
 
         embed = discord.Embed(
-            color = discord.Color.yellow(),
-            description = f"**Message sent by {author.mention} edited in {after.channel.mention}.**"
+            color=discord.Color.yellow(),
+            description=f"**Message sent by {author.mention} edited in {after.channel.mention}.**"
         )
-        embed.set_author(name=author.name, icon_url = author.display_avatar)
+        embed.set_author(name=author.name, icon_url=author.display_avatar)
         embed.add_field(name="Message ID", value=f"```\n{after.id}\n```", inline=False)
         embed.add_field(name="Before", value=f"```\n{before.clean_content}\n```", inline=False)
         embed.add_field(name="After", value=f"```\n{after.clean_content}\n```", inline=False)
@@ -97,8 +97,8 @@ class LoggingCog(commands.Cog):
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
 
         embed = discord.Embed(
-            color = discord.Color.red(),
-            title = f"**User @{user.name} was banned from the server.**"
+            color=discord.Color.red(),
+            title=f"**User @{user.name} was banned from the server.**"
         )
         embed.add_field(name="User ID", value=f"```\n{user.id}\n```")
         embed.set_thumbnail(url=user.display_avatar)
@@ -118,8 +118,8 @@ class LoggingCog(commands.Cog):
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
 
         embed = discord.Embed(
-            color = discord.Color.red(),
-            title = f"**User @{user.name} was unbanned from the server.**"
+            color=discord.Color.red(),
+            title=f"**User @{user.name} was unbanned from the server.**"
         )
         embed.add_field(name="User ID", value=f"```\n{user.id}\n```")
         embed.set_thumbnail(url=user.display_avatar)
@@ -139,8 +139,8 @@ class LoggingCog(commands.Cog):
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
 
         embed = discord.Embed(
-            color = discord.Color.light_grey(),
-            description = f"**✏️ {after.mention} (#{after.name}) has been updated.**"
+            color=discord.Color.light_grey(),
+            description=f"**✏️ {after.mention} (#{after.name}) has been updated.**"
         )
         embed.set_footer(text=current_time)
 
@@ -158,8 +158,8 @@ class LoggingCog(commands.Cog):
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
 
         embed = discord.Embed(
-            color = discord.Color.light_grey(),
-            description = f"**🏗️ {channel.mention} (#{channel.name}) has been created.**"
+            color=discord.Color.light_grey(),
+            description=f"**🏗️ {channel.mention} (#{channel.name}) has been created.**"
         )
         embed.set_footer(text=current_time)
 
@@ -177,12 +177,13 @@ class LoggingCog(commands.Cog):
         current_time = datetime.now(est).strftime("%Y-%m-%d %I:%M %p")
 
         embed = discord.Embed(
-            color = discord.Color.light_grey(),
-            description = f"**🗑️ The channel \"#{channel.name}\" has been deleted.**"
+            color=discord.Color.light_grey(),
+            description=f"**🗑️ The channel \"#{channel.name}\" has been deleted.**"
         )
         embed.set_footer(text=current_time)
 
         await channel.guild.get_channel(logging_channel_id).send(embed=embed)
+
 
 def setup(sbbot):
     sbbot.add_cog(LoggingCog(sbbot))
