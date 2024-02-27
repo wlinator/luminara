@@ -4,6 +4,10 @@ services:
     core:
         build: .
         restart: always
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "50m"
         depends_on:
             db:
                 condition: service_healthy
@@ -19,6 +23,10 @@ services:
         volumes:
             - ./db/init:/docker-entrypoint-initdb.d/
             - dbdata:/var/lib/mysql
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "50m"
         ports:
             - 3306:3306
         healthcheck:
@@ -30,6 +38,10 @@ services:
     adminer:
         image: adminer
         restart: always
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "50m"
         ports:
             - 8080:8080
  
