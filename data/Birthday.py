@@ -23,7 +23,7 @@ class Birthday:
         query = """
                 SELECT user_id
                 FROM birthdays
-                WHERE strftime('%m-%d', birthday) = %s
+                WHERE DATE_FORMAT(birthday, '%m-%d') = %s
                 """
 
         tz = pytz.timezone('US/Eastern')
