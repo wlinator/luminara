@@ -166,7 +166,7 @@ class BasicCog(commands.Cog):
                                     intro_channel = guild.get_channel(channel_id)
                                     await intro_channel.send(embed=em, content=f"Introduction of <@{ctx.author.id}>")
                                     await ctx.send(embed=embeds.final_confirmation(channel_id))
-                                    racu_logs.info(f"{ctx.author.name} Intro Sent")
+                                    racu_logs.info(f"[CommandHandler] {ctx.author.name} introduction was submitted.")
                                     return
                                 else:
                                     await ctx.send(embed=embeds.no_time())
@@ -350,7 +350,7 @@ class BasicCog(commands.Cog):
                                                     await intro_channel.send(embed=em,
                                                                              content=f"Introduction of <@{ctx.author.id}>")
                                                     await ctx.send(embed=embeds.final_confirmation(channel_id))
-                                                    racu_logs.info(f"{ctx.author.name} Intro Sent")
+                                                    racu_logs.info(f"[CommandHandler] {ctx.author.name} introduction was submitted.")
                                                     return
                                                 else:
                                                     await ctx.send(embed=embeds.no_time())

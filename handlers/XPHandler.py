@@ -55,7 +55,7 @@ class XPHandler:
     async def process_xp(self, message):
 
         if message.channel.id == 746796138195058788 or message.channel.id == 814590778650263604:
-            racu_logs.info(f"No XP gain - blacklisted channel. | user {message.author.name}")
+            racu_logs.info(f"[XpHandler] {message.author.name} sent a message in a xp-blacklisted channel.")
             return
 
         current_time = time.time()
@@ -63,7 +63,7 @@ class XPHandler:
         xp = Xp(user_id)
 
         if xp.ctime and current_time < xp.ctime:
-            racu_logs.debug(f"XP UPDATE --- {message.author.name} sent a message but is on XP cooldown.")
+            racu_logs.info(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
             return
 
         new_xp = xp.xp + xp.xp_gain
@@ -78,7 +78,7 @@ class XPHandler:
             except Exception as err:
                 # fallback to v1 (generic leveling)
                 lvl_message = level_messages(xp.level, message.author)
-                racu_logs.error("level_messages v1 fallback was triggered: ", err)
+                racu_logs.error("[XpHandler] level_messages v1 fallback was triggered: ", err)
 
             await message.reply(content=lvl_message)
             
@@ -87,7 +87,7 @@ class XPHandler:
                 try:
                     await self.assign_level_role(message.author, xp.level)
                 except Exception as error:
-                    racu_logs.error(f"Assign level role FAILED; {error}")
+                    racu_logs.error(f"[XpHandler] Assign level role FAILED; {error}")
 
             """
             AWARD CURRENY_SPECIAL ON LEVEL-UP
@@ -96,11 +96,12 @@ class XPHandler:
             user_currency.add_special(1)
             user_currency.push()
 
-            racu_logs.info(f"XP UPDATE --- {message.author.name} leveled up; new_level = {xp.level}.")
+            racu_logs.info(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
 
         else:
             xp.xp += xp.xp_gain
-            racu_logs.info(f"XP UPDATE --- {message.author.name} gained {xp.xp_gain} XP; new_xp = {new_xp}.")
+            racu_logs.info(f"[XpHandler] {message.author.name} gained {xp.xp_gain} XP | "
+                           f"lv {xp.level} with {xp.xp} XP.")
 
         xp.ctime = current_time + xp.new_cooldown
         xp.push()

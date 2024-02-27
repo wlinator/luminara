@@ -275,7 +275,7 @@ class BlackJackCog(commands.Cog):
 
         except Exception as e:
             await ctx.respond(embed=embeds.command_error_1(e))
-            racu_logs.error("Something went wrong in the gambling command: ", e)
+            racu_logs.error("[CommandHandler] Something went wrong in the gambling command: ", e)
 
         finally:
             # remove player from active games list

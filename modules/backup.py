@@ -64,13 +64,13 @@ class BackupCog(commands.Cog):
                 await create_db_backup(dbx)
                 await backup_cleanup(dbx)
 
-                racu_logs.info("DB Dropbox backup success.")
+                racu_logs.info("[BACKUP] database backup success.")
 
             except Exception as error:
-                racu_logs.error(f"DB Dropbox backup failed. {error}")
-                racu_logs.debug(f"Dropbox failure: {error}")
+                racu_logs.error(f"[BACKUP] database backup failed. {error}")
+                racu_logs.info(f"[BACKUP] Dropbox failure: {error}")
         else:
-            racu_logs.info("No backup was made, instance not \"MAIN\".")
+            racu_logs.info("[BACKUP] No backup was made, instance not \"MAIN\".")
 
 
 def setup(sbbot):

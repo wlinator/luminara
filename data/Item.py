@@ -71,7 +71,7 @@ class Item:
             database.execute_query(query,
                                    (index, name, display_name, description, image_url, emote_id, quote, item_type))
 
-        racu_logs.info("Items inserted into the database successfully.")
+        racu_logs.info("[ItemHandler] Items inserted into the database successfully.")
 
     @staticmethod
     def get_all_item_names():
