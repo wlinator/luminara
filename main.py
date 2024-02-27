@@ -251,7 +251,7 @@ def load_cogs():
             try:
                 sbbot.load_extension(module_name)
                 loaded_modules.add(filename)
-                racu_logs.info(f"Module {filename} loaded.")
+                racu_logs.info(f"Module {filename[:-3].upper()} loaded.")
 
             except Exception as e:
                 racu_logs.error(f"Failed to load module {filename}: {e}")
@@ -264,6 +264,8 @@ if __name__ == '__main__':
     """
 
     racu_logs.info("RACU IS BOOTING")
+    racu_logs.info("\n")
+
     load_dotenv('.env')
 
     # load db
@@ -271,4 +273,7 @@ if __name__ == '__main__':
     # Item.insert_items()
 
     load_cogs()
+
+    # empty line to separate modules from system info in logs
+    racu_logs.info("\n")
     sbbot.run(os.getenv('TOKEN'))
