@@ -120,7 +120,7 @@ class LeaderboardCommandView(discord.ui.View):
 
     async def on_timeout(self):
         await self.message.edit(view=None)
-        racu_logs.info(f"{self.ctx.author.name}: /leaderboard command timed out - this is normal behavior.")
+        #racu_logs.info(f"[CommandHandler] /leaderboard command timed out - this is normal behavior.")
         self.stop()
 
     async def interaction_check(self, interaction) -> bool:

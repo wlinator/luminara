@@ -49,7 +49,7 @@ class SimpleModCog(commands.Cog):
             if not dm_channel:
                 await ctx.respond(strings["error_mod_invoke_error"].format(ctx.author.name), ephemeral=True)
 
-            racu_logs.info(f"error during kick command: {err}")
+            racu_logs.error(f"[CommandHandler] error during kick command: {err}")
 
     @commands.slash_command(
         name="ban",
@@ -80,7 +80,7 @@ class SimpleModCog(commands.Cog):
             if not dm_channel:
                 await ctx.respond(strings["error_mod_invoke_error"].format(ctx.author.name), ephemeral=True)
 
-            racu_logs.info(f"error during ban command: {err}")
+            racu_logs.error(f"[CommandHandler] error during ban command: {err}")
 
 
 def setup(sbbot):

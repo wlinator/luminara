@@ -155,7 +155,7 @@ class SellCog(commands.Cog):
                     await ctx.respond(
                         embed=discord.Embed(description="You ran out of time.", color=discord.Color.red()),
                         content=ctx.author.mention)
-                    racu_logs.warning(f"{ctx.author.id} Sell Timeout")
+                    # racu_logs.warning(f"{ctx.author.id} Sell Timeout")
                     return
 
             else:
@@ -198,7 +198,7 @@ class SellCog(commands.Cog):
 
                 except Exception as e:
                     await ctx.respond("Something went wrong, let Tess know about this.")
-                    racu_logs.error(f"/sell post-confirmation error: {e}")
+                    racu_logs.error(f"[CommandHandler] /sell post-confirmation error: {e}")
                     return
 
             else:

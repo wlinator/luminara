@@ -82,7 +82,7 @@ class BirthdayCog(commands.Cog):
     async def daily_birthday_check(self):
 
         wait_time = time.seconds_until(7, 0)
-        racu_logs.info(f"daily_birthday_check(): Waiting until 7 AM Eastern: {wait_time}")
+        racu_logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
         await asyncio.sleep(wait_time)
 
         birthday_ids = Birthday.today()
@@ -103,16 +103,16 @@ class BirthdayCog(commands.Cog):
                     message = random.choice(messages["birthday_messages"])
                     await channel.send(message.format(user.mention))
 
-                    racu_logs.info(f"daily_birthday_check(): Sent message for USER ID: {user_id}")
+                    racu_logs.info(f"[BirthdayHandler] Sent message for user with ID {user_id}")
 
                 except discord.HTTPException:
-                    racu_logs.info(f"daily_birthday_check(): Not sent because USER ID {user_id} not in Guild.")
+                    racu_logs.info(f"[BirthdayHandler] Not sent because user with ID {user_id} not in Guild.")
 
                 except Exception as err:
-                    racu_logs.error(f"daily_birthday_check(): Something went wrong: {err}")
+                    racu_logs.error(f"[BirthdayHandler] Something went wrong: {err}")
 
         else:
-            racu_logs.info("daily_birthday_check(): No Birthdays Today.")
+            racu_logs.info("[BirthdayHandler] No Birthdays Today.")
 
 
 def setup(sbbot):

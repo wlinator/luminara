@@ -65,19 +65,10 @@ class RacuFormatter(logging.Formatter):
 
 
 def setup_logger():
-    # Create a "logs" subfolder if it doesn't exist
-    logs_folder = 'logs'
-    if not os.path.exists(logs_folder):
-        os.makedirs(logs_folder)
-
-    # Generate the log file path for debug-level logs
-    debug_log_file = os.path.join(logs_folder, 'debug.log')
-
-    # Generate the log file path for info-level logs
-    info_log_file = os.path.join(logs_folder, 'info.log')
 
     # Initialize the logger
     logger = logging.getLogger('Racu.Core')
+
     if logger.handlers:
         # Handlers already exist, no need to add more
         return logger
@@ -87,26 +78,10 @@ def setup_logger():
     # Create console handler and set level and formatter
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
-    console_formatter = RacuFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
+    console_formatter = RacuFormatter('[%(asctime)s] [%(name)s] %(message)s',
                                       datefmt='%Y-%m-%d %H:%M:%S')
     console_handler.setFormatter(console_formatter)
     logger.addHandler(console_handler)
-
-    # Create debug file handler and set level and formatter
-    debug_file_handler = logging.FileHandler(debug_log_file)
-    debug_file_handler.setLevel(logging.DEBUG)
-    debug_file_formatter = RacuFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-                                         datefmt='%Y-%m-%d %H:%M:%S')
-    debug_file_handler.setFormatter(debug_file_formatter)
-    logger.addHandler(debug_file_handler)
-
-    # Create info file handler and set level and formatter
-    info_file_handler = logging.FileHandler(info_log_file)
-    info_file_handler.setLevel(logging.INFO)
-    info_file_formatter = RacuFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-                                        datefmt='%Y-%m-%d %H:%M:%S')
-    info_file_handler.setFormatter(info_file_formatter)
-    logger.addHandler(info_file_handler)
 
     logger.propagate = False
     logging.captureWarnings(True)
@@ -119,11 +94,11 @@ racu_logs = setup_logger()
 
 @sbbot.event
 async def on_ready():
-    racu_logs.info(f"Logged in as {sbbot.user.name}")
-    racu_logs.info(f"discord.py API version: {discord.__version__}")
-    racu_logs.info(f"Python version: {platform.python_version()}")
-    racu_logs.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
-    racu_logs.info("-----------------------------------------")
+    racu_logs.info(f"[INFO] Logged in as {sbbot.user.name}")
+    racu_logs.info(f"[INFO] discord.py API version: {discord.__version__}")
+    racu_logs.info(f"[INFO] Python version: {platform.python_version()}")
+    racu_logs.info(f"[INFO] Running on: {platform.system()} {platform.release()} ({os.name})")
+    racu_logs.info("-------------------------------------------------------")
 
     """
     https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready
@@ -138,8 +113,8 @@ async def on_message(message):
         return
 
     # remove if debugging leveling or reaction handler:
-    if instance.lower() != "main":
-        return
+    # if instance.lower() != "main":
+    #     return
 
     try:
         xp_handler = XPHandler()
@@ -149,8 +124,8 @@ async def on_message(message):
         await reaction_handler.handle_message(message)
 
     except Exception as error:
-        racu_logs.error(f"on_message (check debug log): {error}", exc_info=False)
-        racu_logs.debug(f"on_message (w/ stacktrace): {error}", exc_info=True)
+        racu_logs.error(f"[EventHandler] on_message (check debug log): {error}", exc_info=False)
+        racu_logs.debug(f"[EventHandler] on_message (w/ stacktrace): {error}", exc_info=True)
 
 
 @sbbot.event
@@ -158,6 +133,10 @@ async def on_member_join(member):
     guild = member.guild
 
     if guild.id != 719227135151046699:
+        return
+
+    # remove if debugging welcome messages:
+    if instance.lower() != "main":
         return
 
     welcome_channel_id = 721862236112420915
@@ -183,6 +162,7 @@ async def on_member_join(member):
 async def on_application_command_completion(ctx) -> None:
     """
     This code is executed when a slash_command has been successfully executed.
+    This technically serves as a CommandHandler function
     :param ctx:
     :return:
     """
@@ -191,14 +171,17 @@ async def on_application_command_completion(ctx) -> None:
     executed_command = str(split[0])
 
     if ctx.guild is not None:
-        racu_logs.info(
-            f"Executed {executed_command} command in {ctx.guild.name} (ID: {ctx.guild.id}) "
-            f"by {ctx.author} (ID: {ctx.author.id})"
-        )
+        # racu_logs.info(
+        #     f"Executed {executed_command} command in {ctx.guild.name} (ID: {ctx.guild.id}) "
+        #     f"by {ctx.author} (ID: {ctx.author.id})"
+        # )
+        racu_logs.info(f"[CommandHandler] {ctx.author} successfully did \"/{executed_command}\". "
+                       f"| guild: {ctx.guild.name} ")
     else:
-        racu_logs.info(
-            f"Executed {executed_command} command by {ctx.author} (ID: {ctx.author.id}) in DMs."
-        )
+        # racu_logs.info(
+        #     f"Executed {executed_command} command by {ctx.author} (ID: {ctx.author.id}) in DMs."
+        # )
+        racu_logs.info(f"[CommandHandler] {ctx.author} successfully did \"/{executed_command}\". | direct message")
 
 
 @sbbot.event
@@ -215,27 +198,28 @@ async def on_application_command_error(ctx, error) -> None:
             f"You can use this command again in **{cooldown}**.",
             ephemeral=True)
 
-        racu_logs.info(f"commands.CommandOnCooldown | {ctx.author.name}")
+        racu_logs.info(f"[CommandHandler] {ctx.author.name} tried to do a command on cooldown.")
 
     elif isinstance(error, commands.MissingPermissions):
         await ctx.respond(strings["error_missing_permissions"].format(ctx.author.name), ephemeral=True)
-        racu_logs.info(f"commands.MissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
+        racu_logs.info(f"[CommandHandler] {ctx.author.name} has missing permissions to do a command: "
+                       f"{ctx.command.qualified_name}")
 
     elif isinstance(error, commands.BotMissingPermissions):
         await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
-        racu_logs.info(f"commands.BotMissingPermissions: {ctx.command.qualified_name} | {ctx.author.name}")
+        racu_logs.info(f"[CommandHandler] Racu is missing permissions: {ctx.command.qualified_name}")
 
     else:
-        racu_logs.error(f"on_application_command_error: {error}", exc_info=True)
+        racu_logs.error(f"[CommandHandler] on_application_command_error: {error}", exc_info=True)
 
         # if you use this, set "exc_info" to False above
-        # racu_logs.debug(f"on_application_command_error (w/ stacktrace): {error}", exc_info=True)
+        # racu_logs.debug(f"[CommandHandler] on_application_command_error (w/ stacktrace): {error}", exc_info=True)
 
 
 @sbbot.event
 async def on_error(event: str, *args, **kwargs) -> None:
-    racu_logs.error(f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
-    racu_logs.error(f"on_error EXCEPTION: {sys.exc_info()}")
+    racu_logs.error(f"[EventHandler] on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
+    racu_logs.error(f"[EventHandler] on_error EXCEPTION: {sys.exc_info()}")
 
 
 # load all json
@@ -260,10 +244,10 @@ def load_cogs():
             try:
                 sbbot.load_extension(module_name)
                 loaded_modules.add(filename)
-                racu_logs.info(f"Module {filename[:-3].upper()} loaded.")
+                racu_logs.info(f"[MODULE] {filename[:-3].upper()} loaded.")
 
             except Exception as e:
-                racu_logs.error(f"Failed to load module {filename}: {e}")
+                racu_logs.error(f"[MODULE] Failed to load module {filename}: {e}")
 
 
 if __name__ == '__main__':
