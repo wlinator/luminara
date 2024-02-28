@@ -4,9 +4,9 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
+from services.Currency import Currency
 from main import economy_config
-from sb_tools import economy_embeds, universal, interaction
+from lib import economy_embeds, checks, interaction
 
 load_dotenv('.env')
 
@@ -15,15 +15,15 @@ cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
 
 class ExchangeCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="exchange",
         description=f"Exchange {special_balance_name} for cash.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def exchange(self, ctx, *, amount: discord.Option(int)):
 
         # Currency handler
@@ -59,5 +59,5 @@ class ExchangeCog(commands.Cog):
         await ctx.edit(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(ExchangeCog(sbbot))
+def setup(client):
+    client.add_cog(ExchangeCog(client))

@@ -1,14 +1,13 @@
 import discord
 
-from data.Xp import Xp
+from services.Xp import Xp
 
 
-def command_error_1():
+def command_error_1(error):
     embed = discord.Embed(
         color=discord.Color.red(),
-        description="I'm not even sure how you reached this error but here we are. Try the command again."
+        description=f"Something went wrong.\n```{error}```"
     )
-    embed.set_footer(text="And tell Tess!!!")
 
     return embed
 
@@ -106,14 +105,6 @@ def final_confirmation(channel_id):
                           description=f"<#{channel_id}>")
 
     return embed
-
-
-#
-# def level_up_message(level, rank):
-#     embed = discord.Embed(color=0xadcca6,
-#                           title=f"You reached level {level}!")
-#     embed.set_footer(text=f"Rank: #{rank} | Leaderboard coming soon")
-#     return embed
 
 
 def level_command_message(ctx, level, xp, next_level_xp, rank):

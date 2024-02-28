@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from data.Currency import Currency
+from services.Currency import Currency
 from db import database
 
 with open("config/economy.json") as file:
@@ -34,7 +34,7 @@ class Dailies:
 
         query = """
         INSERT INTO dailies (user_id, amount, claimed_at, streak)
-        VALUES (?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s)
         """
         values = (self.user_id, self.amount, self.claimed_at, self.streak)
         database.execute_query(query, values)
@@ -80,7 +80,7 @@ class Dailies:
         WHERE id = (
             SELECT MAX(id)
             FROM dailies
-            WHERE user_id = ?
+            WHERE user_id = %s
         )
         """
 
@@ -90,3 +90,26 @@ class Dailies:
             (claimed_at, streak) = None, 0
 
         return claimed_at, streak
+
+    @staticmethod
+    def load_leaderboard():
+        query = """
+                SELECT user_id, MAX(streak), claimed_at
+                FROM dailies
+                GROUP BY user_id
+                ORDER BY MAX(streak) DESC;
+                """
+
+        data = database.select_query(query)
+
+        leaderboard = []
+        rank = 1
+        for row in data:
+            row_user_id = row[0]
+            streak = row[1]
+            claimed_at = row[2]
+            leaderboard.append((row_user_id, streak, claimed_at, rank))
+            rank += 1
+
+        return leaderboard
+

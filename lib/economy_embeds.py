@@ -90,17 +90,3 @@ def out_of_time():
         description="Uh-oh! Time's up. Your bet is forfeited as the game concludes."
     )
     return embed
-
-
-def coinflip(ctx, guess_side, throw_side, bet):
-    embed = discord.Embed(
-        title=f"You bet {cash_balance_name}{bet} on {guess_side}."
-    )
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-
-    if throw_side == "heads":
-        embed.set_thumbnail(url="https://media.tenor.com/nEu74vu_sT4AAAAC/heads-coinflip.gif")
-    else:
-        embed.set_thumbnail(url="https://media.tenor.com/kK8D7hQXX5wAAAAC/coins-tails.gif")
-
-    return embed

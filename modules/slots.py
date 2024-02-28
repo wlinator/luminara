@@ -7,18 +7,18 @@ import discord
 import pytz
 from discord.ext import commands
 
-from data.Currency import Currency
-from data.SlotsStats import SlotsStats
+from services.Currency import Currency
+from services.SlotsStats import SlotsStats
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from sb_tools import economy_embeds, universal
+from lib import economy_embeds, checks
 
 est = pytz.timezone('US/Eastern')
 
 
-def get_emotes(sbbot):
+def get_emotes(client):
     decoration = economy_config["slots"]["emotes"]
-    emojis = {name: sbbot.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
+    emojis = {name: client.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
     return emojis
 
 
@@ -155,15 +155,15 @@ def slots_finished(ctx, payout_type, bet, payout, results, emojis):
 
 
 class SlotsCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="slots",
         descriptions="Spin the slots for a chance to win the jackpot!",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def slots(self, ctx, *, bet: discord.Option(int)):
 
         # Currency handler
@@ -175,11 +175,11 @@ class SlotsCog(commands.Cog):
             await ctx.respond(embed=economy_embeds.not_enough_cash())
             return
 
-        # check if the bet exceeds the bet limit
-        bet_limit = int(economy_config["bet_limit"])
-        if abs(bet) > bet_limit:
-            message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
-            return await ctx.respond(content=message)
+        # # check if the bet exceeds the bet limit
+        # bet_limit = int(economy_config["bet_limit"])
+        # if abs(bet) > bet_limit:
+        #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
+        #     return await ctx.respond(content=message)
 
         # calculate the results before the command is shown
         results = [random.randint(0, 6) for _ in range(3)]
@@ -192,7 +192,7 @@ class SlotsCog(commands.Cog):
             is_won = False
 
         # only get the emojis once
-        emojis = get_emotes(self.bot)
+        emojis = get_emotes(self.client)
 
         # start with default "spinning" embed
         await ctx.respond(embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, emojis))
@@ -236,5 +236,5 @@ class SlotsCog(commands.Cog):
         stats.push()
 
 
-def setup(sbbot):
-    sbbot.add_cog(SlotsCog(sbbot))
+def setup(client):
+    client.add_cog(SlotsCog(client))

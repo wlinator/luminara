@@ -1,17 +1,19 @@
 import os
 from datetime import datetime
 
+import logging
 import discord
 import pytz
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.BlackJackStats import BlackJackStats
-from data.Currency import Currency
+from services.BlackJackStats import BlackJackStats
+from services.Currency import Currency
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from sb_tools import economy_embeds, economy_functions, universal, interaction, embeds
+from lib import economy_embeds, economy_functions, checks, interaction, embeds
 
+logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 est = pytz.timezone('US/Eastern')
 
@@ -111,15 +113,15 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
 
 
 class BlackJackCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="blackjack",
         description="Start a game of blackjack.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def blackjack(self, ctx, *, bet: discord.Option(int)):
 
         # check if the player already has an active blackjack going
@@ -137,10 +139,10 @@ class BlackJackCog(commands.Cog):
             return
 
         # check if the bet exceeds the bet limit
-        bet_limit = int(economy_config["bet_limit"])
-        if abs(bet) > bet_limit:
-            message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
-            return await ctx.respond(content=message)
+        # bet_limit = int(economy_config["bet_limit"])
+        # if abs(bet) > bet_limit:
+        #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
+        #     return await ctx.respond(content=message)
 
         active_blackjack_games[ctx.author.id] = True
 
@@ -272,13 +274,13 @@ class BlackJackCog(commands.Cog):
                 stats.push()
 
         except Exception as e:
-            await ctx.respond(embed=embeds.command_error_1())
-            print("Something went wrong in the gambling command:\n", e)
+            await ctx.respond(embed=embeds.command_error_1(e))
+            logs.error("[CommandHandler] Something went wrong in the gambling command: ", e)
 
         finally:
             # remove player from active games list
             del active_blackjack_games[ctx.author.id]
 
 
-def setup(sbbot):
-    sbbot.add_cog(BlackJackCog(sbbot))
+def setup(client):
+    client.add_cog(BlackJackCog(client))

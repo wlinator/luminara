@@ -1,9 +1,9 @@
 import logging
 
-from data import Item
+from services import Item
 from db import database
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class Inventory:
@@ -20,22 +20,28 @@ class Inventory:
         """
 
         query = """
-        INSERT OR REPLACE INTO inventory (user_id, item_id, quantity)
-        VALUES (?, ?, COALESCE((SELECT quantity FROM inventory WHERE user_id = ? AND item_id = ?), 0) + ?)
+        INSERT INTO inventory (user_id, item_id, quantity)
+        VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE quantity = quantity + %s;
+        """
+
+        database.execute_query(query, (self.user_id, item.id, abs(quantity), abs(quantity)))
+
+    def take_item(self, item: Item.Item, quantity=1):
+
+        query = """
+        INSERT INTO inventory (user_id, item_id, quantity)
+        VALUES (%s, %s, 0)
+        ON DUPLICATE KEY UPDATE quantity = CASE
+            WHEN quantity - %s < 0 THEN 0
+            ELSE quantity - %s
+        END;
         """
 
         database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
 
-    def take_item(self, item: Item.Item, quantity=1):
-        query = """
-                INSERT OR REPLACE INTO inventory (user_id, item_id, quantity)
-                VALUES (?, ?, COALESCE((SELECT quantity FROM inventory WHERE user_id = ? AND item_id = ?) - ?, 0))
-                """
-
-        database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
-
     def get_inventory(self):
-        query = "SELECT item_id, quantity FROM inventory WHERE user_id = ? AND quantity > 0"
+        query = "SELECT item_id, quantity FROM inventory WHERE user_id = %s AND quantity > 0"
         results = database.select_query(query, (self.user_id,))
 
         items_dict = {}
@@ -47,7 +53,7 @@ class Inventory:
         return items_dict
 
     def get_item_quantity(self, item: Item.Item):
-        query = "SELECT COALESCE(quantity, 0) FROM inventory WHERE user_id = ? AND item_id = ?"
+        query = "SELECT COALESCE(quantity, 0) FROM inventory WHERE user_id = %s AND item_id = %s"
         result = database.select_query_one(query, (self.user_id, item.id))
         return result
 
@@ -57,7 +63,7 @@ class Inventory:
                 FROM inventory
                 JOIN ShopItem ON inventory.item_id = ShopItem.item_id
                 JOIN item ON inventory.item_id = item.id
-                WHERE inventory.user_id = ? AND inventory.quantity > 0 AND ShopItem.worth > 0
+                WHERE inventory.user_id = %s AND inventory.quantity > 0 AND ShopItem.worth > 0
                 """
 
         try:
@@ -70,5 +76,5 @@ class Inventory:
             return item_names
 
         except Exception as e:
-            racu_logs.error(e)
+            logs.error(e)
             return []

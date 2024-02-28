@@ -29,8 +29,8 @@ class Currency:
     def push(self):
         query = """
         UPDATE currency
-        SET cash_balance = ?, special_balance = ?
-        WHERE user_id = ?
+        SET cash_balance = %s, special_balance = %s
+        WHERE user_id = %s
         """
 
         database.execute_query(query, (round(self.cash), round(self.special), self.user_id))
@@ -40,7 +40,7 @@ class Currency:
         query = """
         SELECT cash_balance, special_balance
         FROM currency
-        WHERE user_id = ?
+        WHERE user_id = %s
         """
 
         try:
@@ -54,7 +54,7 @@ class Currency:
         if cash_balance is None or special_balance is None:
             query = """
             INSERT INTO currency (user_id, cash_balance, special_balance)
-            VALUES (?, 50, 3)
+            VALUES (%s, 50, 3)
             """
             database.execute_query(query, (user_id,))
             return 50, 3
@@ -63,7 +63,7 @@ class Currency:
 
     @staticmethod
     def load_leaderboard():
-        query = "SELECT user_id, cash_balance FROM currency ORDER BY cash_balance DESC"
+        query = "SELECT user_id, cash_balance, special_balance FROM currency ORDER BY cash_balance DESC"
         data = database.select_query(query)
 
         leaderboard = []
@@ -71,7 +71,8 @@ class Currency:
         for row in data:
             row_user_id = row[0]
             cash_balance = row[1]
-            leaderboard.append((row_user_id, cash_balance, rank))
+            special_balance = row[2]
+            leaderboard.append((row_user_id, cash_balance, special_balance, rank))
             rank += 1
 
         return leaderboard

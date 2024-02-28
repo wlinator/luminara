@@ -1,9 +1,9 @@
 import logging
 
-from data.Inventory import Inventory
-from data.Item import Item
+from services.Inventory import Inventory
+from services.Item import Item
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class ItemHandler:
@@ -17,7 +17,7 @@ class ItemHandler:
             inv.add_item(item)
 
             field += f"- **1 {item.display_name}**.\n"
-            racu_logs.info(f"{self.ctx.author.name} was given 1 rave_coin (ItemHandler: bet > 9000)")
+            logs.info(f"[ItemHandler] {self.ctx.author.name} was given 1 rave_coin | bet > 9000")
 
             return field
 
@@ -31,7 +31,7 @@ class ItemHandler:
 
             field += f"- **1 {item.display_name}**.\n"
 
-            racu_logs.info(f"{self.ctx.author.name} was given 1 bitch_coin (ItemHandler: player_blackjack)")
+            logs.info(f"[ItemHandler] {self.ctx.author.name} was given 1 bitch_coin | blackjack")
             return field
 
         return field

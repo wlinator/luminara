@@ -5,11 +5,11 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
-from data.Inventory import Inventory
-from data.Item import Item
-from data.ShopItem import ShopItem
-from sb_tools import universal
+from services.Currency import Currency
+from services.Inventory import Inventory
+from services.Item import Item
+from services.ShopItem import ShopItem
+from lib import checks
 
 load_dotenv('.env')
 
@@ -22,15 +22,15 @@ with open("config/economy.json") as file:
 
 
 class ItemCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="item",
         description="View the information about a specific item.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def item_command(self, ctx, *, item: discord.Option(choices=Item.get_all_item_names())):
         # create item object from choice
         item = Item.get_item_by_display_name(item)
@@ -46,7 +46,7 @@ class ItemCog(commands.Cog):
             else:
                 price += f" or {shop_item.price_special} {special_balance_name}"
 
-        emote = self.bot.get_emoji(item.emote_id)
+        emote = self.client.get_emoji(item.emote_id)
 
         amount_string = f"You have this item {amount} time"
 
@@ -74,13 +74,13 @@ class ItemCog(commands.Cog):
 
         return await ctx.respond(embed=embed)
 
-    items = discord.SlashCommandGroup(name="items")
+    items = discord.SlashCommandGroup(name="items", guild_only=True)
 
     @items.command(
         name="gift",
         description="Award items to someone."
     )
-    @commands.check(universal.owner_check)
+    @commands.check(checks.bot_owner)
     async def gift(self, ctx, *,
                    user: discord.Option(discord.Member),
                    item: discord.Option(choices=Item.get_all_item_names()),
@@ -104,5 +104,5 @@ class ItemCog(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(ItemCog(sbbot))
+def setup(client):
+    client.add_cog(ItemCog(client))

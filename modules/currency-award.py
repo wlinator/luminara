@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
-from sb_tools import economy_embeds, universal
+from services.Currency import Currency
+from lib import economy_embeds, checks
 
 load_dotenv('.env')
 
@@ -17,40 +17,16 @@ with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
-class EconomyCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
-
-    @commands.slash_command(
-        name="balance",
-        description="See how much cash you have.",
-        guild_only=True
-    )
-    @commands.check(universal.channel_check)
-    async def balance(self, ctx):
-
-        # Currency handler
-        ctx_currency = Currency(ctx.author.id)
-
-        cash_balance = Currency.format(ctx_currency.cash)
-        special_balance = Currency.format(ctx_currency.special)
-
-        embed = discord.Embed(
-            color=discord.Color.embed_background(),
-            description=f"**Cash**: {cash_balance_name}{cash_balance}\n"
-                        f"**{special_balance_name.capitalize()}**: {special_balance}"
-        )
-        embed.set_author(name=f"{ctx.author.name}'s wallet", icon_url=ctx.author.avatar.url)
-        embed.set_footer(text=f"Level up to earn {special_balance_name}!")
-
-        await ctx.respond(embed=embed)
+class AwardCog(commands.Cog):
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="give",
         description="Give another user some currency.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def give(self, ctx, *,
                    user: discord.Option(discord.Member),
                    currency: discord.Option(choices=["cash", special_balance_name]),
@@ -88,7 +64,7 @@ class EconomyCog(commands.Cog):
             target_currency.push()
 
         except Exception as e:
-            await ctx.channel.respond("Something funky happened.. Tell Tess.", ephemeral=True)
+            await ctx.channel.respond("Something funky happened.. Sorry about that.", ephemeral=True)
             print(e)
             return
 
@@ -99,8 +75,8 @@ class EconomyCog(commands.Cog):
         description="Award currency - owner only command.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
-    @commands.check(universal.owner_check)
+    @commands.check(checks.channel)
+    @commands.check(checks.bot_owner)
     async def award(self, ctx, *,
                     user: discord.Option(discord.Member),
                     currency: discord.Option(choices=["cash_balance", "special_balance"]),
@@ -126,5 +102,5 @@ class EconomyCog(commands.Cog):
         await ctx.respond(embed=economy_embeds.award(user, currency, Currency.format(amount)))
 
 
-def setup(sbbot):
-    sbbot.add_cog(EconomyCog(sbbot))
+def setup(client):
+    client.add_cog(AwardCog(client))

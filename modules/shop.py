@@ -5,9 +5,9 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
-from data.ShopItem import ShopItem
-from sb_tools import universal
+from services.Currency import Currency
+from services.ShopItem import ShopItem
+from lib import checks
 
 load_dotenv('.env')
 special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
@@ -18,15 +18,15 @@ with open("config/economy.json") as file:
 
 
 class ShopCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="shop",
         description="Display the shop.",
         guild_only=True
     )
-    @commands.check(universal.beta_check)
+    @commands.check(checks.beta_command)
     async def shop(self, ctx):
         shop = ShopItem.get_shop_all()
 
@@ -38,7 +38,7 @@ class ShopCog(commands.Cog):
         embed.set_footer(text="do /buy <item>")
 
         for item in shop:
-            emoji = self.bot.get_emoji(item.item.emote_id)
+            emoji = self.client.get_emoji(item.item.emote_id)
 
             if item.price != 0 and item.price_special != 0:
                 price = f"${Currency.format(item.price)} *or* {Currency.format(item.price_special)} {special_balance_name}"
@@ -54,5 +54,5 @@ class ShopCog(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(ShopCog(sbbot))
+def setup(client):
+    client.add_cog(ShopCog(client))

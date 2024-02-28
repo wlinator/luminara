@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Inventory import Inventory
-from sb_tools import universal
+from services.Inventory import Inventory
+from lib import checks
 
 load_dotenv('.env')
 
@@ -19,15 +19,15 @@ with open("config/economy.json") as file:
 
 
 class InventoryCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="inventory",
         description="Display your inventory.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def inventory(self, ctx):
         inventory = Inventory(ctx.author.id)
         inventory_dict = inventory.get_inventory()
@@ -46,11 +46,11 @@ class InventoryCog(commands.Cog):
                 if not embed.description:
                     embed.description = "**Badges:** "
 
-                emote = self.bot.get_emoji(item.emote_id)
+                emote = self.client.get_emoji(item.emote_id)
                 embed.description += f"{emote} "
 
             else:
-                emote = self.bot.get_emoji(item.emote_id)
+                emote = self.client.get_emoji(item.emote_id)
                 embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
                                 value=f"*— amount: `{quantity}`*",
                                 inline=False)
@@ -59,5 +59,5 @@ class InventoryCog(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(InventoryCog(sbbot))
+def setup(client):
+    client.add_cog(InventoryCog(client))
