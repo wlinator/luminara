@@ -1,12 +1,12 @@
 from discord.ext import commands
 import datetime, time
 from main import strings
-from sb_tools import universal
+from utils import checks
 
 
 class UptimeCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
         self.start_time = time.time()
 
     @commands.slash_command(
@@ -14,7 +14,7 @@ class UptimeCog(commands.Cog):
         description="Simple status check.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def uptime(self, ctx):
         current_time = time.time()
 
@@ -24,5 +24,5 @@ class UptimeCog(commands.Cog):
         await ctx.respond(content=strings["uptime"].format(ctx.author.name, text))
 
 
-def setup(sbbot):
-    sbbot.add_cog(UptimeCog(sbbot))
+def setup(client):
+    client.add_cog(UptimeCog(client))

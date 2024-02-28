@@ -7,7 +7,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from db import database
-from sb_tools import universal
+from utils import checks
 
 load_dotenv('.env')
 
@@ -20,8 +20,8 @@ with open("config/economy.json") as file:
 
 
 class OwnerOnlyCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     sql = discord.SlashCommandGroup(name="sql", description="Perform SQL commands (DANGEROUS)")
 
@@ -30,7 +30,7 @@ class OwnerOnlyCog(commands.Cog):
         description="Perform a SELECT query in the database.",
         guild_only=True
     )
-    @commands.check(universal.owner_check)
+    @commands.check(checks.bot_owner)
     async def select(self, ctx, *, query: discord.Option(str)):
         if query.lower().startswith("select "):
             query = query[7:]
@@ -47,7 +47,7 @@ class OwnerOnlyCog(commands.Cog):
         description="Change a value in the database. (DANGEROUS)",
         guild_only=True
     )
-    @commands.check(universal.owner_check)
+    @commands.check(checks.bot_owner)
     async def inject(self, ctx, *, query: discord.Option(str)):
         try:
             database.execute_query(query)
@@ -56,5 +56,5 @@ class OwnerOnlyCog(commands.Cog):
             await ctx.respond(content=f"Query:\n```{query}```\nError message:\n```{error}```", ephemeral=True)
 
 
-def setup(sbbot):
-    sbbot.add_cog(OwnerOnlyCog(sbbot))
+def setup(client):
+    client.add_cog(OwnerOnlyCog(client))

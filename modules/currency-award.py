@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
-from sb_tools import economy_embeds, universal
+from services.Currency import Currency
+from utils import economy_embeds, checks
 
 load_dotenv('.env')
 
@@ -18,15 +18,15 @@ with open("config/economy.json") as file:
 
 
 class AwardCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="give",
         description="Give another user some currency.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def give(self, ctx, *,
                    user: discord.Option(discord.Member),
                    currency: discord.Option(choices=["cash", special_balance_name]),
@@ -75,8 +75,8 @@ class AwardCog(commands.Cog):
         description="Award currency - owner only command.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
-    @commands.check(universal.owner_check)
+    @commands.check(checks.channel)
+    @commands.check(checks.bot_owner)
     async def award(self, ctx, *,
                     user: discord.Option(discord.Member),
                     currency: discord.Option(choices=["cash_balance", "special_balance"]),
@@ -102,5 +102,5 @@ class AwardCog(commands.Cog):
         await ctx.respond(embed=economy_embeds.award(user, currency, Currency.format(amount)))
 
 
-def setup(sbbot):
-    sbbot.add_cog(AwardCog(sbbot))
+def setup(client):
+    client.add_cog(AwardCog(client))

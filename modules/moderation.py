@@ -5,7 +5,7 @@ from discord.ext import commands
 
 from main import strings
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 def hierarchy_check(user, target):
@@ -16,8 +16,8 @@ def hierarchy_check(user, target):
 
 
 class SimpleModCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     """
     This cog contains simple moderation commands
@@ -49,7 +49,7 @@ class SimpleModCog(commands.Cog):
             if not dm_channel:
                 await ctx.respond(strings["error_mod_invoke_error"].format(ctx.author.name), ephemeral=True)
 
-            racu_logs.error(f"[CommandHandler] error during kick command: {err}")
+            logs.error(f"[CommandHandler] error during kick command: {err}")
 
     @commands.slash_command(
         name="ban",
@@ -80,8 +80,8 @@ class SimpleModCog(commands.Cog):
             if not dm_channel:
                 await ctx.respond(strings["error_mod_invoke_error"].format(ctx.author.name), ephemeral=True)
 
-            racu_logs.error(f"[CommandHandler] error during ban command: {err}")
+            logs.error(f"[CommandHandler] error during ban command: {err}")
 
 
-def setup(sbbot):
-    sbbot.add_cog(SimpleModCog(sbbot))
+def setup(client):
+    client.add_cog(SimpleModCog(client))

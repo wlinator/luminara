@@ -3,10 +3,10 @@ import random
 import time
 
 from config import json_loader
-from data.Currency import Currency
-from data.Xp import Xp
+from services.Currency import Currency
+from services.Xp import Xp
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 strings = json_loader.load_strings()
 level_messages = json_loader.load_levels()
 
@@ -55,7 +55,7 @@ class XPHandler:
     async def process_xp(self, message):
 
         if message.channel.id == 746796138195058788 or message.channel.id == 814590778650263604:
-            racu_logs.info(f"[XpHandler] {message.author.name} sent a message in a xp-blacklisted channel.")
+            logs.info(f"[XpHandler] {message.author.name} sent a message in a xp-blacklisted channel.")
             return
 
         current_time = time.time()
@@ -63,7 +63,7 @@ class XPHandler:
         xp = Xp(user_id)
 
         if xp.ctime and current_time < xp.ctime:
-            racu_logs.info(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
+            logs.info(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
             return
 
         new_xp = xp.xp + xp.xp_gain
@@ -78,7 +78,7 @@ class XPHandler:
             except Exception as err:
                 # fallback to v1 (generic leveling)
                 lvl_message = level_messages(xp.level, message.author)
-                racu_logs.error("[XpHandler] level_messages v1 fallback was triggered: ", err)
+                logs.error("[XpHandler] level_messages v1 fallback was triggered: ", err)
 
             await message.reply(content=lvl_message)
             
@@ -87,7 +87,7 @@ class XPHandler:
                 try:
                     await self.assign_level_role(message.author, xp.level)
                 except Exception as error:
-                    racu_logs.error(f"[XpHandler] Assign level role FAILED; {error}")
+                    logs.error(f"[XpHandler] Assign level role FAILED; {error}")
 
             """
             AWARD CURRENY_SPECIAL ON LEVEL-UP
@@ -96,11 +96,11 @@ class XPHandler:
             user_currency.add_special(1)
             user_currency.push()
 
-            racu_logs.info(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
+            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
 
         else:
             xp.xp += xp.xp_gain
-            racu_logs.info(f"[XpHandler] {message.author.name} gained {xp.xp_gain} XP | "
+            logs.info(f"[XpHandler] {message.author.name} gained {xp.xp_gain} XP | "
                            f"lv {xp.level} with {xp.xp} XP.")
 
         xp.ctime = current_time + xp.new_cooldown

@@ -7,7 +7,7 @@ import dropbox
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 
 oauth2_refresh_token = os.getenv("DBX_OAUTH2_REFRESH_TOKEN")
@@ -52,8 +52,8 @@ async def backup_cleanup(dbx):
 
 
 class BackupCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
         self.do_backup.start()
 
     @tasks.loop(hours=1)
@@ -64,14 +64,14 @@ class BackupCog(commands.Cog):
                 await create_db_backup(dbx)
                 await backup_cleanup(dbx)
 
-                racu_logs.info("[BACKUP] database backup success.")
+                logs.info("[BACKUP] database backup success.")
 
             except Exception as error:
-                racu_logs.error(f"[BACKUP] database backup failed. {error}")
-                racu_logs.info(f"[BACKUP] Dropbox failure: {error}")
+                logs.error(f"[BACKUP] database backup failed. {error}")
+                logs.info(f"[BACKUP] Dropbox failure: {error}")
         else:
-            racu_logs.info("[BACKUP] No backup was made, instance not \"MAIN\".")
+            logs.info("[BACKUP] No backup was made, instance not \"MAIN\".")
 
 
-def setup(sbbot):
-    sbbot.add_cog(BackupCog(sbbot))
+def setup(client):
+    client.add_cog(BackupCog(client))

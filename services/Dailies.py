@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from data.Currency import Currency
+from services.Currency import Currency
 from db import database
 
 with open("config/economy.json") as file:

@@ -3,13 +3,13 @@ import logging
 import discord
 from discord.ext import commands
 
-from data.Currency import Currency
-from data.Xp import Xp
-from data.Dailies import Dailies
-from sb_tools import universal
+from services.Currency import Currency
+from services.Xp import Xp
+from services.Dailies import Dailies
+from utils import checks
 from datetime import datetime, timedelta
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class LeaderboardV2Cog(commands.Cog):
@@ -18,15 +18,15 @@ class LeaderboardV2Cog(commands.Cog):
     This aims to show more information & a new "dailies" leaderboard.
     """
 
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="leaderboard",
         description="Are ya winning' son?",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     # @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard_v2(self, ctx):
         """
@@ -55,7 +55,7 @@ class LeaderboardV2Cog(commands.Cog):
 
             except Exception as error:
                 name = "Unknown User"
-                racu_logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+                logs.debug(f"Currency Leaderboard: Unknown User, {error}")
 
             embed.add_field(
                 name=f"#{rank} - {name}",
@@ -120,7 +120,7 @@ class LeaderboardCommandView(discord.ui.View):
 
     async def on_timeout(self):
         await self.message.edit(view=None)
-        #racu_logs.info(f"[CommandHandler] /leaderboard command timed out - this is normal behavior.")
+        #logs.info(f"[CommandHandler] /leaderboard command timed out - this is normal behavior.")
         self.stop()
 
     async def interaction_check(self, interaction) -> bool:
@@ -151,7 +151,7 @@ class LeaderboardCommandView(discord.ui.View):
 
                 except Exception as error:
                     name = "Unknown User"
-                    racu_logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+                    logs.debug(f"Currency Leaderboard: Unknown User, {error}")
 
                 embed.add_field(
                     name=f"#{rank} - {name}",
@@ -174,7 +174,7 @@ class LeaderboardCommandView(discord.ui.View):
 
                 except Exception as error:
                     name = "Unknown User"
-                    racu_logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+                    logs.debug(f"Currency Leaderboard: Unknown User, {error}")
 
                 embed.add_field(
                     name=f"#{rank} - {name}",
@@ -196,7 +196,7 @@ class LeaderboardCommandView(discord.ui.View):
 
                 except Exception as error:
                     name = "Unknown User"
-                    racu_logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+                    logs.debug(f"Currency Leaderboard: Unknown User, {error}")
 
                 claimed_at = datetime.fromisoformat(claimed_at)
                 claimed_at = claimed_at.date()
@@ -210,5 +210,5 @@ class LeaderboardCommandView(discord.ui.View):
             await interaction.response.edit_message(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(LeaderboardV2Cog(sbbot))
+def setup(client):
+    client.add_cog(LeaderboardV2Cog(client))

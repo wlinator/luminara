@@ -7,18 +7,18 @@ import discord
 import pytz
 from discord.ext import commands
 
-from data.Currency import Currency
-from data.SlotsStats import SlotsStats
+from services.Currency import Currency
+from services.SlotsStats import SlotsStats
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from sb_tools import economy_embeds, universal
+from utils import economy_embeds, checks
 
 est = pytz.timezone('US/Eastern')
 
 
-def get_emotes(sbbot):
+def get_emotes(client):
     decoration = economy_config["slots"]["emotes"]
-    emojis = {name: sbbot.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
+    emojis = {name: client.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
     return emojis
 
 
@@ -155,15 +155,15 @@ def slots_finished(ctx, payout_type, bet, payout, results, emojis):
 
 
 class SlotsCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="slots",
         descriptions="Spin the slots for a chance to win the jackpot!",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def slots(self, ctx, *, bet: discord.Option(int)):
 
         # Currency handler
@@ -236,5 +236,5 @@ class SlotsCog(commands.Cog):
         stats.push()
 
 
-def setup(sbbot):
-    sbbot.add_cog(SlotsCog(sbbot))
+def setup(client):
+    client.add_cog(SlotsCog(client))

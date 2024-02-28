@@ -1,6 +1,6 @@
 import random
 
-from sb_tools import universal
+from utils import checks
 
 
 class ReactionHandler:
@@ -12,7 +12,7 @@ class ReactionHandler:
         content = message.content.lower()
 
         if (content.startswith("racu ") or content.startswith("racu, ")) and content.endswith("?"):
-            if await universal.eightball_check(message):
+            if await checks.eightball(message):
                 response = random.choice(self.eightball)
                 await message.reply(content=response)
 

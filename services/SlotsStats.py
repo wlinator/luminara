@@ -17,7 +17,7 @@ class SlotsStats:
 
     def push(self):
         """
-        Insert the data from any given slots game into the database
+        Insert the services from any given slots game into the database
         """
         query = """
         INSERT INTO stats_slots (user_id, is_won, bet, payout, spin_type, icons)

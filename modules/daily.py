@@ -2,17 +2,14 @@ import json
 import os
 from datetime import datetime, timedelta
 
-import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
 import utils.time
-from data.Dailies import Dailies
-from data.Currency import Currency
+from services.Dailies import Dailies
+from services.Currency import Currency
 from main import strings
-from sb_tools import universal
-import utils
-import time
+from utils import checks
 
 load_dotenv('.env')
 
@@ -24,20 +21,20 @@ with open("config/economy.json") as file:
 
 
 class DailyCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="daily",
         description="Claim your daily cash!",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def daily(self, ctx):
         ctx_daily = Dailies(ctx.author.id)
 
         if not ctx_daily.can_be_claimed():
-            wait_time = datetime.now() + timedelta(seconds=utils.time.seconds_until(7,0))
+            wait_time = datetime.now() + timedelta(seconds=utils.time.seconds_until(7, 0))
             unix_time = int(round(wait_time.timestamp()))
 
             return await ctx.respond(content=strings["daily_no_claim"].format(ctx.author.name, unix_time))
@@ -56,5 +53,5 @@ class DailyCog(commands.Cog):
         await ctx.respond(content=output)
 
 
-def setup(sbbot):
-    sbbot.add_cog(DailyCog(sbbot))
+def setup(client):
+    client.add_cog(DailyCog(client))
