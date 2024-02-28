@@ -14,6 +14,6 @@ def get_latest_git_tag():
 
 __title__ = "Racu"
 __version__ = get_latest_git_tag()
-__author__ = "Esther J. J."
+__author__ = "stupidbeaver"
 __author_email__ = "dokimakimaki@gmail.com"
 __license__ = "GNU GENERAL PUBLIC LICENSE v2"

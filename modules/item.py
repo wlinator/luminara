@@ -74,7 +74,7 @@ class ItemCog(commands.Cog):
 
         return await ctx.respond(embed=embed)
 
-    items = discord.SlashCommandGroup(name="items")
+    items = discord.SlashCommandGroup(name="items", guild_only=True)
 
     @items.command(
         name="gift",

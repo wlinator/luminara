@@ -197,7 +197,7 @@ class SellCog(commands.Cog):
                     await message.edit(embed=embed, view=None)
 
                 except Exception as e:
-                    await ctx.respond("Something went wrong, let Tess know about this.")
+                    await ctx.respond("Something went wrong.")
                     logs.error(f"[CommandHandler] /sell post-confirmation error: {e}")
                     return
 

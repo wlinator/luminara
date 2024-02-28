@@ -22,6 +22,9 @@ class BasicCog(commands.Cog):
     )
     @commands.dm_only()
     async def intro(self, ctx):
+
+        # rewrite this whole command
+
         guild_id = 719227135151046699
         channel_id = 973619250507972618
         muted_role_id = 754895743151505489

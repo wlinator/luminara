@@ -35,7 +35,7 @@ async def beta_command(ctx):
 async def bot_owner(ctx):
     owner_id = os.getenv("OWNER_ID")
     if ctx.author.id != int(owner_id):
-        embed = discord.Embed(description=f"Only Esther can do this command.",
+        embed = discord.Embed(description=f"This command requires bot admin permissions.",
                               color=discord.Color.red())
         await ctx.respond(embed=embed, ephemeral=True)
         return False

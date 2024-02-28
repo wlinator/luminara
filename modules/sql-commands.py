@@ -23,12 +23,11 @@ class OwnerOnlyCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    sql = discord.SlashCommandGroup(name="sql", description="Perform SQL commands (DANGEROUS)")
+    sql = discord.SlashCommandGroup(name="sql", description="Perform SQL commands (DANGEROUS)", guild_only=True)
 
     @sql.command(
         name="select",
-        description="Perform a SELECT query in the database.",
-        guild_only=True
+        description="Perform a SELECT query in the database."
     )
     @commands.check(checks.bot_owner)
     async def select(self, ctx, *, query: discord.Option(str)):
@@ -44,8 +43,7 @@ class OwnerOnlyCog(commands.Cog):
 
     @sql.command(
         name="inject",
-        description="Change a value in the database. (DANGEROUS)",
-        guild_only=True
+        description="Change a value in the database. (DANGEROUS)"
     )
     @commands.check(checks.bot_owner)
     async def inject(self, ctx, *, query: discord.Option(str)):

@@ -12,7 +12,7 @@ from discord.ext import commands, tasks
 from config import json_loader
 from services.Birthday import Birthday
 from main import strings
-from lib import time
+from lib import time, checks
 
 logs = logging.getLogger('Racu.Core')
 
@@ -30,12 +30,11 @@ class BirthdayCog(commands.Cog):
         self.client = client
         self.daily_birthday_check.start()
 
-    birthday = SlashCommandGroup("birthday", "various birthday commands.")
+    birthday = SlashCommandGroup("birthday", "various birthday commands.", guild_only=True)
 
     @birthday.command(
         name="set",
-        description="Set your birthday.",
-        guild_only=True
+        description="Set your birthday."
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def set_birthday(self, ctx, *,
@@ -58,8 +57,7 @@ class BirthdayCog(commands.Cog):
 
     @birthday.command(
         name="upcoming",
-        description="See upcoming birthdays!",
-        guild_only=True
+        description="See upcoming birthdays!"
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def upcoming_birthdays(self, ctx):
@@ -96,8 +94,7 @@ class BirthdayCog(commands.Cog):
 
     @birthday.command(
         name="override",
-        description="Override a birthday - requires Manage Server.",
-        guild_only=True
+        description="Override a birthday - requires Manage Server."
     )
     @default_permissions(manage_guild=True)
     async def override_birthday(self, ctx, *,
@@ -129,7 +126,7 @@ class BirthdayCog(commands.Cog):
         birthday_ids = Birthday.today()
 
         if birthday_ids:
-            guild_id = 719227135151046699  # Kaiju's Rave Cave
+            guild_id = 719227135151046699  # RC
             channel_id = 741021558172287099  # Birthdays channel
 
             guild = await self.client.fetch_guild(guild_id)

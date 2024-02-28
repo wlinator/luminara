@@ -64,7 +64,7 @@ class AwardCog(commands.Cog):
             target_currency.push()
 
         except Exception as e:
-            await ctx.channel.respond("Something funky happened.. Tell Tess.", ephemeral=True)
+            await ctx.channel.respond("Something funky happened.. Sorry about that.", ephemeral=True)
             print(e)
             return
 
