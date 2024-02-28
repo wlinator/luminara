@@ -13,12 +13,12 @@ class SayCog(commands.Cog):
         self.client = client
 
     @commands.slash_command(
-        name="tess",
-        description="Bot admin only",
+        name="say",
+        description="Bot admin only.",
         guild_only=True
     )
     @commands.check(checks.bot_owner)
-    async def tess_command(self, ctx, *, txt: discord.Option(str)):
+    async def say(self, ctx, *, txt: discord.Option(str)):
         await ctx.respond(content="✅", ephemeral=True)
         await ctx.send(content=txt)
 

@@ -20,7 +20,7 @@ client = discord.Bot(
     owner_id=os.getenv('OWNER_ID'),
     intents=discord.Intents.all(),
     activity=discord.Activity(
-        name="Kaiju's Rave Cave",
+        name="The Rave Cave",
         type=discord.ActivityType.listening,
     ),
     status=discord.Status.online
@@ -82,7 +82,7 @@ async def on_member_join(member):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description=f"_ _\n**Welcome** to **Kaiju's Rave Cave** ↓↓↓\n"
+        description=f"_ _\n**Welcome** to **The Rave Cave** ↓↓↓\n"
                     f"[rules]({rules_channel.jump_url}) - "
                     f"[introductions]({introductions_channel.jump_url})\n_ _"
     )
