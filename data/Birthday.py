@@ -33,3 +33,23 @@ class Birthday:
         ids = [item[0] for item in ids]
 
         return ids
+
+    @staticmethod
+    def get_upcoming_birthdays():
+        query = """
+                SELECT user_id, DATE_FORMAT(birthday, '%m-%d') AS upcoming_birthday
+                FROM birthdays
+                WHERE DAYOFYEAR(birthday) > DAYOFYEAR(NOW())
+                ORDER BY DAYOFYEAR(birthday)
+                LIMIT 5;
+                """
+        data = database.select_query(query)
+
+        upcoming = []
+        for row in data:
+            user_id = row[0]
+            birthday = row[1]
+            upcoming.append((user_id, birthday))
+
+        return upcoming
+

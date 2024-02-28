@@ -113,8 +113,8 @@ async def on_message(message):
         return
 
     # remove if debugging leveling or reaction handler:
-    # if instance.lower() != "main":
-    #     return
+    if instance.lower() != "main":
+        return
 
     try:
         xp_handler = XPHandler()

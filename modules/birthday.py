@@ -6,6 +6,7 @@ import random
 
 import discord
 from discord import default_permissions
+from discord.commands import SlashCommandGroup
 from discord.ext import commands, tasks
 
 from config import json_loader
@@ -29,8 +30,10 @@ class BirthdayCog(commands.Cog):
         self.bot = sbbot
         self.daily_birthday_check.start()
 
-    @commands.slash_command(
-        name="birthday",
+    birthday = SlashCommandGroup("birthday", "various birthday commands.")
+
+    @birthday.command(
+        name="set",
         description="Set your birthday.",
         guild_only=True
     )
@@ -53,8 +56,46 @@ class BirthdayCog(commands.Cog):
 
         await ctx.respond(strings["birthday_set"].format(ctx.author.name, month, day), ephemeral=True)
 
-    @commands.slash_command(
-        name="override-birthday",
+    @birthday.command(
+        name="upcoming",
+        description="See upcoming birthdays!",
+        guild_only=True
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def upcoming_birthdays(self, ctx):
+        upcoming_birthdays = Birthday.get_upcoming_birthdays()
+        icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+
+        embed = discord.Embed(
+            color=discord.Color.embed_background()
+        )
+        embed.set_author(name="Upcoming Birthdays!", icon_url=icon)
+        embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
+
+        for i, (user_id, birthday) in enumerate(upcoming_birthdays, start=1):
+            try:
+                member = await ctx.guild.fetch_member(user_id)
+                name = member.name
+            except:
+                name = "Unknown User"
+
+            try:
+                birthday_date = datetime.datetime.strptime(birthday, "%m-%d")
+                formatted_birthday = birthday_date.strftime("%B %-d")
+            except ValueError:
+                # leap year error
+                formatted_birthday = "February 29"
+
+            embed.add_field(
+                name=f"{name}",
+                value=f"🎂 {formatted_birthday}",
+                inline=False
+            )
+
+        await ctx.respond(embed=embed)
+
+    @birthday.command(
+        name="override",
         description="Override a birthday - requires Manage Server.",
         guild_only=True
     )
