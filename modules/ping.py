@@ -10,7 +10,7 @@ logs = logging.getLogger('Racu.Core')
 
 class PingCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="ping",

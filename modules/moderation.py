@@ -17,7 +17,7 @@ def hierarchy_check(user, target):
 
 class SimpleModCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     """
     This cog contains simple moderation commands

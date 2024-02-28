@@ -6,7 +6,7 @@ from lib import embeds, checks
 
 class LevelCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="level",

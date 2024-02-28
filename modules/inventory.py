@@ -20,7 +20,7 @@ with open("config/economy.json") as file:
 
 class InventoryCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="inventory",
@@ -46,11 +46,11 @@ class InventoryCog(commands.Cog):
                 if not embed.description:
                     embed.description = "**Badges:** "
 
-                emote = self.bot.get_emoji(item.emote_id)
+                emote = self.client.get_emoji(item.emote_id)
                 embed.description += f"{emote} "
 
             else:
-                emote = self.bot.get_emoji(item.emote_id)
+                emote = self.client.get_emoji(item.emote_id)
                 embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
                                 value=f"*— amount: `{quantity}`*",
                                 inline=False)

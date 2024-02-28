@@ -16,7 +16,7 @@ cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
 class ExchangeCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="exchange",

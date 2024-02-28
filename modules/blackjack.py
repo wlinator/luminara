@@ -114,7 +114,7 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
 
 class BlackJackCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="blackjack",

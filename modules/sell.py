@@ -82,7 +82,7 @@ def is_number_between(value, upper_limit):
 
 class SellCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="sell",
@@ -138,7 +138,7 @@ class SellCog(commands.Cog):
                 await ctx.edit(embed=embed)
 
                 try:
-                    amount_message = await self.bot.wait_for('message', check=response_check, timeout=60)
+                    amount_message = await self.client.wait_for('message', check=response_check, timeout=60)
                     amount = amount_message.content
 
                     if is_number_between(amount, quantity):

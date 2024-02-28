@@ -53,7 +53,7 @@ async def backup_cleanup(dbx):
 
 class BackupCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
         self.do_backup.start()
 
     @tasks.loop(hours=1)

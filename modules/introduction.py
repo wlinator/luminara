@@ -13,7 +13,7 @@ logs = logging.getLogger('Racu.Core')
 
 class BasicCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="intro",
@@ -37,7 +37,7 @@ class BasicCog(commands.Cog):
         relationship_status = None
         extra = None
 
-        guild = self.bot.get_guild(guild_id)
+        guild = self.client.get_guild(guild_id)
         member = await guild.fetch_member(ctx.author.id)
         if member and discord.utils.get(member.roles, id=muted_role_id):
             em = discord.Embed(description="You're muted in the Rave Cave. You can't perform this command.",
@@ -84,7 +84,7 @@ class BasicCog(commands.Cog):
             await ctx.send(embed=embeds.simple_question_first("How would you like to be identified in the server?"))
 
             try:
-                nickname_message = await self.bot.wait_for('message', check=check, timeout=120)
+                nickname_message = await self.client.wait_for('message', check=check, timeout=120)
                 nickname = nickname_message.content
                 if len(nickname) > 100:
                     nickname = nickname[:100]
@@ -96,7 +96,7 @@ class BasicCog(commands.Cog):
                                content=f"Recorded answer: {nickname}")
 
                 try:
-                    age_message = await self.bot.wait_for('message', check=check, timeout=120)
+                    age_message = await self.client.wait_for('message', check=check, timeout=120)
                     age = age_message.content
                     if len(age) > 5:
                         age = age[:5]
@@ -124,7 +124,7 @@ class BasicCog(commands.Cog):
                         content=f"Recorded answer: {location}")
 
                     try:
-                        pronouns_message = await self.bot.wait_for('message', check=check, timeout=120)
+                        pronouns_message = await self.client.wait_for('message', check=check, timeout=120)
                         pronouns = pronouns_message.content
                         if len(pronouns) > 30:
                             pronouns = pronouns[:30]
@@ -136,7 +136,7 @@ class BasicCog(commands.Cog):
                                        content=f"Recorded answer: {pronouns}")
 
                         try:
-                            likes_message = await self.bot.wait_for('message', check=check, timeout=300)
+                            likes_message = await self.client.wait_for('message', check=check, timeout=300)
                             likes = likes_message.content
                             if len(likes) > 300:
                                 likes = likes[:300]
@@ -148,7 +148,7 @@ class BasicCog(commands.Cog):
                                            content=f"Recorded answer: {likes}")
 
                             try:
-                                dislikes_message = await self.bot.wait_for('message', check=check, timeout=300)
+                                dislikes_message = await self.client.wait_for('message', check=check, timeout=300)
                                 dislikes = dislikes_message.content
                                 if len(dislikes) > 300:
                                     dislikes = dislikes[:300]
@@ -206,7 +206,7 @@ class BasicCog(commands.Cog):
                 "How would you like to be identified in the server?"))
 
             try:
-                nickname_message = await self.bot.wait_for('message', check=check, timeout=120)
+                nickname_message = await self.client.wait_for('message', check=check, timeout=120)
                 nickname = nickname_message.content
                 if len(nickname) > 100:
                     nickname = nickname[:100]
@@ -218,7 +218,7 @@ class BasicCog(commands.Cog):
                                content=f"Recorded answer: {nickname}")
 
                 try:
-                    age_message = await self.bot.wait_for('message', check=check, timeout=120)
+                    age_message = await self.client.wait_for('message', check=check, timeout=120)
                     age = age_message.content
                     if len(age) > 5:
                         age = age[:5]
@@ -247,7 +247,7 @@ class BasicCog(commands.Cog):
                     )
 
                     try:
-                        languages_message = await self.bot.wait_for('message', check=check, timeout=200)
+                        languages_message = await self.client.wait_for('message', check=check, timeout=200)
                         languages = languages_message.content
                         if len(languages) > 30:
                             languages = languages[:30]
@@ -260,7 +260,7 @@ class BasicCog(commands.Cog):
                             content=f"Recorded answer: {languages}")
 
                         try:
-                            pronouns_message = await self.bot.wait_for('message', check=check, timeout=120)
+                            pronouns_message = await self.client.wait_for('message', check=check, timeout=120)
                             pronouns = pronouns_message.content
                             if len(pronouns) > 30:
                                 pronouns = pronouns[:30]
@@ -273,7 +273,7 @@ class BasicCog(commands.Cog):
                                 content=f"Recorded answer: {pronouns}")
 
                             try:
-                                sexuality_message = await self.bot.wait_for('message', check=check, timeout=120)
+                                sexuality_message = await self.client.wait_for('message', check=check, timeout=120)
                                 sexuality = sexuality_message.content
                                 if len(sexuality) > 30:
                                     sexuality = sexuality[:30]
@@ -286,7 +286,7 @@ class BasicCog(commands.Cog):
                                     content=f"Recorded answer: {sexuality}")
 
                                 try:
-                                    relationship_status_message = await self.bot.wait_for('message', check=check,
+                                    relationship_status_message = await self.client.wait_for('message', check=check,
                                                                                           timeout=120)
                                     relationship_status = relationship_status_message.content
                                     if len(relationship_status) > 30:
@@ -299,7 +299,7 @@ class BasicCog(commands.Cog):
                                                    content=f"Recorded answer: {relationship_status}")
 
                                     try:
-                                        likes_message = await self.bot.wait_for('message', check=check, timeout=300)
+                                        likes_message = await self.client.wait_for('message', check=check, timeout=300)
                                         likes = likes_message.content
                                         if len(likes) > 300:
                                             likes = likes[:300]
@@ -311,7 +311,7 @@ class BasicCog(commands.Cog):
                                                        content=f"Recorded answer: {likes}")
 
                                         try:
-                                            dislikes_message = await self.bot.wait_for('message', check=check,
+                                            dislikes_message = await self.client.wait_for('message', check=check,
                                                                                        timeout=300)
                                             dislikes = dislikes_message.content
                                             if len(dislikes) > 300:
@@ -326,7 +326,7 @@ class BasicCog(commands.Cog):
                                                 content=f"Recorded answer: {dislikes}")
 
                                             try:
-                                                extra_message = await self.bot.wait_for('message', check=check,
+                                                extra_message = await self.client.wait_for('message', check=check,
                                                                                         timeout=300)
                                                 extra = extra_message.content
                                                 if len(extra) > 300:
