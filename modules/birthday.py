@@ -10,11 +10,11 @@ from discord.commands import SlashCommandGroup
 from discord.ext import commands, tasks
 
 from config import json_loader
-from data.Birthday import Birthday
+from services.Birthday import Birthday
 from main import strings
 from utils import time
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 months = [
     "January", "February", "March", "April",
@@ -26,8 +26,8 @@ messages = json_loader.load_birthday_messages()
 
 
 class BirthdayCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
         self.daily_birthday_check.start()
 
     birthday = SlashCommandGroup("birthday", "various birthday commands.")
@@ -123,7 +123,7 @@ class BirthdayCog(commands.Cog):
     async def daily_birthday_check(self):
 
         wait_time = time.seconds_until(7, 0)
-        racu_logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
+        logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
         await asyncio.sleep(wait_time)
 
         birthday_ids = Birthday.today()
@@ -144,17 +144,17 @@ class BirthdayCog(commands.Cog):
                     message = random.choice(messages["birthday_messages"])
                     await channel.send(message.format(user.mention))
 
-                    racu_logs.info(f"[BirthdayHandler] Sent message for user with ID {user_id}")
+                    logs.info(f"[BirthdayHandler] Sent message for user with ID {user_id}")
 
                 except discord.HTTPException:
-                    racu_logs.info(f"[BirthdayHandler] Not sent because user with ID {user_id} not in Guild.")
+                    logs.info(f"[BirthdayHandler] Not sent because user with ID {user_id} not in Guild.")
 
                 except Exception as err:
-                    racu_logs.error(f"[BirthdayHandler] Something went wrong: {err}")
+                    logs.error(f"[BirthdayHandler] Something went wrong: {err}")
 
         else:
-            racu_logs.info("[BirthdayHandler] No Birthdays Today.")
+            logs.info("[BirthdayHandler] No Birthdays Today.")
 
 
-def setup(sbbot):
-    sbbot.add_cog(BirthdayCog(sbbot))
+def setup(client):
+    client.add_cog(BirthdayCog(client))

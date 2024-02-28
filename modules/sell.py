@@ -6,12 +6,12 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
-from data.Inventory import Inventory
-from data.Item import Item
-from sb_tools import interaction, universal
+from services.Currency import Currency
+from services.Inventory import Inventory
+from services.Item import Item
+from utils import interaction, checks
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 load_dotenv('.env')
 special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
@@ -49,7 +49,7 @@ class SellCommandView(discord.ui.View):
             description="You ran out of time."
         )
         await self.message.edit(embed=embed, view=None)
-        racu_logs.warning(f"{self.ctx.author.name}: /sell command timed out.")
+        logs.warning(f"{self.ctx.author.name}: /sell command timed out.")
         self.stop()
 
     async def interaction_check(self, interaction) -> bool:
@@ -81,15 +81,15 @@ def is_number_between(value, upper_limit):
 
 
 class SellCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="sell",
         description="Sell items from your inventory.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def sell(self, ctx):
         inv = Inventory(ctx.author.id)
         items = inv.get_sell_data()
@@ -155,7 +155,7 @@ class SellCog(commands.Cog):
                     await ctx.respond(
                         embed=discord.Embed(description="You ran out of time.", color=discord.Color.red()),
                         content=ctx.author.mention)
-                    # racu_logs.warning(f"{ctx.author.id} Sell Timeout")
+                    # logs.warning(f"{ctx.author.id} Sell Timeout")
                     return
 
             else:
@@ -198,7 +198,7 @@ class SellCog(commands.Cog):
 
                 except Exception as e:
                     await ctx.respond("Something went wrong, let Tess know about this.")
-                    racu_logs.error(f"[CommandHandler] /sell post-confirmation error: {e}")
+                    logs.error(f"[CommandHandler] /sell post-confirmation error: {e}")
                     return
 
             else:
@@ -212,5 +212,5 @@ class SellCog(commands.Cog):
             await ctx.edit(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(SellCog(sbbot))
+def setup(client):
+    client.add_cog(SellCog(client))

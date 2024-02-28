@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
-from sb_tools import universal
+from services.Currency import Currency
+from utils import checks
 
 load_dotenv('.env')
 
@@ -15,15 +15,15 @@ cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
 
 class BalanceCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="balance",
         description="See how much cash you have.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def balance(self, ctx):
         # Currency handler
         ctx_currency = Currency(ctx.author.id)
@@ -42,5 +42,5 @@ class BalanceCog(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(BalanceCog(sbbot))
+def setup(client):
+    client.add_cog(BalanceCog(client))

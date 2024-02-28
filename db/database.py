@@ -4,7 +4,7 @@ from mysql.connector import Error
 from dotenv import load_dotenv
 import os
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 
 
@@ -29,7 +29,7 @@ def execute_query(query, values=None):
 
     conn.commit()
     conn.close()
-    racu_logs.debug(f"database.execute_query: 'query': {query}, 'values': {values}")
+    logs.debug(f"database.execute_query: 'query': {query}, 'values': {values}")
     return cursor
 
 
@@ -37,7 +37,7 @@ def select_query(query, values=None):
     conn = cnxpool.get_connection()
     cursor = conn.cursor()
 
-    racu_logs.debug(f"database.select_query: 'query': {query}, 'values': {values}")
+    logs.debug(f"database.select_query: 'query': {query}, 'values': {values}")
 
     if values:
         cursor.execute(query, values)
@@ -54,7 +54,7 @@ def select_query_one(query, values=None):
     conn = cnxpool.get_connection()
     cursor = conn.cursor()
 
-    racu_logs.debug(f"database.select_query_one: 'query': {query}, 'values': {values}")
+    logs.debug(f"database.select_query_one: 'query': {query}, 'values': {values}")
 
     if values:
         cursor.execute(query, values)

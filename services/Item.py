@@ -4,7 +4,7 @@ import sqlite3
 
 from db import database
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class Item:
@@ -50,30 +50,6 @@ class Item:
         return database.select_query_one(query, (self.id,))
 
     @staticmethod
-    def insert_items():
-        with open("config/default_items.json", 'r') as file:
-            items_data = json.load(file)
-
-        for index, (item_id, item_data) in enumerate(items_data.items(), start=1):
-            name = item_data["name"]
-            display_name = item_data["display_name"]
-            description = item_data["description"]
-            image_url = item_data["image_url"]
-            emote_id = item_data["emote_id"]
-            quote = item_data["quote"]
-            item_type = item_data["type"]
-
-            query = """
-                    REPLACE INTO item 
-                    (id, name, display_name, description, image_url, emote_id, quote, type)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                    """
-            database.execute_query(query,
-                                   (index, name, display_name, description, image_url, emote_id, quote, item_type))
-
-        racu_logs.info("[ItemHandler] Items inserted into the database successfully.")
-
-    @staticmethod
     def get_all_item_names():
         query = "SELECT display_name FROM item"
 
@@ -87,7 +63,7 @@ class Item:
             return item_names
 
         except sqlite3.Error:
-            racu_logs.error(sqlite3.Error)
+            logs.error(sqlite3.Error)
             return []
 
     @staticmethod

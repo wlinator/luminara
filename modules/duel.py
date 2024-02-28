@@ -5,9 +5,9 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Currency import Currency
+from services.Currency import Currency
 from main import economy_config
-from sb_tools import economy_embeds, universal, interaction
+from utils import economy_embeds, checks, interaction
 
 load_dotenv('.env')
 
@@ -15,15 +15,15 @@ cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
 
 class GamblingCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="duel",
         description="Challenge another player to a fight.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def duel(self, ctx, *, opponent: discord.Option(discord.Member), bet: discord.Option(int)):
         challenger = ctx.author
 
@@ -87,5 +87,5 @@ class GamblingCog(commands.Cog):
         opponent_currency.push()
 
 
-def setup(sbbot):
-    sbbot.add_cog(GamblingCog(sbbot))
+def setup(client):
+    client.add_cog(GamblingCog(client))

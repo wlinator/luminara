@@ -7,13 +7,13 @@ import pytz
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.BlackJackStats import BlackJackStats
-from data.Currency import Currency
+from services.BlackJackStats import BlackJackStats
+from services.Currency import Currency
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from sb_tools import economy_embeds, economy_functions, universal, interaction, embeds
+from utils import economy_embeds, economy_functions, checks, interaction, embeds
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 est = pytz.timezone('US/Eastern')
 
@@ -113,15 +113,15 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
 
 
 class BlackJackCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="blackjack",
         description="Start a game of blackjack.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def blackjack(self, ctx, *, bet: discord.Option(int)):
 
         # check if the player already has an active blackjack going
@@ -275,12 +275,12 @@ class BlackJackCog(commands.Cog):
 
         except Exception as e:
             await ctx.respond(embed=embeds.command_error_1(e))
-            racu_logs.error("[CommandHandler] Something went wrong in the gambling command: ", e)
+            logs.error("[CommandHandler] Something went wrong in the gambling command: ", e)
 
         finally:
             # remove player from active games list
             del active_blackjack_games[ctx.author.id]
 
 
-def setup(sbbot):
-    sbbot.add_cog(BlackJackCog(sbbot))
+def setup(client):
+    client.add_cog(BlackJackCog(client))

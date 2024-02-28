@@ -1,9 +1,9 @@
 import logging
 
-from data import Item
+from services import Item
 from db import database
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class Inventory:
@@ -76,5 +76,5 @@ class Inventory:
             return item_names
 
         except Exception as e:
-            racu_logs.error(e)
+            logs.error(e)
             return []

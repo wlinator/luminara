@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from data.Inventory import Inventory
-from sb_tools import universal
+from services.Inventory import Inventory
+from utils import checks
 
 load_dotenv('.env')
 
@@ -19,15 +19,15 @@ with open("config/economy.json") as file:
 
 
 class InventoryCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.bot = client
 
     @commands.slash_command(
         name="inventory",
         description="Display your inventory.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def inventory(self, ctx):
         inventory = Inventory(ctx.author.id)
         inventory_dict = inventory.get_inventory()
@@ -59,5 +59,5 @@ class InventoryCog(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-def setup(sbbot):
-    sbbot.add_cog(InventoryCog(sbbot))
+def setup(client):
+    client.add_cog(InventoryCog(client))
