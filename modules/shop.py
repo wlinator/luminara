@@ -19,7 +19,7 @@ with open("config/economy.json") as file:
 
 class ShopCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="shop",
@@ -38,7 +38,7 @@ class ShopCog(commands.Cog):
         embed.set_footer(text="do /buy <item>")
 
         for item in shop:
-            emoji = self.bot.get_emoji(item.item.emote_id)
+            emoji = self.client.get_emoji(item.item.emote_id)
 
             if item.price != 0 and item.price_special != 0:
                 price = f"${Currency.format(item.price)} *or* {Currency.format(item.price_special)} {special_balance_name}"

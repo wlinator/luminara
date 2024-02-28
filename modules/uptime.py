@@ -6,7 +6,7 @@ from lib import checks
 
 class UptimeCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
         self.start_time = time.time()
 
     @commands.slash_command(

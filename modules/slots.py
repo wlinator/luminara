@@ -156,7 +156,7 @@ def slots_finished(ctx, payout_type, bet, payout, results, emojis):
 
 class SlotsCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="slots",
@@ -192,7 +192,7 @@ class SlotsCog(commands.Cog):
             is_won = False
 
         # only get the emojis once
-        emojis = get_emotes(self.bot)
+        emojis = get_emotes(self.client)
 
         # start with default "spinning" embed
         await ctx.respond(embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, emojis))

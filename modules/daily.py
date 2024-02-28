@@ -22,7 +22,7 @@ with open("config/economy.json") as file:
 
 class DailyCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="daily",

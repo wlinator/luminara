@@ -23,7 +23,7 @@ with open("config/economy.json") as file:
 
 class StatsCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="stats",
@@ -59,10 +59,10 @@ class StatsCog(commands.Cog):
             output = strings["stats_slots"].format(stats["amount_of_games"], total_bet, total_payout)
             output += "\n\n"
 
-            pair_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_0_id"])
-            three_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_4_id"])
-            diamonds_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_5_id"])
-            seven_emote = self.bot.get_emoji(economy_config["slots"]["emotes"]["slots_6_id"])
+            pair_emote = self.client.get_emoji(economy_config["slots"]["emotes"]["slots_0_id"])
+            three_emote = self.client.get_emoji(economy_config["slots"]["emotes"]["slots_4_id"])
+            diamonds_emote = self.client.get_emoji(economy_config["slots"]["emotes"]["slots_5_id"])
+            seven_emote = self.client.get_emoji(economy_config["slots"]["emotes"]["slots_6_id"])
 
             output += f"{pair_emote} | **{stats['games_won_pair']}** pairs.\n"
             output += f"{three_emote} | **{stats['games_won_three_of_a_kind']}** three-of-a-kinds.\n"

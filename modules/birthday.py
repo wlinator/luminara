@@ -27,7 +27,7 @@ messages = json_loader.load_birthday_messages()
 
 class BirthdayCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
         self.daily_birthday_check.start()
 
     birthday = SlashCommandGroup("birthday", "various birthday commands.")
@@ -132,7 +132,7 @@ class BirthdayCog(commands.Cog):
             guild_id = 719227135151046699  # Kaiju's Rave Cave
             channel_id = 741021558172287099  # Birthdays channel
 
-            guild = await self.bot.fetch_guild(guild_id)
+            guild = await self.client.fetch_guild(guild_id)
             channel = await guild.fetch_channel(channel_id)
 
             for user_id in birthday_ids:

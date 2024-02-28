@@ -21,7 +21,7 @@ with open("config/economy.json") as file:
 
 class OwnerOnlyCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     sql = discord.SlashCommandGroup(name="sql", description="Perform SQL commands (DANGEROUS)")
 

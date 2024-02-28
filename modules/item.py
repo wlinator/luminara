@@ -23,7 +23,7 @@ with open("config/economy.json") as file:
 
 class ItemCog(commands.Cog):
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="item",
@@ -46,7 +46,7 @@ class ItemCog(commands.Cog):
             else:
                 price += f" or {shop_item.price_special} {special_balance_name}"
 
-        emote = self.bot.get_emoji(item.emote_id)
+        emote = self.client.get_emoji(item.emote_id)
 
         amount_string = f"You have this item {amount} time"
 

@@ -19,7 +19,7 @@ class LeaderboardV2Cog(commands.Cog):
     """
 
     def __init__(self, client):
-        self.bot = client
+        self.client = client
 
     @commands.slash_command(
         name="leaderboard",
