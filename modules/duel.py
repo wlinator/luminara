@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from services.Currency import Currency
 from main import economy_config
-from utils import economy_embeds, checks, interaction
+from lib import economy_embeds, checks, interaction
 
 load_dotenv('.env')
 

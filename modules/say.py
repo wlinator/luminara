@@ -3,7 +3,7 @@ import logging
 import discord
 from discord.ext import commands
 
-from utils import checks
+from lib import checks
 
 logs = logging.getLogger('Racu.Core')
 

@@ -5,11 +5,11 @@ from datetime import datetime, timedelta
 from discord.ext import commands
 from dotenv import load_dotenv
 
-import utils.time
+import lib.time
 from services.Dailies import Dailies
 from services.Currency import Currency
 from main import strings
-from utils import checks
+from lib import checks
 
 load_dotenv('.env')
 
@@ -34,7 +34,7 @@ class DailyCog(commands.Cog):
         ctx_daily = Dailies(ctx.author.id)
 
         if not ctx_daily.can_be_claimed():
-            wait_time = datetime.now() + timedelta(seconds=utils.time.seconds_until(7, 0))
+            wait_time = datetime.now() + timedelta(seconds=lib.time.seconds_until(7, 0))
             unix_time = int(round(wait_time.timestamp()))
 
             return await ctx.respond(content=strings["daily_no_claim"].format(ctx.author.name, unix_time))

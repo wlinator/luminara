@@ -6,7 +6,7 @@ from discord.ext import commands
 from services.Currency import Currency
 from services.Xp import Xp
 from services.Dailies import Dailies
-from utils import checks
+from lib import checks
 from datetime import datetime, timedelta
 
 logs = logging.getLogger('Racu.Core')

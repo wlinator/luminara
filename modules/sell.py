@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from services.Currency import Currency
 from services.Inventory import Inventory
 from services.Item import Item
-from utils import interaction, checks
+from lib import interaction, checks
 
 logs = logging.getLogger('Racu.Core')
 

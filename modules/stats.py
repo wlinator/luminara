@@ -9,7 +9,7 @@ from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 from services.SlotsStats import SlotsStats
 from main import strings, economy_config
-from utils import checks
+from lib import checks
 
 load_dotenv('.env')
 

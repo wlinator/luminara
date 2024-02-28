@@ -1,7 +1,7 @@
 from discord.ext import commands
 import datetime, time
 from main import strings
-from utils import checks
+from lib import checks
 
 
 class UptimeCog(commands.Cog):

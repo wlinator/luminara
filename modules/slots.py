@@ -11,7 +11,7 @@ from services.Currency import Currency
 from services.SlotsStats import SlotsStats
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from utils import economy_embeds, checks
+from lib import economy_embeds, checks
 
 est = pytz.timezone('US/Eastern')
 

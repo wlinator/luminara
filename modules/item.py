@@ -9,7 +9,7 @@ from services.Currency import Currency
 from services.Inventory import Inventory
 from services.Item import Item
 from services.ShopItem import ShopItem
-from utils import checks
+from lib import checks
 
 load_dotenv('.env')
 

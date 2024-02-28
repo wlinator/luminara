@@ -6,7 +6,7 @@ import subprocess
 import discord
 from discord.ext import commands
 
-from utils import interaction, embeds, checks
+from lib import interaction, embeds, checks
 
 logs = logging.getLogger('Racu.Core')
 
@@ -46,7 +46,7 @@ class BasicCog(commands.Cog):
             logs.warning(f"{ctx.author.name} couldn't do the intro command: Muted in the Race Cave")
             return
 
-        # elif member and not discord.utils.get(member.roles, id=719995790319157279):
+        # elif member and not discord.lib.get(member.roles, id=719995790319157279):
         #     em = discord.Embed(description="It seems that you don't have permission to do that!")
         #     await ctx.respond(embed=em)
         #     logs.warning(f"{ctx.author.name} couldn't do the intro command: No Permissions")

@@ -1,7 +1,7 @@
 from discord.ext import commands
 
 from services.Xp import Xp
-from utils import embeds, checks
+from lib import embeds, checks
 
 
 class LevelCog(commands.Cog):
