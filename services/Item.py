@@ -4,7 +4,7 @@ import sqlite3
 
 from db import database
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class Item:
@@ -25,7 +25,7 @@ class Item:
         query = """
         SELECT name, display_name, description, image_url, emote_id, quote, type
         FROM item
-        WHERE id = ?
+        WHERE id = %s
         """
 
         data = database.select_query(query, (self.id,))[0]
@@ -33,7 +33,7 @@ class Item:
 
     def get_quantity(self, author_id):
         query = """
-                SELECT COALESCE((SELECT quantity FROM inventory WHERE user_id = ? AND item_id = ?), 0) AS quantity
+                SELECT COALESCE((SELECT quantity FROM inventory WHERE user_id = %s AND item_id = %s), 0) AS quantity
                 """
 
         quantity = database.select_query_one(query, (author_id, self.id))
@@ -44,34 +44,10 @@ class Item:
         query = """
                 SELECT worth
                 FROM ShopItem
-                WHERE item_id = ?
+                WHERE item_id = %s
                 """
 
         return database.select_query_one(query, (self.id,))
-
-    @staticmethod
-    def insert_items():
-        with open("config/default_items.json", 'r') as file:
-            items_data = json.load(file)
-
-        for index, (item_id, item_data) in enumerate(items_data.items(), start=1):
-            name = item_data["name"]
-            display_name = item_data["display_name"]
-            description = item_data["description"]
-            image_url = item_data["image_url"]
-            emote_id = item_data["emote_id"]
-            quote = item_data["quote"]
-            item_type = item_data["type"]
-
-            query = """
-                    INSERT OR REPLACE INTO item 
-                    (id, name, display_name, description, image_url, emote_id, quote, type)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """
-            database.execute_query(query,
-                                   (index, name, display_name, description, image_url, emote_id, quote, item_type))
-
-        racu_logs.info("Items inserted into the database successfully.")
 
     @staticmethod
     def get_all_item_names():
@@ -87,17 +63,17 @@ class Item:
             return item_names
 
         except sqlite3.Error:
-            racu_logs.error(sqlite3.Error)
+            logs.error(sqlite3.Error)
             return []
 
     @staticmethod
     def get_item_by_display_name(display_name):
-        query = "SELECT id FROM item WHERE display_name = ?"
+        query = "SELECT id FROM item WHERE display_name = %s"
         item_id = database.select_query_one(query, (display_name,))
         return Item(item_id)
 
     @staticmethod
     def get_item_by_name(name):
-        query = "SELECT id FROM item WHERE name = ?"
+        query = "SELECT id FROM item WHERE name = %s"
         item_id = database.select_query_one(query, (name,))
         return Item(item_id)

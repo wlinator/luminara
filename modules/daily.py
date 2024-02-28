@@ -2,16 +2,14 @@ import json
 import os
 from datetime import datetime, timedelta
 
-import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-import utils.time
-from data.Dailies import Dailies
+import lib.time
+from services.Dailies import Dailies
+from services.Currency import Currency
 from main import strings
-from sb_tools import universal
-import utils
-import time
+from lib import checks
 
 load_dotenv('.env')
 
@@ -23,32 +21,31 @@ with open("config/economy.json") as file:
 
 
 class DailyCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="daily",
         description="Claim your daily cash!",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def daily(self, ctx):
         ctx_daily = Dailies(ctx.author.id)
 
         if not ctx_daily.can_be_claimed():
-            wait_time = datetime.now() + timedelta(seconds=utils.time.seconds_until(7,0))
-            # unix_time = time.mktime(wait_time.timetuple())
+            wait_time = datetime.now() + timedelta(seconds=lib.time.seconds_until(7, 0))
             unix_time = int(round(wait_time.timestamp()))
 
             return await ctx.respond(content=strings["daily_no_claim"].format(ctx.author.name, unix_time))
 
         ctx_daily.streak = ctx_daily.streak + 1 if ctx_daily.streak_check() else 1
         ctx_daily.claimed_at = datetime.now(tz=ctx_daily.tz).isoformat()
-        ctx_daily.amount = int(50 * (1.2 * (ctx_daily.streak - 1)))
+        ctx_daily.amount = int(100 * (12 * (ctx_daily.streak - 1)))
 
         ctx_daily.refresh()
 
-        output = strings["daily_claim"].format(ctx.author.name, ctx_daily.amount)
+        output = strings["daily_claim"].format(ctx.author.name, Currency.format(ctx_daily.amount))
 
         if ctx_daily.streak > 1:
             output += "\n" + strings["daily_streak"].format(ctx_daily.streak)
@@ -56,5 +53,5 @@ class DailyCog(commands.Cog):
         await ctx.respond(content=output)
 
 
-def setup(sbbot):
-    sbbot.add_cog(DailyCog(sbbot))
+def setup(client):
+    client.add_cog(DailyCog(client))

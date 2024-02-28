@@ -3,10 +3,10 @@ import random
 import time
 
 from config import json_loader
-from data.Currency import Currency
-from data.Xp import Xp
+from services.Currency import Currency
+from services.Xp import Xp
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 strings = json_loader.load_strings()
 level_messages = json_loader.load_levels()
 
@@ -27,7 +27,8 @@ def level_messages_v2(level, author):
     :return:
     """
 
-    if level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
+    # checks if level is a multiple of 5 within the range of 5 to 100 (inclusive)
+    if level % 5 == 0 and 5 <= level <= 100:
         return strings["level_up_reward"].format(author.name, level)
 
     level_range = None
@@ -54,7 +55,7 @@ class XPHandler:
     async def process_xp(self, message):
 
         if message.channel.id == 746796138195058788 or message.channel.id == 814590778650263604:
-            racu_logs.info(f"No XP gain - blacklisted channel. | user {message.author.name}")
+            logs.info(f"[XpHandler] {message.author.name} sent a message in a xp-blacklisted channel.")
             return
 
         current_time = time.time()
@@ -62,7 +63,7 @@ class XPHandler:
         xp = Xp(user_id)
 
         if xp.ctime and current_time < xp.ctime:
-            racu_logs.debug(f"XP UPDATE --- {message.author.name} sent a message but is on XP cooldown.")
+            logs.info(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
             return
 
         new_xp = xp.xp + xp.xp_gain
@@ -77,15 +78,16 @@ class XPHandler:
             except Exception as err:
                 # fallback to v1 (generic leveling)
                 lvl_message = level_messages(xp.level, message.author)
-                racu_logs.error("level_messages v1 fallback was triggered: ", err)
+                logs.error("[XpHandler] level_messages v1 fallback was triggered: ", err)
 
             await message.reply(content=lvl_message)
-
-            if xp.level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
+            
+            # checks if xp.level is a multiple of 5 within the range of 5 to 100 (inclusive)
+            if xp.level % 5 == 0 and 5 <= xp.level <= 100:
                 try:
                     await self.assign_level_role(message.author, xp.level)
                 except Exception as error:
-                    racu_logs.error(f"Assign level role FAILED; {error}")
+                    logs.error(f"[XpHandler] Assign level role FAILED; {error}")
 
             """
             AWARD CURRENY_SPECIAL ON LEVEL-UP
@@ -94,11 +96,12 @@ class XPHandler:
             user_currency.add_special(1)
             user_currency.push()
 
-            racu_logs.info(f"XP UPDATE --- {message.author.name} leveled up; new_level = {xp.level}.")
+            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
 
         else:
             xp.xp += xp.xp_gain
-            racu_logs.info(f"XP UPDATE --- {message.author.name} gained {xp.xp_gain} XP; new_xp = {new_xp}.")
+            logs.info(f"[XpHandler] {message.author.name} gained {xp.xp_gain} XP | "
+                           f"lv {xp.level} with {xp.xp} XP.")
 
         xp.ctime = current_time + xp.new_cooldown
         xp.push()
@@ -121,6 +124,16 @@ class XPHandler:
             "level_40": 1118491622045405287,
             "level_45": 1118491650721853500,
             "level_50": 1118491681004732466,
+            "level_55": 1191681166848303135,
+            "level_60": 1191681220145319956,
+            "level_65": 1191681253322264587,
+            "level_70": 1191681274180554792,
+            "level_75": 1191681293277216859,
+            "level_80": 1191681312269017180,
+            "level_85": 1191681337560662086,
+            "level_90": 1191681359995998209,
+            "level_95": 1191681384113262683,
+            "level_100": 1191681405445492778,
             # Add more level roles as needed
         }
 

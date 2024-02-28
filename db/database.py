@@ -1,22 +1,25 @@
 import logging
-import sqlite3
-from sqlite3 import Error
+import mysql.connector
+from mysql.connector import Error
+from dotenv import load_dotenv
+import os
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
+load_dotenv('.env')
 
 
-def create_connection():
-    try:
-        conn = sqlite3.connect("db/rcu.db")
-    except Error as e:
-        racu_logs.error("'create_connection()' Error occurred: {}".format(e))
-        return
-
-    return conn
+cnxpool = mysql.connector.pooling.MySQLConnectionPool(
+    pool_name='core-pool',
+    pool_size=25,
+    host='db',
+    user=os.getenv("MARIADB_USER"),
+    password=os.getenv("MARIADB_PASSWORD"),
+    database='racudb'
+)
 
 
 def execute_query(query, values=None):
-    conn = create_connection()
+    conn = cnxpool.get_connection()
     cursor = conn.cursor()
 
     if values:
@@ -25,32 +28,42 @@ def execute_query(query, values=None):
         cursor.execute(query)
 
     conn.commit()
-    racu_logs.debug(f"database.execute_query: 'query': {query}, 'values': {values}")
+    conn.close()
+    logs.debug(f"database.execute_query: 'query': {query}, 'values': {values}")
     return cursor
 
 
 def select_query(query, values=None):
-    conn = create_connection()
+    conn = cnxpool.get_connection()
     cursor = conn.cursor()
 
-    racu_logs.debug(f"database.select_query: 'query': {query}, 'values': {values}")
+    logs.debug(f"database.select_query: 'query': {query}, 'values': {values}")
 
     if values:
-        return cursor.execute(query, values).fetchall()
+        cursor.execute(query, values)
+        output = cursor.fetchall()
     else:
-        return cursor.execute(query).fetchall()
+        cursor.execute(query)
+        output = cursor.fetchall()
+
+    conn.close()
+    return output
 
 
 def select_query_one(query, values=None):
-    conn = create_connection()
+    conn = cnxpool.get_connection()
     cursor = conn.cursor()
 
-    racu_logs.debug(f"database.select_query_one: 'query': {query}, 'values': {values}")
+    logs.debug(f"database.select_query_one: 'query': {query}, 'values': {values}")
 
     if values:
-        output = cursor.execute(query, values).fetchone()
+        cursor.execute(query, values)
+        output = cursor.fetchone()
     else:
-        output = cursor.execute(query).fetchone()
+        cursor.execute(query)
+        output = cursor.fetchone()
+
+    conn.close()
 
     if output:
         return output[0]

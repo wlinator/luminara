@@ -6,14 +6,15 @@ import random
 
 import discord
 from discord import default_permissions
+from discord.commands import SlashCommandGroup
 from discord.ext import commands, tasks
 
 from config import json_loader
-from data.Birthday import Birthday
+from services.Birthday import Birthday
 from main import strings
-from utils import time
+from lib import time, checks
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 months = [
     "January", "February", "March", "April",
@@ -25,14 +26,15 @@ messages = json_loader.load_birthday_messages()
 
 
 class BirthdayCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
         self.daily_birthday_check.start()
 
-    @commands.slash_command(
-        name="birthday",
-        description="Set your birthday.",
-        guild_only=True
+    birthday = SlashCommandGroup("birthday", "various birthday commands.", guild_only=True)
+
+    @birthday.command(
+        name="set",
+        description="Set your birthday."
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def set_birthday(self, ctx, *,
@@ -53,10 +55,46 @@ class BirthdayCog(commands.Cog):
 
         await ctx.respond(strings["birthday_set"].format(ctx.author.name, month, day), ephemeral=True)
 
-    @commands.slash_command(
-        name="override-birthday",
-        description="Override a birthday - requires Manage Server.",
-        guild_only=True
+    @birthday.command(
+        name="upcoming",
+        description="See upcoming birthdays!"
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def upcoming_birthdays(self, ctx):
+        upcoming_birthdays = Birthday.get_upcoming_birthdays()
+        icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+
+        embed = discord.Embed(
+            color=discord.Color.embed_background()
+        )
+        embed.set_author(name="Upcoming Birthdays!", icon_url=icon)
+        embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
+
+        for i, (user_id, birthday) in enumerate(upcoming_birthdays, start=1):
+            try:
+                member = await ctx.guild.fetch_member(user_id)
+                name = member.name
+            except:
+                name = "Unknown User"
+
+            try:
+                birthday_date = datetime.datetime.strptime(birthday, "%m-%d")
+                formatted_birthday = birthday_date.strftime("%B %-d")
+            except ValueError:
+                # leap year error
+                formatted_birthday = "February 29"
+
+            embed.add_field(
+                name=f"{name}",
+                value=f"🎂 {formatted_birthday}",
+                inline=False
+            )
+
+        await ctx.respond(embed=embed)
+
+    @birthday.command(
+        name="override",
+        description="Override a birthday - requires Manage Server."
     )
     @default_permissions(manage_guild=True)
     async def override_birthday(self, ctx, *,
@@ -82,16 +120,16 @@ class BirthdayCog(commands.Cog):
     async def daily_birthday_check(self):
 
         wait_time = time.seconds_until(7, 0)
-        racu_logs.info(f"daily_birthday_check(): Waiting until 7 AM Eastern: {wait_time}")
+        logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
         await asyncio.sleep(wait_time)
 
         birthday_ids = Birthday.today()
 
         if birthday_ids:
-            guild_id = 719227135151046699  # Kaiju's Rave Cave
+            guild_id = 719227135151046699  # RC
             channel_id = 741021558172287099  # Birthdays channel
 
-            guild = await self.bot.fetch_guild(guild_id)
+            guild = await self.client.fetch_guild(guild_id)
             channel = await guild.fetch_channel(channel_id)
 
             for user_id in birthday_ids:
@@ -103,17 +141,17 @@ class BirthdayCog(commands.Cog):
                     message = random.choice(messages["birthday_messages"])
                     await channel.send(message.format(user.mention))
 
-                    racu_logs.info(f"daily_birthday_check(): Sent message for USER ID: {user_id}")
+                    logs.info(f"[BirthdayHandler] Sent message for user with ID {user_id}")
 
                 except discord.HTTPException:
-                    racu_logs.info(f"daily_birthday_check(): Not sent because USER ID {user_id} not in Guild.")
+                    logs.info(f"[BirthdayHandler] Not sent because user with ID {user_id} not in Guild.")
 
                 except Exception as err:
-                    racu_logs.error(f"daily_birthday_check(): Something went wrong: {err}")
+                    logs.error(f"[BirthdayHandler] Something went wrong: {err}")
 
         else:
-            racu_logs.info("daily_birthday_check(): No Birthdays Today.")
+            logs.info("[BirthdayHandler] No Birthdays Today.")
 
 
-def setup(sbbot):
-    sbbot.add_cog(BirthdayCog(sbbot))
+def setup(client):
+    client.add_cog(BirthdayCog(client))

@@ -1,19 +1,19 @@
 from discord.ext import commands
 
-from data.Xp import Xp
-from sb_tools import embeds, universal
+from services.Xp import Xp
+from lib import embeds, checks
 
 
 class LevelCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="level",
         description="Displays your level and rank.",
         guild_only=True
     )
-    @commands.check(universal.channel_check)
+    @commands.check(checks.channel)
     async def level(self, ctx):
         xp_data = Xp(ctx.author.id)
         rank = xp_data.calculate_rank()
@@ -23,5 +23,5 @@ class LevelCog(commands.Cog):
                                                              needed_xp_for_next_level, rank))
 
 
-def setup(sbbot):
-    sbbot.add_cog(LevelCog(sbbot))
+def setup(client):
+    client.add_cog(LevelCog(client))

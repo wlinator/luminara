@@ -3,25 +3,25 @@ import logging
 import discord
 from discord.ext import commands
 
-from sb_tools import universal
+from lib import checks
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class SayCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
-        name="tess",
-        description="Bot admin only",
+        name="say",
+        description="Bot admin only.",
         guild_only=True
     )
-    @commands.check(universal.owner_check)
-    async def tess_command(self, ctx, *, txt: discord.Option(str)):
+    @commands.check(checks.bot_owner)
+    async def say(self, ctx, *, txt: discord.Option(str)):
         await ctx.respond(content="✅", ephemeral=True)
         await ctx.send(content=txt)
 
 
-def setup(sbbot):
-    sbbot.add_cog(SayCog(sbbot))
+def setup(client):
+    client.add_cog(SayCog(client))

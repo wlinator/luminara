@@ -1,33 +1,44 @@
 import logging
 import os
+import subprocess
 from datetime import datetime
 
 import dropbox
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 
 oauth2_refresh_token = os.getenv("DBX_OAUTH2_REFRESH_TOKEN")
 app_key = os.getenv("DBX_APP_KEY")
 app_secret = os.getenv("DBX_APP_SECRET")
 instance = os.getenv("INSTANCE")
+mariadb_user = os.getenv("MARIADB_USER")
+mariadb_password = os.getenv("MARIADB_PASSWORD")
 
-dbx = dropbox.Dropbox(
-    app_key=app_key,
-    app_secret=app_secret,
-    oauth2_refresh_token=oauth2_refresh_token
-)
+if instance.lower() == "main":
+    dbx = dropbox.Dropbox(
+        app_key=app_key,
+        app_secret=app_secret,
+        oauth2_refresh_token=oauth2_refresh_token
+    )
+else:
+    # can be ignored
+    dbx = None
 
 
 async def create_db_backup(dbx, path="db/rcu.db"):
     backup_name = datetime.today().strftime('%Y-%m-%d_%H%M')
-    backup_name += f"_racu.db"
+    backup_name += f"_racu.sql"
 
-    with open(path, "rb") as f:
-        data = f.read()
-        dbx.files_upload(data, f"/{backup_name}")
+    command = f"mariadb-dump --user={mariadb_user} --password={mariadb_password} " \
+              f"--host=db --single-transaction --all-databases > ./db/init/2-data.sql"
+
+    subprocess.check_output(command, shell=True)
+
+    with open("./db/init/2-data.sql", "rb") as f:
+        dbx.files_upload(f.read(), f"/{backup_name}")
 
 
 async def backup_cleanup(dbx):
@@ -41,8 +52,8 @@ async def backup_cleanup(dbx):
 
 
 class BackupCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
+    def __init__(self, client):
+        self.client = client
         self.do_backup.start()
 
     @tasks.loop(hours=1)
@@ -53,14 +64,14 @@ class BackupCog(commands.Cog):
                 await create_db_backup(dbx)
                 await backup_cleanup(dbx)
 
-                racu_logs.info("DB Dropbox backup success.")
+                logs.info("[BACKUP] database backup success.")
 
             except Exception as error:
-                racu_logs.error("DB Dropbox backup failed.")
-                racu_logs.debug(f"Dropbox failure: {error}")
+                logs.error(f"[BACKUP] database backup failed. {error}")
+                logs.info(f"[BACKUP] Dropbox failure: {error}")
         else:
-            racu_logs.info("No backup was made, instance not \"MAIN\".")
+            logs.info("[BACKUP] No backup was made, instance not \"MAIN\".")
 
 
-def setup(sbbot):
-    sbbot.add_cog(BackupCog(sbbot))
+def setup(client):
+    client.add_cog(BackupCog(client))

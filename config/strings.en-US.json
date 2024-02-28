@@ -60,5 +60,6 @@
   "bet_limit": "❌ | **{0}** you cannot place any bets above **${1}**.",
   "birthday_invalid_date": "❌ | **{0}** the date you entered is invalid.",
   "birthday_set": "✅ | **{0}** your birthday was set to **{1} {2}**.",
-  "birthday_override": "✅ | **{0}** you set the birthday of user **{1}** to **{2} {3}**."
+  "birthday_override": "✅ | **{0}** you set the birthday of user **{1}** to **{2} {3}**.",
+  "uptime": "\uD83D\uDD52 | **{0}** I have been online for **{1}**"
 }

@@ -6,40 +6,14 @@ import subprocess
 import discord
 from discord.ext import commands
 
-from sb_tools import interaction, embeds, universal
+from lib import interaction, embeds, checks
 
-racu_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Racu.Core')
 
 
 class BasicCog(commands.Cog):
-    def __init__(self, sbbot):
-        self.bot = sbbot
-
-    @commands.slash_command(
-        name="restart",
-        description="Restart and update the bot - owner only command.",
-        guild_only=True
-    )
-    @commands.check(universal.owner_check)
-    async def restart(self, ctx):
-
-        try:
-            logs_dir = "logs"
-            for filename in os.listdir(logs_dir):
-                file_path = os.path.join(logs_dir, filename)
-                if os.path.isfile(file_path):
-                    with open(file_path, "w"):
-                        pass
-
-        except Exception as err:
-            racu_logs.error("Failed to delete logs: ", err)
-
-        await ctx.respond(content="Restarting..", ephemeral=True)
-
-        try:
-            racu_logs.info(subprocess.check_output(["/bin/bash", "racu_update.sh"]))
-        except subprocess.CalledProcessError as e:
-            racu_logs.debug(e.output.decode())
+    def __init__(self, client):
+        self.client = client
 
     @commands.slash_command(
         name="intro",
@@ -48,6 +22,9 @@ class BasicCog(commands.Cog):
     )
     @commands.dm_only()
     async def intro(self, ctx):
+
+        # rewrite this whole command
+
         guild_id = 719227135151046699
         channel_id = 973619250507972618
         muted_role_id = 754895743151505489
@@ -63,19 +40,19 @@ class BasicCog(commands.Cog):
         relationship_status = None
         extra = None
 
-        guild = self.bot.get_guild(guild_id)
+        guild = self.client.get_guild(guild_id)
         member = await guild.fetch_member(ctx.author.id)
         if member and discord.utils.get(member.roles, id=muted_role_id):
             em = discord.Embed(description="You're muted in the Rave Cave. You can't perform this command.",
                                color=0xadcca6)
             await ctx.respond(embed=em)
-            racu_logs.warning(f"{ctx.author.name} couldn't do the intro command: Muted in the Race Cave")
+            logs.warning(f"{ctx.author.name} couldn't do the intro command: Muted in the Race Cave")
             return
 
-        # elif member and not discord.utils.get(member.roles, id=719995790319157279):
+        # elif member and not discord.lib.get(member.roles, id=719995790319157279):
         #     em = discord.Embed(description="It seems that you don't have permission to do that!")
         #     await ctx.respond(embed=em)
-        #     racu_logs.warning(f"{ctx.author.name} couldn't do the intro command: No Permissions")
+        #     logs.warning(f"{ctx.author.name} couldn't do the intro command: No Permissions")
         #     return
 
         embed = discord.Embed(color=0xadcca6,
@@ -104,30 +81,30 @@ class BasicCog(commands.Cog):
             return message.author == ctx.author and isinstance(message.channel, discord.DMChannel)
 
         if view.clickedShort:
-            racu_logs.debug(f"{ctx.author.name} clicked Short Intro")
+            logs.debug(f"{ctx.author.name} clicked Short Intro")
 
             # START NICKNAME
             await ctx.send(embed=embeds.simple_question_first("How would you like to be identified in the server?"))
 
             try:
-                nickname_message = await self.bot.wait_for('message', check=check, timeout=120)
+                nickname_message = await self.client.wait_for('message', check=check, timeout=120)
                 nickname = nickname_message.content
                 if len(nickname) > 100:
                     nickname = nickname[:100]
                 nickname = nickname.replace("\n", " ")
-                racu_logs.debug(f"{ctx.author.name} nickname: {nickname}")
+                logs.debug(f"{ctx.author.name} nickname: {nickname}")
 
                 # START AGE
                 await ctx.send(embed=embeds.simple_question_5("How old are you?"),
                                content=f"Recorded answer: {nickname}")
 
                 try:
-                    age_message = await self.bot.wait_for('message', check=check, timeout=120)
+                    age_message = await self.client.wait_for('message', check=check, timeout=120)
                     age = age_message.content
                     if len(age) > 5:
                         age = age[:5]
                     age = age.replace("\n", " ")
-                    racu_logs.debug(f"{ctx.author.name} age: {age}")
+                    logs.debug(f"{ctx.author.name} age: {age}")
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
@@ -142,7 +119,7 @@ class BasicCog(commands.Cog):
                         await ctx.send(embed=embeds.no_time())
                         return
 
-                    racu_logs.debug(f"{ctx.author.name} location: {location}")
+                    logs.debug(f"{ctx.author.name} location: {location}")
 
                     # START PRONOUNS
                     await ctx.send(
@@ -150,36 +127,36 @@ class BasicCog(commands.Cog):
                         content=f"Recorded answer: {location}")
 
                     try:
-                        pronouns_message = await self.bot.wait_for('message', check=check, timeout=120)
+                        pronouns_message = await self.client.wait_for('message', check=check, timeout=120)
                         pronouns = pronouns_message.content
                         if len(pronouns) > 30:
                             pronouns = pronouns[:30]
                         pronouns = pronouns.replace("\n", " ")
-                        racu_logs.debug(f"{ctx.author.name} pronouns: {pronouns}")
+                        logs.debug(f"{ctx.author.name} pronouns: {pronouns}")
 
                         # START LIKES
                         await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
                                        content=f"Recorded answer: {pronouns}")
 
                         try:
-                            likes_message = await self.bot.wait_for('message', check=check, timeout=300)
+                            likes_message = await self.client.wait_for('message', check=check, timeout=300)
                             likes = likes_message.content
                             if len(likes) > 300:
                                 likes = likes[:300]
                             likes = likes.replace("\n", " ")
-                            racu_logs.debug(f"{ctx.author.name} likes: {likes}")
+                            logs.debug(f"{ctx.author.name} likes: {likes}")
 
                             # START DISLIKES
                             await ctx.send(embed=embeds.simple_question_300("Dislikes"),
                                            content=f"Recorded answer: {likes}")
 
                             try:
-                                dislikes_message = await self.bot.wait_for('message', check=check, timeout=300)
+                                dislikes_message = await self.client.wait_for('message', check=check, timeout=300)
                                 dislikes = dislikes_message.content
                                 if len(dislikes) > 300:
                                     dislikes = dislikes[:300]
                                 dislikes = dislikes.replace("\n", " ")
-                                racu_logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
+                                logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
 
                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
                                 em = embeds.final_embed_short(ctx, nickname, age, location, pronouns, likes, dislikes)
@@ -192,64 +169,64 @@ class BasicCog(commands.Cog):
                                     intro_channel = guild.get_channel(channel_id)
                                     await intro_channel.send(embed=em, content=f"Introduction of <@{ctx.author.id}>")
                                     await ctx.send(embed=embeds.final_confirmation(channel_id))
-                                    racu_logs.info(f"{ctx.author.name} Intro Sent")
+                                    logs.info(f"[CommandHandler] {ctx.author.name} introduction was submitted.")
                                     return
                                 else:
                                     await ctx.send(embed=embeds.no_time())
-                                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                    logs.warning(f"{ctx.author.id} Intro Timeout")
                                     return
 
                             except asyncio.TimeoutError:
                                 await ctx.send(embed=embeds.no_time())
-                                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                logs.warning(f"{ctx.author.id} Intro Timeout")
                                 return
 
                         except asyncio.TimeoutError:
                             await ctx.send(embed=embeds.no_time())
-                            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                            logs.warning(f"{ctx.author.id} Intro Timeout")
                             return
 
                     except asyncio.TimeoutError:
                         await ctx.send(embed=embeds.no_time())
-                        racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                        logs.warning(f"{ctx.author.id} Intro Timeout")
                         return
 
                 except asyncio.TimeoutError:
                     await ctx.send(embed=embeds.no_time())
-                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                    logs.warning(f"{ctx.author.id} Intro Timeout")
                     return
 
             except asyncio.TimeoutError:
                 await ctx.send(embed=embeds.no_time())
-                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                logs.warning(f"{ctx.author.id} Intro Timeout")
                 return
 
         elif view.clickedLong:
-            racu_logs.debug(f"{ctx.author.name} clicked Long Intro")
+            logs.debug(f"{ctx.author.name} clicked Long Intro")
 
             # START NICKNAME
             await ctx.send(embed=embeds.simple_question_first_extended(
                 "How would you like to be identified in the server?"))
 
             try:
-                nickname_message = await self.bot.wait_for('message', check=check, timeout=120)
+                nickname_message = await self.client.wait_for('message', check=check, timeout=120)
                 nickname = nickname_message.content
                 if len(nickname) > 100:
                     nickname = nickname[:100]
                 nickname = nickname.replace("\n", " ")
-                racu_logs.debug(f"{ctx.author.name} nickname: {nickname}")
+                logs.debug(f"{ctx.author.name} nickname: {nickname}")
 
                 # START AGE
                 await ctx.send(embed=embeds.simple_question_5("How old are you?"),
                                content=f"Recorded answer: {nickname}")
 
                 try:
-                    age_message = await self.bot.wait_for('message', check=check, timeout=120)
+                    age_message = await self.client.wait_for('message', check=check, timeout=120)
                     age = age_message.content
                     if len(age) > 5:
                         age = age[:5]
                     age = age.replace("\n", " ")
-                    racu_logs.debug(f"{ctx.author.name} age: {age}")
+                    logs.debug(f"{ctx.author.name} age: {age}")
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
@@ -264,7 +241,7 @@ class BasicCog(commands.Cog):
                         await ctx.send(embed=embeds.no_time())
                         return
 
-                    racu_logs.debug(f"{ctx.author.name} location: {location}")
+                    logs.debug(f"{ctx.author.name} location: {location}")
 
                     # START LANGUAGES
                     await ctx.send(
@@ -273,12 +250,12 @@ class BasicCog(commands.Cog):
                     )
 
                     try:
-                        languages_message = await self.bot.wait_for('message', check=check, timeout=200)
+                        languages_message = await self.client.wait_for('message', check=check, timeout=200)
                         languages = languages_message.content
                         if len(languages) > 30:
                             languages = languages[:30]
                         languages = languages.replace("\n", " ")
-                        racu_logs.debug(f"{ctx.author.name} languages: {languages}")
+                        logs.debug(f"{ctx.author.name} languages: {languages}")
 
                         # START PRONOUNS
                         await ctx.send(
@@ -286,12 +263,12 @@ class BasicCog(commands.Cog):
                             content=f"Recorded answer: {languages}")
 
                         try:
-                            pronouns_message = await self.bot.wait_for('message', check=check, timeout=120)
+                            pronouns_message = await self.client.wait_for('message', check=check, timeout=120)
                             pronouns = pronouns_message.content
                             if len(pronouns) > 30:
                                 pronouns = pronouns[:30]
                             pronouns = pronouns.replace("\n", " ")
-                            racu_logs.debug(f"{ctx.author.name} pronouns: {pronouns}")
+                            logs.debug(f"{ctx.author.name} pronouns: {pronouns}")
 
                             # START SEXUALITY
                             await ctx.send(
@@ -299,12 +276,12 @@ class BasicCog(commands.Cog):
                                 content=f"Recorded answer: {pronouns}")
 
                             try:
-                                sexuality_message = await self.bot.wait_for('message', check=check, timeout=120)
+                                sexuality_message = await self.client.wait_for('message', check=check, timeout=120)
                                 sexuality = sexuality_message.content
                                 if len(sexuality) > 30:
                                     sexuality = sexuality[:30]
                                 sexuality = sexuality.replace("\n", " ")
-                                racu_logs.debug(f"{ctx.author.name} sexuality: {sexuality}")
+                                logs.debug(f"{ctx.author.name} sexuality: {sexuality}")
 
                                 # START RELATIONSHIP_STATUS
                                 await ctx.send(
@@ -312,38 +289,38 @@ class BasicCog(commands.Cog):
                                     content=f"Recorded answer: {sexuality}")
 
                                 try:
-                                    relationship_status_message = await self.bot.wait_for('message', check=check,
+                                    relationship_status_message = await self.client.wait_for('message', check=check,
                                                                                           timeout=120)
                                     relationship_status = relationship_status_message.content
                                     if len(relationship_status) > 30:
                                         relationship_status = relationship_status[:30]
                                     relationship_status = relationship_status.replace("\n", " ")
-                                    racu_logs.debug(f"{ctx.author.name} relationship_status: {relationship_status}")
+                                    logs.debug(f"{ctx.author.name} relationship_status: {relationship_status}")
 
                                     # START LIKES
                                     await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
                                                    content=f"Recorded answer: {relationship_status}")
 
                                     try:
-                                        likes_message = await self.bot.wait_for('message', check=check, timeout=300)
+                                        likes_message = await self.client.wait_for('message', check=check, timeout=300)
                                         likes = likes_message.content
                                         if len(likes) > 300:
                                             likes = likes[:300]
                                         likes = likes.replace("\n", " ")
-                                        racu_logs.debug(f"{ctx.author.name} likes: {likes}")
+                                        logs.debug(f"{ctx.author.name} likes: {likes}")
 
                                         # START DISLIKES
                                         await ctx.send(embed=embeds.simple_question_300("Dislikes"),
                                                        content=f"Recorded answer: {likes}")
 
                                         try:
-                                            dislikes_message = await self.bot.wait_for('message', check=check,
+                                            dislikes_message = await self.client.wait_for('message', check=check,
                                                                                        timeout=300)
                                             dislikes = dislikes_message.content
                                             if len(dislikes) > 300:
                                                 dislikes = dislikes[:300]
                                             dislikes = dislikes.replace("\n", " ")
-                                            racu_logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
+                                            logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
 
                                             # START EXTRA
                                             await ctx.send(embed=embeds.simple_question_300(
@@ -352,13 +329,13 @@ class BasicCog(commands.Cog):
                                                 content=f"Recorded answer: {dislikes}")
 
                                             try:
-                                                extra_message = await self.bot.wait_for('message', check=check,
+                                                extra_message = await self.client.wait_for('message', check=check,
                                                                                         timeout=300)
                                                 extra = extra_message.content
                                                 if len(extra) > 300:
                                                     extra = extra[:300]
                                                 extra = extra.replace("\n", " ")
-                                                racu_logs.debug(f"{ctx.author.name} extra: {extra}")
+                                                logs.debug(f"{ctx.author.name} extra: {extra}")
 
                                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
                                                 em = embeds.final_embed_extended(ctx, nickname, age, location,
@@ -376,62 +353,62 @@ class BasicCog(commands.Cog):
                                                     await intro_channel.send(embed=em,
                                                                              content=f"Introduction of <@{ctx.author.id}>")
                                                     await ctx.send(embed=embeds.final_confirmation(channel_id))
-                                                    racu_logs.info(f"{ctx.author.name} Intro Sent")
+                                                    logs.info(f"[CommandHandler] {ctx.author.name} introduction was submitted.")
                                                     return
                                                 else:
                                                     await ctx.send(embed=embeds.no_time())
-                                                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                                    logs.warning(f"{ctx.author.id} Intro Timeout")
                                                     return
 
                                             except asyncio.TimeoutError:
                                                 await ctx.send(embed=embeds.no_time())
-                                                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                                logs.warning(f"{ctx.author.id} Intro Timeout")
                                                 return
 
                                         except asyncio.TimeoutError:
                                             await ctx.send(embed=embeds.no_time())
-                                            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                            logs.warning(f"{ctx.author.id} Intro Timeout")
                                             return
 
                                     except asyncio.TimeoutError:
                                         await ctx.send(embed=embeds.no_time())
-                                        racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                        logs.warning(f"{ctx.author.id} Intro Timeout")
                                         return
 
                                 except asyncio.TimeoutError:
                                     await ctx.send(embed=embeds.no_time())
-                                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                    logs.warning(f"{ctx.author.id} Intro Timeout")
                                     return
 
                             except asyncio.TimeoutError:
                                 await ctx.send(embed=embeds.no_time())
-                                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                                logs.warning(f"{ctx.author.id} Intro Timeout")
                                 return
 
                         except asyncio.TimeoutError:
                             await ctx.send(embed=embeds.no_time())
-                            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                            logs.warning(f"{ctx.author.id} Intro Timeout")
                             return
 
                     except asyncio.TimeoutError:
                         await ctx.send(embed=embeds.no_time())
-                        racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                        logs.warning(f"{ctx.author.id} Intro Timeout")
                         return
 
                 except asyncio.TimeoutError:
                     await ctx.send(embed=embeds.no_time())
-                    racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                    logs.warning(f"{ctx.author.id} Intro Timeout")
                     return
 
             except asyncio.TimeoutError:
                 await ctx.send(embed=embeds.no_time())
-                racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+                logs.warning(f"{ctx.author.id} Intro Timeout")
                 return
         else:
             await ctx.send(embed=embeds.no_time())
-            racu_logs.warning(f"{ctx.author.id} Intro Timeout")
+            logs.warning(f"{ctx.author.id} Intro Timeout")
             return
 
 
-def setup(sbbot):
-    sbbot.add_cog(BasicCog(sbbot))
+def setup(client):
+    client.add_cog(BasicCog(client))
