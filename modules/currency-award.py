@@ -6,7 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from services.Currency import Currency
-from utils import economy_embeds, checks
+from lib import economy_embeds, checks
 
 load_dotenv('.env')
 

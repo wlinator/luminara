@@ -6,7 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from services.Currency import Currency
-from utils import checks
+from lib import checks
 
 load_dotenv('.env')
 

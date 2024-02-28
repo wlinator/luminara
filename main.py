@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-import utils.resources
+import lib.resources
 from config import json_loader
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler

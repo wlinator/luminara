@@ -1,6 +1,6 @@
 import random
 
-from utils import checks
+from lib import checks
 
 
 class ReactionHandler:

@@ -11,7 +11,7 @@ from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from utils import economy_embeds, economy_functions, checks, interaction, embeds
+from lib import economy_embeds, economy_functions, checks, interaction, embeds
 
 logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')

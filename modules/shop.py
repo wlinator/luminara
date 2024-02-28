@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from services.Currency import Currency
 from services.ShopItem import ShopItem
-from utils import checks
+from lib import checks
 
 load_dotenv('.env')
 special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")

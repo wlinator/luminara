@@ -12,7 +12,7 @@ from discord.ext import commands, tasks
 from config import json_loader
 from services.Birthday import Birthday
 from main import strings
-from utils import time
+from lib import time
 
 logs = logging.getLogger('Racu.Core')
 

@@ -7,7 +7,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from db import database
-from utils import checks
+from lib import checks
 
 load_dotenv('.env')
 
