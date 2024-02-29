@@ -8,6 +8,8 @@ services:
             driver: "json-file"
             options:
                 max-size: "50m"
+        volumes:
+            - debuglog:/usr/src/app/logs
         depends_on:
             db:
                 condition: service_healthy
@@ -47,3 +49,4 @@ services:
  
 volumes:
     dbdata:
+    debuglog:
