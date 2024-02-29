@@ -24,7 +24,7 @@ class ItemHandler:
         return field
 
     async def bitch_coin(self, status, field):
-        if status == "player_blackjack":
+        if status == 5:
             inv = Inventory(self.ctx.author.id)
             item = Item.get_item_by_name("bitch_coin")
             inv.add_item(item)

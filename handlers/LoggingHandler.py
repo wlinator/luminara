@@ -35,13 +35,13 @@ def setup_logger():
         # Handlers already exist, no need to add more
         return logger
 
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
-    # Create console handler and set level and formatter
+    # Create console handler and set formatter
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
     console_formatter = RacuFormatter('[%(asctime)s] [%(name)s] %(message)s',
                                       datefmt='%Y-%m-%d %H:%M:%S')
+
     console_handler.setFormatter(console_formatter)
     logger.addHandler(console_handler)
 
