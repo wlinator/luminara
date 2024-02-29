@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 from datetime import datetime
 import pytz
 import re
@@ -57,7 +58,8 @@ def setup_logger():
     logger.addHandler(console_handler)
 
     # DEBUG LOG TO FILE HANDLER
-    debug_file_handler = logging.FileHandler(debug_log_file)
+    max_log_size_bytes = 10 * 1024 * 1024 # max. 10 MB
+    debug_file_handler = RotatingFileHandler(debug_log_file, maxBytes=max_log_size_bytes, backupCount=5)
     debug_file_handler.setLevel(logging.DEBUG)
     debug_file_formatter = RacuFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
                                                                             datefmt='%Y-%m-%d %H:%M:%S')
