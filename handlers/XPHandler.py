@@ -55,7 +55,7 @@ class XPHandler:
     async def process_xp(self, message):
 
         if message.channel.id == 746796138195058788 or message.channel.id == 814590778650263604:
-            logs.info(f"[XpHandler] {message.author.name} sent a message in a xp-blacklisted channel.")
+            logs.debug(f"[XpHandler] {message.author.name} sent a message in a xp-blacklisted channel.")
             return
 
         current_time = time.time()
@@ -63,7 +63,7 @@ class XPHandler:
         xp = Xp(user_id)
 
         if xp.ctime and current_time < xp.ctime:
-            logs.info(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
+            logs.debug(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
             return
 
         new_xp = xp.xp + xp.xp_gain
@@ -96,11 +96,11 @@ class XPHandler:
             user_currency.add_special(1)
             user_currency.push()
 
-            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
+            logs.debug(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
 
         else:
             xp.xp += xp.xp_gain
-            logs.info(f"[XpHandler] {message.author.name} gained {xp.xp_gain} XP | "
+            logs.debug(f"[XpHandler] {message.author.name} gained {xp.xp_gain} XP | "
                            f"lv {xp.level} with {xp.xp} XP.")
 
         xp.ctime = current_time + xp.new_cooldown
