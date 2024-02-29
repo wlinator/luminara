@@ -6,5 +6,6 @@ __pycache__/
 .env
 *.log
 
+users.yml
 db/data/
 db/init/2-data.sql
