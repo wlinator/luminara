@@ -22,7 +22,7 @@ special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
 cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
 
-def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer_hand_value, status):
+def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer_hand_value):
     current_time = datetime.now(est).strftime("%I:%M %p")
     thumbnail_url = None
 
@@ -66,31 +66,31 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
     embed.set_footer(text=f"Game finished • Today at {current_time}",
                      icon_url="https://i.imgur.com/96jPPXO.png")
 
-    if status == "player_busted":
+    if status == 1:
         name = "Busted.."
         value = f"You lost **${bet}**."
         thumbnail_url = "https://i.imgur.com/rc68c43.png"
         color = discord.Color.red()
-
-    elif status == "dealer_busted":
-        name = "The dealer busted. You won!"
-        value = f"You won **${payout}**."
-        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
-        color = discord.Color.green()
-
-    elif status == "dealer_won":
-        name = "You lost.."
-        value = f"You lost **${bet}**."
-        thumbnail_url = "https://i.imgur.com/rc68c43.png"
-        color = discord.Color.red()
-
-    elif status == "player_won_21":
+    
+    elif status == 2:
         name = "You won with a score of 21!"
         value = f"You won **${payout}**."
         thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
         color = discord.Color.green()
 
-    elif status == "player_blackjack":
+    elif status == 3:
+        name = "The dealer busted. You won!"
+        value = f"You won **${payout}**."
+        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
+        color = discord.Color.green()
+
+    elif status == 4:
+        name = "You lost.."
+        value = f"You lost **${bet}**."
+        thumbnail_url = "https://i.imgur.com/rc68c43.png"
+        color = discord.Color.red()
+
+    elif status == 5:
         name = "You won with a natural hand!"
         value = f"You won **${payout}**."
         thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
@@ -123,6 +123,17 @@ class BlackJackCog(commands.Cog):
     )
     @commands.check(checks.channel)
     async def blackjack(self, ctx, *, bet: discord.Option(int)):
+
+        """
+        status states:
+        0 = game start
+        1 = player busted
+        2 = player won with 21 (after hit)
+        3 = dealer busted
+        4 = dealer won
+        5 = player won with 21 (blackjack)
+        6 = timed out
+        """
 
         # check if the player already has an active blackjack going
         if ctx.author.id in active_blackjack_games:
@@ -162,15 +173,15 @@ class BlackJackCog(commands.Cog):
             player_hand_value = economy_functions.blackjack_calculate_hand_value(player_hand)
             dealer_hand_value = economy_functions.blackjack_calculate_hand_value(dealer_hand)
 
-            status = "game_start" if player_hand_value != 21 else "player_blackjack"
+            status = 0 if player_hand_value != 21 else 5
             view = interaction.BlackJackButtons(ctx)
             playing_embed = False
 
-            while status == "game_start":
+            while status == 0:
                 if not playing_embed:
                     await ctx.respond(embed=blackjack_show(ctx, Currency.format_human(bet), player_hand,
                                                            dealer_hand, player_hand_value,
-                                                           dealer_hand_value, status=status),
+                                                           dealer_hand_value),
                                       view=view,
                                       content=ctx.author.mention)
 
@@ -184,10 +195,10 @@ class BlackJackCog(commands.Cog):
                     player_hand_value = economy_functions.blackjack_calculate_hand_value(player_hand)
 
                     if player_hand_value > 21:
-                        status = "player_busted"
+                        status = 1
                         break
                     elif player_hand_value == 21:
-                        status = "player_won_21"
+                        status = 2
                         break
 
                 elif view.clickedStand:
@@ -197,29 +208,29 @@ class BlackJackCog(commands.Cog):
                         dealer_hand_value = economy_functions.blackjack_calculate_hand_value(dealer_hand)
 
                     if dealer_hand_value > 21:
-                        status = "dealer_busted"
+                        status = 3
                         break
                     else:
-                        status = "dealer_won"
+                        status = 4
                         break
 
                 else:
-                    status = "timed_out"
+                    status = 6
                     break
 
                 # refresh
                 view = interaction.BlackJackButtons(ctx)
                 embed = blackjack_show(ctx, Currency.format_human(bet), player_hand,
                                        dealer_hand, player_hand_value,
-                                       dealer_hand_value, status=status)
+                                       dealer_hand_value)
 
                 await ctx.edit(embed=embed, view=view, content=ctx.author.mention)
 
             """
             At this point the game has concluded, generate a final output & backend
             """
-            payout = bet * multiplier if not status == "player_blackjack" else bet * 2
-            is_won = False if status == "player_busted" or status == "dealer_won" else True
+            payout = bet * multiplier if not status == 5 else bet * 2
+            is_won = False if status == 1 or status == 4 else True
 
             embed = blackjack_finished(ctx, Currency.format_human(bet), player_hand_value,
                                        dealer_hand_value, Currency.format_human(payout), status)
@@ -237,7 +248,7 @@ class BlackJackCog(commands.Cog):
                 await ctx.respond(embed=embed, view=None, content=ctx.author.mention)
 
             # change balance
-            # if status == "player_busted" or status == "dealer_won":
+            # if status == 1 or status == 4:
             if not is_won:
                 ctx_currency.take_cash(bet)
                 ctx_currency.push()
@@ -253,7 +264,7 @@ class BlackJackCog(commands.Cog):
                 )
                 stats.push()
 
-            elif status == "timed_out":
+            elif status == 6:
                 await ctx.send(embed=economy_embeds.out_of_time(), content=ctx.author.mention)
                 ctx_currency.take_cash(bet)
                 ctx_currency.push()
