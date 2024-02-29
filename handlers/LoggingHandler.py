@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 import pytz
 import re
+import os
 
 
 class RacuFormatter(logging.Formatter):
@@ -28,22 +29,40 @@ class RacuFormatter(logging.Formatter):
 
 def setup_logger():
 
+    logs_folder = 'logs'
+    if not os.path.exists(logs_folder):
+        os.makedirs(logs_folder)
+    
+    debug_log_file = os.path.join(logs_folder, 'debug.log')
+    
+    with open(debug_log_file, 'w') as f:
+        pass
+
     # Initialize the logger
     logger = logging.getLogger('Racu.Core')
 
     if logger.handlers:
         # Handlers already exist, no need to add more
         return logger
+    
+    logger.setLevel(logging.DEBUG)
 
-    logger.setLevel(logging.INFO)
-
-    # Create console handler and set formatter
+    # CONSOLE HANDLER
     console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
     console_formatter = RacuFormatter('[%(asctime)s] [%(name)s] %(message)s',
-                                      datefmt='%Y-%m-%d %H:%M:%S')
+                                                                        datefmt='%Y-%m-%d %H:%M:%S')
 
     console_handler.setFormatter(console_formatter)
     logger.addHandler(console_handler)
+
+    # DEBUG LOG TO FILE HANDLER
+    debug_file_handler = logging.FileHandler(debug_log_file)
+    debug_file_handler.setLevel(logging.DEBUG)
+    debug_file_formatter = RacuFormatter('[%(asctime)s] [%(name)s] %(message)s',
+                                                                            datefmt='%Y-%m-%d %H:%M:%S')
+    debug_file_handler.setFormatter(debug_file_formatter)
+    logger.addHandler(debug_file_handler)
 
     logger.propagate = False
     logging.captureWarnings(True)
