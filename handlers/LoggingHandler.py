@@ -34,7 +34,7 @@ def setup_logger():
         os.makedirs(logs_folder)
     
     debug_log_file = os.path.join(logs_folder, 'debug.log')
-    
+
     with open(debug_log_file, 'w') as f:
         pass
 
@@ -59,7 +59,7 @@ def setup_logger():
     # DEBUG LOG TO FILE HANDLER
     debug_file_handler = logging.FileHandler(debug_log_file)
     debug_file_handler.setLevel(logging.DEBUG)
-    debug_file_formatter = RacuFormatter('[%(asctime)s] [%(name)s] %(message)s',
+    debug_file_formatter = RacuFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
                                                                             datefmt='%Y-%m-%d %H:%M:%S')
     debug_file_handler.setFormatter(debug_file_formatter)
     logger.addHandler(debug_file_handler)
