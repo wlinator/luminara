@@ -92,29 +92,33 @@ class BirthdayCog(commands.Cog):
 
         await ctx.respond(embed=embed)
 
-    @birthday.command(
-        name="override",
-        description="Override a birthday - requires Manage Server."
-    )
-    @default_permissions(manage_guild=True)
-    async def override_birthday(self, ctx, *,
-                                user: discord.Option(discord.Member),
-                                month: discord.Option(choices=months),
-                                day: discord.Option(int)):
-        leap_year = 2020
-        month_index = months.index(month) + 1
-        max_days = calendar.monthrange(leap_year, month_index)[1]
 
-        if not (1 <= day <= max_days):
-            return await ctx.respond(strings["birthday_invalid_date"].format(ctx.author.name), ephemeral=True)
+    """
+    TEMPORARILY DISABLED BECAUSE OF PERMISSIONS ISSUE
+    """
+    # @birthday.command(
+    #     name="override",
+    #     description="Override a birthday - requires Manage Server."
+    # )
+    # @default_permissions(manage_guild=True)
+    # async def override_birthday(self, ctx, *,
+    #                             user: discord.Option(discord.Member),
+    #                             month: discord.Option(choices=months),
+    #                             day: discord.Option(int)):
+    #     leap_year = 2020
+    #     month_index = months.index(month) + 1
+    #     max_days = calendar.monthrange(leap_year, month_index)[1]
 
-        date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
-        date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    #     if not (1 <= day <= max_days):
+    #         return await ctx.respond(strings["birthday_invalid_date"].format(ctx.author.name), ephemeral=True)
 
-        birthday = Birthday(user.id)
-        birthday.set(date_obj)
+    #     date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
+    #     date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
 
-        await ctx.respond(strings["birthday_override"].format(ctx.author.name, user.name, month, day))
+    #     birthday = Birthday(user.id)
+    #     birthday.set(date_obj)
+
+    #     await ctx.respond(strings["birthday_override"].format(ctx.author.name, user.name, month, day))
 
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
@@ -132,6 +136,9 @@ class BirthdayCog(commands.Cog):
             guild = await self.client.fetch_guild(guild_id)
             channel = await guild.fetch_channel(channel_id)
 
+            embed = discord.Embed(color=discord.Color.embed_background())
+            embed.set_image(url="https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif")
+
             for user_id in birthday_ids:
 
                 try:
@@ -139,7 +146,9 @@ class BirthdayCog(commands.Cog):
                     print(user)
 
                     message = random.choice(messages["birthday_messages"])
-                    await channel.send(message.format(user.mention))
+                    embed.description = message.format(user.name)
+
+                    await channel.send(embed=embed, content=user.mention)
 
                     logs.info(f"[BirthdayHandler] Sent message for user with ID {user_id}")
 
