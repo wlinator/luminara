@@ -21,14 +21,16 @@ Racu is a Discord bot originally developed for a specific server, but it can now
 
 
 ## 📲 Installation
-Racu is containerized: its core, database and db admin platform run on Docker without any extra configuration. 
+Racu is containerized: its core, database, database admin platform and logger run on Docker without any extra configuration. 
 However, you CAN run it locally without Docker by hosting MariaDB on your machine with the login credentials specified in [.env](.env.template) and installing **Python 3.11** with the [required pip packages](requirements.txt). **Note: I won't explain how to do this. Figure it out on your own.**
 
 ```sh
 git clone https://github.com/Dok4440/racu && cd racu
 ```
 
-Copy `.env.template` to `.env` and fill out the [variables](#env-keys).   
+Copy `.env.template` to `.env` and fill out the [variables](#env-keys).    
+
+**Optional:** copy `users.yml.example` to `users.yml` to properly configure Dozzle logs. Check the file for more information.  
 
 ```sh
 docker compose up -d --build
