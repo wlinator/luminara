@@ -1,9 +1,8 @@
-# Racu Discord Bot
+# Racu v2
 
 ## ⚠️ Important Information
 
-Racu is a Discord bot originally developed for a specific server, but it can now be used anywhere as a self-hosted Python project. 
-**Please note that the main Racu bot is no longer available for server invitations.**
+This branch is in development **and will be unstable**. The purpose of v2 is to make Racu available Discord-wide, rather than tailor-made for one server. This information below is unedited and is meant for the stable version of racu v1 (main branch).
 
 
 ## 🎨 Features
