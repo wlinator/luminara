@@ -50,7 +50,7 @@ def setup_logger():
 
     # CONSOLE HANDLER
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
+    console_handler.setLevel(logging.DEBUG)
     console_formatter = RacuFormatter('[%(asctime)s] [%(name)s] %(message)s',
                                                                         datefmt='%Y-%m-%d %H:%M:%S')
 
