@@ -107,7 +107,6 @@ class BirthdayCog(commands.Cog):
                 If a Birthday channel is not specified in racudb, the module is disabled.
             """
 
-
         birthday_ids = Birthday.today()
 
         if birthday_ids:

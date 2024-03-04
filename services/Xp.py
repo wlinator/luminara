@@ -150,3 +150,15 @@ class Xp:
 
         # For levels below 10 and levels 110 and above
         return 9 * current_level + 27 if current_level < 30 else 42 * current_level + 27
+
+    @staticmethod
+    def level_template_format(text, username, level):
+        replacements = {
+            "{user}": username,
+            "{level}": str(level)
+        }
+
+        for placeholder, value in replacements.items():
+            text = text.replace(placeholder, value)
+
+        return text
