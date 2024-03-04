@@ -3,8 +3,23 @@ import os
 
 import discord
 from dotenv import load_dotenv
+from services.Birthday import Birthday
 
 load_dotenv('.env')
+
+
+async def birthday_module(ctx):
+    """
+        Whether the Birthday module is enabled in a server depends on the field "birthday_channel_id" in racudb.server_config
+        NULL or INVALID: disabled
+    """
+    birthday_channel_id = Birthday.get_birthday_channel_id(ctx.guild.id)
+
+    if not birthday_channel_id:
+        await ctx.respond(f"Birthdays are disabled in this server.", ephemeral=True)
+        return False
+    
+    return True
 
 
 async def channel(ctx):
