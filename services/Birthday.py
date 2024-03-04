@@ -6,30 +6,32 @@ from db import database
 
 
 class Birthday:
-    def __init__(self, user_id):
+    def __init__(self, user_id, guild_id):
         self.user_id = user_id
+        self.guild_id = user_id
 
     def set(self, birthday):
         query = """
-                INSERT INTO birthdays (user_id, birthday)
-                VALUES (%s, %s)
+                INSERT INTO birthdays (user_id, guild_id, birthday)
+                VALUES (%s, %s, %s)
                 ON DUPLICATE KEY UPDATE birthday = VALUES(birthday);
                 """
 
-        database.execute_query(query, (self.user_id, birthday))
+        database.execute_query(query, (self.user_id, self.guild_id, birthday))
 
     @staticmethod
-    def today():
+    def today_from_guild(guild_id):
         query = """
                 SELECT user_id
                 FROM birthdays
                 WHERE DATE_FORMAT(birthday, '%m-%d') = %s
+                AND guild_id = %s;
                 """
 
         tz = pytz.timezone('US/Eastern')
-        date = datetime.datetime.now(tz).strftime("%m-%d")
+        today = datetime.datetime.now(tz).strftime("%m-%d")
 
-        ids = database.select_query(query, (date,))
+        ids = database.select_query(query, (today,guild_id))
         ids = [item[0] for item in ids]
 
         return ids

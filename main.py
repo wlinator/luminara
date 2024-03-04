@@ -142,6 +142,9 @@ async def on_application_command_error(ctx, error) -> None:
     elif isinstance(error, commands.BotMissingPermissions):
         await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
         logs.info(f"[CommandHandler] Racu is missing permissions: {ctx.command.qualified_name}")
+    
+    elif isinstance(error, discord.CheckFailure) or isinstance(error, commands.CheckFailure):
+        logs.info(f"[CommandHandler] {ctx.author.name} tried to do \"/{ctx.command.qualified_name}\" but a check returned False.")
 
     else:
         logs.error(f"[CommandHandler] on_application_command_error: {error}", exc_info=True)

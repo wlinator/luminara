@@ -37,6 +37,7 @@ class BirthdayCog(commands.Cog):
         description="Set your birthday."
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.check(checks.birthday_module)
     async def set_birthday(self, ctx, *,
                            month: discord.Option(choices=months),
                            day: discord.Option(int)):
@@ -60,6 +61,7 @@ class BirthdayCog(commands.Cog):
         description="See upcoming birthdays!"
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.check(checks.birthday_module)
     async def upcoming_birthdays(self, ctx):
         upcoming_birthdays = Birthday.get_upcoming_birthdays()
         icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
@@ -92,40 +94,19 @@ class BirthdayCog(commands.Cog):
 
         await ctx.respond(embed=embed)
 
-
-    """
-    TEMPORARILY DISABLED BECAUSE OF PERMISSIONS ISSUE
-    """
-    # @birthday.command(
-    #     name="override",
-    #     description="Override a birthday - requires Manage Server."
-    # )
-    # @default_permissions(manage_guild=True)
-    # async def override_birthday(self, ctx, *,
-    #                             user: discord.Option(discord.Member),
-    #                             month: discord.Option(choices=months),
-    #                             day: discord.Option(int)):
-    #     leap_year = 2020
-    #     month_index = months.index(month) + 1
-    #     max_days = calendar.monthrange(leap_year, month_index)[1]
-
-    #     if not (1 <= day <= max_days):
-    #         return await ctx.respond(strings["birthday_invalid_date"].format(ctx.author.name), ephemeral=True)
-
-    #     date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
-    #     date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
-
-    #     birthday = Birthday(user.id)
-    #     birthday.set(date_obj)
-
-    #     await ctx.respond(strings["birthday_override"].format(ctx.author.name, user.name, month, day))
-
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
 
         wait_time = time.seconds_until(7, 0)
         logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
         await asyncio.sleep(wait_time)
+
+        for guild in self.client.guilds:
+            """
+                Performs a birthday check for each server Racu is currently in with Birthdays enabled.
+                If a Birthday channel is not specified in racudb, the module is disabled.
+            """
+
 
         birthday_ids = Birthday.today()
 
