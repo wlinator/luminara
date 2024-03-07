@@ -12,6 +12,7 @@ class GuildConfig:
         self.command_channel_id = None
         self.intro_channel_id = None
         self.welcome_channel_id = None
+        self.welcome_message = None
         self.level_channel_id = None
         self.level_message = None
         self.level_message_type = 1
@@ -24,19 +25,21 @@ class GuildConfig:
         """
         query = """
                         SELECT birthday_channel_id, command_channel_id, intro_channel_id,
-                                      welcome_channel_id, level_channel_id, level_message, level_message_type
+                                      welcome_channel_id, welcome_message, level_channel_id, 
+                                      level_message, level_message_type
                         FROM guild_config WHERE guild_id = %s
                         """
 
         try:
             (birthday_channel_id, command_channel_id, intro_channel_id,
-             welcome_channel_id, level_channel_id, level_message, level_message_type) = \
+             welcome_channel_id, welcome_message, level_channel_id, level_message, level_message_type) = \
                 database.select_query(query, (self.guild_id,))[0]
 
             self.birthday_channel_id = birthday_channel_id
             self.command_channel_id = command_channel_id
             self.intro_channel_id = intro_channel_id
             self.welcome_channel_id = welcome_channel_id
+            self.welcome_message = welcome_message
             self.level_channel_id = level_channel_id
             self.level_message = level_message
             self.level_message_type = level_message_type
@@ -54,6 +57,7 @@ class GuildConfig:
                     command_channel_id = %s,
                     intro_channel_id = %s,
                     welcome_channel_id = %s,
+                    welcome_message = %s,
                     level_channel_id = %s,
                     level_message = %s,
                     level_message_type = %s
@@ -61,7 +65,7 @@ class GuildConfig:
                 """
 
         database.execute_query(query, (self.birthday_channel_id, self.command_channel_id,
-                                       self.intro_channel_id, self.welcome_channel_id,
+                                       self.intro_channel_id, self.welcome_channel_id, self.welcome_message,
                                        self.level_channel_id, self.level_message,
                                        self.level_message_type, self.guild_id))
 

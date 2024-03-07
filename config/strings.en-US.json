@@ -11,7 +11,7 @@
   "ping": "\uD83C\uDFD3 | **{0}** I'm online.",
   "restarting": "Restarting Racu...",
   "restart_error": "Error executing the script: {0}",
-  "intro_muted": "You're muted in the Rave Cave. You can't perform this command.",
+  "intro_muted": "REMOVED STRING",
   "intro_no_perms": "It seems that you don't have permission to do that!",
   "intro_start_descr": "This command will serve as a questionnaire for you entry to {0}. Please keep your answers \"PG-13\"",
   "intro_start_short": "Click the blue button to use the short form, this one has 6 questions.",

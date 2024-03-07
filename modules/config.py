@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from discord.commands import SlashCommandGroup
 from services.GuildConfig import GuildConfig
-from services.Xp import Xp
+from lib import formatter, embeds
 
 from main import strings
 
@@ -183,6 +183,28 @@ class ConfigCog(commands.Cog):
             embed.description = "✅ | The greeting module was successfully disabled."
             return await ctx.respond(embed=embed)
 
+    @welcome_config.command(
+        name="template",
+        description="Racu will use this template text in the \"description\" field in the welcome embed."
+    )
+    async def config_welcome_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
+        guild_config = GuildConfig(ctx.guild.id)
+        guild_config.welcome_message = text
+        guild_config.push()
+
+        embed = discord.Embed(
+            color=discord.Color.orange(),
+            description=f"✅ | The greeting template was successfully updated."
+        )
+        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        embed.add_field(name="Template", value=text, inline=False)
+        embed.add_field(name="Example", value="An example will be sent in a separate message.", inline=False)
+        embed.set_author(name="Server Configuration", icon_url=guild_icon)
+        await ctx.respond(embed=embed)
+
+        embed = embeds.welcome_message(ctx.author, text)
+        return await ctx.send(embed=embed, content=ctx.author.mention)
+
     @level_config.command(
         name="channel",
         description="Sets the channel for level announcements."
@@ -303,12 +325,12 @@ class ConfigCog(commands.Cog):
         name="template",
         description="If set, Racu will only use this template for level announcements. See '/config help' for info."
     )
-    async def config_level_template(self, ctx, *, text: discord.Option(str, max_length=60)):
+    async def config_level_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
         guild_config = GuildConfig(ctx.guild.id)
         guild_config.level_message = text
         guild_config.push()
 
-        preview = Xp.level_template_format(text, "Lucas", 15)
+        preview = formatter.template(text, "Lucas", 15)
 
         embed = discord.Embed(
             color=discord.Color.orange(),
