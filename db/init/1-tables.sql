@@ -85,3 +85,10 @@ CREATE TABLE guild_config (
     PRIMARY KEY (guild_id)
 )
 
+CREATE TABLE blacklist_user (
+    user_id BIGINT NOT NULL,
+    reason TEXT,
+    timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
+    active BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (user_id)
+)
