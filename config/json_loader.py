@@ -36,7 +36,7 @@ def load_reactions(path="config/reactions.json"):
     return data
 
 
-def load_birthday_messages(path="config/birthday.json"):
+def load_birthday(path="config/birthday.json"):
     with open(path, 'r') as file:
         data = json.load(file)
 
