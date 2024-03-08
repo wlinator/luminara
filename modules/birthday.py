@@ -11,18 +11,14 @@ from discord.ext import commands, tasks
 
 from config import json_loader
 from services.Birthday import Birthday
+from services.GuildConfig import GuildConfig
 from main import strings
 from lib import time, checks
 
 logs = logging.getLogger('Racu.Core')
-
-months = [
-    "January", "February", "March", "April",
-    "May", "June", "July", "August",
-    "September", "October", "November", "December"
-]
-
-messages = json_loader.load_birthday_messages()
+data = json_loader.load_birthday()
+months = data["months"]
+messages = data["birthday_messages"]
 
 
 class BirthdayCog(commands.Cog):
@@ -51,7 +47,7 @@ class BirthdayCog(commands.Cog):
         date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
         date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
 
-        birthday = Birthday(ctx.author.id)
+        birthday = Birthday(ctx.author.id, ctx.guild.id)
         birthday.set(date_obj)
 
         await ctx.respond(strings["birthday_set"].format(ctx.author.name, month, day), ephemeral=True)
@@ -63,7 +59,7 @@ class BirthdayCog(commands.Cog):
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.check(checks.birthday_module)
     async def upcoming_birthdays(self, ctx):
-        upcoming_birthdays = Birthday.get_upcoming_birthdays()
+        upcoming_birthdays = Birthday.get_upcoming_birthdays(ctx.guild.id)
         icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
 
         embed = discord.Embed(
@@ -101,45 +97,30 @@ class BirthdayCog(commands.Cog):
         logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
         await asyncio.sleep(wait_time)
 
-        for guild in self.client.guilds:
-            """
-                Performs a birthday check for each server Racu is currently in with Birthdays enabled.
-                If a Birthday channel is not specified in racudb, the module is disabled.
-            """
+        embed = discord.Embed(color=discord.Color.embed_background())
+        embed.set_image(url="https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif")
 
-        birthday_ids = Birthday.today()
+        for user_id, guild_id in Birthday.get_birthdays_today():
+            try:
+                guild = await self.client.fetch_guild(guild_id)
+                member = await guild.fetch_member(user_id)
+                guild_config = GuildConfig(guild.id)
 
-        if birthday_ids:
-            guild_id = 719227135151046699  # RC
-            channel_id = 741021558172287099  # Birthdays channel
+                if not guild_config.birthday_channel_id:
+                    logs.info(f"[BirthdayHandler] Guild with ID {guild.id} skipped: no birthday channel defined.")
+                    return
 
-            guild = await self.client.fetch_guild(guild_id)
-            channel = await guild.fetch_channel(channel_id)
+                message = random.choice(messages)
+                embed.description = message.format(member.name)
+                channel = await guild.fetch_channel(guild_config.birthday_channel_id)
+                await channel.send(embed=embed, content=member.mention)
+                logs.info(f"[BirthdayHandler] Success! user/guild/channel ID: {member.id}/{guild.id}/{channel.id}")
 
-            embed = discord.Embed(color=discord.Color.embed_background())
-            embed.set_image(url="https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif")
+            except Exception as error:
+                logs.info(f"[BirthdayHandler] Skipped processing user/guild {user_id}/{guild_id}")
 
-            for user_id in birthday_ids:
-
-                try:
-                    user = await guild.fetch_member(user_id)
-                    print(user)
-
-                    message = random.choice(messages["birthday_messages"])
-                    embed.description = message.format(user.name)
-
-                    await channel.send(embed=embed, content=user.mention)
-
-                    logs.info(f"[BirthdayHandler] Sent message for user with ID {user_id}")
-
-                except discord.HTTPException:
-                    logs.info(f"[BirthdayHandler] Not sent because user with ID {user_id} not in Guild.")
-
-                except Exception as err:
-                    logs.error(f"[BirthdayHandler] Something went wrong: {err}")
-
-        else:
-            logs.info("[BirthdayHandler] No Birthdays Today.")
+            # wait one second to avoid rate limits
+            await asyncio.sleep(1)
 
 
 def setup(client):

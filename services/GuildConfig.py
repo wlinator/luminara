@@ -68,16 +68,3 @@ class GuildConfig:
                                        self.intro_channel_id, self.welcome_channel_id, self.welcome_message,
                                        self.level_channel_id, self.level_message,
                                        self.level_message_type, self.guild_id))
-
-    # INDIVIDUAL CHECKERS TO REDUCE RESOURCE COST
-    @staticmethod
-    def get_birthday_channel_id(guild_id):
-        query = """
-                        SELECT birthday_channel_id
-                        FROM guild_config
-                        WHERE guild_id = %s;
-                        """
-
-        birthday_channel_id = database.select_query_one(query, (guild_id,))
-
-        return birthday_channel_id

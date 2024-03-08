@@ -8,7 +8,7 @@ from db import database
 class Birthday:
     def __init__(self, user_id, guild_id):
         self.user_id = user_id
-        self.guild_id = user_id
+        self.guild_id = guild_id
 
     def set(self, birthday):
         query = """
@@ -20,32 +20,31 @@ class Birthday:
         database.execute_query(query, (self.user_id, self.guild_id, birthday))
 
     @staticmethod
-    def today_from_guild(guild_id):
+    def get_birthdays_today():
         query = """
-                SELECT user_id
+                SELECT user_id, guild_id
                 FROM birthdays
                 WHERE DATE_FORMAT(birthday, '%m-%d') = %s
-                AND guild_id = %s;
                 """
 
-        tz = pytz.timezone('US/Eastern')
+        tz = pytz.timezone("US/Eastern")
         today = datetime.datetime.now(tz).strftime("%m-%d")
 
-        ids = database.select_query(query, (today,guild_id))
-        ids = [item[0] for item in ids]
+        birthdays = database.select_query(query, (today,))
 
-        return ids
+        return birthdays
 
     @staticmethod
-    def get_upcoming_birthdays():
+    def get_upcoming_birthdays(guild_id):
         query = """
                 SELECT user_id, DATE_FORMAT(birthday, '%m-%d') AS upcoming_birthday
                 FROM birthdays
                 WHERE DAYOFYEAR(birthday) > DAYOFYEAR(NOW())
+                    AND guild_id = %s
                 ORDER BY DAYOFYEAR(birthday)
                 LIMIT 5;
                 """
-        data = database.select_query(query)
+        data = database.select_query(query, (guild_id,))
 
         upcoming = []
         for row in data:
