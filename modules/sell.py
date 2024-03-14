@@ -14,7 +14,6 @@ from lib import interaction, checks
 logs = logging.getLogger('Racu.Core')
 
 load_dotenv('.env')
-special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
 
 
 class SellCommandOptions(discord.ui.Select):
@@ -185,7 +184,7 @@ class SellCog(commands.Cog):
             if view.clickedConfirm:
 
                 try:
-                    currency.cash += total
+                    currency.balance += total
                     currency.push()
                     inv.take_item(item, amount_to_sell)
 

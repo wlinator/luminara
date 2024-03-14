@@ -10,10 +10,6 @@ from lib import checks
 
 load_dotenv('.env')
 
-active_blackjack_games = {}
-special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
-cash_balance_name = os.getenv("CASH_BALANCE_NAME")
-
 with open("config/economy.json") as file:
     json_data = json.load(file)
 
@@ -54,7 +50,6 @@ class InventoryCog(commands.Cog):
                 embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
                                 value=f"*— amount: `{quantity}`*",
                                 inline=False)
-        embed.set_footer(text="for more info do /item")
 
         await ctx.respond(embed=embed)
 

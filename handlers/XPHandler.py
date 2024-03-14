@@ -89,13 +89,6 @@ class XPHandler:
                 except Exception as error:
                     logs.error(f"[XpHandler] Assign level role FAILED; {error}")
 
-            """
-            AWARD CURRENY_SPECIAL ON LEVEL-UP
-            """
-            user_currency = Currency(user_id)
-            user_currency.add_special(1)
-            user_currency.push()
-
             logs.debug(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
 
         else:
