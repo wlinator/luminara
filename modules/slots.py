@@ -170,8 +170,8 @@ class SlotsCog(commands.Cog):
         ctx_currency = Currency(ctx.author.id)
 
         # check if the user has enough cash
-        player_cash_balance = ctx_currency.cash
-        if bet > player_cash_balance or bet <= 0:
+        player_balance = ctx_currency.balance
+        if bet > player_balance or bet <= 0:
             await ctx.respond(embed=economy_embeds.not_enough_cash())
             return
 
@@ -216,9 +216,9 @@ class SlotsCog(commands.Cog):
 
         # user payout
         if payout > 0:
-            ctx_currency.add_cash(payout)
+            ctx_currency.add_balance(payout)
         else:
-            ctx_currency.take_cash(bet)
+            ctx_currency.take_balance(bet)
 
         # item_reward = ItemHandler(ctx)
         # await item_reward.rave_coin(is_won=is_won, bet=bet)

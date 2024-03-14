@@ -1,5 +1,5 @@
 REPLACE INTO item 
-(id, name, display_name, description, image_url, emote_id, quote, type)
+(name, display_name, description, image_url, emote_id, quote, type)
 VALUES (
     "apple", 
     "apple", 
@@ -8,10 +8,10 @@ VALUES (
     1121491265658306692, 
     "The rarest item in Racu, you literally can't get this.", 
     "collectible"
-    )
+    );
 
 REPLACE INTO item 
-(id, name, display_name, description, image_url, emote_id, quote, type)
+(name, display_name, description, image_url, emote_id, quote, type)
 VALUES (
     "tester_badge", 
     "tester badge", 
@@ -20,10 +20,10 @@ VALUES (
     1121491902370418869, 
     "Thank you for the support <3", 
     "badge"
-    )
+    );
 
 REPLACE INTO item 
-(id, name, display_name, description, image_url, emote_id, quote, type)
+(name, display_name, description, image_url, emote_id, quote, type)
 VALUES (
     "bitch_coin", 
     "bitchcoin", 
@@ -32,10 +32,10 @@ VALUES (
     1124044941702733925, 
     "You may still be bitchless but at least you have this coin.", 
     "collectible"
-    )
+    );
 
 REPLACE INTO item 
-(id, name, display_name, description, image_url, emote_id, quote, type)
+(name, display_name, description, image_url, emote_id, quote, type)
 VALUES (
     "rave_coin", 
     "ravecoin",
@@ -44,10 +44,10 @@ VALUES (
     1125357545180110878, 
     "IT'S OVER 9000!!!", 
     "collectible"
-    )
+    );
 
 REPLACE INTO item 
-(id, name, display_name, description, image_url, emote_id, quote, type)
+(name, display_name, description, image_url, emote_id, quote, type)
 VALUES (
     "admin_badge", 
     "admin badge", 
@@ -56,4 +56,4 @@ VALUES (
     1125371605485371442, 
     "admin_bagde", 
     "badge"
-    )
+    );

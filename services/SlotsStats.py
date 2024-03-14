@@ -20,7 +20,7 @@ class SlotsStats:
         Insert the services from any given slots game into the database
         """
         query = """
-        INSERT INTO stats_slots (user_id, is_won, bet, payout, spin_type, icons)
+        INSERT INTO slots (user_id, is_won, bet, payout, spin_type, icons)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
 
@@ -42,7 +42,7 @@ class SlotsStats:
             SUM(CASE WHEN spin_type = 'three_of_a_kind' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_three_of_a_kind,
             SUM(CASE WHEN spin_type = 'three_diamonds' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_three_diamonds,
             SUM(CASE WHEN spin_type = 'jackpot' AND is_won = 1 THEN 1 ELSE 0 END) AS games_won_jackpot
-        FROM stats_slots
+        FROM slots
         WHERE user_id = %s
         """
 

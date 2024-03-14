@@ -1,17 +1,18 @@
 import os
 import platform
 import sys
-import time
+import traceback
 
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-import lib.resources
+from lib import embeds
 from config import json_loader
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
 from handlers import LoggingHandler
+from services.GuildConfig import GuildConfig
 
 load_dotenv('.env')
 instance = os.getenv("INSTANCE")
@@ -19,13 +20,8 @@ instance = os.getenv("INSTANCE")
 client = discord.Bot(
     owner_id=os.getenv('OWNER_ID'),
     intents=discord.Intents.all(),
-    activity=discord.Activity(
-        name="The Rave Cave",
-        type=discord.ActivityType.listening,
-    ),
     status=discord.Status.online
 )
-
 
 logs = LoggingHandler.setup_logger()
 
@@ -64,32 +60,21 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-    guild = member.guild
+    config = GuildConfig(member.guild.id)
 
-    if guild.id != 719227135151046699:
+    if (not config.welcome_channel_id
+
+            # comment next line if debugging greetings
+            or instance.lower() != "main"
+    ):
         return
 
-    # remove if debugging welcome messages:
-    if instance.lower() != "main":
-        return
+    embed = embeds.welcome_message(member, config.welcome_message)
 
-    welcome_channel_id = 721862236112420915
-    rules_channel_id = 719665850373898290
-    introductions_channel_id = 973619250507972618
-
-    rules_channel = guild.get_channel(rules_channel_id)
-    introductions_channel = guild.get_channel(introductions_channel_id)
-
-    embed = discord.Embed(
-        color=discord.Color.embed_background(),
-        description=f"_ _\n**Welcome** to **The Rave Cave** ↓↓↓\n"
-                    f"[rules]({rules_channel.jump_url}) - "
-                    f"[introductions]({introductions_channel.jump_url})\n_ _"
-    )
-
-    embed.set_thumbnail(url=member.display_avatar)
-
-    await guild.get_channel(welcome_channel_id).send(embed=embed, content=member.mention)
+    try:
+        await member.guild.get_channel(config.welcome_channel_id).send(embed=embed, content=member.mention)
+    except Exception as e:
+        logs.info(f"[GreetingHandler] Message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
 
 
 @client.event
@@ -110,7 +95,7 @@ async def on_application_command_completion(ctx) -> None:
         #     f"by {ctx.author} (ID: {ctx.author.id})"
         # )
         logs.info(f"[CommandHandler] {ctx.author.name} successfully did \"/{executed_command}\". "
-                       f"| guild: {ctx.guild.name} ")
+                  f"| guild: {ctx.guild.name} ")
     else:
         # logs.info(
         #     f"Executed {executed_command} command by {ctx.author} (ID: {ctx.author.id}) in DMs."
@@ -137,14 +122,20 @@ async def on_application_command_error(ctx, error) -> None:
     elif isinstance(error, commands.MissingPermissions):
         await ctx.respond(strings["error_missing_permissions"].format(ctx.author.name), ephemeral=True)
         logs.info(f"[CommandHandler] {ctx.author.name} has missing permissions to do a command: "
-                       f"{ctx.command.qualified_name}")
+                  f"{ctx.command.qualified_name}")
 
     elif isinstance(error, commands.BotMissingPermissions):
         await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
         logs.info(f"[CommandHandler] Racu is missing permissions: {ctx.command.qualified_name}")
 
+    elif isinstance(error, discord.CheckFailure) or isinstance(error, commands.CheckFailure):
+        logs.info(
+            f"[CommandHandler] {ctx.author.name} tried to do \"/{ctx.command.qualified_name}\" "
+            f"but a check returned False.")
+
     else:
-        logs.error(f"[CommandHandler] on_application_command_error: {error}", exc_info=True)
+        logs.error(f"[CommandHandler] on_application_command_error: {error}")
+        traceback.print_tb(error.original.__traceback__)
 
         # if you use this, set "exc_info" to False above
         # logs.debug(f"[CommandHandler] on_application_command_error (w/ stacktrace): {error}", exc_info=True)

@@ -167,7 +167,7 @@ class LeaderboardCommandView(discord.ui.View):
             embed.set_thumbnail(url="https://i.imgur.com/wFsgSnr.png")
 
             value = ""
-            for i, (user_id, cash_balance, special_balance, rank) in enumerate(cash_lb[:5], start=1):
+            for i, (user_id, balance, rank) in enumerate(cash_lb[:5], start=1):
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
                     name = member.name
@@ -178,7 +178,7 @@ class LeaderboardCommandView(discord.ui.View):
 
                 embed.add_field(
                     name=f"#{rank} - {name}",
-                    value=f"cash: **${Currency.format(cash_balance)}**\nmajikoins: `{special_balance}`",
+                    value=f"cash: **${Currency.format(balance)}**",
                     inline=False
                 )
 

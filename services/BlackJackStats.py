@@ -14,7 +14,7 @@ class BlackJackStats:
 
     def push(self):
         query = """
-        INSERT INTO stats_bj (user_id, is_won, bet, payout, hand_player, hand_dealer)
+        INSERT INTO blackjack (user_id, is_won, bet, payout, hand_player, hand_dealer)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
 
@@ -31,7 +31,7 @@ class BlackJackStats:
                     SUM(payout) AS total_payout,
                     SUM(CASE WHEN is_won = 1 THEN 1 ELSE 0 END) AS winning,
                     SUM(CASE WHEN is_won = 0 THEN 1 ELSE 0 END) AS losing
-                FROM stats_bj
+                FROM blackjack
                 WHERE user_id = %s;
                 """
         (amount_of_games, total_bet,

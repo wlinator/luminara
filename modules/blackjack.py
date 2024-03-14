@@ -18,8 +18,6 @@ load_dotenv('.env')
 est = pytz.timezone('US/Eastern')
 
 active_blackjack_games = {}
-special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
-cash_balance_name = os.getenv("CASH_BALANCE_NAME")
 
 
 def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer_hand_value):
@@ -44,7 +42,7 @@ def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer
                              f"*Hand: {' + '.join(dealer_hand)}*"
 
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Bet {cash_balance_name}{bet} • deck shuffled • Today at {current_time}",
+    embed.set_footer(text=f"Bet ${bet} • deck shuffled • Today at {current_time}",
                      icon_url="https://i.imgur.com/96jPPXO.png")
 
     if thumbnail_url:
@@ -144,8 +142,8 @@ class BlackJackCog(commands.Cog):
         ctx_currency = Currency(ctx.author.id)
 
         # check if the user has enough cash
-        player_cash_balance = ctx_currency.cash
-        if bet > player_cash_balance or bet <= 0:
+        player_balance = ctx_currency.balance
+        if bet > player_balance or bet <= 0:
             await ctx.respond(embed=economy_embeds.not_enough_cash())
             return
 
@@ -250,7 +248,7 @@ class BlackJackCog(commands.Cog):
             # change balance
             # if status == 1 or status == 4:
             if not is_won:
-                ctx_currency.take_cash(bet)
+                ctx_currency.take_balance(bet)
                 ctx_currency.push()
 
                 # push stats (low priority)
@@ -266,11 +264,11 @@ class BlackJackCog(commands.Cog):
 
             elif status == 6:
                 await ctx.send(embed=economy_embeds.out_of_time(), content=ctx.author.mention)
-                ctx_currency.take_cash(bet)
+                ctx_currency.take_balance(bet)
                 ctx_currency.push()
 
             else:
-                ctx_currency.add_cash(payout)
+                ctx_currency.add_balance(payout)
                 ctx_currency.push()
 
                 # push stats (low priority)
