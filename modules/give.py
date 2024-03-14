@@ -1,5 +1,4 @@
 import json
-import os
 
 import discord
 from discord.ext import commands
@@ -10,14 +9,11 @@ from lib import economy_embeds, checks
 
 load_dotenv('.env')
 
-special_balance_name = os.getenv("SPECIAL_BALANCE_NAME")
-cash_balance_name = os.getenv("CASH_BALANCE_NAME")
-
 with open("config/economy.json") as file:
     json_data = json.load(file)
 
 
-class AwardCog(commands.Cog):
+class GiveCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -47,19 +43,19 @@ class AwardCog(commands.Cog):
         target_currency = Currency(user.id)
 
         try:
-            author_cash_balance = ctx_currency.cash
+            author_balance = ctx_currency.balance
 
-            if author_cash_balance < amount or author_cash_balance <= 0:
+            if author_balance < amount or author_balance <= 0:
                 return await ctx.respond(embed=economy_embeds.not_enough_cash())
 
-            target_currency.add_cash(amount)
-            ctx_currency.take_cash(amount)
+            target_currency.add_balance(amount)
+            ctx_currency.take_balance(amount)
 
             ctx_currency.push()
             target_currency.push()
 
         except Exception as e:
-            await ctx.channel.respond("Something funky happened.. Sorry about that.", ephemeral=True)
+            await ctx.respond("Something funky happened.. Sorry about that.", ephemeral=True)
             print(e)
             return
 
@@ -71,42 +67,6 @@ class AwardCog(commands.Cog):
 
         await ctx.respond(embed=embed)
 
-    @commands.slash_command(
-        name="award",
-        description="Award currency - owner only command.",
-        guild_only=True
-    )
-    @commands.check(checks.channel)
-    @commands.check(checks.bot_owner)
-    async def award(self, ctx, *,
-                    user: discord.Option(discord.Member),
-                    currency: discord.Option(choices=["cash_balance", "special_balance"]),
-                    amount: discord.Option(int)):
-
-        # Currency handler
-        target_currency = Currency(user.id)
-
-        try:
-            if currency == "cash_balance":
-                target_currency.add_cash(amount)
-
-            else:
-                target_currency.add_special(amount)
-
-            target_currency.push()
-
-        except Exception as e:
-            await ctx.channel.respond("Something went wrong. Check console.", ephemeral=True)
-            print(e)
-            return
-
-        embed = discord.Embed(
-            color=discord.Color.green(),
-            description=f"Awarded **${Currency.format(amount)}** to {user.name}."
-        )
-
-        await ctx.respond(embed=embed)
-
 
 def setup(client):
-    client.add_cog(AwardCog(client))
+    client.add_cog(GiveCog(client))

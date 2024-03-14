@@ -42,8 +42,6 @@ docker compose up -d --build
 - `OWNER_ID`: the Discord user ID of the person who will act as owner of this bot.
 - `XP_GAIN`: a comma-seperated list of XP gain values, Racu randomly picks one on each message.
 - `COOLDOWN`: a comma-seperated list of cooldown times, this is to prevent botting XP.
-- `CASH_BALANCE_NAME`: the name of your "cash", e.g. "racu coin".
-- `SPECIAL_BALANCE_NAME`: the name of the level-up currency that is exchangable for cash.
 - The values with "DBX" can be ignored unless you plan to make database backups with Dropbox. In that case enter your Dropbox API credentials.
 - `MARIADB_USER`: the username for your MariaDB database.
 - `MARIADB_PASSWORD`: the password for your database.
