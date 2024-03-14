@@ -27,38 +27,33 @@ class AwardCog(commands.Cog):
         guild_only=True
     )
     @commands.check(checks.channel)
-    async def give(self, ctx, *,
-                   user: discord.Option(discord.Member),
-                   currency: discord.Option(choices=["cash", special_balance_name]),
-                   amount: discord.Option(int)):
+    async def give(self, ctx, *, user: discord.Option(discord.Member), amount: discord.Option(int)):
 
         if ctx.author.id == user.id:
-            return await ctx.respond(embed=economy_embeds.give_yourself_error(currency))
+            embed = discord.Embed(
+                color=discord.Color.red(),
+                description=f"You can't give money to yourself, silly."
+            )
+            return await ctx.respond(embed=embed)
         elif user.bot:
-            return await ctx.respond(embed=economy_embeds.give_bot_error(currency))
+            embed = discord.Embed(
+                color=discord.Color.red(),
+                description=f"You can't give money to a bot, silly."
+            )
+            return await ctx.respond(embed=embed)
 
         # Currency handler
         ctx_currency = Currency(ctx.author.id)
         target_currency = Currency(user.id)
 
         try:
-            if currency == "cash":
-                author_cash_balance = ctx_currency.cash
+            author_cash_balance = ctx_currency.cash
 
-                if author_cash_balance < amount or author_cash_balance <= 0:
-                    return await ctx.respond(embed=economy_embeds.not_enough_cash())
+            if author_cash_balance < amount or author_cash_balance <= 0:
+                return await ctx.respond(embed=economy_embeds.not_enough_cash())
 
-                target_currency.add_cash(amount)
-                ctx_currency.take_cash(amount)
-
-            elif currency == special_balance_name:
-                author_special_balance = ctx_currency.special
-
-                if author_special_balance < amount or author_special_balance <= 0:
-                    return await ctx.respond(embed=economy_embeds.not_enough_special_balance())
-
-                target_currency.add_special(amount)
-                ctx_currency.take_special(amount)
+            target_currency.add_cash(amount)
+            ctx_currency.take_cash(amount)
 
             ctx_currency.push()
             target_currency.push()
@@ -68,7 +63,13 @@ class AwardCog(commands.Cog):
             print(e)
             return
 
-        await ctx.respond(embed=economy_embeds.give(ctx, user, currency, Currency.format(amount)))
+        embed = discord.Embed(
+            color=discord.Color.green(),
+            description=f"**{ctx.author.name}** gave **${Currency.format(amount)}** to {user.name}."
+        )
+        embed.set_footer(text="Say thanks! :)")
+
+        await ctx.respond(embed=embed)
 
     @commands.slash_command(
         name="award",
@@ -99,7 +100,12 @@ class AwardCog(commands.Cog):
             print(e)
             return
 
-        await ctx.respond(embed=economy_embeds.award(user, currency, Currency.format(amount)))
+        embed = discord.Embed(
+            color=discord.Color.green(),
+            description=f"Awarded **${Currency.format(amount)}** to {user.name}."
+        )
+
+        await ctx.respond(embed=embed)
 
 
 def setup(client):
