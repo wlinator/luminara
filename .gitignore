@@ -8,4 +8,4 @@ __pycache__/
 
 users.yml
 db/data/
-db/init/2-data.sql
+db/init/v2-update.sql

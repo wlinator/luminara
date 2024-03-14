@@ -6,44 +6,45 @@ from db import database
 
 
 class Birthday:
-    def __init__(self, user_id):
+    def __init__(self, user_id, guild_id):
         self.user_id = user_id
+        self.guild_id = guild_id
 
     def set(self, birthday):
         query = """
-                INSERT INTO birthdays (user_id, birthday)
-                VALUES (%s, %s)
+                INSERT INTO birthdays (user_id, guild_id, birthday)
+                VALUES (%s, %s, %s)
                 ON DUPLICATE KEY UPDATE birthday = VALUES(birthday);
                 """
 
-        database.execute_query(query, (self.user_id, birthday))
+        database.execute_query(query, (self.user_id, self.guild_id, birthday))
 
     @staticmethod
-    def today():
+    def get_birthdays_today():
         query = """
-                SELECT user_id
+                SELECT user_id, guild_id
                 FROM birthdays
                 WHERE DATE_FORMAT(birthday, '%m-%d') = %s
                 """
 
-        tz = pytz.timezone('US/Eastern')
-        date = datetime.datetime.now(tz).strftime("%m-%d")
+        tz = pytz.timezone("US/Eastern")
+        today = datetime.datetime.now(tz).strftime("%m-%d")
 
-        ids = database.select_query(query, (date,))
-        ids = [item[0] for item in ids]
+        birthdays = database.select_query(query, (today,))
 
-        return ids
+        return birthdays
 
     @staticmethod
-    def get_upcoming_birthdays():
+    def get_upcoming_birthdays(guild_id):
         query = """
                 SELECT user_id, DATE_FORMAT(birthday, '%m-%d') AS upcoming_birthday
                 FROM birthdays
                 WHERE DAYOFYEAR(birthday) > DAYOFYEAR(NOW())
+                    AND guild_id = %s
                 ORDER BY DAYOFYEAR(birthday)
                 LIMIT 5;
                 """
-        data = database.select_query(query)
+        data = database.select_query(query, (guild_id,))
 
         upcoming = []
         for row in data:

@@ -40,7 +40,7 @@ class Dailies:
         database.execute_query(query, values)
 
         cash = Currency(self.user_id)
-        cash.add_cash(self.amount)
+        cash.add_balance(self.amount)
         cash.push()
 
     def can_be_claimed(self):
