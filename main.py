@@ -1,6 +1,7 @@
 import os
 import platform
 import sys
+import traceback
 
 import discord
 from discord.ext import commands
@@ -129,10 +130,12 @@ async def on_application_command_error(ctx, error) -> None:
 
     elif isinstance(error, discord.CheckFailure) or isinstance(error, commands.CheckFailure):
         logs.info(
-            f"[CommandHandler] {ctx.author.name} tried to do \"/{ctx.command.qualified_name}\" but a check returned False.")
+            f"[CommandHandler] {ctx.author.name} tried to do \"/{ctx.command.qualified_name}\" "
+            f"but a check returned False.")
 
     else:
-        logs.error(f"[CommandHandler] on_application_command_error: {error}", exc_info=True)
+        logs.error(f"[CommandHandler] on_application_command_error: {error}")
+        traceback.print_tb(error.original.__traceback__)
 
         # if you use this, set "exc_info" to False above
         # logs.debug(f"[CommandHandler] on_application_command_error (w/ stacktrace): {error}", exc_info=True)
