@@ -7,22 +7,25 @@ from dotenv import load_dotenv
 from db import database
 
 load_dotenv('.env')
+xp_gain_per_message = int(os.getenv("XP_GAIN_PER_MESSAGE"))
+xp_gain_cooldown = int(os.getenv("XP_GAIN_COOLDOWN"))
 
 
 class Xp:
     """
     Stores and retrieves XP from the database for a given user.
     """
-    def __init__(self, user_id):
+
+    def __init__(self, user_id, guild_id):
         self.user_id = user_id
-        self.xp = None
-        self.level = None
+        self.guild_id = guild_id
+        self.user_xp = None
+        self.user_level = None
         self.ctime = None
-        self.xp_gain = None
-        self.new_cooldown = None
+        self.xp_gain = xp_gain_per_message
+        self.new_cooldown = xp_gain_cooldown
 
         self.fetch_or_create_xp()
-        self.load_gain_data()
 
     def push(self):
         """
@@ -31,15 +34,15 @@ class Xp:
         query = """
                 UPDATE xp
                 SET user_xp = %s, user_level = %s, cooldown = %s
-                WHERE user_id = %s
+                WHERE user_id = %s AND guild_id = %s
                 """
-        database.execute_query(query, (self.xp, self.level, self.ctime, self.user_id))
+        database.execute_query(query, (self.user_xp, self.user_level, self.ctime, self.user_id, self.guild_id))
 
     def fetch_or_create_xp(self):
         """
         Gets a user's XP from the database or inserts a new row if it doesn't exist yet.
         """
-        query = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = %s"
+        query = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = %s AND guild_id = %s"
 
         try:
             (user_xp, user_level, cooldown) = database.select_query(query, (self.user_id,))[0]
@@ -48,35 +51,27 @@ class Xp:
 
         if any(var is None for var in [user_xp, user_level, cooldown]):
             query = """
-                    INSERT INTO xp (user_id, user_xp, user_level, cooldown)
-                    VALUES (%s, 0, 0, %s)
+                    INSERT INTO xp (user_id, guild_id, user_xp, user_level, cooldown)
+                    VALUES (%s, %s, 0, 0, %s)
                     """
-            database.execute_query(query, (self.user_id, time.time()))
+            database.execute_query(query, (self.user_id, self.guild_id, time.time()))
             (user_xp, user_level, cooldown) = (0, 0, time.time())
 
-        self.xp = user_xp
-        self.level = user_level
+        self.user_xp = user_xp
+        self.user_level = user_level
         self.ctime = cooldown
-
-    def load_gain_data(self):
-        """
-        Returns all values needed to calculate XP gain per message.
-
-        - xp_gain = a random number from an env var list
-        - cooldown = time in seconds
-        """
-        xp_gain = list(map(int, os.getenv("XP_GAIN").split(",")))
-        cooldown = list(map(int, os.getenv("COOLDOWN").split(",")))
-
-        self.xp_gain = random.choice(xp_gain)
-        self.new_cooldown = random.choice(cooldown)
 
     def calculate_rank(self):
         """
-        Checks which rank a user is, globally
+        Checks which rank a user is in the guild
         """
-        query = "SELECT user_id, user_xp, user_level FROM xp ORDER BY user_level DESC, user_xp DESC"
-        data = database.select_query(query)
+        query = """
+                SELECT user_id, user_xp, user_level
+                FROM xp 
+                WHERE guild_id = %s
+                ORDER BY user_level DESC, user_xp DESC
+                """
+        data = database.select_query(query, (self.guild_id,))
 
         leaderboard = []
         rank = 1
@@ -96,12 +91,17 @@ class Xp:
         return user_rank
 
     @staticmethod
-    def load_leaderboard():
+    def load_leaderboard(guild_id):
         """
-        Returns the global XP leaderboard
+        Returns the guild's XP leaderboard
         """
-        query = "SELECT user_id, user_xp, user_level FROM xp ORDER BY user_level DESC, user_xp DESC"
-        data = database.select_query(query)
+        query = """
+                SELECT user_id, user_xp, user_level 
+                FROM xp 
+                WHERE guild_id = %s
+                ORDER BY user_xp DESC
+                """
+        data = database.select_query(query, (guild_id,))
 
         leaderboard = []
         rank = 1
@@ -109,7 +109,9 @@ class Xp:
             row_user_id = row[0]
             user_xp = row[1]
             user_level = row[2]
-            needed_xp_for_next_level = Xp.xp_needed_for_next_level(user_level)
+            # needed_xp_for_next_level = Xp.xp_needed_for_next_level(user_level)
+            needed_xp_for_next_level = -1 # NEEDS FIXING
+
             leaderboard.append((row_user_id, user_xp, user_level, rank, needed_xp_for_next_level))
             rank += 1
 

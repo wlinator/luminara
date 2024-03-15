@@ -3,7 +3,8 @@ SET FOREIGN_KEY_CHECKS=0;
 CREATE TABLE xp (
     user_id BIGINT NOT NULL,
     guild_id BIGINT NOT NULL,
-    xp INT NOT NULL,
+    user_xp INT NOT NULL,
+    user_level INT NOT NULL,
     cooldown DECIMAL(15,2),
     PRIMARY KEY (user_id, guild_id)
 );
