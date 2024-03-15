@@ -12,9 +12,8 @@ class ReactionHandler:
         content = message.content.lower()
 
         if (content.startswith("racu ") or content.startswith("racu, ")) and content.endswith("?"):
-            if await checks.eightball(message):
-                response = random.choice(self.eightball)
-                await message.reply(content=response)
+            response = random.choice(self.eightball)
+            await message.reply(content=response)
 
         for trigger, response in self.full_content_reactions.items():
             if trigger.lower() == content:
