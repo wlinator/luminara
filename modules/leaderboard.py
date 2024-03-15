@@ -33,7 +33,7 @@ class LeaderboardV2Cog(commands.Cog):
         Leaderboard command with a dropdown menu.
         :param ctx:
         """
-        xp_lb = Xp.load_leaderboard()
+        xp_lb = Xp.load_leaderboard(ctx.guild.id)
 
         options = LeaderboardCommandOptions()
         view = LeaderboardCommandView(ctx, options)
@@ -47,21 +47,21 @@ class LeaderboardV2Cog(commands.Cog):
         embed.set_author(name="Level Leaderboard", icon_url=icon)
         embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
 
-        value = ""
-        for i, (user_id, xp, level, rank, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
+        rank = 1
+        for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
+
             try:
                 member = await ctx.guild.fetch_member(user_id)
-                name = member.name
-
-            except Exception as error:
-                name = "Unknown User"
-                logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+            except discord.HTTPException:
+                continue # skip user if not in guild
 
             embed.add_field(
-                name=f"#{rank} - {name}",
+                name=f"#{rank} - {member.name}",
                 value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
                 inline=False
             )
+
+            rank += 1
 
         return await ctx.respond(embed=embed, view=view)
 
@@ -82,7 +82,7 @@ class LeaderboardCommandOptions(discord.ui.Select):
             options=[
                 discord.SelectOption(
                     label="Levels",
-                    description="See the top Rave Cave chatters!",
+                    description="See the top chatters of this server!",
                     emoji="🆙",
                     value="xp"
                 ),
@@ -94,7 +94,7 @@ class LeaderboardCommandOptions(discord.ui.Select):
                 ),
                 discord.SelectOption(
                     label="Dailies",
-                    description="See who has the biggest /daily streak!",
+                    description="See who has the biggest streak!",
                     value="dailies",
                     emoji="📅"
                 )
@@ -120,7 +120,7 @@ class LeaderboardCommandView(discord.ui.View):
 
     async def on_timeout(self):
         await self.message.edit(view=None)
-        #logs.info(f"[CommandHandler] /leaderboard command timed out - this is normal behavior.")
+        # logs.info(f"[CommandHandler] /leaderboard command timed out - this is normal behavior.")
         self.stop()
 
     async def interaction_check(self, interaction) -> bool:
@@ -139,25 +139,24 @@ class LeaderboardCommandView(discord.ui.View):
         icon = self.ctx.guild.icon if self.ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
 
         if interaction.data["values"][0] == "xp":
-            xp_lb = Xp.load_leaderboard()
+            xp_lb = Xp.load_leaderboard(self.ctx.guild.id)
             embed.set_author(name="Level Leaderboard", icon_url=icon)
             embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
 
-            value = ""
-            for i, (user_id, xp, level, rank, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
+            rank = 1
+            for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
-                    name = member.name
-
-                except Exception as error:
-                    name = "Unknown User"
-                    logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+                except discord.HTTPException:
+                    continue  # skip user if not in guild
 
                 embed.add_field(
-                    name=f"#{rank} - {name}",
+                    name=f"#{rank} - {member.name}",
                     value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
                     inline=False
                 )
+
+                rank += 1
 
             await interaction.response.edit_message(embed=embed)
 
@@ -166,15 +165,14 @@ class LeaderboardCommandView(discord.ui.View):
             embed.set_author(name="Currency Leaderboard", icon_url=icon)
             embed.set_thumbnail(url="https://i.imgur.com/wFsgSnr.png")
 
-            value = ""
             for i, (user_id, balance, rank) in enumerate(cash_lb[:5], start=1):
+
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
-                    name = member.name
+                except discord.HTTPException:
+                    member = None
 
-                except Exception as error:
-                    name = "Unknown User"
-                    logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+                name = member.name if member else str(user_id)
 
                 embed.add_field(
                     name=f"#{rank} - {name}",
@@ -190,13 +188,13 @@ class LeaderboardCommandView(discord.ui.View):
             embed.set_thumbnail(url="https://i.imgur.com/hSauh7K.png")
 
             for i, (user_id, streak, claimed_at, rank) in enumerate(daily_lb[:5], start=1):
+
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
-                    name = member.name
+                except discord.HTTPException:
+                    member = None
 
-                except Exception as error:
-                    name = "Unknown User"
-                    logs.debug(f"Currency Leaderboard: Unknown User, {error}")
+                name = member.name if member else user_id
 
                 claimed_at = datetime.fromisoformat(claimed_at)
                 claimed_at = claimed_at.date()
