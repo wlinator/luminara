@@ -19,8 +19,8 @@ class Xp:
     def __init__(self, user_id, guild_id):
         self.user_id = user_id
         self.guild_id = guild_id
-        self.user_xp = None
-        self.user_level = None
+        self.xp = None
+        self.level = None
         self.ctime = None
         self.xp_gain = xp_gain_per_message
         self.new_cooldown = xp_gain_cooldown
@@ -36,7 +36,7 @@ class Xp:
                 SET user_xp = %s, user_level = %s, cooldown = %s
                 WHERE user_id = %s AND guild_id = %s
                 """
-        database.execute_query(query, (self.user_xp, self.user_level, self.ctime, self.user_id, self.guild_id))
+        database.execute_query(query, (self.xp, self.level, self.ctime, self.user_id, self.guild_id))
 
     def fetch_or_create_xp(self):
         """
@@ -45,7 +45,7 @@ class Xp:
         query = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = %s AND guild_id = %s"
 
         try:
-            (user_xp, user_level, cooldown) = database.select_query(query, (self.user_id,))[0]
+            (user_xp, user_level, cooldown) = database.select_query(query, (self.user_id, self.guild_id))[0]
         except (IndexError, TypeError):
             (user_xp, user_level, cooldown) = (None, None, None)
 
@@ -57,8 +57,8 @@ class Xp:
             database.execute_query(query, (self.user_id, self.guild_id, time.time()))
             (user_xp, user_level, cooldown) = (0, 0, time.time())
 
-        self.user_xp = user_xp
-        self.user_level = user_level
+        self.xp = user_xp
+        self.level = user_level
         self.ctime = cooldown
 
     def calculate_rank(self):
@@ -99,21 +99,18 @@ class Xp:
                 SELECT user_id, user_xp, user_level 
                 FROM xp 
                 WHERE guild_id = %s
-                ORDER BY user_xp DESC
+                ORDER BY user_level DESC, user_xp DESC
                 """
         data = database.select_query(query, (guild_id,))
 
         leaderboard = []
-        rank = 1
         for row in data:
             row_user_id = row[0]
             user_xp = row[1]
             user_level = row[2]
-            # needed_xp_for_next_level = Xp.xp_needed_for_next_level(user_level)
-            needed_xp_for_next_level = -1 # NEEDS FIXING
+            needed_xp_for_next_level = Xp.xp_needed_for_next_level(user_level)
 
-            leaderboard.append((row_user_id, user_xp, user_level, rank, needed_xp_for_next_level))
-            rank += 1
+            leaderboard.append((row_user_id, user_xp, user_level, needed_xp_for_next_level))
 
         return leaderboard
 
