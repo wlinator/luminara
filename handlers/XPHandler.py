@@ -54,13 +54,9 @@ class XPHandler:
 
     async def process_xp(self, message):
 
-        if message.channel.id == 746796138195058788 or message.channel.id == 814590778650263604:
-            logs.debug(f"[XpHandler] {message.author.name} sent a message in a xp-blacklisted channel.")
-            return
-
         current_time = time.time()
         user_id = message.author.id
-        xp = Xp(user_id)
+        xp = Xp(user_id, message.guild.id)
 
         if xp.ctime and current_time < xp.ctime:
             logs.debug(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
@@ -98,11 +94,6 @@ class XPHandler:
 
         xp.ctime = current_time + xp.new_cooldown
         xp.push()
-
-        """
-        Level calculation
-        Linear = 9x + 27
-        """
 
     @staticmethod
     async def assign_level_role(user, level):

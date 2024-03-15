@@ -121,12 +121,3 @@ def final_confirmation(channel_id):
                           description=f"<#{channel_id}>")
 
     return embed
-
-
-def level_command_message(ctx, level, xp, next_level_xp, rank):
-    embed = discord.Embed(color=0xadcca6,
-                          title=f"{ctx.author.name} - lv. {level}")
-    embed.add_field(name="Progress to Next Level", value=Xp.generate_progress_bar(xp, next_level_xp), inline=False)
-    embed.set_footer(text=f"The Rave Cave | Server Rank: #{rank}")
-    embed.set_thumbnail(url=ctx.author.avatar.url)
-    return embed
