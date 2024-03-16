@@ -76,6 +76,7 @@ CREATE TABLE birthdays (
 
 CREATE TABLE guild_config (
     guild_id BIGINT NOT NULL,
+    prefix TINYTEXT,
     birthday_channel_id BIGINT, 
     command_channel_id BIGINT, /* NULL: users can do XP & Currency commands everywhere. */
     intro_channel_id BIGINT,
