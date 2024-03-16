@@ -14,6 +14,7 @@ class PingCog(commands.Cog):
 
     @bridge.bridge_command(
         name="ping",
+        aliases=["p"],
         description="Simple status check.",
         guild_only=True
     )
