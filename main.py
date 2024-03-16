@@ -4,7 +4,7 @@ import sys
 import traceback
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, bridge
 from dotenv import load_dotenv
 
 from lib import embeds
@@ -17,8 +17,14 @@ from services.GuildConfig import GuildConfig
 load_dotenv('.env')
 instance = os.getenv("INSTANCE")
 
-client = discord.Bot(
+
+def get_prefix(bot, message):
+    return GuildConfig.get_prefix(message.guild.id)
+
+
+client = bridge.Bot(
     owner_id=os.getenv('OWNER_ID'),
+    command_prefix='!',
     intents=discord.Intents.all(),
     status=discord.Status.online
 )
@@ -136,9 +142,6 @@ async def on_application_command_error(ctx, error) -> None:
     else:
         logs.error(f"[CommandHandler] on_application_command_error: {error}")
         traceback.print_tb(error.original.__traceback__)
-
-        # if you use this, set "exc_info" to False above
-        # logs.debug(f"[CommandHandler] on_application_command_error (w/ stacktrace): {error}", exc_info=True)
 
 
 @client.event

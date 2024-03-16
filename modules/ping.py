@@ -1,6 +1,6 @@
 import logging
 
-from discord.ext import commands
+from discord.ext import commands, bridge
 
 from main import strings
 from lib import checks
@@ -12,7 +12,7 @@ class PingCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.slash_command(
+    @bridge.bridge_command(
         name="ping",
         description="Simple status check.",
         guild_only=True
