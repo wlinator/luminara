@@ -47,7 +47,7 @@ async def on_ready():
     """
 
 
-@client.event
+@client.listen()
 async def on_message(message):
     if message.author.bot or instance.lower() != "main":
         return
