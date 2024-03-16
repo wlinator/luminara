@@ -13,6 +13,7 @@ from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
 from handlers import LoggingHandler
 from services.GuildConfig import GuildConfig
+from services.Help import RacuHelp
 
 load_dotenv('.env')
 instance = os.getenv("INSTANCE")
@@ -26,7 +27,8 @@ client = bridge.Bot(
     owner_id=os.getenv('OWNER_ID'),
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
-    status=discord.Status.online
+    status=discord.Status.online,
+    help_command=RacuHelp()
 )
 
 logs = LoggingHandler.setup_logger()
