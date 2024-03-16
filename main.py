@@ -24,7 +24,7 @@ def get_prefix(bot, message):
 
 client = bridge.Bot(
     owner_id=os.getenv('OWNER_ID'),
-    command_prefix='!',
+    command_prefix=get_prefix,
     intents=discord.Intents.all(),
     status=discord.Status.online
 )
