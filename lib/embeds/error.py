@@ -27,6 +27,17 @@ class EconErrors:
         return embed
 
     @staticmethod
+    def missing_argument(ctx):
+        """
+        See MissingRequiredArgument
+        """
+        embed = clean_error_embed(ctx)
+        embed.description += "your command is missing an argument."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+        return embed
+
+    @staticmethod
     def bad_bet_argument(ctx):
         """
         See BadArgument
