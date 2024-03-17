@@ -16,18 +16,6 @@ class Economy(commands.Cog):
         self.client = client
 
     @bridge.bridge_command(
-        name="leaderboard",
-        aliases=["lb", "xplb"],
-        description="Are ya winning' son?",
-        help="Shows the guild's level leaderboard by default. You can switch to currency and /daily leaderboard.",
-        guild_only=True
-    )
-    @commands.check(checks.channel)
-    @commands.cooldown(1, 180, commands.BucketType.user)
-    async def leaderboard_command(self, ctx):
-        return await leaderboard.cmd(ctx)
-
-    @bridge.bridge_command(
         name="balance",
         aliases=["bal", "$"],
         description="See how much cash you have.",
@@ -38,6 +26,11 @@ class Economy(commands.Cog):
     @commands.check(checks.channel)
     async def balance_command(self, ctx):
         return await balance.cmd(ctx)
+
+    @balance_command.error
+    async def on_command_error(self, ctx, error):
+        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        raise error
 
     @bridge.bridge_command(
         name="blackjack",
@@ -57,6 +50,7 @@ class Economy(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
         else:
+            await ctx.respond(embed=EconErrors.generic_exception(ctx))
             raise error
 
     @bridge.bridge_command(
@@ -67,18 +61,51 @@ class Economy(commands.Cog):
         guild_only=True
     )
     @commands.check(checks.channel)
-    async def daily(self, ctx):
+    async def daily_command(self, ctx):
         return await daily.cmd(ctx)
 
-    @bridge.bridge_command(
+    @daily_command.error
+    async def on_command_error(self, ctx, error):
+        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        raise error
+
+    @commands.slash_command(
         name="give",
         description="Give another user some currency.",
         help="Give another server member some cash.",
         guild_only=True
     )
     @commands.check(checks.channel)
-    async def give(self, ctx, *, user: discord.Member, amount: int):
+    async def give_command(self, ctx, *, user: discord.Member, amount: int):
         return await give.cmd(ctx, user, amount)
+
+    @give_command.error
+    async def on_command_error(self, ctx, error):
+        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        raise error
+
+    @commands.command(
+        name="give",
+        help="Give another user some cash. You can use someone's user ID or mention someone."
+    )
+    async def give_command_prefixed(self, ctx, user: discord.User, *, amount: int):
+
+        try:
+            member = await ctx.guild.fetch_member(user.id)
+        except discord.HTTPException:
+            raise commands.BadArgument
+
+        return await give.cmd(ctx, member, amount)
+
+    @give_command_prefixed.error
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.respond(embed=EconErrors.missing_argument(ctx))
+        elif isinstance(error, commands.BadArgument):
+            await ctx.respond(embed=EconErrors.bad_argument(ctx))
+        else:
+            await ctx.respond(embed=EconErrors.generic_exception(ctx))
+            raise error
 
     @bridge.bridge_command(
         name="inventory",
@@ -90,6 +117,18 @@ class Economy(commands.Cog):
     @commands.check(checks.channel)
     async def inventory(self, ctx):
         return await inventory.cmd(self, ctx)
+
+    @bridge.bridge_command(
+        name="leaderboard",
+        aliases=["lb", "xplb"],
+        description="Are ya winning' son?",
+        help="Shows the guild's level leaderboard by default. You can switch to currency and /daily leaderboard.",
+        guild_only=True
+    )
+    @commands.check(checks.channel)
+    @commands.cooldown(1, 180, commands.BucketType.user)
+    async def leaderboard_command(self, ctx):
+        return await leaderboard.cmd(ctx)
 
     @bridge.bridge_command(
         name="sell",
@@ -128,15 +167,20 @@ class Economy(commands.Cog):
         guild_only=True
     )
     @commands.check(checks.channel)
-    async def stats(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
+    async def stats_command(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
         return await stats.cmd(self, ctx, game)
+
+    @stats_command.error
+    async def on_command_error(self, ctx, error):
+        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        raise error
 
     @commands.command(
         name="stats",
         aliases=["stat"],
         help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
     )
-    async def stats_prefixed(self, ctx, *, game: str):
+    async def stats_command_prefix(self, ctx, *, game: str):
 
         if game.lower() == "blackjack" or game.lower() == "bj":
             game = "BlackJack"
@@ -147,13 +191,14 @@ class Economy(commands.Cog):
 
         return await stats.cmd(self, ctx, game)
 
-    @stats_prefixed.error
+    @stats_command_prefix.error
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.respond(embed=EconErrors.missing_bet(ctx))
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_argument(ctx))
         else:
+            await ctx.respond(embed=EconErrors.generic_exception(ctx))
             raise error
 
 
