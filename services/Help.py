@@ -12,14 +12,14 @@ class RacuHelp(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title="Help", color=discord.Color.blurple())
         for cog, commands in mapping.items():
-            filtered = await self.filter_commands(commands, sort=True)
+            filtered = await self.filter_commands(commands)
             if command_signatures := [
                 self.get_command_qualified_name(c) for c in filtered
             ]:
                 # Remove duplicates using set() and convert back to a list
                 unique_command_signatures = list(set(command_signatures))
                 cog_name = getattr(cog, "qualified_name", "Help")
-                embed.add_field(name=cog_name, value="\n".join(unique_command_signatures), inline=False)
+                embed.add_field(name=cog_name, value="\n".join(sorted(unique_command_signatures)), inline=False)
 
         channel = self.get_destination()
         await channel.send(embed=embed)
