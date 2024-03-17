@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from discord.commands import SlashCommandGroup
 from services.GuildConfig import GuildConfig
-from lib import formatter, embeds
+from lib import formatter, embeds_old
 
 from main import strings
 
@@ -203,7 +203,7 @@ class Config(commands.Cog):
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
         await ctx.respond(embed=embed)
 
-        embed = embeds.welcome_message(ctx.author, text)
+        embed = embeds_old.welcome_message(ctx.author, text)
         return await ctx.send(embed=embed, content=ctx.author.mention)
 
     @level_config.command(

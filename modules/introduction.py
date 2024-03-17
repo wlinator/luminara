@@ -6,7 +6,7 @@ import subprocess
 import discord
 from discord.ext import commands
 
-from lib import interaction, embeds, checks
+from lib import interaction, embeds_old, checks
 
 logs = logging.getLogger('Racu.Core')
 
@@ -84,7 +84,7 @@ class BasicCog(commands.Cog):
             logs.debug(f"{ctx.author.name} clicked Short Intro")
 
             # START NICKNAME
-            await ctx.send(embed=embeds.simple_question_first("How would you like to be identified in the server?"))
+            await ctx.send(embed=embeds_old.simple_question_first("How would you like to be identified in the server?"))
 
             try:
                 nickname_message = await self.client.wait_for('message', check=check, timeout=120)
@@ -95,7 +95,7 @@ class BasicCog(commands.Cog):
                 logs.debug(f"{ctx.author.name} nickname: {nickname}")
 
                 # START AGE
-                await ctx.send(embed=embeds.simple_question_5("How old are you?"),
+                await ctx.send(embed=embeds_old.simple_question_5("How old are you?"),
                                content=f"Recorded answer: {nickname}")
 
                 try:
@@ -108,7 +108,7 @@ class BasicCog(commands.Cog):
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
-                    await ctx.send(embed=embeds.simple_question_none("Where do you live?"),
+                    await ctx.send(embed=embeds_old.simple_question_none("Where do you live?"),
                                    view=view,
                                    content=f"Recorded answer: {age}")
 
@@ -116,14 +116,14 @@ class BasicCog(commands.Cog):
                     location = view.location
 
                     if not view.location:
-                        await ctx.send(embed=embeds.no_time())
+                        await ctx.send(embed=embeds_old.no_time())
                         return
 
                     logs.debug(f"{ctx.author.name} location: {location}")
 
                     # START PRONOUNS
                     await ctx.send(
-                        embed=embeds.simple_question_30("What are your preferred pronouns?"),
+                        embed=embeds_old.simple_question_30("What are your preferred pronouns?"),
                         content=f"Recorded answer: {location}")
 
                     try:
@@ -135,7 +135,7 @@ class BasicCog(commands.Cog):
                         logs.debug(f"{ctx.author.name} pronouns: {pronouns}")
 
                         # START LIKES
-                        await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
+                        await ctx.send(embed=embeds_old.simple_question_300("Likes & interests"),
                                        content=f"Recorded answer: {pronouns}")
 
                         try:
@@ -147,7 +147,7 @@ class BasicCog(commands.Cog):
                             logs.debug(f"{ctx.author.name} likes: {likes}")
 
                             # START DISLIKES
-                            await ctx.send(embed=embeds.simple_question_300("Dislikes"),
+                            await ctx.send(embed=embeds_old.simple_question_300("Dislikes"),
                                            content=f"Recorded answer: {likes}")
 
                             try:
@@ -159,7 +159,7 @@ class BasicCog(commands.Cog):
                                 logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
 
                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
-                                em = embeds.final_embed_short(ctx, nickname, age, location, pronouns, likes, dislikes)
+                                em = embeds_old.final_embed_short(ctx, nickname, age, location, pronouns, likes, dislikes)
 
                                 view = interaction.Confirm(ctx)
                                 await ctx.send(embed=em, content=f"Introduction of <@{ctx.author.id}>", view=view)
@@ -168,36 +168,36 @@ class BasicCog(commands.Cog):
                                 if view.clickedConfirm:
                                     intro_channel = guild.get_channel(channel_id)
                                     await intro_channel.send(embed=em, content=f"Introduction of <@{ctx.author.id}>")
-                                    await ctx.send(embed=embeds.final_confirmation(channel_id))
+                                    await ctx.send(embed=embeds_old.final_confirmation(channel_id))
                                     logs.info(f"[CommandHandler] {ctx.author.name} introduction was submitted.")
                                     return
                                 else:
-                                    await ctx.send(embed=embeds.no_time())
+                                    await ctx.send(embed=embeds_old.no_time())
                                     logs.warning(f"{ctx.author.id} Intro Timeout")
                                     return
 
                             except asyncio.TimeoutError:
-                                await ctx.send(embed=embeds.no_time())
+                                await ctx.send(embed=embeds_old.no_time())
                                 logs.warning(f"{ctx.author.id} Intro Timeout")
                                 return
 
                         except asyncio.TimeoutError:
-                            await ctx.send(embed=embeds.no_time())
+                            await ctx.send(embed=embeds_old.no_time())
                             logs.warning(f"{ctx.author.id} Intro Timeout")
                             return
 
                     except asyncio.TimeoutError:
-                        await ctx.send(embed=embeds.no_time())
+                        await ctx.send(embed=embeds_old.no_time())
                         logs.warning(f"{ctx.author.id} Intro Timeout")
                         return
 
                 except asyncio.TimeoutError:
-                    await ctx.send(embed=embeds.no_time())
+                    await ctx.send(embed=embeds_old.no_time())
                     logs.warning(f"{ctx.author.id} Intro Timeout")
                     return
 
             except asyncio.TimeoutError:
-                await ctx.send(embed=embeds.no_time())
+                await ctx.send(embed=embeds_old.no_time())
                 logs.warning(f"{ctx.author.id} Intro Timeout")
                 return
 
@@ -205,7 +205,7 @@ class BasicCog(commands.Cog):
             logs.debug(f"{ctx.author.name} clicked Long Intro")
 
             # START NICKNAME
-            await ctx.send(embed=embeds.simple_question_first_extended(
+            await ctx.send(embed=embeds_old.simple_question_first_extended(
                 "How would you like to be identified in the server?"))
 
             try:
@@ -217,7 +217,7 @@ class BasicCog(commands.Cog):
                 logs.debug(f"{ctx.author.name} nickname: {nickname}")
 
                 # START AGE
-                await ctx.send(embed=embeds.simple_question_5("How old are you?"),
+                await ctx.send(embed=embeds_old.simple_question_5("How old are you?"),
                                content=f"Recorded answer: {nickname}")
 
                 try:
@@ -230,7 +230,7 @@ class BasicCog(commands.Cog):
 
                     # START LOCATION
                     view = interaction.LocationOptions(ctx)
-                    await ctx.send(embed=embeds.simple_question_none("Where do you live?"),
+                    await ctx.send(embed=embeds_old.simple_question_none("Where do you live?"),
                                    view=view,
                                    content=f"Recorded answer: {age}")
 
@@ -238,14 +238,14 @@ class BasicCog(commands.Cog):
                     location = view.location
 
                     if not view.location:
-                        await ctx.send(embed=embeds.no_time())
+                        await ctx.send(embed=embeds_old.no_time())
                         return
 
                     logs.debug(f"{ctx.author.name} location: {location}")
 
                     # START LANGUAGES
                     await ctx.send(
-                        embed=embeds.simple_question_100("Which languages do you speak?"),
+                        embed=embeds_old.simple_question_100("Which languages do you speak?"),
                         content=f"Recorded answer: {location}"
                     )
 
@@ -259,7 +259,7 @@ class BasicCog(commands.Cog):
 
                         # START PRONOUNS
                         await ctx.send(
-                            embed=embeds.simple_question_30("What are your preferred pronouns?"),
+                            embed=embeds_old.simple_question_30("What are your preferred pronouns?"),
                             content=f"Recorded answer: {languages}")
 
                         try:
@@ -272,7 +272,7 @@ class BasicCog(commands.Cog):
 
                             # START SEXUALITY
                             await ctx.send(
-                                embed=embeds.simple_question_30("What's your sexuality?"),
+                                embed=embeds_old.simple_question_30("What's your sexuality?"),
                                 content=f"Recorded answer: {pronouns}")
 
                             try:
@@ -285,7 +285,7 @@ class BasicCog(commands.Cog):
 
                                 # START RELATIONSHIP_STATUS
                                 await ctx.send(
-                                    embed=embeds.simple_question_30("What's your current relationship status?"),
+                                    embed=embeds_old.simple_question_30("What's your current relationship status?"),
                                     content=f"Recorded answer: {sexuality}")
 
                                 try:
@@ -298,7 +298,7 @@ class BasicCog(commands.Cog):
                                     logs.debug(f"{ctx.author.name} relationship_status: {relationship_status}")
 
                                     # START LIKES
-                                    await ctx.send(embed=embeds.simple_question_300("Likes & interests"),
+                                    await ctx.send(embed=embeds_old.simple_question_300("Likes & interests"),
                                                    content=f"Recorded answer: {relationship_status}")
 
                                     try:
@@ -310,7 +310,7 @@ class BasicCog(commands.Cog):
                                         logs.debug(f"{ctx.author.name} likes: {likes}")
 
                                         # START DISLIKES
-                                        await ctx.send(embed=embeds.simple_question_300("Dislikes"),
+                                        await ctx.send(embed=embeds_old.simple_question_300("Dislikes"),
                                                        content=f"Recorded answer: {likes}")
 
                                         try:
@@ -323,7 +323,7 @@ class BasicCog(commands.Cog):
                                             logs.debug(f"{ctx.author.name} dislikes: {dislikes}")
 
                                             # START EXTRA
-                                            await ctx.send(embed=embeds.simple_question_300(
+                                            await ctx.send(embed=embeds_old.simple_question_300(
                                                 "EXTRAS: job status, zodiac sign, hobbies, etc. "
                                                 "Tell us about yourself!"),
                                                 content=f"Recorded answer: {dislikes}")
@@ -338,7 +338,7 @@ class BasicCog(commands.Cog):
                                                 logs.debug(f"{ctx.author.name} extra: {extra}")
 
                                                 # POST EXAMPLE EMBED AND FINAL IF APPROVED
-                                                em = embeds.final_embed_extended(ctx, nickname, age, location,
+                                                em = embeds_old.final_embed_extended(ctx, nickname, age, location,
                                                                                  languages, pronouns, sexuality,
                                                                                  relationship_status, likes,
                                                                                  dislikes, extra)
@@ -352,60 +352,60 @@ class BasicCog(commands.Cog):
                                                     intro_channel = guild.get_channel(channel_id)
                                                     await intro_channel.send(embed=em,
                                                                              content=f"Introduction of <@{ctx.author.id}>")
-                                                    await ctx.send(embed=embeds.final_confirmation(channel_id))
+                                                    await ctx.send(embed=embeds_old.final_confirmation(channel_id))
                                                     logs.info(f"[CommandHandler] {ctx.author.name} introduction was submitted.")
                                                     return
                                                 else:
-                                                    await ctx.send(embed=embeds.no_time())
+                                                    await ctx.send(embed=embeds_old.no_time())
                                                     logs.warning(f"{ctx.author.id} Intro Timeout")
                                                     return
 
                                             except asyncio.TimeoutError:
-                                                await ctx.send(embed=embeds.no_time())
+                                                await ctx.send(embed=embeds_old.no_time())
                                                 logs.warning(f"{ctx.author.id} Intro Timeout")
                                                 return
 
                                         except asyncio.TimeoutError:
-                                            await ctx.send(embed=embeds.no_time())
+                                            await ctx.send(embed=embeds_old.no_time())
                                             logs.warning(f"{ctx.author.id} Intro Timeout")
                                             return
 
                                     except asyncio.TimeoutError:
-                                        await ctx.send(embed=embeds.no_time())
+                                        await ctx.send(embed=embeds_old.no_time())
                                         logs.warning(f"{ctx.author.id} Intro Timeout")
                                         return
 
                                 except asyncio.TimeoutError:
-                                    await ctx.send(embed=embeds.no_time())
+                                    await ctx.send(embed=embeds_old.no_time())
                                     logs.warning(f"{ctx.author.id} Intro Timeout")
                                     return
 
                             except asyncio.TimeoutError:
-                                await ctx.send(embed=embeds.no_time())
+                                await ctx.send(embed=embeds_old.no_time())
                                 logs.warning(f"{ctx.author.id} Intro Timeout")
                                 return
 
                         except asyncio.TimeoutError:
-                            await ctx.send(embed=embeds.no_time())
+                            await ctx.send(embed=embeds_old.no_time())
                             logs.warning(f"{ctx.author.id} Intro Timeout")
                             return
 
                     except asyncio.TimeoutError:
-                        await ctx.send(embed=embeds.no_time())
+                        await ctx.send(embed=embeds_old.no_time())
                         logs.warning(f"{ctx.author.id} Intro Timeout")
                         return
 
                 except asyncio.TimeoutError:
-                    await ctx.send(embed=embeds.no_time())
+                    await ctx.send(embed=embeds_old.no_time())
                     logs.warning(f"{ctx.author.id} Intro Timeout")
                     return
 
             except asyncio.TimeoutError:
-                await ctx.send(embed=embeds.no_time())
+                await ctx.send(embed=embeds_old.no_time())
                 logs.warning(f"{ctx.author.id} Intro Timeout")
                 return
         else:
-            await ctx.send(embed=embeds.no_time())
+            await ctx.send(embed=embeds_old.no_time())
             logs.warning(f"{ctx.author.id} Intro Timeout")
             return
 
