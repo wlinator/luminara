@@ -11,12 +11,13 @@ from main import strings
 logs = logging.getLogger('Racu.Core')
 
 
-class ConfigCog(commands.Cog):
+class Config(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     # COMMAND GROUPS
-    config = SlashCommandGroup("config", "server config commands.", guild_only=True, default_member_permissions=discord.Permissions(manage_guild=True))
+    config = SlashCommandGroup("config", "server config commands.", guild_only=True,
+                               default_member_permissions=discord.Permissions(manage_guild=True))
     birthday_config = config.create_subgroup(name="birthdays")
     command_config = config.create_subgroup(name="commands")
     intro_config = config.create_subgroup(name="intros")
@@ -347,7 +348,5 @@ class ConfigCog(commands.Cog):
         return await ctx.respond(embed=embed)
 
 
-
-
 def setup(client):
-    client.add_cog(ConfigCog(client))
+    client.add_cog(Config(client))
