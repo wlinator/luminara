@@ -11,10 +11,6 @@ logs = logging.getLogger('Racu.Core')
 
 
 async def cmd(ctx):
-    """
-    Leaderboard command with a dropdown menu.
-    :param ctx:
-    """
     xp_lb = Xp.load_leaderboard(ctx.guild.id)
 
     options = LeaderboardCommandOptions()

@@ -1,12 +1,90 @@
+import asyncio
 import datetime
+import random
 from collections import Counter
 
 import discord
 import pytz
 
+from handlers.ItemHandler import ItemHandler
+from lib.embeds.error import EconErrors
 from main import economy_config
+from services.Currency import Currency
+from services.SlotsStats import SlotsStats
 
 est = pytz.timezone('US/Eastern')
+
+
+async def cmd(self, ctx, bet):
+    # Currency handler
+    ctx_currency = Currency(ctx.author.id)
+
+    # check if the user has enough cash
+    player_balance = ctx_currency.balance
+    if bet > player_balance:
+        return await ctx.respond(embed=EconErrors.insufficient_balance(ctx))
+    elif bet <= 0:
+        return await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
+
+    # # check if the bet exceeds the bet limit
+    # bet_limit = int(economy_config["bet_limit"])
+    # if abs(bet) > bet_limit:
+    #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
+    #     return await ctx.respond(content=message)
+
+    # calculate the results before the command is shown
+    results = [random.randint(0, 6) for _ in range(3)]
+    calculated_results = calculate_slots_results(bet, results)
+
+    (type, payout, multiplier) = calculated_results
+    is_won = True
+
+    if type == "lost":
+        is_won = False
+
+    # only get the emojis once
+    emojis = get_emotes(self.client)
+
+    # start with default "spinning" embed
+    await ctx.respond(embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, emojis))
+    await asyncio.sleep(1)
+
+    for i in range(2, 0, -1):
+        await ctx.edit(embed=slots_spinning(ctx, i, Currency.format_human(bet), results, emojis))
+        await asyncio.sleep(1)
+
+    # output final result
+    finished_output = slots_finished(ctx, type, Currency.format_human(bet),
+                                     Currency.format_human(payout), results, emojis)
+
+    item_reward = ItemHandler(ctx)
+    field = await item_reward.rave_coin(is_won=is_won, bet=bet, field="")
+
+    if field is not "":
+        finished_output.add_field(name="Extra Rewards", value=field, inline=False)
+
+    await ctx.edit(embed=finished_output)
+
+    # user payout
+    if payout > 0:
+        ctx_currency.add_balance(payout)
+    else:
+        ctx_currency.take_balance(bet)
+
+    # item_reward = ItemHandler(ctx)
+    # await item_reward.rave_coin(is_won=is_won, bet=bet)
+
+    stats = SlotsStats(
+        user_id=ctx.author.id,
+        is_won=is_won,
+        bet=bet,
+        payout=payout,
+        spin_type=type,
+        icons=results
+    )
+
+    ctx_currency.push()
+    stats.push()
 
 
 def get_emotes(client):

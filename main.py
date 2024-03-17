@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands, bridge
 from dotenv import load_dotenv
 
-from lib import embeds
+from lib import embeds_old
 from config import json_loader
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
@@ -77,7 +77,7 @@ async def on_member_join(member):
     ):
         return
 
-    embed = embeds.welcome_message(member, config.welcome_message)
+    embed = embeds_old.welcome_message(member, config.welcome_message)
 
     try:
         await member.guild.get_channel(config.welcome_channel_id).send(embed=embed, content=member.mention)
@@ -157,36 +157,24 @@ strings = json_loader.load_strings()
 economy_config = json_loader.load_economy_config()
 reactions = json_loader.load_reactions()
 
-# Keep track of loaded module filenames
-loaded_modules = set()
-
-
-def load_cogs():
-    # sort modules alphabetically purely for an easier overview in logs
-    for filename in sorted(os.listdir('./modules')):
-
-        if filename in loaded_modules:
-            continue  # module is already loaded
-
-        if filename.endswith('.py'):
-            module_name = f'modules.{filename[:-3]}'
-
-            try:
-                client.load_extension(module_name)
-                loaded_modules.add(filename)
-                logs.info(f"[MODULE] {filename[:-3].upper()} loaded.")
-
-            except Exception as e:
-                logs.error(f"[MODULE] Failed to load module {filename}: {e}")
-
 
 def load_modules():
     modules_list = [
         "economy"
     ]
+    loaded_modules = set()
 
     for module in modules_list:
-        client.load_extension(f"modules.{module}")
+        if module in loaded_modules:
+            continue # module is already loaded
+
+        try:
+            client.load_extension(f"modules.{module}")
+            loaded_modules.add(module)
+            logs.info(f"[MODULE] {module.upper()} loaded.")
+
+        except Exception as e:
+            logs.error(f"[MODULE] Failed to load module {module.upper()}: {e}")
 
 
 if __name__ == '__main__':
@@ -198,7 +186,6 @@ if __name__ == '__main__':
     logs.info("RACU IS BOOTING")
     logs.info("\n")
 
-    #load_cogs()
     load_modules()
 
     # empty line to separate modules from system info in logs
