@@ -1,6 +1,6 @@
 import discord
 
-from lib import economy_embeds
+from lib.embeds.error import EconErrors
 from services.Currency import Currency
 
 
@@ -26,7 +26,7 @@ async def cmd(ctx, user, amount):
         author_balance = ctx_currency.balance
 
         if author_balance < amount or author_balance <= 0:
-            return await ctx.respond(embed=economy_embeds.not_enough_cash())
+            return await ctx.respond(embed=EconErrors.insufficient_balance(ctx))
 
         target_currency.add_balance(amount)
         ctx_currency.take_balance(amount)
