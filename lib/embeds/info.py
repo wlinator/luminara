@@ -24,3 +24,21 @@ class EconInfo:
                              icon_url=exclam_icon)
 
         return embed
+
+
+class MiscInfo:
+    @staticmethod
+    def ping(ctx, client):
+        embed = clean_info_embed(ctx)
+        embed.description += "I'm online!"
+        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclam_icon)
+
+        return embed
+
+    @staticmethod
+    def uptime(ctx, client, unix_time):
+        embed = clean_info_embed(ctx)
+        embed.description += f"I've been online since <t:{unix_time}:R>"
+        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclam_icon)
+
+        return embed

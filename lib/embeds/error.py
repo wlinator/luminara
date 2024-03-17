@@ -99,3 +99,19 @@ class EconErrors:
         embed.set_footer(text="Try the command again", icon_url=exclam_icon)
 
         return embed
+
+
+class BdayErrors:
+    @staticmethod
+    def birthdays_disabled(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "birthdays are disabled in this server."
+
+        return embed
+
+    @staticmethod
+    def invalid_date(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "the date you entered is invalid."
+
+        return embed

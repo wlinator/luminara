@@ -1,18 +1,21 @@
 import logging
 
+import discord
 from discord.ext import commands, bridge
 import datetime, time
+from lib.embeds.info import MiscInfo
 
-from main import strings
 from lib import checks
+from main import strings
 
 logs = logging.getLogger('Racu.Core')
 
 
-class Miscellaneous(commands.Cog):
+class Misc(commands.Cog):
+
     def __init__(self, client):
         self.client = client
-        self.start_time = time.time()
+        self.start_time = datetime.datetime.now()
 
     @bridge.bridge_command(
         name="ping",
@@ -24,7 +27,7 @@ class Miscellaneous(commands.Cog):
     )
     @commands.check(checks.channel)
     async def ping(self, ctx):
-        await ctx.respond(content=strings["ping"].format(ctx.author.name))
+        return await ctx.respond(embed=MiscInfo.ping(ctx, self.client))
 
     @bridge.bridge_command(
         name="uptime",
@@ -34,13 +37,10 @@ class Miscellaneous(commands.Cog):
     )
     @commands.check(checks.channel)
     async def uptime(self, ctx):
-        current_time = time.time()
 
-        difference = int(round(current_time - self.start_time))
-
-        text = str(datetime.timedelta(seconds=difference))
-        await ctx.respond(content=strings["uptime"].format(ctx.author.name, text))
+        unix_timestamp = int(round(self.start_time.timestamp()))
+        return await ctx.respond(embed=MiscInfo.uptime(ctx, self.client, unix_timestamp))
 
 
 def setup(client):
-    client.add_cog(Miscellaneous(client))
+    client.add_cog(Misc(client))
