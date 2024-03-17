@@ -3,6 +3,7 @@ import os
 
 import discord
 from dotenv import load_dotenv
+from lib.embeds.error import BdayErrors
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 
@@ -17,7 +18,7 @@ async def birthday_module(ctx):
     guild_config = GuildConfig(ctx.guild.id)
 
     if not guild_config.birthday_channel_id:
-        await ctx.respond(f"Birthdays are disabled in this server.", ephemeral=True)
+        await ctx.respond(embed=BdayErrors.birthdays_disabled(ctx))
         return False
     
     return True
@@ -42,7 +43,7 @@ async def channel(ctx):
                 await ctx.respond(f"I don't have sufficient permissions to check "
                                   f"whether this channel allows commands or not. "
                                   f"Please do '/config commands channel <channel>' with a channel "
-                                  f"I can see or allow commands everywhere.")
+                                  f"I can see or allow commands everywhere.", ephemeral=True)
                 return False
 
     return True

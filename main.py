@@ -160,7 +160,9 @@ reactions = json_loader.load_reactions()
 
 def load_modules():
     modules_list = [
-        "economy"
+        "birthdays",
+        "economy",
+        "misc"
     ]
     loaded_modules = set()
 
