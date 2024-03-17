@@ -14,6 +14,7 @@ from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 from main import strings
 from lib import time, checks
+from lib.embeds.error import BdayErrors
 
 logs = logging.getLogger('Racu.Core')
 data = json_loader.load_birthday()
@@ -42,7 +43,7 @@ class Birthdays(commands.Cog):
         max_days = calendar.monthrange(leap_year, month_index)[1]
 
         if not (1 <= day <= max_days):
-            return await ctx.respond(strings["birthday_invalid_date"].format(ctx.author.name), ephemeral=True)
+            return await ctx.respond(embed=BdayErrors.invalid_date(ctx))
 
         date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
         date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
