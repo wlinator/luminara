@@ -5,13 +5,13 @@ from collections import Counter
 
 import discord
 import pytz
-from discord.ext import commands
+from discord.ext import commands, bridge
 
 from services.Currency import Currency
 from services.SlotsStats import SlotsStats
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from lib import economy_embeds, checks
+from lib import economy_embeds, checks, err_embeds
 
 est = pytz.timezone('US/Eastern')
 
@@ -158,22 +158,25 @@ class SlotsCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.slash_command(
+    @bridge.bridge_command(
         name="slots",
+        aliases=["slot"],
         descriptions="Spin the slots for a chance to win the jackpot!",
+        help="Starts a slots game.",
         guild_only=True
     )
     @commands.check(checks.channel)
-    async def slots(self, ctx, *, bet: discord.Option(int)):
+    async def slots(self, ctx, *, bet: int):
 
         # Currency handler
         ctx_currency = Currency(ctx.author.id)
 
         # check if the user has enough cash
         player_balance = ctx_currency.balance
-        if bet > player_balance or bet <= 0:
-            await ctx.respond(embed=economy_embeds.not_enough_cash())
-            return
+        if bet > player_balance:
+            return await ctx.respond(embed=err_embeds.InsufficientBalance(ctx))
+        elif bet <= 0:
+            return await ctx.respond(embed=err_embeds.BadBetArgument(ctx))
 
         # # check if the bet exceeds the bet limit
         # bet_limit = int(economy_config["bet_limit"])
@@ -234,6 +237,15 @@ class SlotsCog(commands.Cog):
 
         ctx_currency.push()
         stats.push()
+
+    @slots.error
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.respond(embed=err_embeds.MissingBet(ctx))
+        elif isinstance(error, commands.BadArgument):
+            await ctx.respond(embed=err_embeds.BadBetArgument(ctx))
+        else:
+            raise error
 
 
 def setup(client):
