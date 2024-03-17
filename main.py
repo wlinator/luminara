@@ -86,7 +86,7 @@ async def on_member_join(member):
 
 
 @client.event
-async def on_application_command_completion(ctx) -> None:
+async def on_command_completion(ctx) -> None:
     """
     This code is executed when a slash_command has been successfully executed.
     This technically serves as a CommandHandler function
@@ -112,7 +112,7 @@ async def on_application_command_completion(ctx) -> None:
 
 
 @client.event
-async def on_application_command_error(ctx, error) -> None:
+async def on_command_error(ctx, error) -> None:
     if isinstance(error, commands.CommandOnCooldown):
 
         seconds = error.retry_after
