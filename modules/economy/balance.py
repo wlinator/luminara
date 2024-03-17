@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, bridge
 from dotenv import load_dotenv
 
 from services.Currency import Currency
@@ -8,13 +8,16 @@ from lib import checks
 load_dotenv('.env')
 
 
-class BalanceCog(commands.Cog):
+class Balance(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.slash_command(
+    @bridge.bridge_command(
         name="balance",
+        aliases=["bal", "$"],
         description="See how much cash you have.",
+        help="Shows your current Racu balance. The economy system is global, meaning your balance will be the same in "
+             "all servers.",
         guild_only=True
     )
     @commands.check(checks.channel)
@@ -32,5 +35,6 @@ class BalanceCog(commands.Cog):
 
         await ctx.respond(embed=embed)
 
+
 def setup(client):
-    client.add_cog(BalanceCog(client))
+    client.add_cog(Balance(client))

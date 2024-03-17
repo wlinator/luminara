@@ -4,14 +4,14 @@ from datetime import datetime
 import logging
 import discord
 import pytz
-from discord.ext import commands
+from discord.ext import commands, bridge
 from dotenv import load_dotenv
 
 from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 from handlers.ItemHandler import ItemHandler
 from main import economy_config, strings
-from lib import economy_embeds, economy_functions, checks, interaction, embeds
+from lib import economy_embeds, economy_functions, checks, interaction, embeds, err_embeds
 
 logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
@@ -114,13 +114,15 @@ class BlackJackCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.slash_command(
+    @bridge.bridge_command(
         name="blackjack",
+        aliases=["bj"],
         description="Start a game of blackjack.",
+        help="Start a game of blackjack.",
         guild_only=True
     )
     @commands.check(checks.channel)
-    async def blackjack(self, ctx, *, bet: discord.Option(int)):
+    async def blackjack(self, ctx, *, bet: int):
 
         """
         status states:
@@ -143,9 +145,10 @@ class BlackJackCog(commands.Cog):
 
         # check if the user has enough cash
         player_balance = ctx_currency.balance
-        if bet > player_balance or bet <= 0:
-            await ctx.respond(embed=economy_embeds.not_enough_cash())
-            return
+        if bet > player_balance:
+            return await ctx.respond(embed=err_embeds.InsufficientBalance(ctx))
+        elif bet <= 0:
+            return await ctx.respond(embed=err_embeds.BadBetArgument(ctx))
 
         # check if the bet exceeds the bet limit
         # bet_limit = int(economy_config["bet_limit"])
@@ -289,6 +292,15 @@ class BlackJackCog(commands.Cog):
         finally:
             # remove player from active games list
             del active_blackjack_games[ctx.author.id]
+
+    @blackjack.error
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.respond(embed=err_embeds.MissingBet(ctx))
+        elif isinstance(error, commands.BadArgument):
+            await ctx.respond(embed=err_embeds.BadBetArgument(ctx))
+        else:
+            raise error
 
 
 def setup(client):

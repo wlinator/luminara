@@ -1,7 +1,7 @@
 import logging
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, bridge
 
 from services.Currency import Currency
 from services.Xp import Xp
@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 logs = logging.getLogger('Racu.Core')
 
 
-class LeaderboardV2Cog(commands.Cog):
+class Economy(commands.Cog):
     """
     A rewrite of the leaderboard command.
     This aims to show more information & a new "dailies" leaderboard.
@@ -21,13 +21,15 @@ class LeaderboardV2Cog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.slash_command(
+    @bridge.bridge_command(
         name="leaderboard",
+        aliases=["lb", "xplb"],
         description="Are ya winning' son?",
+        help="Shows the guild's level leaderboard by default. You can switch to currency and /daily leaderboard.",
         guild_only=True
     )
     @commands.check(checks.channel)
-    # @commands.cooldown(1, 180, commands.BucketType.user)
+    @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard_v2(self, ctx):
         """
         Leaderboard command with a dropdown menu.
@@ -209,4 +211,4 @@ class LeaderboardCommandView(discord.ui.View):
 
 
 def setup(client):
-    client.add_cog(LeaderboardV2Cog(client))
+    client.add_cog(Economy(client))

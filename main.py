@@ -180,6 +180,15 @@ def load_cogs():
                 logs.error(f"[MODULE] Failed to load module {filename}: {e}")
 
 
+def load_modules():
+    modules_list = [
+        "economy"
+    ]
+
+    for module in modules_list:
+        client.load_extension(f"modules.{module}")
+
+
 if __name__ == '__main__':
     """
     This code is only ran when main.py is the primary module,
@@ -189,7 +198,8 @@ if __name__ == '__main__':
     logs.info("RACU IS BOOTING")
     logs.info("\n")
 
-    load_cogs()
+    #load_cogs()
+    load_modules()
 
     # empty line to separate modules from system info in logs
     logs.info("\n")
