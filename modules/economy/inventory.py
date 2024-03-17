@@ -2,7 +2,7 @@ import json
 import os
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, bridge
 from dotenv import load_dotenv
 
 from services.Inventory import Inventory
@@ -18,9 +18,11 @@ class InventoryCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.slash_command(
+    @bridge.bridge_command(
         name="inventory",
+        aliases=["inv"],
         description="Display your inventory.",
+        help="Display your inventory, this will also show your Racu badges if you have any.",
         guild_only=True
     )
     @commands.check(checks.channel)
