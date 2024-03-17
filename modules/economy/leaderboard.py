@@ -1,71 +1,51 @@
 import logging
+from datetime import datetime
 
 import discord
-from discord.ext import commands, bridge
 
 from services.Currency import Currency
-from services.Xp import Xp
 from services.Dailies import Dailies
-from lib import checks
-from datetime import datetime, timedelta
+from services.Xp import Xp
 
 logs = logging.getLogger('Racu.Core')
 
 
-class Economy(commands.Cog):
+async def cmd(ctx):
     """
-    A rewrite of the leaderboard command.
-    This aims to show more information & a new "dailies" leaderboard.
+    Leaderboard command with a dropdown menu.
+    :param ctx:
     """
+    xp_lb = Xp.load_leaderboard(ctx.guild.id)
 
-    def __init__(self, client):
-        self.client = client
+    options = LeaderboardCommandOptions()
+    view = LeaderboardCommandView(ctx, options)
 
-    @bridge.bridge_command(
-        name="leaderboard",
-        aliases=["lb", "xplb"],
-        description="Are ya winning' son?",
-        help="Shows the guild's level leaderboard by default. You can switch to currency and /daily leaderboard.",
-        guild_only=True
+    # default leaderboard
+    embed = discord.Embed(
+        color=discord.Color.embed_background(),
     )
-    @commands.check(checks.channel)
-    @commands.cooldown(1, 180, commands.BucketType.user)
-    async def leaderboard_v2(self, ctx):
-        """
-        Leaderboard command with a dropdown menu.
-        :param ctx:
-        """
-        xp_lb = Xp.load_leaderboard(ctx.guild.id)
 
-        options = LeaderboardCommandOptions()
-        view = LeaderboardCommandView(ctx, options)
+    icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+    embed.set_author(name="Level Leaderboard", icon_url=icon)
+    embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
 
-        # default leaderboard
-        embed = discord.Embed(
-            color=discord.Color.embed_background(),
+    rank = 1
+    for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
+
+        try:
+            member = await ctx.guild.fetch_member(user_id)
+        except discord.HTTPException:
+            continue  # skip user if not in guild
+
+        embed.add_field(
+            name=f"#{rank} - {member.name}",
+            value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
+            inline=False
         )
 
-        icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        embed.set_author(name="Level Leaderboard", icon_url=icon)
-        embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
+        rank += 1
 
-        rank = 1
-        for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
-
-            try:
-                member = await ctx.guild.fetch_member(user_id)
-            except discord.HTTPException:
-                continue # skip user if not in guild
-
-            embed.add_field(
-                name=f"#{rank} - {member.name}",
-                value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
-                inline=False
-            )
-
-            rank += 1
-
-        return await ctx.respond(embed=embed, view=view)
+    return await ctx.respond(embed=embed, view=view)
 
 
 class LeaderboardCommandOptions(discord.ui.Select):
@@ -208,7 +188,3 @@ class LeaderboardCommandView(discord.ui.View):
                 )
 
             await interaction.response.edit_message(embed=embed)
-
-
-def setup(client):
-    client.add_cog(Economy(client))
