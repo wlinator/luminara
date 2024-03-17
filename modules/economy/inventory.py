@@ -3,7 +3,7 @@ import discord
 from services.Inventory import Inventory
 
 
-async def cmd(ctx):
+async def cmd(self, ctx):
     inventory = Inventory(ctx.author.id)
     inventory_dict = inventory.get_inventory()
 

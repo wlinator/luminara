@@ -34,11 +34,3 @@ def not_enough_cash():
         description="Oops! Your current cash balance isn't sufficient to do that."
     )
     return embed
-
-
-def out_of_time():
-    embed = discord.Embed(
-        color=discord.Color.red(),
-        description="Uh-oh! Time's up. Your bet is forfeited as the game concludes."
-    )
-    return embed

@@ -89,11 +89,13 @@ class Economy(commands.Cog):
     )
     @commands.check(checks.channel)
     async def inventory(self, ctx):
-        return await inventory.cmd(ctx)
+        return await inventory.cmd(self, ctx)
 
-    @commands.slash_command(
+    @bridge.bridge_command(
         name="sell",
         description="Sell items from your inventory.",
+        help="Sell something from your inventory. This command has no arguments because when you do the command "
+             "it will lead you through the process of selling items.",
         guild_only=True
     )
     @commands.check(checks.channel)
@@ -128,6 +130,31 @@ class Economy(commands.Cog):
     @commands.check(checks.channel)
     async def stats(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
         return await stats.cmd(self, ctx, game)
+
+    @commands.command(
+        name="stats",
+        aliases=["stat"],
+        help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
+    )
+    async def stats_prefixed(self, ctx, *, game: str):
+
+        if game.lower() == "blackjack" or game.lower() == "bj":
+            game = "BlackJack"
+        elif game.lower() == "slots" or game.lower() == "slot":
+            game = "Slots"
+        else:
+            raise commands.BadArgument
+
+        return await stats.cmd(self, ctx, game)
+
+    @stats_prefixed.error
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.respond(embed=EconErrors.missing_bet(ctx))
+        elif isinstance(error, commands.BadArgument):
+            await ctx.respond(embed=EconErrors.bad_argument(ctx))
+        else:
+            raise error
 
 
 def setup(client):

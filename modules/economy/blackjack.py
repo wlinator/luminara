@@ -6,7 +6,7 @@ import pytz
 from dotenv import load_dotenv
 
 from handlers.ItemHandler import ItemHandler
-from lib import economy_embeds, economy_functions, interaction, embeds_old
+from lib import economy_functions, interaction
 from lib.embeds.error import EconErrors
 from main import economy_config
 from services.BlackJackStats import BlackJackStats
@@ -32,7 +32,7 @@ async def cmd(ctx, bet: int):
 
     # check if the player already has an active blackjack going
     if ctx.author.id in active_blackjack_games:
-        await ctx.respond(embed=economy_embeds.already_playing("BlackJack"))
+        await ctx.respond(embed=EconErrors.already_playing(ctx))
         return
 
     # Currency handler
@@ -161,7 +161,7 @@ async def cmd(ctx, bet: int):
             stats.push()
 
         elif status == 6:
-            await ctx.send(embed=economy_embeds.out_of_time(), content=ctx.author.mention)
+            await ctx.send(embed=EconErrors.out_of_time(ctx), content=ctx.author.mention)
             ctx_currency.take_balance(bet)
             ctx_currency.push()
 
@@ -181,7 +181,7 @@ async def cmd(ctx, bet: int):
             stats.push()
 
     except Exception as e:
-        await ctx.respond(embed=embeds_old.command_error_1(e))
+        await ctx.respond(embed=EconErrors.generic_exception(ctx))
         logs.error("[CommandHandler] Something went wrong in the gambling command: ", e)
 
     finally:
