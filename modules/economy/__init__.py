@@ -1,14 +1,9 @@
-import logging
-
 import discord
 from discord.ext import commands, bridge
 
 from lib import checks
-from lib.embeds.error import EconErrors
-from lib.embeds.error import GenericErrors
-from modules.economy import leaderboard, blackjack, sell, slots, balance, stats, give, inventory, daily
-
-logs = logging.getLogger('Racu.Core')
+from lib.embeds.error import EconErrors, GenericErrors
+from modules.economy import blackjack, sell, slots, balance, stats, give, inventory, daily
 
 
 class Economy(commands.Cog):
@@ -119,18 +114,6 @@ class Economy(commands.Cog):
     @commands.check(checks.channel)
     async def inventory(self, ctx):
         return await inventory.cmd(self, ctx)
-
-    @bridge.bridge_command(
-        name="leaderboard",
-        aliases=["lb", "xplb"],
-        description="Are ya winning' son?",
-        help="Shows the guild's level leaderboard by default. You can switch to currency and /daily leaderboard.",
-        guild_only=True
-    )
-    @commands.check(checks.channel)
-    @commands.cooldown(1, 180, commands.BucketType.user)
-    async def leaderboard_command(self, ctx):
-        return await leaderboard.cmd(ctx)
 
     @bridge.bridge_command(
         name="sell",
