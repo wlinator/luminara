@@ -150,3 +150,16 @@ class BdayErrors:
         embed.description += "the date you entered is invalid."
 
         return embed
+
+
+class HelpErrors:
+    @staticmethod
+    def error_message(ctx, error):
+        """
+        See discord.ext.commands.HelpCommand.send_error_message
+        """
+        embed = clean_error_embed(ctx)
+        embed.description += error
+        embed.set_footer(text=f"See '{formatter.get_prefix(ctx)}help'", icon_url=question_icon)
+
+        return embed
