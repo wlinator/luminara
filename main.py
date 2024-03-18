@@ -132,8 +132,7 @@ async def on_command_error(ctx, error) -> None:
     elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
         logs.info(f"[CommandHandler] {ctx.author.name} check failure: \"/{ctx.command.qualified_name}\"")
 
-    elif isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
-        # handle locally in module's __init__.py
+    elif isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument, commands.CommandNotFound)):
         pass
 
     else:
@@ -156,15 +155,11 @@ reactions = json_loader.load_reactions()
 
 
 def load_modules():
-    modules_list = [
-        "admin",
-        "birthdays",
-        "economy",
-        "misc"
-    ]
+
+    module_list = [d for d in os.listdir("modules") if os.path.isdir(os.path.join("modules", d))]
     loaded_modules = set()
 
-    for module in modules_list:
+    for module in module_list:
         if module in loaded_modules:
             continue # module is already loaded
 

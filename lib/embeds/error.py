@@ -56,6 +56,15 @@ class GenericErrors:
 
         return embed
 
+    @staticmethod
+    def private_message_only(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += f"this command can only be used in private messages."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
 
 class EconErrors:
     @staticmethod

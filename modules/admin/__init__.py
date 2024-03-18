@@ -1,16 +1,8 @@
-import logging
-
 import discord
 from discord.ext import commands, bridge
-import datetime, time
-from lib.embeds.info import MiscInfo
-from modules.admin import award
+from modules.admin import award, sql
 from lib.embeds.error import EconErrors
-
 from lib import checks
-from main import strings
-
-logs = logging.getLogger('Racu.Core')
 
 
 class Admin(commands.Cog):
@@ -41,9 +33,25 @@ class Admin(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
+    @bridge.bridge_command(
+        name="sqlselect",
+        aliases=["sqls"],
+        description="Perform a SELECT query in the database.",
+        help="Perform a SELECT query in the database. This can only be done by the owner of Racu."
+    )
+    @commands.check(checks.bot_owner)
+    async def select(self, ctx, *, query: str):
+        return await sql.select_cmd(ctx, query)
 
-
-
+    @bridge.bridge_command(
+        name="sqlinject",
+        aliases=["sqli"],
+        description="Change a value in the database. (DANGEROUS)",
+        help="Change a value in the database. This can only be done by the owner of Racu. (DANGEROUS)"
+    )
+    @commands.check(checks.bot_owner)
+    async def inject(self, ctx, *, query: str):
+        return await sql.inject_cmd(ctx, query)
 
 
 def setup(client):

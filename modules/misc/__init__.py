@@ -1,14 +1,9 @@
-import logging
-
-import discord
+import datetime
 from discord.ext import commands, bridge
-import datetime, time
-from lib.embeds.info import MiscInfo
-
 from lib import checks
-from main import strings
-
-logs = logging.getLogger('Racu.Core')
+from lib.embeds.info import MiscInfo
+from lib.embeds.error import GenericErrors
+from modules.misc import introduction
 
 
 class Misc(commands.Cog):
@@ -40,6 +35,26 @@ class Misc(commands.Cog):
 
         unix_timestamp = int(round(self.start_time.timestamp()))
         return await ctx.respond(embed=MiscInfo.uptime(ctx, self.client, unix_timestamp))
+
+    @bridge.bridge_command(
+        name="introduction",
+        aliases=["intro", "introduce"],
+        guild_only=False,
+        description="This command can only be done in DMs.",
+        help="Introduce yourself to a server. For now this command "
+             "can only be done in ONE server and only as a __slash command in Racu's DMs__."
+    )
+    @commands.dm_only()
+    async def intro_command(self, ctx):
+        return await introduction.cmd(self, ctx)
+
+    @intro_command.error
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.PrivateMessageOnly):
+            await ctx.respond(embed=GenericErrors.private_message_only(ctx))
+        else:
+            await ctx.respond(embed=GenericErrors.default_exception(ctx))
+            raise error
 
 
 def setup(client):
