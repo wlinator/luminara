@@ -5,6 +5,7 @@ from discord.ext import commands, bridge
 
 from lib import checks
 from lib.embeds.error import EconErrors
+from lib.embeds.error import GenericErrors
 from modules.economy import leaderboard, blackjack, sell, slots, balance, stats, give, inventory, daily
 
 logs = logging.getLogger('Racu.Core')
@@ -29,7 +30,7 @@ class Economy(commands.Cog):
 
     @balance_command.error
     async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        await ctx.respond(embed=GenericErrors.default_exception(ctx))
         raise error
 
     @bridge.bridge_command(
@@ -50,7 +51,7 @@ class Economy(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
         else:
-            await ctx.respond(embed=EconErrors.generic_exception(ctx))
+            await ctx.respond(embed=GenericErrors.default_exception(ctx))
             raise error
 
     @bridge.bridge_command(
@@ -66,7 +67,7 @@ class Economy(commands.Cog):
 
     @daily_command.error
     async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        await ctx.respond(embed=GenericErrors.default_exception(ctx))
         raise error
 
     @commands.slash_command(
@@ -81,12 +82,13 @@ class Economy(commands.Cog):
 
     @give_command.error
     async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        await ctx.respond(embed=GenericErrors.default_exception(ctx))
         raise error
 
     @commands.command(
         name="give",
-        help="Give another user some cash. You can use someone's user ID or mention someone."
+        help="Give another user some cash. You can use someone's user ID or mention someone. The user has to be in the "
+             "guild you invoke this command in."
     )
     async def give_command_prefixed(self, ctx, user: discord.User, *, amount: int):
 
@@ -104,7 +106,7 @@ class Economy(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_argument(ctx))
         else:
-            await ctx.respond(embed=EconErrors.generic_exception(ctx))
+            await ctx.respond(embed=GenericErrors.default_exception(ctx))
             raise error
 
     @bridge.bridge_command(
@@ -172,7 +174,7 @@ class Economy(commands.Cog):
 
     @stats_command.error
     async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        await ctx.respond(embed=GenericErrors.default_exception(ctx))
         raise error
 
     @commands.command(
@@ -198,7 +200,7 @@ class Economy(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_argument(ctx))
         else:
-            await ctx.respond(embed=EconErrors.generic_exception(ctx))
+            await ctx.respond(embed=GenericErrors.default_exception(ctx))
             raise error
 
 

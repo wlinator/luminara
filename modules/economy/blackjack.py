@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from handlers.ItemHandler import ItemHandler
 from lib import economy_functions, interaction
 from lib.embeds.error import EconErrors
+from lib.embeds.error import GenericErrors
 from main import economy_config
 from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
@@ -181,7 +182,7 @@ async def cmd(ctx, bet: int):
             stats.push()
 
     except Exception as e:
-        await ctx.respond(embed=EconErrors.generic_exception(ctx))
+        await ctx.respond(embed=GenericErrors.default_exception(ctx))
         logs.error("[CommandHandler] Something went wrong in the gambling command: ", e)
 
     finally:

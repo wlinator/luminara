@@ -7,7 +7,8 @@ import discord
 from discord.ext import commands, bridge
 from dotenv import load_dotenv
 
-from lib import embeds_old
+from lib.embeds.error import GenericErrors
+from lib.embeds.greet import Greet
 from config import json_loader
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
@@ -77,7 +78,7 @@ async def on_member_join(member):
     ):
         return
 
-    embed = embeds_old.welcome_message(member, config.welcome_message)
+    embed = Greet.message(member, config.welcome_message)
 
     try:
         await member.guild.get_channel(config.welcome_channel_id).send(embed=embed, content=member.mention)
@@ -120,30 +121,26 @@ async def on_command_error(ctx, error) -> None:
         seconds %= 60
         cooldown = "{:02d}:{:02d}".format(int(minutes), int(seconds))
 
-        await ctx.respond(
-            f"⏳ | **{ctx.author.name}** you are on cooldown. "
-            f"You can use this command again in **{cooldown}**.",
-            ephemeral=True)
-
-        logs.info(f"[CommandHandler] {ctx.author.name} tried to do a command on cooldown.")
+        await ctx.respond(embed=GenericErrors.command_on_cooldown(ctx, cooldown))
 
     elif isinstance(error, commands.MissingPermissions):
-        await ctx.respond(strings["error_missing_permissions"].format(ctx.author.name), ephemeral=True)
-        logs.info(f"[CommandHandler] {ctx.author.name} has missing permissions to do a command: "
-                  f"{ctx.command.qualified_name}")
+        await ctx.respond(embed=GenericErrors.missing_permissions(ctx))
 
     elif isinstance(error, commands.BotMissingPermissions):
-        await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
-        logs.info(f"[CommandHandler] Racu is missing permissions: {ctx.command.qualified_name}")
+        await ctx.respond(embed=GenericErrors.bot_missing_permissions(ctx))
 
-    elif isinstance(error, discord.CheckFailure) or isinstance(error, commands.CheckFailure):
-        logs.info(
-            f"[CommandHandler] {ctx.author.name} tried to do \"/{ctx.command.qualified_name}\" "
-            f"but a check returned False.")
+    elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
+        logs.info(f"[CommandHandler] {ctx.author.name} check failure: \"/{ctx.command.qualified_name}\"")
+
+    elif isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
+        # handle locally in module's __init__.py
+        pass
 
     else:
-        logs.error(f"[CommandHandler] on_application_command_error: {error}")
+        await ctx.respond(embed=GenericErrors.default_exception(ctx))
         traceback.print_tb(error.original.__traceback__)
+
+    logs.error(f"[CommandHandler] on_command_error: {error}")
 
 
 @client.event
@@ -160,6 +157,7 @@ reactions = json_loader.load_reactions()
 
 def load_modules():
     modules_list = [
+        "admin",
         "birthdays",
         "economy",
         "misc"
