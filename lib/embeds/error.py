@@ -14,6 +14,49 @@ def clean_error_embed(ctx):
     return embed
 
 
+class GenericErrors:
+    @staticmethod
+    def default_exception(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "something went wrong."
+        embed.set_footer(text="Try the command again", icon_url=exclam_icon)
+
+        return embed
+
+    @staticmethod
+    def missing_permissions(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "you are missing permissions to run this command."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
+    @staticmethod
+    def bot_missing_permissions(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "I can't perform this command because I don't have the required permissions."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
+    @staticmethod
+    def command_on_cooldown(ctx, cooldown):
+        embed = clean_error_embed(ctx)
+        embed.description += "you are on cooldown."
+        embed.set_footer(text=f"Try again in {cooldown}", icon_url=exclam_icon)
+
+        return embed
+
+    @staticmethod
+    def owner_only(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "this command requires Racu ownership permissions."
+
+        return embed
+
+
 class EconErrors:
     @staticmethod
     def missing_bet(ctx):
@@ -89,14 +132,6 @@ class EconErrors:
         embed = clean_error_embed(ctx)
         embed.description += f"you already have a game of {ctx.command.name} running."
         embed.set_footer(text="Please finish this game first", icon_url=exclam_icon)
-
-        return embed
-
-    @staticmethod
-    def generic_exception(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "something went wrong."
-        embed.set_footer(text="Try the command again", icon_url=exclam_icon)
 
         return embed
 

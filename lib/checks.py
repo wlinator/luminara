@@ -3,7 +3,7 @@ import os
 
 import discord
 from dotenv import load_dotenv
-from lib.embeds.error import BdayErrors
+from lib.embeds.error import BdayErrors, GenericErrors
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 
@@ -51,10 +51,9 @@ async def channel(ctx):
 
 async def bot_owner(ctx):
     owner_id = os.getenv("OWNER_ID")
+
     if ctx.author.id != int(owner_id):
-        embed = discord.Embed(description=f"This command requires bot admin permissions.",
-                              color=discord.Color.red())
-        await ctx.respond(embed=embed, ephemeral=True)
+        await ctx.respond(embed=GenericErrors.owner_only(ctx), ephemeral=True)
         return False
 
     return True
