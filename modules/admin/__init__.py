@@ -22,8 +22,8 @@ class Admin(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
+    @commands.is_owner()
     @commands.check(checks.channel)
-    @commands.check(checks.bot_owner)
     async def award_command(self, ctx, *, user: discord.User, amount: int):
         return await award.cmd(ctx, user, amount)
 
@@ -40,8 +40,8 @@ class Admin(commands.Cog):
         description="Perform a SELECT query in the database.",
         help="Perform a SELECT query in the database. This can only be done by the owner of Racu."
     )
+    @commands.is_owner()
     @commands.check(checks.channel)
-    @commands.check(checks.bot_owner)
     async def select(self, ctx, *, query: str):
         return await sql.select_cmd(ctx, query)
 
@@ -51,8 +51,8 @@ class Admin(commands.Cog):
         description="Change a value in the database. (DANGEROUS)",
         help="Change a value in the database. This can only be done by the owner of Racu. (DANGEROUS)"
     )
+    @commands.is_owner()
     @commands.check(checks.channel)
-    @commands.check(checks.bot_owner)
     async def inject(self, ctx, *, query: str):
         return await sql.inject_cmd(ctx, query)
 
