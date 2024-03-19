@@ -68,3 +68,19 @@ class GuildConfig:
                                        self.intro_channel_id, self.welcome_channel_id, self.welcome_message,
                                        self.level_channel_id, self.level_message,
                                        self.level_message_type, self.guild_id))
+
+    @staticmethod
+    def get_prefix(guild_id):
+        """
+        Gets the prefix from a given guild.
+        This function is done as static method to make the prefix fetch process faster.
+        """
+        query = """
+                SELECT prefix
+                FROM guild_config
+                WHERE guild_id = %s
+                """
+
+        prefix = database.select_query_one(query, (guild_id,))
+
+        return prefix if prefix else "."

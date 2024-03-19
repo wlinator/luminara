@@ -14,6 +14,7 @@ from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 from main import strings
 from lib import time, checks
+from lib.embeds.error import BdayErrors
 
 logs = logging.getLogger('Racu.Core')
 data = json_loader.load_birthday()
@@ -21,19 +22,33 @@ months = data["months"]
 messages = data["birthday_messages"]
 
 
-class BirthdayCog(commands.Cog):
+class Birthdays(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.daily_birthday_check.start()
+
+    @commands.command(
+        name="birthday",
+        aliases=["bday"],
+        help="Due to the complexity of the birthday system, you can only use Slash Commands "
+             "to set your birthday. Please use `/birthday set` to configure your birthday or `/birthday upcoming` "
+             "to see all upcoming birthdays in this server."
+    )
+    @commands.guild_only()
+    @commands.check(checks.channel)
+    async def birthday_command(self, ctx):
+        return await ctx.respond(embed=BdayErrors.slash_command_only(ctx))
 
     birthday = SlashCommandGroup("birthday", "various birthday commands.", guild_only=True)
 
     @birthday.command(
         name="set",
-        description="Set your birthday."
+        description="Set your birthday.",
+        guild_only=True
     )
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.check(checks.birthday_module)
+    @commands.check(checks.channel)
     async def set_birthday(self, ctx, *,
                            month: discord.Option(choices=months),
                            day: discord.Option(int)):
@@ -42,7 +57,7 @@ class BirthdayCog(commands.Cog):
         max_days = calendar.monthrange(leap_year, month_index)[1]
 
         if not (1 <= day <= max_days):
-            return await ctx.respond(strings["birthday_invalid_date"].format(ctx.author.name), ephemeral=True)
+            return await ctx.respond(embed=BdayErrors.invalid_date(ctx))
 
         date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
         date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
@@ -54,10 +69,12 @@ class BirthdayCog(commands.Cog):
 
     @birthday.command(
         name="upcoming",
-        description="See upcoming birthdays!"
+        description="See upcoming birthdays!",
+        guild_only=True
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.check(checks.birthday_module)
+    @commands.check(checks.channel)
     async def upcoming_birthdays(self, ctx):
         upcoming_birthdays = Birthday.get_upcoming_birthdays(ctx.guild.id)
         icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
@@ -124,4 +141,4 @@ class BirthdayCog(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(BirthdayCog(client))
+    client.add_cog(Birthdays(client))

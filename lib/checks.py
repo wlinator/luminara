@@ -3,6 +3,7 @@ import os
 
 import discord
 from dotenv import load_dotenv
+from lib.embeds.error import BdayErrors, GenericErrors
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 
@@ -17,13 +18,17 @@ async def birthday_module(ctx):
     guild_config = GuildConfig(ctx.guild.id)
 
     if not guild_config.birthday_channel_id:
-        await ctx.respond(f"Birthdays are disabled in this server.", ephemeral=True)
+        await ctx.respond(embed=BdayErrors.birthdays_disabled(ctx))
         return False
     
     return True
 
 
 async def channel(ctx):
+
+    if ctx.guild is None:
+        return True
+
     guild_config = GuildConfig(ctx.guild.id)
     command_channel_id = guild_config.command_channel_id
 
@@ -42,7 +47,7 @@ async def channel(ctx):
                 await ctx.respond(f"I don't have sufficient permissions to check "
                                   f"whether this channel allows commands or not. "
                                   f"Please do '/config commands channel <channel>' with a channel "
-                                  f"I can see or allow commands everywhere.")
+                                  f"I can see or allow commands everywhere.", ephemeral=True)
                 return False
 
     return True
@@ -50,10 +55,9 @@ async def channel(ctx):
 
 async def bot_owner(ctx):
     owner_id = os.getenv("OWNER_ID")
+
     if ctx.author.id != int(owner_id):
-        embed = discord.Embed(description=f"This command requires bot admin permissions.",
-                              color=discord.Color.red())
-        await ctx.respond(embed=embed, ephemeral=True)
+        await ctx.respond(embed=GenericErrors.owner_only(ctx), ephemeral=True)
         return False
 
     return True

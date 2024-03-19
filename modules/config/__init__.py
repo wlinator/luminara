@@ -1,21 +1,36 @@
 import logging
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, bridge
 from discord.commands import SlashCommandGroup
 from services.GuildConfig import GuildConfig
-from lib import formatter, embeds
+from lib import formatter, embeds_old
+from modules.config import config
 
 from main import strings
 
 logs = logging.getLogger('Racu.Core')
 
 
-class ConfigCog(commands.Cog):
+class Config(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    # COMMAND GROUPS
+    @bridge.bridge_command(
+        name="configuration",
+        aliases=["config"],
+        guild_only=True
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    async def config_command(self, ctx):
+        """
+        Shows information about how Racu is configured in your server.
+        Due to the complexity of the config system, config changes can only be done with __slash commands__.
+        """
+        await config.cmd(ctx)
+
+
     config = SlashCommandGroup("config", "server config commands.", guild_only=True, default_member_permissions=discord.Permissions(manage_guild=True))
     birthday_config = config.create_subgroup(name="birthdays")
     command_config = config.create_subgroup(name="commands")
@@ -179,6 +194,7 @@ class ConfigCog(commands.Cog):
 
         else:
             guild_config.welcome_channel_id = None
+            guild_config.welcome_message = None
             guild_config.push()
             embed.description = "✅ | The greeting module was successfully disabled."
             return await ctx.respond(embed=embed)
@@ -202,7 +218,7 @@ class ConfigCog(commands.Cog):
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
         await ctx.respond(embed=embed)
 
-        embed = embeds.welcome_message(ctx.author, text)
+        embed = embeds_old.welcome_message(ctx.author, text)
         return await ctx.send(embed=embed, content=ctx.author.mention)
 
     @level_config.command(
@@ -286,7 +302,7 @@ class ConfigCog(commands.Cog):
             guild_config.level_message_type = 1
             guild_config.push()
             embed.description = f"✅ | The Racu XP system was successfully enabled."
-            embed.set_footer(text="Note: see '/config help' for more info.")
+            embed.set_footer(text="Note: see '/config' for more info.")
             return await ctx.respond(embed=embed)
 
     @level_config.command(
@@ -323,7 +339,7 @@ class ConfigCog(commands.Cog):
 
     @level_config.command(
         name="template",
-        description="If set, Racu will only use this template for level announcements. See '/config help' for info."
+        description="If set, Racu will only use this template for level announcements. See '/config' for info."
     )
     async def config_level_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
         guild_config = GuildConfig(ctx.guild.id)
@@ -347,7 +363,5 @@ class ConfigCog(commands.Cog):
         return await ctx.respond(embed=embed)
 
 
-
-
 def setup(client):
-    client.add_cog(ConfigCog(client))
+    client.add_cog(Config(client))

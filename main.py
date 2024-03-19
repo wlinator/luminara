@@ -1,26 +1,35 @@
 import os
 import platform
-import sys
-import traceback
 
 import discord
-from discord.ext import commands
+from discord.ext import bridge
 from dotenv import load_dotenv
 
-from lib import embeds
+from lib.embeds.greet import Greet
 from config import json_loader
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
-from handlers import LoggingHandler
+from handlers import LoggingHandler, ErrorHandler
 from services.GuildConfig import GuildConfig
+from services.Help import RacuHelp
 
 load_dotenv('.env')
 instance = os.getenv("INSTANCE")
 
-client = discord.Bot(
+
+def get_prefix(bot, message):
+    try:
+        return GuildConfig.get_prefix(message.guild.id)
+    except AttributeError:
+        return "."
+
+
+client = bridge.Bot(
     owner_id=os.getenv('OWNER_ID'),
+    command_prefix=get_prefix,
     intents=discord.Intents.all(),
-    status=discord.Status.online
+    status=discord.Status.online,
+    help_command=RacuHelp()
 )
 
 logs = LoggingHandler.setup_logger()
@@ -41,9 +50,14 @@ async def on_ready():
     """
 
 
-@client.event
+@client.listen()
 async def on_message(message):
-    if message.author.bot or instance.lower() != "main":
+
+    if (
+            message.author.bot or
+            message.guild is None or
+            instance.lower() != "main"
+    ):
         return
 
     try:
@@ -69,7 +83,7 @@ async def on_member_join(member):
     ):
         return
 
-    embed = embeds.welcome_message(member, config.welcome_message)
+    embed = Greet.message(member, config.welcome_message)
 
     try:
         await member.guild.get_channel(config.welcome_channel_id).send(embed=embed, content=member.mention)
@@ -77,8 +91,8 @@ async def on_member_join(member):
         logs.info(f"[GreetingHandler] Message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
 
 
-@client.event
-async def on_application_command_completion(ctx) -> None:
+@client.listen()
+async def on_command_completion(ctx) -> None:
     """
     This code is executed when a slash_command has been successfully executed.
     This technically serves as a CommandHandler function
@@ -103,48 +117,19 @@ async def on_application_command_completion(ctx) -> None:
         logs.info(f"[CommandHandler] {ctx.author.name} successfully did \"/{executed_command}\". | direct message")
 
 
-@client.event
+@client.listen()
+async def on_command_error(ctx, error) -> None:
+    await ErrorHandler.on_command_error(ctx, error)
+
+
+@client.listen()
 async def on_application_command_error(ctx, error) -> None:
-    if isinstance(error, commands.CommandOnCooldown):
-
-        seconds = error.retry_after
-        minutes = seconds // 60
-        seconds %= 60
-        cooldown = "{:02d}:{:02d}".format(int(minutes), int(seconds))
-
-        await ctx.respond(
-            f"⏳ | **{ctx.author.name}** you are on cooldown. "
-            f"You can use this command again in **{cooldown}**.",
-            ephemeral=True)
-
-        logs.info(f"[CommandHandler] {ctx.author.name} tried to do a command on cooldown.")
-
-    elif isinstance(error, commands.MissingPermissions):
-        await ctx.respond(strings["error_missing_permissions"].format(ctx.author.name), ephemeral=True)
-        logs.info(f"[CommandHandler] {ctx.author.name} has missing permissions to do a command: "
-                  f"{ctx.command.qualified_name}")
-
-    elif isinstance(error, commands.BotMissingPermissions):
-        await ctx.respond(strings["error_bot_missing_permissions"].format(ctx.author.name), ephemeral=True)
-        logs.info(f"[CommandHandler] Racu is missing permissions: {ctx.command.qualified_name}")
-
-    elif isinstance(error, discord.CheckFailure) or isinstance(error, commands.CheckFailure):
-        logs.info(
-            f"[CommandHandler] {ctx.author.name} tried to do \"/{ctx.command.qualified_name}\" "
-            f"but a check returned False.")
-
-    else:
-        logs.error(f"[CommandHandler] on_application_command_error: {error}")
-        traceback.print_tb(error.original.__traceback__)
-
-        # if you use this, set "exc_info" to False above
-        # logs.debug(f"[CommandHandler] on_application_command_error (w/ stacktrace): {error}", exc_info=True)
+    await ErrorHandler.on_command_error(ctx, error)
 
 
 @client.event
 async def on_error(event: str, *args, **kwargs) -> None:
-    logs.error(f"[EventHandler] on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
-    logs.error(f"[EventHandler] on_error EXCEPTION: {sys.exc_info()}")
+    await ErrorHandler.on_error(event, *args, **kwargs)
 
 
 # load all json
@@ -152,27 +137,23 @@ strings = json_loader.load_strings()
 economy_config = json_loader.load_economy_config()
 reactions = json_loader.load_reactions()
 
-# Keep track of loaded module filenames
-loaded_modules = set()
 
+def load_modules():
 
-def load_cogs():
-    # sort modules alphabetically purely for an easier overview in logs
-    for filename in sorted(os.listdir('./modules')):
+    module_list = [d for d in os.listdir("modules") if os.path.isdir(os.path.join("modules", d))]
+    loaded_modules = set()
 
-        if filename in loaded_modules:
-            continue  # module is already loaded
+    for module in module_list:
+        if module in loaded_modules:
+            continue # module is already loaded
 
-        if filename.endswith('.py'):
-            module_name = f'modules.{filename[:-3]}'
+        try:
+            client.load_extension(f"modules.{module}")
+            loaded_modules.add(module)
+            logs.info(f"[MODULE] {module.upper()} loaded.")
 
-            try:
-                client.load_extension(module_name)
-                loaded_modules.add(filename)
-                logs.info(f"[MODULE] {filename[:-3].upper()} loaded.")
-
-            except Exception as e:
-                logs.error(f"[MODULE] Failed to load module {filename}: {e}")
+        except Exception as e:
+            logs.error(f"[MODULE] Failed to load module {module.upper()}: {e}")
 
 
 if __name__ == '__main__':
@@ -184,7 +165,7 @@ if __name__ == '__main__':
     logs.info("RACU IS BOOTING")
     logs.info("\n")
 
-    load_cogs()
+    load_modules()
 
     # empty line to separate modules from system info in logs
     logs.info("\n")

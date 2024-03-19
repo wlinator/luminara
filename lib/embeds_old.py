@@ -19,15 +19,6 @@ def welcome_message(member, template=None):
     return embed
 
 
-def command_error_1(error):
-    embed = discord.Embed(
-        color=discord.Color.red(),
-        description=f"Something went wrong.\n```{error}```"
-    )
-
-    return embed
-
-
 def simple_question_5(question):
     embed = discord.Embed(color=0xadcca6,
                           title=question)
