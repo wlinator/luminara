@@ -41,8 +41,7 @@ class Birthday:
                 FROM birthdays
                 WHERE DAYOFYEAR(birthday) > DAYOFYEAR(NOW())
                     AND guild_id = %s
-                ORDER BY DAYOFYEAR(birthday)
-                LIMIT 5;
+                ORDER BY DAYOFYEAR(birthday);
                 """
         data = database.select_query(query, (guild_id,))
 
