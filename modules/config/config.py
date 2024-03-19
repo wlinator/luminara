@@ -8,8 +8,11 @@ async def cmd(ctx):
 
     embed = discord.Embed(
         color = discord.Color.embed_background(),
-        title = f"{ctx.guild.name} configuration"
+        description = f"Due to the complexity of the config system, "
+                      f"changes can only be made with slash commands."
     )
+    icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+    embed.set_author(name=f"{ctx.guild.name} config", icon_url=icon)
 
     # birthdays
     if guild_config.birthday_channel_id:
@@ -29,9 +32,9 @@ async def cmd(ctx):
             channel = ctx.guild.get_channel(guild_config.command_channel_id)
             commands_config = f"✅ | commands only allowed in {channel.mention}."
         except discord.HTTPException:
-            commands_config = f"✅ | Commands allowed anywhere."
+            commands_config = f"✅ | commands allowed anywhere."
     else:
-        commands_config = f"✅ | Commands allowed anywhere."
+        commands_config = f"✅ | commands allowed anywhere."
 
     embed.add_field(name="COMMANDS", value=commands_config, inline=False)
 
