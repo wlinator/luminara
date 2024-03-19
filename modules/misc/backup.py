@@ -4,7 +4,6 @@ import subprocess
 from datetime import datetime
 
 import dropbox
-from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
 logs = logging.getLogger('Racu.Core')
@@ -51,27 +50,17 @@ async def backup_cleanup(dbx):
         dbx.files_delete_v2('/' + file)
 
 
-class BackupCog(commands.Cog):
-    def __init__(self, client):
-        self.client = client
-        self.do_backup.start()
+async def backup(self):
 
-    @tasks.loop(hours=1)
-    async def do_backup(self):
+    if instance.lower() == "main":
+        try:
+            await create_db_backup(dbx)
+            await backup_cleanup(dbx)
 
-        if instance.lower() == "main":
-            try:
-                await create_db_backup(dbx)
-                await backup_cleanup(dbx)
+            logs.info("[BACKUP] database backup success.")
 
-                logs.info("[BACKUP] database backup success.")
-
-            except Exception as error:
-                logs.error(f"[BACKUP] database backup failed. {error}")
-                logs.info(f"[BACKUP] Dropbox failure: {error}")
-        else:
-            logs.info("[BACKUP] No backup was made, instance not \"MAIN\".")
-
-
-def setup(client):
-    client.add_cog(BackupCog(client))
+        except Exception as error:
+            logs.error(f"[BACKUP] database backup failed. {error}")
+            logs.info(f"[BACKUP] Dropbox failure: {error}")
+    else:
+        logs.info("[BACKUP] No backup was made, instance not \"MAIN\".")

@@ -1,9 +1,8 @@
 import datetime
-from discord.ext import commands, bridge
+from discord.ext import commands, bridge, tasks
 from lib import checks
 from lib.embeds.info import MiscInfo
-from lib.embeds.error import GenericErrors
-from modules.misc import introduction, invite
+from modules.misc import introduction, invite, backup
 
 
 class Misc(commands.Cog):
@@ -11,6 +10,11 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.start_time = datetime.datetime.now()
+        self.do_backup.start()
+
+    @tasks.loop(hours=1)
+    async def do_backup(self):
+        await backup.backup(self)
 
     @bridge.bridge_command(
         name="ping",
