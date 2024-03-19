@@ -78,6 +78,7 @@ class GenericErrors:
     def channel_not_allowed(ctx, channel):
         embed = clean_error_embed(ctx)
         embed.description += f"you can only do that command in {channel.mention}."
+        embed.set_footer(text="This message will delete itself after 5s", icon_url=exclam_icon)
 
         return embed
 
