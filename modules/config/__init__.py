@@ -5,7 +5,8 @@ from discord.ext import commands, bridge
 from discord.commands import SlashCommandGroup
 from services.GuildConfig import GuildConfig
 from lib import formatter, embeds_old
-from modules.config import config
+from modules.config import config, prefix
+from lib.embeds.error import MiscErrors
 import main
 
 from main import strings
@@ -29,7 +30,28 @@ class Config(commands.Cog):
         Shows information about how Racu is configured in your server.
         Config guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration
         """
+
         await config.cmd(ctx)
+
+    @bridge.bridge_command(
+        name="setprefix",
+        aliases=["sp"],
+        guild_only=True
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_channels=True)
+    async def setprefix_command(self, ctx, *, new_prefix: str):
+        """
+        Set the prefix for Racu in this server. The maximum length of a prefix is 25.
+        Requires Manage Channels permissions.
+        """
+
+        await prefix.set_cmd(ctx, new_prefix)
+
+    @setprefix_command.error
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.respond(embed=MiscErrors.prefix_missing(ctx))
 
     config = SlashCommandGroup("config", "server config commands.", guild_only=True,
                                default_member_permissions=discord.Permissions(manage_channels=True))
