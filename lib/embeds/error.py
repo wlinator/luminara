@@ -65,6 +65,15 @@ class GenericErrors:
 
         return embed
 
+    @staticmethod
+    def guild_only(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += f"this command can only be used in a server."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
 
 class EconErrors:
     @staticmethod
@@ -157,6 +166,15 @@ class BdayErrors:
     def invalid_date(ctx):
         embed = clean_error_embed(ctx)
         embed.description += "the date you entered is invalid."
+
+        return embed
+
+    @staticmethod
+    def slash_command_only(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "you can use only slash commands for the birthday system."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
 
         return embed
 

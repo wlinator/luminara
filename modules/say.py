@@ -17,6 +17,7 @@ class SayCog(commands.Cog):
         description="Bot admin only.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.bot_owner)
     async def say(self, ctx, *, txt: discord.Option(str)):
         await ctx.respond(content="✅", ephemeral=True)
