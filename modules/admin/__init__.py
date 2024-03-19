@@ -21,6 +21,7 @@ class Admin(commands.Cog):
         help="Awards cash to a specific user. This command can only be performed by a bot administrator.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     @commands.check(checks.bot_owner)
     async def award_command(self, ctx, *, user: discord.User, amount: int):

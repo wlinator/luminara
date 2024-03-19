@@ -1,13 +1,10 @@
 import os
 import platform
-import sys
-import traceback
 
 import discord
-from discord.ext import commands, bridge
+from discord.ext import bridge
 from dotenv import load_dotenv
 
-from lib.embeds.error import GenericErrors
 from lib.embeds.greet import Greet
 from config import json_loader
 from handlers.ReactionHandler import ReactionHandler
