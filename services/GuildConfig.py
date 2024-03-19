@@ -84,3 +84,16 @@ class GuildConfig:
         prefix = database.select_query_one(query, (guild_id,))
 
         return prefix if prefix else "."
+
+    @staticmethod
+    def set_prefix(guild_id, prefix):
+        """
+        Sets the prefix for a given guild.
+        """
+        query = """
+                UPDATE guild_config
+                SET prefix = %s
+                WHERE guild_id = %s;
+                """
+
+        database.execute_query(query, (prefix, guild_id))

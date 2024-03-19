@@ -3,6 +3,7 @@ from discord.ext import commands, bridge, tasks
 from lib import checks
 from lib.embeds.info import MiscInfo
 from modules.misc import introduction, invite, backup
+from modules.config import prefix
 
 
 class Misc(commands.Cog):
@@ -45,6 +46,16 @@ class Misc(commands.Cog):
     )
     async def invite_command(self, ctx):
         return await invite.cmd(ctx)
+
+    @bridge.bridge_command(
+        name="prefix",
+        description="See the server's current prefix",
+        guild_only=True
+    )
+    @commands.guild_only()
+    @commands.check(checks.channel)
+    async def prefix_command(self, ctx):
+        return await prefix.get_cmd(ctx)
 
     @bridge.bridge_command(
         name="introduction",
