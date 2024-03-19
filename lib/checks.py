@@ -1,10 +1,8 @@
-import asyncio
 import os
 
 import discord
 from dotenv import load_dotenv
 from lib.embeds.error import BdayErrors, GenericErrors
-from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 
 load_dotenv('.env')
@@ -37,17 +35,14 @@ async def channel(ctx):
 
             try:
                 command_channel = await ctx.guild.fetch_channel(command_channel_id)
-                await ctx.respond(f"You can only do that command in {command_channel.mention}.", ephemeral=True)
+                await ctx.respond(embed=GenericErrors.channel_not_allowed(ctx, command_channel),
+                                  delete_after=5, ephemeral=True)
                 return False
 
             except (discord.HTTPException, discord.NotFound):
                 return True
 
             except discord.Forbidden:
-                await ctx.respond(f"I don't have sufficient permissions to check "
-                                  f"whether this channel allows commands or not. "
-                                  f"Please do '/config commands channel <channel>' with a channel "
-                                  f"I can see or allow commands everywhere.", ephemeral=True)
                 return False
 
     return True

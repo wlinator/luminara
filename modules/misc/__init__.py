@@ -3,7 +3,7 @@ from discord.ext import commands, bridge
 from lib import checks
 from lib.embeds.info import MiscInfo
 from lib.embeds.error import GenericErrors
-from modules.misc import introduction
+from modules.misc import introduction, invite
 
 
 class Misc(commands.Cog):
@@ -33,6 +33,14 @@ class Misc(commands.Cog):
 
         unix_timestamp = int(round(self.start_time.timestamp()))
         return await ctx.respond(embed=MiscInfo.uptime(ctx, self.client, unix_timestamp))
+
+    @bridge.bridge_command(
+        name="invite",
+        description="Generate an invite link",
+        help="Generate a link to invite Racu to your own server!"
+    )
+    async def invite_command(self, ctx):
+        return await invite.cmd(ctx)
 
     @bridge.bridge_command(
         name="introduction",
