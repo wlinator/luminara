@@ -16,7 +16,9 @@ class Levels(commands.Cog):
         help="Displays your level and rank in the current server.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def level_command(self, ctx):
         await level.cmd(ctx)
 
@@ -27,6 +29,7 @@ class Levels(commands.Cog):
         help="Shows the guild's level leaderboard by default. You can switch to currency and /daily leaderboard.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard_command(self, ctx):

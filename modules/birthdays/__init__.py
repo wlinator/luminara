@@ -43,10 +43,12 @@ class Birthdays(commands.Cog):
 
     @birthday.command(
         name="set",
-        description="Set your birthday."
+        description="Set your birthday.",
+        guild_only=True
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.check(checks.birthday_module)
+    @commands.check(checks.channel)
     async def set_birthday(self, ctx, *,
                            month: discord.Option(choices=months),
                            day: discord.Option(int)):
@@ -67,10 +69,12 @@ class Birthdays(commands.Cog):
 
     @birthday.command(
         name="upcoming",
-        description="See upcoming birthdays!"
+        description="See upcoming birthdays!",
+        guild_only=True
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.check(checks.birthday_module)
+    @commands.check(checks.channel)
     async def upcoming_birthdays(self, ctx):
         upcoming_birthdays = Birthday.get_upcoming_birthdays(ctx.guild.id)
         icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"

@@ -28,7 +28,6 @@ class Misc(commands.Cog):
         description="Racu uptime",
         help="See how long Racu has been online, the uptime shown will reset when the Misc module is reloaded.",
     )
-    @commands.guild_only()
     @commands.check(checks.channel)
     async def uptime(self, ctx):
 

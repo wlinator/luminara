@@ -19,6 +19,7 @@ class Economy(commands.Cog):
              "all servers.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def balance_command(self, ctx):
         return await balance.cmd(ctx)
@@ -35,6 +36,7 @@ class Economy(commands.Cog):
         help="Start a game of blackjack.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def blackjack_command(self, ctx, *, bet: int):
         return await blackjack.cmd(ctx, bet)
@@ -56,6 +58,7 @@ class Economy(commands.Cog):
         help="Claim your daily reward! The daily reset is at 7 AM EST.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def daily_command(self, ctx):
         return await daily.cmd(ctx)
@@ -71,6 +74,7 @@ class Economy(commands.Cog):
         help="Give another server member some cash.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def give_command(self, ctx, *, user: discord.Member, amount: int):
         return await give.cmd(ctx, user, amount)
@@ -85,6 +89,8 @@ class Economy(commands.Cog):
         help="Give another user some cash. You can use someone's user ID or mention someone. The user has to be in the "
              "guild you invoke this command in."
     )
+    @commands.guild_only()
+    @commands.check(checks.channel)
     async def give_command_prefixed(self, ctx, user: discord.User, *, amount: int):
 
         try:
@@ -111,6 +117,7 @@ class Economy(commands.Cog):
         help="Display your inventory, this will also show your Racu badges if you have any.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def inventory(self, ctx):
         return await inventory.cmd(self, ctx)
@@ -122,6 +129,7 @@ class Economy(commands.Cog):
              "it will lead you through the process of selling items.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def sell_command(self, ctx):
         return await sell.cmd(self, ctx)
@@ -133,6 +141,7 @@ class Economy(commands.Cog):
         help="Starts a slots game.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def slots_command(self, ctx, *, bet: int):
         return await slots.cmd(self, ctx, bet)
@@ -151,6 +160,7 @@ class Economy(commands.Cog):
         description="Display your stats (BETA)",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def stats_command(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
         return await stats.cmd(self, ctx, game)
@@ -165,6 +175,7 @@ class Economy(commands.Cog):
         aliases=["stat"],
         help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
     )
+    @commands.guild_only()
     async def stats_command_prefix(self, ctx, *, game: str):
 
         if game.lower() == "blackjack" or game.lower() == "bj":
