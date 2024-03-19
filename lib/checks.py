@@ -37,7 +37,7 @@ async def channel(ctx):
 
             try:
                 command_channel = await ctx.guild.fetch_channel(command_channel_id)
-                await ctx.respond(f"You can only do that command in {command_channel.mention}.", ephemeral=True)
+                await ctx.respond(embed=GenericErrors.channel_not_allowed(ctx, command_channel), ephemeral=True)
                 return False
 
             except (discord.HTTPException, discord.NotFound):
