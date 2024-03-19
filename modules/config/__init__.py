@@ -31,7 +31,8 @@ class Config(commands.Cog):
         """
         await config.cmd(ctx)
 
-    config = SlashCommandGroup("config", "server config commands.", guild_only=True, default_member_permissions=discord.Permissions(manage_channels=True))
+    config = SlashCommandGroup("config", "server config commands.", guild_only=True,
+                               default_member_permissions=discord.Permissions(manage_channels=True))
     birthday_config = config.create_subgroup(name="birthdays")
     command_config = config.create_subgroup(name="commands")
     intro_config = config.create_subgroup(name="intros")
