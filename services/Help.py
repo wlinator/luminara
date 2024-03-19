@@ -14,9 +14,10 @@ class RacuHelp(commands.HelpCommand):
         embed = discord.Embed(color=discord.Color.blurple())
 
         for cog, commands in mapping.items():
+            filtered = await self.filter_commands(commands, sort=True)
 
             if command_signatures := [
-                self.get_command_qualified_name(c) for c in commands
+                self.get_command_qualified_name(c) for c in filtered
             ]:
                 # Remove duplicates using set() and convert back to a list
                 unique_command_signatures = list(set(command_signatures))

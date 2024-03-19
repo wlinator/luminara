@@ -31,6 +31,9 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.NoPrivateMessage):
         await ctx.respond(embed=GenericErrors.guild_only(ctx))
 
+    elif isinstance(error, commands.NotOwner):
+        await ctx.respond(embed=GenericErrors.owner_only(ctx))
+
     elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
         logs.info(f"[CommandHandler] {ctx.author.name} check failure: \"/{ctx.command.qualified_name}\"")
 
