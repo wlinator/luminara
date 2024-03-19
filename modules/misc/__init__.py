@@ -20,6 +20,7 @@ class Misc(commands.Cog):
              "fairly irrelevant. If the bot replies, it's good to go.",
     )
     @commands.check(checks.channel)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def ping(self, ctx):
         return await ctx.respond(embed=MiscInfo.ping(ctx, self.client))
 
@@ -29,6 +30,7 @@ class Misc(commands.Cog):
         help="See how long Racu has been online, the uptime shown will reset when the Misc module is reloaded.",
     )
     @commands.check(checks.channel)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def uptime(self, ctx):
 
         unix_timestamp = int(round(self.start_time.timestamp()))

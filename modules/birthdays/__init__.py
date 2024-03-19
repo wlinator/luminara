@@ -46,7 +46,7 @@ class Birthdays(commands.Cog):
         description="Set your birthday.",
         guild_only=True
     )
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.check(checks.birthday_module)
     @commands.check(checks.channel)
     async def set_birthday(self, ctx, *,
