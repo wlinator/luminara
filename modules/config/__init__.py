@@ -22,7 +22,7 @@ class Config(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     async def config_command(self, ctx):
         """
         Shows information about how Racu is configured in your server.
@@ -31,7 +31,7 @@ class Config(commands.Cog):
         await config.cmd(ctx)
 
 
-    config = SlashCommandGroup("config", "server config commands.", guild_only=True, default_member_permissions=discord.Permissions(manage_guild=True))
+    config = SlashCommandGroup("config", "server config commands.", guild_only=True, default_member_permissions=discord.Permissions(manage_channels=True))
     birthday_config = config.create_subgroup(name="birthdays")
     command_config = config.create_subgroup(name="commands")
     intro_config = config.create_subgroup(name="intros")
