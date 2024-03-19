@@ -25,6 +25,10 @@ async def birthday_module(ctx):
 
 
 async def channel(ctx):
+
+    if ctx.guild is None:
+        return True
+
     guild_config = GuildConfig(ctx.guild.id)
     command_channel_id = guild_config.command_channel_id
 
