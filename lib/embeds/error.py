@@ -74,6 +74,13 @@ class GenericErrors:
 
         return embed
 
+    @staticmethod
+    def channel_not_allowed(ctx, channel):
+        embed = clean_error_embed(ctx)
+        embed.description += f"you can only do that command in {channel.mention}."
+
+        return embed
+
 
 class EconErrors:
     @staticmethod
