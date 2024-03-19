@@ -1,9 +1,17 @@
 import discord
 from discord.ext import commands
 from lib.embeds.error import HelpErrors
+from dotenv import load_dotenv
+import os
 
+load_dotenv('.env')
 
 class RacuHelp(commands.HelpCommand):
+
+    def __init__(self, **options):
+        super().__init__(**options)
+        self.verify_checks = False
+
     def get_command_signature(self, command):
         return '%s%s %s' % (self.context.clean_prefix, command.qualified_name, command.signature)
 
@@ -14,6 +22,10 @@ class RacuHelp(commands.HelpCommand):
         embed = discord.Embed(color=discord.Color.blurple())
 
         for cog, commands in mapping.items():
+
+            if cog and cog.qualified_name.lower() == "admin" and int(os.getenv("OWNER_ID")) != self.context.author.id:
+                continue
+
             filtered = await self.filter_commands(commands, sort=True)
 
             if command_signatures := [
