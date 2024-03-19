@@ -5,7 +5,6 @@ import logging
 import random
 
 import discord
-from discord import default_permissions
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, tasks
 
@@ -15,6 +14,7 @@ from services.GuildConfig import GuildConfig
 from main import strings
 from lib import time, checks
 from lib.embeds.error import BdayErrors
+from modules.birthdays import upcoming
 
 logs = logging.getLogger('Racu.Core')
 data = json_loader.load_birthday()
@@ -72,40 +72,25 @@ class Birthdays(commands.Cog):
         description="See upcoming birthdays!",
         guild_only=True
     )
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.guild_only()
     @commands.check(checks.birthday_module)
     @commands.check(checks.channel)
     async def upcoming_birthdays(self, ctx):
-        upcoming_birthdays = Birthday.get_upcoming_birthdays(ctx.guild.id)
-        icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        await upcoming.cmd(ctx)
+    
+    @commands.command(
+        name="upcoming",
+        aliases=["birthdayupcoming", "ub"]
+    )
+    @commands.guild_only()
+    @commands.check(checks.birthday_module)
+    @commands.check(checks.channel)
+    async def upcoming_birthdays_prefix(self, ctx):
+        """
+        Shows the upcoming birthdays in this server.
+        """
 
-        embed = discord.Embed(
-            color=discord.Color.embed_background()
-        )
-        embed.set_author(name="Upcoming Birthdays!", icon_url=icon)
-        embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
-
-        for i, (user_id, birthday) in enumerate(upcoming_birthdays, start=1):
-            try:
-                member = await ctx.guild.fetch_member(user_id)
-                name = member.name
-            except:
-                name = "Unknown User"
-
-            try:
-                birthday_date = datetime.datetime.strptime(birthday, "%m-%d")
-                formatted_birthday = birthday_date.strftime("%B %-d")
-            except ValueError:
-                # leap year error
-                formatted_birthday = "February 29"
-
-            embed.add_field(
-                name=f"{name}",
-                value=f"🎂 {formatted_birthday}",
-                inline=False
-            )
-
-        await ctx.respond(embed=embed)
+        await upcoming.cmd(ctx)
 
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
