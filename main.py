@@ -21,7 +21,10 @@ instance = os.getenv("INSTANCE")
 
 
 def get_prefix(bot, message):
-    return GuildConfig.get_prefix(message.guild.id)
+    try:
+        return GuildConfig.get_prefix(message.guild.id)
+    except AttributeError:
+        return "."
 
 
 client = bridge.Bot(
@@ -52,7 +55,12 @@ async def on_ready():
 
 @client.listen()
 async def on_message(message):
-    if message.author.bot or instance.lower() != "main":
+
+    if (
+            message.author.bot or
+            message.guild is None or
+            instance.lower() != "main"
+    ):
         return
 
     try:
@@ -128,6 +136,12 @@ async def on_command_error(ctx, error) -> None:
 
     elif isinstance(error, commands.BotMissingPermissions):
         await ctx.respond(embed=GenericErrors.bot_missing_permissions(ctx))
+
+    elif isinstance(error, commands.PrivateMessageOnly):
+        await ctx.respond(embed=GenericErrors.private_message_only(ctx))
+
+    elif isinstance(error, commands.NoPrivateMessage):
+        await ctx.respond(embed=GenericErrors.guild_only(ctx))
 
     elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
         logs.info(f"[CommandHandler] {ctx.author.name} check failure: \"/{ctx.command.qualified_name}\"")

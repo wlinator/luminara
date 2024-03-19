@@ -48,14 +48,6 @@ class Misc(commands.Cog):
     async def intro_command(self, ctx):
         return await introduction.cmd(self, ctx)
 
-    @intro_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.PrivateMessageOnly):
-            await ctx.respond(embed=GenericErrors.private_message_only(ctx))
-        else:
-            await ctx.respond(embed=GenericErrors.default_exception(ctx))
-            raise error
-
 
 def setup(client):
     client.add_cog(Misc(client))

@@ -27,6 +27,18 @@ class Birthdays(commands.Cog):
         self.client = client
         self.daily_birthday_check.start()
 
+    @commands.command(
+        name="birthday",
+        aliases=["bday"],
+        help="Due to the complexity of the birthday system, you can only use Slash Commands "
+             "to set your birthday. Please use `/birthday set` to configure your birthday or `/birthday upcoming` "
+             "to see all upcoming birthdays in this server."
+    )
+    @commands.guild_only()
+    @commands.check(checks.channel)
+    async def birthday_command(self, ctx):
+        return await ctx.respond(embed=BdayErrors.slash_command_only(ctx))
+
     birthday = SlashCommandGroup("birthday", "various birthday commands.", guild_only=True)
 
     @birthday.command(
