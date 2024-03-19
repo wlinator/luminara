@@ -1,5 +1,6 @@
 import discord
 from services.GuildConfig import GuildConfig
+from main import strings
 
 
 async def cmd(ctx):
@@ -14,74 +15,72 @@ async def cmd(ctx):
     if guild_config.birthday_channel_id:
         try:
             channel = ctx.guild.get_channel(guild_config.birthday_channel_id)
-            birthday_config = f"Birthday announcements will be sent in {channel.mention}."
-
+            birthday_config = f"✅ | in {channel.mention}."
         except discord.HTTPException:
-            birthday_config = f"The birthday channel seems to be invalid. Set it with `/config birthdays channel`."
-
+            birthday_config = f"❌ | enable the module with `/config birthdays channel`"
     else:
-        birthday_config = f"Birthdays are disabled, configure them with `/config birthdays channel`"
+        birthday_config = f"❌ | enable the module with `/config birthdays channel`"
 
-    embed.add_field(name="🎂 Birthdays", value=birthday_config, inline=False)
-
+    embed.add_field(name="BIRTHDAYS", value=birthday_config, inline=False)
 
     # commands
     if guild_config.command_channel_id:
         try:
             channel = ctx.guild.get_channel(guild_config.command_channel_id)
-            commands_config = f"XP and economy commands can only be used in {channel.mention}."
-
+            commands_config = f"✅ | commands only allowed in {channel.mention}."
         except discord.HTTPException:
-            commands_config = f"Commands can be used anywhere in the server."
-
+            commands_config = f"✅ | Commands allowed anywhere."
     else:
-        commands_config = f"Commands can be used anywhere in the server."
+        commands_config = f"✅ | Commands allowed anywhere."
 
-    embed.add_field(name="🤖 Commands", value=commands_config, inline=False)
+    embed.add_field(name="COMMANDS", value=commands_config, inline=False)
 
     # greetings
     if guild_config.welcome_channel_id:
         try:
             channel = ctx.guild.get_channel(guild_config.welcome_channel_id)
-            greeting_config = f"Welcome messages will be sent in {channel.mention}"
+            greeting_config = f"✅ | in {channel.mention}"
+
+            if guild_config.welcome_message:
+                greeting_config += f" with template:\n```{guild_config.welcome_message}```"
+            else:
+                greeting_config += f" without custom template."
 
         except discord.HTTPException:
-            greeting_config = f"The greeting channel seems to be invalid. Set it with `/config greetings channel`."
-
+            greeting_config = f"❌ | enable the module with `/config greetings channel`"
     else:
-        greeting_config = f"Greetings are disabled, configure them with `/config greetings channel`"
+        greeting_config = f"❌ | enable the module with `/config greetings channel`"
 
-    if guild_config.welcome_message:
-        greeting_config += f"\nTemplate:\n```{guild_config.welcome_message}```"
-
-    embed.add_field(name="👋 Greetings", value=greeting_config, inline=False)
+    embed.add_field(name="GREETINGS", value=greeting_config, inline=False)
 
     # levels
     if guild_config.level_message_type == 0:
-        level_config = f"Levels are disabled in this server. Enable them with `/config levels enable`"
+        level_config = f"❌ | enable levels with `/config levels enable`"
 
     elif guild_config.level_message_type == 1:
-        level_config = f"levels are enabled and Racu will announce levels with __whimsical remarks__."
+        level_config = f"✅ | whimsical/sarcastic announcements"
 
     else:
-        level_config = f"levels are enabled and Racu will announce levels with a __generic message__."
+        level_config = f"✅ | generic announcements"
 
     if guild_config.level_channel_id and guild_config.level_message_type != 0:
         try:
             channel = ctx.guild.get_channel(guild_config.level_channel_id)
-            level_config += f"\nLevel announcements will always be sent in {channel.mention}."
+            level_config += f" in {channel.mention}"
 
         except discord.HTTPException:
-            level_config += f"\nAnnouncements will be sent in the channel where the user levels up."
+            level_config += f" in the user's current channel"
 
     else:
         if guild_config.level_message_type != 0:
-            level_config += f"\nAnnouncements will be sent in the channel where the user levels up."
+            level_config += f" in the user's current channel"
 
     if guild_config.level_message and guild_config.level_message_type == 2:
-        level_config += f"\nTemplate:\n```{guild_config.level_message}```"
+        level_config += f" with template:\n```{guild_config.level_message}```"
+    if not guild_config.level_message and guild_config.level_message_type == 2:
+        level_config += f" with template:\n```{strings['level_up']}```"
 
-    embed.add_field(name="📈 Levels", value=level_config, inline=False)
+    embed.add_field(name="LEVELS", value=level_config, inline=False)
 
     await ctx.respond(embed=embed)
 

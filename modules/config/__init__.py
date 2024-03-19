@@ -194,6 +194,7 @@ class Config(commands.Cog):
 
         else:
             guild_config.welcome_channel_id = None
+            guild_config.welcome_message = None
             guild_config.push()
             embed.description = "✅ | The greeting module was successfully disabled."
             return await ctx.respond(embed=embed)
