@@ -153,7 +153,6 @@ class Economy(commands.Cog):
         help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
     )
     @commands.guild_only()
-    @commands.cooldown(1, 180, commands.BucketType.user)
     async def stats_command_prefix(self, ctx, *, game: str):
 
         if game.lower() == "blackjack" or game.lower() == "bj":

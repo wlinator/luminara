@@ -52,7 +52,7 @@ async def bot_owner(ctx):
     owner_id = os.getenv("OWNER_ID")
 
     if ctx.author.id != int(owner_id):
-        await ctx.respond(embed=GenericErrors.owner_only(ctx), ephemeral=True)
+        await ctx.respond(embed=GenericErrors.owner_only(ctx))
         return False
 
     return True
