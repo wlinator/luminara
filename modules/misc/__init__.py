@@ -18,7 +18,6 @@ class Misc(commands.Cog):
         description="Simple status check.",
         help="Simple status check, this command will not return the latency of the bot process as this is "
              "fairly irrelevant. If the bot replies, it's good to go.",
-        guild_only=True
     )
     @commands.check(checks.channel)
     async def ping(self, ctx):
@@ -28,8 +27,8 @@ class Misc(commands.Cog):
         name="uptime",
         description="Racu uptime",
         help="See how long Racu has been online, the uptime shown will reset when the Misc module is reloaded.",
-        guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.channel)
     async def uptime(self, ctx):
 
