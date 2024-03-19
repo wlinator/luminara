@@ -11,7 +11,7 @@ class Levels(commands.Cog):
 
     @bridge.bridge_command(
         name="level",
-        aliases=["rank", "lvl"],
+        aliases=["rank", "xp"],
         description="Displays your level and server rank.",
         help="Displays your level and rank in the current server.",
         guild_only=True
