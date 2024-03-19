@@ -6,6 +6,7 @@ from discord.commands import SlashCommandGroup
 from services.GuildConfig import GuildConfig
 from lib import formatter, embeds_old
 from modules.config import config
+import main
 
 from main import strings
 
@@ -26,10 +27,9 @@ class Config(commands.Cog):
     async def config_command(self, ctx):
         """
         Shows information about how Racu is configured in your server.
-        Due to the complexity of the config system, config changes can only be done with __slash commands__.
+        Config guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration
         """
         await config.cmd(ctx)
-
 
     config = SlashCommandGroup("config", "server config commands.", guild_only=True, default_member_permissions=discord.Permissions(manage_channels=True))
     birthday_config = config.create_subgroup(name="birthdays")
@@ -302,7 +302,7 @@ class Config(commands.Cog):
             guild_config.level_message_type = 1
             guild_config.push()
             embed.description = f"✅ | The Racu XP system was successfully enabled."
-            embed.set_footer(text="Note: see '/config' for more info.")
+            embed.set_footer(text="Note: see '.help config' for more info.")
             return await ctx.respond(embed=embed)
 
     @level_config.command(
@@ -339,7 +339,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="template",
-        description="If set, Racu will only use this template for level announcements. See '/config' for info."
+        description=f"If set, Racu will only use this template for level announcements. See '.help config' for info."
     )
     async def config_level_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
         guild_config = GuildConfig(ctx.guild.id)

@@ -8,8 +8,7 @@ async def cmd(ctx):
 
     embed = discord.Embed(
         color = discord.Color.embed_background(),
-        description = f"Due to the complexity of the config system, "
-                      f"changes can only be made with slash commands."
+        description = f"Guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration"
     )
     icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
     embed.set_author(name=f"{ctx.guild.name} config", icon_url=icon)
