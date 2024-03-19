@@ -187,6 +187,26 @@ class BdayErrors:
         return embed
 
 
+class MiscErrors:
+    @staticmethod
+    def prefix_too_long(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "this prefix is too long."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
+    @staticmethod
+    def prefix_missing(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "please specify a new prefix."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
+
 class HelpErrors:
     @staticmethod
     def error_message(ctx, error):

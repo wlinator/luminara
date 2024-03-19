@@ -1,4 +1,5 @@
 import discord
+from lib import formatter
 
 question_icon = "https://i.imgur.com/8xccUws.png"
 exclam_icon = "https://i.imgur.com/vitwMUu.png"
@@ -47,5 +48,21 @@ class MiscInfo:
     def invite(ctx):
         embed = clean_info_embed(ctx)
         embed.description += "thanks for inviting me to your server!"
+
+        return embed
+
+    @staticmethod
+    def set_prefix(ctx, prefix):
+        embed = clean_info_embed(ctx)
+        embed.description += f"my prefix changed to `{prefix}`"
+
+        return embed
+
+    @staticmethod
+    def get_prefix(ctx, prefix):
+        embed= clean_info_embed(ctx)
+        embed.description += f"my prefix is `{prefix}`"
+        embed.set_footer(text=f"You can change this with '{formatter.get_prefix(ctx)}setprefix'",
+                         icon_url=question_icon)
 
         return embed
