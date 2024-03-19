@@ -21,6 +21,7 @@ class Economy(commands.Cog):
     )
     @commands.guild_only()
     @commands.check(checks.channel)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def balance_command(self, ctx):
         return await balance.cmd(ctx)
 
@@ -60,6 +61,7 @@ class Economy(commands.Cog):
     )
     @commands.guild_only()
     @commands.check(checks.channel)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def daily_command(self, ctx):
         return await daily.cmd(ctx)
 
@@ -119,6 +121,7 @@ class Economy(commands.Cog):
     )
     @commands.guild_only()
     @commands.check(checks.channel)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def inventory(self, ctx):
         return await inventory.cmd(self, ctx)
 
@@ -143,6 +146,7 @@ class Economy(commands.Cog):
     )
     @commands.guild_only()
     @commands.check(checks.channel)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def slots_command(self, ctx, *, bet: int):
         return await slots.cmd(self, ctx, bet)
 
@@ -162,6 +166,7 @@ class Economy(commands.Cog):
     )
     @commands.guild_only()
     @commands.check(checks.channel)
+    @commands.cooldown(1, 180, commands.BucketType.user)
     async def stats_command(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
         return await stats.cmd(self, ctx, game)
 
@@ -176,6 +181,7 @@ class Economy(commands.Cog):
         help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
     )
     @commands.guild_only()
+    @commands.cooldown(1, 180, commands.BucketType.user)
     async def stats_command_prefix(self, ctx, *, game: str):
 
         if game.lower() == "blackjack" or game.lower() == "bj":
