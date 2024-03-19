@@ -47,3 +47,4 @@ async def on_command_error(ctx, error):
 async def on_error(event: str, *args, **kwargs) -> None:
     logs.error(f"[EventHandler] on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
     logs.error(f"[EventHandler] on_error EXCEPTION: {sys.exc_info()}")
+    traceback.print_exc()

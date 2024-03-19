@@ -25,11 +25,6 @@ class Economy(commands.Cog):
     async def balance_command(self, ctx):
         return await balance.cmd(ctx)
 
-    @balance_command.error
-    async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        raise error
-
     @bridge.bridge_command(
         name="blackjack",
         aliases=["bj"],
@@ -48,9 +43,6 @@ class Economy(commands.Cog):
             await ctx.respond(embed=EconErrors.missing_bet(ctx))
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
-        else:
-            await ctx.respond(embed=GenericErrors.default_exception(ctx))
-            raise error
 
     @bridge.bridge_command(
         name="daily",
@@ -65,11 +57,6 @@ class Economy(commands.Cog):
     async def daily_command(self, ctx):
         return await daily.cmd(ctx)
 
-    @daily_command.error
-    async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        raise error
-
     @commands.slash_command(
         name="give",
         description="Give another user some currency.",
@@ -80,11 +67,6 @@ class Economy(commands.Cog):
     @commands.check(checks.channel)
     async def give_command(self, ctx, *, user: discord.Member, amount: int):
         return await give.cmd(ctx, user, amount)
-
-    @give_command.error
-    async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        raise error
 
     @commands.command(
         name="give",
@@ -108,9 +90,6 @@ class Economy(commands.Cog):
             await ctx.respond(embed=EconErrors.missing_argument(ctx))
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_argument(ctx))
-        else:
-            await ctx.respond(embed=GenericErrors.default_exception(ctx))
-            raise error
 
     @bridge.bridge_command(
         name="inventory",
@@ -156,8 +135,6 @@ class Economy(commands.Cog):
             await ctx.respond(embed=EconErrors.missing_bet(ctx))
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
-        else:
-            raise error
 
     @commands.slash_command(
         name="stats",
@@ -169,11 +146,6 @@ class Economy(commands.Cog):
     @commands.cooldown(1, 180, commands.BucketType.user)
     async def stats_command(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
         return await stats.cmd(self, ctx, game)
-
-    @stats_command.error
-    async def on_command_error(self, ctx, error):
-        await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        raise error
 
     @commands.command(
         name="stats",
@@ -199,9 +171,6 @@ class Economy(commands.Cog):
             await ctx.respond(embed=EconErrors.missing_bet(ctx))
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_argument(ctx))
-        else:
-            await ctx.respond(embed=GenericErrors.default_exception(ctx))
-            raise error
 
 
 def setup(client):
