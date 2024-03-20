@@ -7,10 +7,5 @@ docker_build:
   services:
     - docker:dind
   script:
-    - docker build -t racu .
-    - source .env  # Load environment variables from .env
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - git fetch --tags  # Fetch Git tags
-    - TAG=$(git describe --tags --abbrev=0)  # Get the latest Git tag
-    - docker tag my-python-app $CI_REGISTRY_IMAGE:$TAG  # Tag the image with the Git tag
-    - docker push $CI_REGISTRY_IMAGE:$TAG  # Push the tagged image
+    - docker build -t $CI_REGISTRY_IMAGE:$(git describe --tags --abbrev=0) .
+    - docker push $CI_REGISTRY_IMAGE
