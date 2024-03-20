@@ -1,51 +1,17 @@
 import logging
 import random
 import time
+import discord
 
 from config import json_loader
 from services.Currency import Currency
 from services.Xp import Xp
+from services.GuildConfig import GuildConfig
+from lib import formatter
 
 logs = logging.getLogger('Racu.Core')
 strings = json_loader.load_strings()
 level_messages = json_loader.load_levels()
-
-
-def level_message(level, author):
-    if level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
-        return strings["level_up_reward"].format(author.name, level)
-    else:
-        return strings["level_up"].format(author.name, level)
-
-
-def level_messages_v2(level, author):
-    """
-    v2 of the level messages, randomized output from JSON.
-    Checks if the level is within a bracket -> generic fallback
-    :param level:
-    :param author:
-    :return:
-    """
-
-    # checks if level is a multiple of 5 within the range of 5 to 100 (inclusive)
-    if level % 5 == 0 and 5 <= level <= 100:
-        return strings["level_up_reward"].format(author.name, level)
-
-    level_range = None
-    for key in level_messages.keys():
-        start, end = map(int, key.split('-'))
-        if start <= level <= end:
-            level_range = key
-            break
-
-    if level_range is None:
-        # not in range of JSON
-        return strings["level_up"].format(author.name, level)
-
-    message_list = level_messages[level_range]
-    random_message = random.choice(message_list)
-    start_string = strings["level_up_prefix"].format(author.name)
-    return start_string + random_message.format(level)
 
 
 class XPHandler:
@@ -54,49 +20,114 @@ class XPHandler:
 
     async def process_xp(self, message):
 
+        level_config = Xp(message.author.id, message.guild.id)
+        guild_config = GuildConfig(message.guild.id)
         current_time = time.time()
-        user_id = message.author.id
-        xp = Xp(user_id, message.guild.id)
 
-        if xp.ctime and current_time < xp.ctime:
-            logs.debug(f"[XpHandler] {message.author.name} sent a message but is on XP cooldown.")
-            return
+        if level_config.ctime and current_time < level_config.ctime:
+            return  # cooldown
 
-        new_xp = xp.xp + xp.xp_gain
-        xp_needed_for_new_level = Xp.xp_needed_for_next_level(xp.level)
+        # award ENV XP_GAIN_PER_MESSAGE
+        level_config.xp += level_config.xp_gain
 
-        if new_xp >= xp_needed_for_new_level:
-            xp.level += 1
-            xp.xp = 0
+        # check if total XP now exceeds level req
+        xp_needed_for_new_level = Xp.xp_needed_for_next_level(level_config.level)
 
-            try:
-                lvl_message = level_messages_v2(xp.level, message.author)
-            except Exception as err:
-                # fallback to v1 (generic leveling)
-                lvl_message = level_messages(xp.level, message.author)
-                logs.error("[XpHandler] level_messages v1 fallback was triggered: ", err)
+        if level_config.xp >= xp_needed_for_new_level:
+            level_config.level += 1
+            level_config.xp = 0
 
-            await message.reply(content=lvl_message)
-            
-            # checks if xp.level is a multiple of 5 within the range of 5 to 100 (inclusive)
-            if xp.level % 5 == 0 and 5 <= xp.level <= 100:
-                try:
-                    await self.assign_level_role(message.author, xp.level)
-                except Exception as error:
-                    logs.error(f"[XpHandler] Assign level role FAILED; {error}")
+            level_message = await self.get_level_message(guild_config, level_config, message.author)
 
-            logs.debug(f"[XpHandler] {message.author.name} leveled up to lv {xp.level}.")
+            if level_message:
+
+                level_channel = await self.get_level_channel(message, guild_config)
+
+                if level_channel:
+                    await level_channel.send(content=level_message)
+                else:
+                    await message.reply(content=level_message)
+
+            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {level_config.level}.")
 
         else:
-            xp.xp += xp.xp_gain
-            logs.debug(f"[XpHandler] {message.author.name} gained {xp.xp_gain} XP | "
-                           f"lv {xp.level} with {xp.xp} XP.")
+            logs.info(f"[XpHandler] {message.author.name} gained {level_config.xp_gain} XP | "
+                      f"lv {level_config.level} with {level_config.xp} XP.")
 
-        xp.ctime = current_time + xp.new_cooldown
-        xp.push()
+        level_config.ctime = current_time + level_config.new_cooldown
+        level_config.push()
+
+        # Legacy code for Rave Cave level roles
+        # turn into a global system soon
+        await self.legacy_assign_level_role(message.author, level_config.level)
 
     @staticmethod
-    async def assign_level_role(user, level):
+    async def get_level_channel(message, guild_config):
+        if guild_config.level_channel_id:
+            try:
+                return message.guild.get_channel(guild_config.level_channel_id)
+            except discord.HTTPException:
+                pass  # channel not found
+
+        return None
+
+    @staticmethod
+    async def get_level_message(guild_config, level_config, author):
+        match guild_config.level_message_type:
+            case 0:
+                level_message = None
+            case 1:
+                level_message = XPHandler.level_messages_whimsical(level_config.level, author)
+            case 2:
+                if not guild_config.level_message:
+                    level_message = XPHandler.level_message_generic(level_config.level, author)
+                else:
+                    level_message = formatter.template(guild_config.level_message,author.name, level_config.level)
+            case _:
+                raise Exception
+
+        return level_message
+
+    @staticmethod
+    def level_message_generic(level, author):
+        return strings["level_up"].format(author.name, level)
+
+    @staticmethod
+    def level_messages_whimsical(level, author):
+        """
+        v2 of the level messages, randomized output from levels.en-US.JSON.
+        :param level:
+        :param author:
+        :return:
+        """
+
+        level_range = None
+        for key in level_messages.keys():
+            start, end = map(int, key.split('-'))
+            if start <= level <= end:
+                level_range = key
+                break
+
+        if level_range is None:
+            # generic fallback
+            return XPHandler.level_message_generic(level, author)
+
+        message_list = level_messages[level_range]
+        random_message = random.choice(message_list)
+        start_string = strings["level_up_prefix"].format(author.name)
+        return start_string + random_message.format(level)
+
+    @staticmethod
+    async def legacy_assign_level_role(user, level):
+
+        guild = user.guild
+
+        if (
+            guild.id != 719227135151046699 or
+            not (level % 5 == 0 and 5 <= level <= 100)
+        ):
+            return
+
         level_roles = {
             "level_5": 1118491431036792922,
             "level_10": 1118491486259003403,
@@ -120,11 +151,6 @@ class XPHandler:
             "level_100": 1191681405445492778,
             # Add more level roles as needed
         }
-
-        guild = user.guild
-
-        if guild.id != 719227135151046699:
-            return
 
         current_level_role = None
         new_level_role_id = level_roles.get(f"level_{level}")
