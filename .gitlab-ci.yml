@@ -7,5 +7,5 @@ docker_build:
   services:
     - docker:dind
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:$(git describe --tags --abbrev=0) .
+    - docker build -t $CI_REGISTRY_IMAGE .
     - docker push $CI_REGISTRY_IMAGE
