@@ -7,7 +7,7 @@ docker_build:
   services:
     - docker:dind
   script:
-    - docker build -t Racu .
+    - docker build -t racu .
     - source .env  # Load environment variables from .env
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - git fetch --tags  # Fetch Git tags
