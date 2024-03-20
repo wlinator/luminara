@@ -12,10 +12,7 @@ level_messages = json_loader.load_levels()
 
 
 def level_message(level, author):
-    if level in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
-        return strings["level_up_reward"].format(author.name, level)
-    else:
-        return strings["level_up"].format(author.name, level)
+    return strings["level_up"].format(author.name, level)
 
 
 def level_messages_v2(level, author):
@@ -28,8 +25,8 @@ def level_messages_v2(level, author):
     """
 
     # checks if level is a multiple of 5 within the range of 5 to 100 (inclusive)
-    if level % 5 == 0 and 5 <= level <= 100:
-        return strings["level_up_reward"].format(author.name, level)
+    # if level % 5 == 0 and 5 <= level <= 100:
+    #     return strings["level_up_reward"].format(author.name, level)
 
     level_range = None
     for key in level_messages.keys():
