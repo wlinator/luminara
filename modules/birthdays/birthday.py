@@ -1,12 +1,11 @@
-import datetime
 import calendar
+import datetime
 
 from discord.ext import commands
-from services.Birthday import Birthday
+
 from lib.embeds.error import BdayErrors
 from lib.embeds.info import BdayInfo
-
-from main import strings
+from services.Birthday import Birthday
 
 
 async def cmd(ctx, month, month_index, day):
