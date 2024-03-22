@@ -1,20 +1,16 @@
 import asyncio
-import calendar
-import datetime
 import logging
 import random
 
 import discord
-from discord.commands import SlashCommandGroup
-from discord.ext import commands, tasks
+from discord.ext import commands, tasks, bridge
 
-from config import json_loader
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
-from main import strings
 from lib import time, checks
 from lib.embeds.error import BdayErrors
-from modules.birthdays import upcoming
+from modules.birthdays import upcoming, birthday
+from config import json_loader
 
 logs = logging.getLogger('Racu.Core')
 data = json_loader.load_birthday()
@@ -31,18 +27,15 @@ class Birthdays(commands.Cog):
         name="birthday",
         aliases=["bday"],
         help="Due to the complexity of the birthday system, you can only use Slash Commands "
-             "to set your birthday. Please use `/birthday set` to configure your birthday or `/birthday upcoming` "
-             "to see all upcoming birthdays in this server."
+             "to set your birthday. Please use `/birthday` to configure your birthday."
     )
     @commands.guild_only()
     @commands.check(checks.channel)
     async def birthday_command(self, ctx):
         return await ctx.respond(embed=BdayErrors.slash_command_only(ctx))
 
-    birthday = SlashCommandGroup("birthday", "various birthday commands.", guild_only=True)
-
-    @birthday.command(
-        name="set",
+    @commands.slash_command(
+        name="birthday",
         description="Set your birthday.",
         guild_only=True
     )
@@ -51,24 +44,14 @@ class Birthdays(commands.Cog):
     @commands.check(checks.channel)
     async def set_birthday(self, ctx, *,
                            month: discord.Option(choices=months),
-                           day: discord.Option(int)):
-        leap_year = 2020
+                           day: discord.Option(int, max_value=31)):
+
         month_index = months.index(month) + 1
-        max_days = calendar.monthrange(leap_year, month_index)[1]
+        await birthday.cmd(ctx, month, month_index, day)
 
-        if not (1 <= day <= max_days):
-            return await ctx.respond(embed=BdayErrors.invalid_date(ctx))
-
-        date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
-        date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
-
-        birthday = Birthday(ctx.author.id, ctx.guild.id)
-        birthday.set(date_obj)
-
-        await ctx.respond(strings["birthday_set"].format(ctx.author.name, month, day), ephemeral=True)
-
-    @birthday.command(
+    @bridge.bridge_command(
         name="upcoming",
+        aliases=["birthdayupcoming", "ub"],
         description="See upcoming birthdays!",
         guild_only=True
     )
@@ -76,16 +59,6 @@ class Birthdays(commands.Cog):
     @commands.check(checks.birthday_module)
     @commands.check(checks.channel)
     async def upcoming_birthdays(self, ctx):
-        await upcoming.cmd(ctx)
-    
-    @commands.command(
-        name="upcoming",
-        aliases=["birthdayupcoming", "ub"]
-    )
-    @commands.guild_only()
-    @commands.check(checks.birthday_module)
-    @commands.check(checks.channel)
-    async def upcoming_birthdays_prefix(self, ctx):
         """
         Shows the upcoming birthdays in this server.
         """
