@@ -60,9 +60,18 @@ class MiscInfo:
 
     @staticmethod
     def get_prefix(ctx, prefix):
-        embed= clean_info_embed(ctx)
+        embed = clean_info_embed(ctx)
         embed.description += f"my prefix is `{prefix}`"
         embed.set_footer(text=f"You can change this with '{formatter.get_prefix(ctx)}setprefix'",
                          icon_url=question_icon)
+
+        return embed
+
+
+class BdayInfo:
+    @staticmethod
+    def set_month(ctx, month, day):
+        embed = clean_info_embed(ctx)
+        embed.description += f"your birthday was set to {month} {day}."
 
         return embed

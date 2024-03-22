@@ -8,13 +8,13 @@ from discord.ext import commands, tasks, bridge
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 from lib import time, checks
-from lib.embeds.error import BdayErrors
+from lib.embeds.error import BdayErrors, GenericErrors
 from modules.birthdays import upcoming, birthday
 from config import json_loader
 
 logs = logging.getLogger('Racu.Core')
 data = json_loader.load_birthday()
-months = data["months"]
+month_mapping = data["month_mapping"]
 messages = data["birthday_messages"]
 
 
@@ -23,31 +23,30 @@ class Birthdays(commands.Cog):
         self.client = client
         self.daily_birthday_check.start()
 
-    @commands.command(
+    @bridge.bridge_command(
         name="birthday",
         aliases=["bday"],
-        help="Due to the complexity of the birthday system, you can only use Slash Commands "
-             "to set your birthday. Please use `/birthday` to configure your birthday."
-    )
-    @commands.guild_only()
-    @commands.check(checks.channel)
-    async def birthday_command(self, ctx):
-        return await ctx.respond(embed=BdayErrors.slash_command_only(ctx))
-
-    @commands.slash_command(
-        name="birthday",
         description="Set your birthday.",
         guild_only=True
     )
-    @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.check(checks.birthday_module)
     @commands.check(checks.channel)
-    async def set_birthday(self, ctx, *,
-                           month: discord.Option(choices=months),
-                           day: discord.Option(int, max_value=31)):
+    async def set_birthday(self, ctx, month: str, *, day: int):
+        """
+        Set your birthday. You can use abbreviations for months, like "jan" and "nov".
+        Racu reads only the first three characters to decide the month.
+        """
 
-        month_index = months.index(month) + 1
-        await birthday.cmd(ctx, month, month_index, day)
+        month_name = await birthday.get_month_name(month, month_mapping)
+        month_index = await birthday.get_month_index(month_name, month_mapping)
+        await birthday.cmd(ctx, month_name, month_index, day)
+
+    @set_birthday.error
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.respond(embed=BdayErrors.missing_arg(ctx))
+        elif isinstance(error, commands.BadArgument):
+            await ctx.respond(embed=BdayErrors.bad_month(ctx))
 
     @bridge.bridge_command(
         name="upcoming",
