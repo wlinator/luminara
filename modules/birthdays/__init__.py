@@ -5,12 +5,12 @@ import random
 import discord
 from discord.ext import commands, tasks, bridge
 
+from config import json_loader
+from lib import time, checks
+from lib.embeds.error import BdayErrors
+from modules.birthdays import upcoming, birthday
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
-from lib import time, checks
-from lib.embeds.error import BdayErrors, GenericErrors
-from modules.birthdays import upcoming, birthday
-from config import json_loader
 
 logs = logging.getLogger('Racu.Core')
 data = json_loader.load_birthday()
@@ -29,6 +29,7 @@ class Birthdays(commands.Cog):
         description="Set your birthday.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.birthday_module)
     @commands.check(checks.channel)
     async def set_birthday(self, ctx, month: str, *, day: int):
