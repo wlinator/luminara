@@ -29,6 +29,7 @@ class Birthdays(commands.Cog):
         description="Set your birthday.",
         guild_only=True
     )
+    @commands.guild_only()
     @commands.check(checks.birthday_module)
     @commands.check(checks.channel)
     async def set_birthday(self, ctx, month: str, *, day: int):
