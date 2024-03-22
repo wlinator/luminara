@@ -1,8 +1,10 @@
 import datetime
 import calendar
 
+from discord.ext import commands
 from services.Birthday import Birthday
 from lib.embeds.error import BdayErrors
+from lib.embeds.info import BdayInfo
 
 from main import strings
 
@@ -21,4 +23,19 @@ async def cmd(ctx, month, month_index, day):
     birthday = Birthday(ctx.author.id, ctx.guild.id)
     birthday.set(date_obj)
 
-    await ctx.respond(strings["birthday_set"].format(ctx.author.name, month, day), ephemeral=True)
+    await ctx.respond(embed=BdayInfo.set_month(ctx, month, day))
+
+
+async def get_month_name(string, mapping):
+    string = string.lower()
+
+    for month in mapping:
+        if string.startswith(month):
+            return mapping[month]
+
+    raise commands.BadArgument
+
+
+async def get_month_index(string, mapping):
+    values = list(mapping.values())
+    return values.index(string) + 1

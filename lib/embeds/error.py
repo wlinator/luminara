@@ -186,6 +186,24 @@ class BdayErrors:
 
         return embed
 
+    @staticmethod
+    def bad_month(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "I couldn't recognize that month."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
+    @staticmethod
+    def missing_arg(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "please enter a month and a day, in that order."
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
+
+        return embed
+
 
 class MiscErrors:
     @staticmethod
