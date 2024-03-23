@@ -3,7 +3,7 @@ from services.GuildConfig import GuildConfig
 from main import strings
 
 
-async def cmd(ctx):
+async def cmd(self, ctx):
     guild_config = GuildConfig(ctx.guild.id)
 
     embed = discord.Embed(
@@ -15,11 +15,13 @@ async def cmd(ctx):
 
     # birthdays
     if guild_config.birthday_channel_id:
-        try:
-            channel = ctx.guild.get_channel(guild_config.birthday_channel_id)
+        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.birthday_channel_id)
+
+        if channel:
             birthday_config = f"✅ | in {channel.mention}."
-        except discord.HTTPException:
+        else:
             birthday_config = f"❌ | enable the module with `/config birthdays channel`"
+
     else:
         birthday_config = f"❌ | enable the module with `/config birthdays channel`"
 
@@ -27,10 +29,11 @@ async def cmd(ctx):
 
     # commands
     if guild_config.command_channel_id:
-        try:
-            channel = ctx.guild.get_channel(guild_config.command_channel_id)
+        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.command_channel_id)
+
+        if channel:
             commands_config = f"✅ | commands only allowed in {channel.mention}."
-        except discord.HTTPException:
+        else:
             commands_config = f"✅ | commands allowed anywhere."
     else:
         commands_config = f"✅ | commands allowed anywhere."
@@ -39,8 +42,9 @@ async def cmd(ctx):
 
     # greetings
     if guild_config.welcome_channel_id:
-        try:
-            channel = ctx.guild.get_channel(guild_config.welcome_channel_id)
+        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.welcome_channel_id)
+
+        if channel:
             greeting_config = f"✅ | in {channel.mention}"
 
             if guild_config.welcome_message:
@@ -48,7 +52,7 @@ async def cmd(ctx):
             else:
                 greeting_config += f" without custom template."
 
-        except discord.HTTPException:
+        else:
             greeting_config = f"❌ | enable the module with `/config greetings channel`"
     else:
         greeting_config = f"❌ | enable the module with `/config greetings channel`"
@@ -66,11 +70,11 @@ async def cmd(ctx):
         level_config = f"✅ | generic announcements"
 
     if guild_config.level_channel_id and guild_config.level_message_type != 0:
-        try:
-            channel = ctx.guild.get_channel(guild_config.level_channel_id)
-            level_config += f" in {channel.mention}"
+        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.level_channel_id)
 
-        except discord.HTTPException:
+        if channel:
+            level_config += f" in {channel.mention}"
+        else:
             level_config += f" in the user's current channel"
 
     else:
