@@ -6,6 +6,7 @@ import os
 
 load_dotenv('.env')
 
+
 class RacuHelp(commands.HelpCommand):
 
     def __init__(self, **options):

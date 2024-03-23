@@ -31,7 +31,7 @@ class Config(commands.Cog):
         Config guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration
         """
 
-        await config.cmd(ctx)
+        await config.cmd(self, ctx)
 
     @bridge.bridge_command(
         name="setprefix",

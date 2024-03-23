@@ -1,5 +1,4 @@
 import os
-import platform
 
 import discord
 from discord.ext import bridge
@@ -12,6 +11,7 @@ from handlers.XPHandler import XPHandler
 from handlers import LoggingHandler, ErrorHandler
 from services.GuildConfig import GuildConfig
 from services.Help import RacuHelp
+from services.Client import RacuBot
 
 load_dotenv('.env')
 instance = os.getenv("INSTANCE")
@@ -24,7 +24,7 @@ def get_prefix(bot, message):
         return "."
 
 
-client = bridge.Bot(
+client = RacuBot(
     owner_id=int(os.getenv('OWNER_ID')),
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
@@ -33,21 +33,6 @@ client = bridge.Bot(
 )
 
 logs = LoggingHandler.setup_logger()
-
-
-@client.event
-async def on_ready():
-    logs.info(f"[INFO] Logged in as {client.user.name}")
-    logs.info(f"[INFO] discord.py API version: {discord.__version__}")
-    logs.info(f"[INFO] Python version: {platform.python_version()}")
-    logs.info(f"[INFO] Running on: {platform.system()} {platform.release()} ({os.name})")
-    logs.info("-------------------------------------------------------")
-
-    """
-    https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready
-    This function isn't guaranteed to only be called once.
-    Event is called when RESUME request fails.
-    """
 
 
 @client.listen()
