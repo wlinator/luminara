@@ -23,7 +23,7 @@ class RacuBot(bridge.Bot):
         """
 
     @staticmethod
-    async def get_or_fetch_channel(guild: discord.Guild, channel_id):
+    async def get_or_fetch_channel(guild, channel_id):
         channel = guild.get_channel(channel_id)
 
         if not channel:
@@ -31,6 +31,6 @@ class RacuBot(bridge.Bot):
                 channel = await guild.fetch_channel(channel_id)
 
             except (discord.HTTPException, discord.NotFound, discord.Forbidden):
-                pass
+                return None
 
         return channel
