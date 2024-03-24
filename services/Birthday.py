@@ -37,12 +37,12 @@ class Birthday:
     @staticmethod
     def get_upcoming_birthdays(guild_id):
         query = """
-                SELECT user_id, DATE_FORMAT(birthday, '%m-%d') AS upcoming_birthday
-                FROM birthdays
-                WHERE DAYOFYEAR(birthday) > DAYOFYEAR(NOW())
-                    AND guild_id = %s
-                ORDER BY DAYOFYEAR(birthday);
+                SELECT user_id, DATE_FORMAT(birthday, '%m-%d') AS upcoming_birthday 
+                FROM birthdays 
+                WHERE guild_id = %s 
+                ORDER BY (DAYOFYEAR(birthday) - DAYOFYEAR(now()) + 366) % 366;
                 """
+
         data = database.select_query(query, (guild_id,))
 
         upcoming = []
