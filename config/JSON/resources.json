@@ -1,5 +1,21 @@
 {
   "emotes_guild_id": 1038051105642401812,
+  "guild_specific": {
+    "guild_id": 719227135151046699,
+    "intro_channel_id": 973619250507972618,
+    "question_mapping": {
+      "(Nick)name": "Let's start with your nickname. How would you like to be identified in the server?",
+        "Age": "How old are you?",
+        "Region": "Where do you live?",
+        "Languages": "Which languages do you speak?",
+        "Pronouns": "What are your preferred pronouns?",
+        "Sexuality": "What's your sexuality?",
+        "Relationship status": "What's your current relationship status?",
+        "Likes & interests": "Likes & interests",
+        "Dislikes": "Dislikes",
+        "EXTRAS": "EXTRAS: job status, zodiac sign, hobbies, etc. Tell us about yourself!"
+    }
+  },
   "daily_reward": 500,
   "icons": {
     "racu_exclam": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_exclam.png",
