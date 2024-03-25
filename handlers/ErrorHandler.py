@@ -4,7 +4,8 @@ import sys
 
 import discord
 from discord.ext import commands
-from lib.embeds.error import GenericErrors
+from lib.embeds.error import GenericErrors,BdayErrors
+from lib.exceptions import RacuExceptions
 
 logs = logging.getLogger('Racu.Core')
 
@@ -34,15 +35,21 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.NotOwner):
         await ctx.respond(embed=GenericErrors.owner_only(ctx))
 
-    elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
-        logs.info(f"[CommandHandler] {ctx.author.name} check failure: \"/{ctx.command.qualified_name}\"")
-
     elif isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument, commands.CommandNotFound)):
         pass
 
+    elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
+        """subclasses of this exception"""
+        if isinstance(error, RacuExceptions.NotAllowedInChannel):
+            await ctx.respond(embed=GenericErrors.channel_not_allowed(ctx, error.command_channel),
+                              delete_after=5, ephemeral=True)
+
+        elif isinstance(error, RacuExceptions.BirthdaysDisabled):
+            await ctx.respond(embed=BdayErrors.birthdays_disabled(ctx))
+
     else:
         await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        traceback.print_tb(error.original.__traceback__)
+        traceback.print_tb(error.__traceback__)
 
     logs.error(f"[CommandHandler] on_command_error: {error}")
 
