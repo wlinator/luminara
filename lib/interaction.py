@@ -4,43 +4,27 @@ from discord.ui import View
 
 class IntroButtons(View):
     def __init__(self, ctx):
-        super().__init__(timeout=300)
+        super().__init__(timeout=60)
         self.ctx = ctx
-        self.clickedShort = False
-        self.clickedLong = False
+        self.clickedStart = False
+        self.clickedStop = False
 
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
             await self.message.edit(view=None)
 
-    @discord.ui.button(label="Short", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Start", style=discord.ButtonStyle.primary)
     async def short_button_callback(self, button, interaction):
         await interaction.response.edit_message(view=None)
-        self.clickedShort = True
-        self.stop()
-
-    @discord.ui.button(label="Extended", style=discord.ButtonStyle.green)
-    async def extended_button_callback(self, button, interaction):
-        await interaction.response.edit_message(view=None)
-        self.clickedLong = True
+        self.clickedStart = True
         self.stop()
 
     @discord.ui.button(label="Stop", style=discord.ButtonStyle.red)
     async def stop_button_callback(self, button, interaction):
         await interaction.response.edit_message(view=None)
+        self.clickedStop = True
         self.stop()
-
-    # async def on_timeout(self):
-    #     await self.ctx.
-
-    async def interaction_check(self, interaction) -> bool:
-        if interaction.user != self.ctx.author:
-            await interaction.response.send_message("You can't use these buttons, they're someone else's!",
-                                                    ephemeral=True)
-            return False
-        else:
-            return True
 
 
 class BlackJackButtons(View):
@@ -115,7 +99,7 @@ class ExchangeConfirmation(View):
 
 class Confirm(View):
     def __init__(self, ctx):
-        super().__init__(timeout=300)
+        super().__init__(timeout=60)
         self.ctx = ctx
         self.clickedConfirm = False
 
