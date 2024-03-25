@@ -1,8 +1,12 @@
 import discord
+
+from config.parser import JsonCache
 from lib import formatter
 
-question_icon = "https://i.imgur.com/8xccUws.png"
-exclam_icon = "https://i.imgur.com/vitwMUu.png"
+resources = JsonCache.read_json("resources")
+
+question_icon = resources["icons"]["racu_question"]
+exclam_icon = resources["icons"]["racu_exclam"]
 
 
 def clean_error_embed(ctx):

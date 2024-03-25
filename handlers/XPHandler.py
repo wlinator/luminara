@@ -1,17 +1,17 @@
 import logging
 import random
 import time
+
 import discord
 
-from config import json_loader
-from services.Currency import Currency
-from services.Xp import Xp
-from services.GuildConfig import GuildConfig
+from config.parser import JsonCache
 from lib import formatter
+from services.GuildConfig import GuildConfig
+from services.Xp import Xp
 
+strings = JsonCache.read_json("strings")
+level_messages = JsonCache.read_json("levels")
 logs = logging.getLogger('Racu.Core')
-strings = json_loader.load_strings()
-level_messages = json_loader.load_levels()
 
 
 class XPHandler:
