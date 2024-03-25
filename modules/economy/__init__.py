@@ -143,7 +143,6 @@ class Economy(commands.Cog):
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
-    @commands.cooldown(1, 180, commands.BucketType.user)
     async def stats_command(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
         return await stats.cmd(self, ctx, game)
 
@@ -153,6 +152,7 @@ class Economy(commands.Cog):
         help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
     )
     @commands.guild_only()
+    @checks.allowed_in_channel()
     async def stats_command_prefix(self, ctx, *, game: str):
 
         if game.lower() == "blackjack" or game.lower() == "bj":
