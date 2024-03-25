@@ -1,16 +1,16 @@
 import logging
 
 import discord
-from discord.ext import commands, bridge
 from discord.commands import SlashCommandGroup
-from services.GuildConfig import GuildConfig
+from discord.ext import commands, bridge
+
+from config.parser import JsonCache
 from lib import formatter, embeds_old
-from modules.config import config, prefix
 from lib.embeds.error import MiscErrors
-import main
+from modules.config import config, prefix
+from services.GuildConfig import GuildConfig
 
-from main import strings
-
+strings = JsonCache.read_json("strings")
 logs = logging.getLogger('Racu.Core')
 
 
