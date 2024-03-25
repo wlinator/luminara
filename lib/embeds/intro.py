@@ -39,7 +39,7 @@ class General:
     @staticmethod
     def clicked_stop(ctx):
         embed = clean_intro_embed(ctx)
-        embed.description += "the introductions command was stopped."
+        embed.description += "the introduction command was stopped."
 
         return embed
 
