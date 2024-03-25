@@ -13,6 +13,6 @@ class JsonCache:
         if path not in JsonCache._cache:
             with open(f"config/JSON/{path}.json", 'r') as file:
                 JsonCache._cache[path] = json.load(file)
-                logs.info(f"{path}.json was loaded and cached.")
+                logs.info(f"[JsonParser] {path}.json was loaded and cached.")
 
         return JsonCache._cache[path]
