@@ -1,11 +1,13 @@
 import random
 
-from main import economy_config
+from config.parser import JsonCache
+
+resources = JsonCache.read_json("resources")
 
 
 def blackjack_get_new_deck():
-    suits = economy_config["blackjack"]["deck_suits"]
-    ranks = economy_config["blackjack"]["deck_ranks"]
+    suits = resources["blackjack"]["deck_suits"]
+    ranks = resources["blackjack"]["deck_ranks"]
     deck = []
     for suit in suits:
         for rank in ranks:

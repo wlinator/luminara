@@ -1,12 +1,13 @@
 import random
-
+from config.parser import JsonCache
 from lib import checks
 
 
 class ReactionHandler:
-    def __init__(self, reactions):
-        self.eightball = reactions["eightball"]
-        self.full_content_reactions = reactions["full_content_reactions"]
+    def __init__(self):
+        self.reactions = JsonCache.read_json("reactions")
+        self.eightball = self.reactions["eightball"]
+        self.full_content_reactions = self.reactions["full_content_reactions"]
 
     async def handle_message(self, message):
         content = message.content.lower()

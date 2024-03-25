@@ -1,9 +1,11 @@
 {
   "emotes_guild_id": 1038051105642401812,
-  "rc_guild_id": 719227135151046699,
   "daily_reward": 500,
-  "exchange_rate": 75000,
-  "bet_limit": 1000000,
+  "icons": {
+    "racu_exclam": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_exclam.png",
+    "racu_question": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_question.png",
+    "racu_streak": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_streak.png"
+  },
   "blackjack": {
     "emotes": {
       "hit": "<:hit:1119262723285467156>",

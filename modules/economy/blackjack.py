@@ -9,10 +9,11 @@ from handlers.ItemHandler import ItemHandler
 from lib import economy_functions, interaction
 from lib.embeds.error import EconErrors
 from lib.embeds.error import GenericErrors
-from main import economy_config
+from config.parser import JsonCache
 from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 
+resources = JsonCache.read_json("resources")
 logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 est = pytz.timezone('US/Eastern')
@@ -46,12 +47,6 @@ async def cmd(ctx, bet: int):
     elif bet <= 0:
         return await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
-    # check if the bet exceeds the bet limit
-    # bet_limit = int(economy_config["bet_limit"])
-    # if abs(bet) > bet_limit:
-    #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
-    #     return await ctx.respond(content=message)
-
     active_blackjack_games[ctx.author.id] = True
 
     try:
@@ -59,7 +54,7 @@ async def cmd(ctx, bet: int):
         player_hand = []
         dealer_hand = []
         deck = economy_functions.blackjack_get_new_deck()
-        multiplier = float(economy_config["blackjack"]["reward_multiplier"])
+        multiplier = float(resources["blackjack"]["reward_multiplier"])
 
         # deal initial cards (player draws two & dealer one)
         player_hand.append(economy_functions.blackjack_deal_card(deck))
