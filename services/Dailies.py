@@ -1,13 +1,12 @@
-import json
 from datetime import datetime, timedelta
 
 import pytz
 
-from services.Currency import Currency
 from db import database
+from config.parser import JsonCache
+from services.Currency import Currency
 
-with open("config/economy.json") as file:
-    json_data = json.load(file)
+resources = JsonCache.read_json("resources")
 
 
 class Dailies:
@@ -30,7 +29,7 @@ class Dailies:
 
     def refresh(self):
         if self.amount == 0:
-            self.amount = json_data["daily_reward"]
+            self.amount = resources["daily_reward"]
 
         query = """
         INSERT INTO dailies (user_id, amount, claimed_at, streak)

@@ -8,10 +8,11 @@ import pytz
 
 from handlers.ItemHandler import ItemHandler
 from lib.embeds.error import EconErrors
-from main import economy_config
+from config.parser import JsonCache
 from services.Currency import Currency
 from services.SlotsStats import SlotsStats
 
+resources = JsonCache.read_json("resources")
 est = pytz.timezone('US/Eastern')
 
 
@@ -27,7 +28,7 @@ async def cmd(self, ctx, bet):
         return await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
     # # check if the bet exceeds the bet limit
-    # bet_limit = int(economy_config["bet_limit"])
+    # bet_limit = int(resources["bet_limit"])
     # if abs(bet) > bet_limit:
     #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
     #     return await ctx.respond(content=message)
@@ -88,7 +89,7 @@ async def cmd(self, ctx, bet):
 
 
 def get_emotes(client):
-    decoration = economy_config["slots"]["emotes"]
+    decoration = resources["slots"]["emotes"]
     emojis = {name: client.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
     return emojis
 
@@ -96,7 +97,7 @@ def get_emotes(client):
 def calculate_slots_results(bet, results):
     type = None
     multiplier = None
-    rewards = economy_config["slots"]["reward_multipliers"]
+    rewards = resources["slots"]["reward_multipliers"]
 
     # count occurrences of each item in the list
     counts = Counter(results)

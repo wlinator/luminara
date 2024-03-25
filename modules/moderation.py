@@ -3,8 +3,9 @@ import logging
 import discord
 from discord.ext import commands
 
-from main import strings
+from config.parser import JsonCache
 
+strings = JsonCache.read_json("strings")
 logs = logging.getLogger('Racu.Core')
 
 
