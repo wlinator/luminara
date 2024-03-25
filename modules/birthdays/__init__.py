@@ -30,8 +30,8 @@ class Birthdays(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.check(checks.birthday_module)
-    @commands.check(checks.channel)
+    @checks.birthdays_enabled()
+    @checks.allowed_in_channel()
     async def set_birthday(self, ctx, month: str, *, day: int):
         """
         Set your birthday. You can use abbreviations for months, like "jan" and "nov".
@@ -56,8 +56,8 @@ class Birthdays(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.check(checks.birthday_module)
-    @commands.check(checks.channel)
+    @checks.birthdays_enabled()
+    @checks.allowed_in_channel()
     async def upcoming_birthdays(self, ctx):
         """
         Shows the upcoming birthdays in this server.
