@@ -48,11 +48,13 @@ class XPHandler:
                 else:
                     await message.reply(content=level_message)
 
-            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {level_config.level}.")
+            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {level_config.level} "
+                      f"in guild {message.guild.name} ({message.guild.id}).")
 
         else:
             logs.info(f"[XpHandler] {message.author.name} gained {level_config.xp_gain} XP | "
-                      f"lv {level_config.level} with {level_config.xp} XP.")
+                      f"lv {level_config.level} with {level_config.xp} XP. | "
+                      f"guild: {message.guild.name} ({message.guild.id})")
 
         level_config.ctime = current_time + level_config.new_cooldown
         level_config.push()
