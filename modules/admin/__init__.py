@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands, bridge
 from modules.admin import award, sql
 from lib.embeds.error import EconErrors
-from lib import checks
 
 
 class BotAdmin(commands.Cog):
@@ -55,4 +54,4 @@ class BotAdmin(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(Admin(client))
+    client.add_cog(BotAdmin(client))
