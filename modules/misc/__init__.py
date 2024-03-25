@@ -1,7 +1,10 @@
 import datetime
+
+import discord
 from discord.ext import commands, bridge, tasks
 from lib import checks
 from lib.embeds.info import MiscInfo
+from lib.embeds.error import IntroErrors
 from modules.misc import introduction, invite, backup
 from modules.config import prefix
 
