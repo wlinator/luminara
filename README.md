@@ -1,6 +1,6 @@
 # You can invite me with [this link](https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot). Thanks for using Racu!
 
-![Racu art](art/mothra.png)
+![Racu art](art/racu_logo.png)
 
 ## Self host
 **The next part of this README explains how to self-host Racu, this allows you to host your own version of my code and create a personalized Discord bot.**
