@@ -5,7 +5,6 @@ import discord
 import pytz
 from dotenv import load_dotenv
 
-from handlers.ItemHandler import ItemHandler
 from lib import economy_functions, interaction
 from lib.embeds.error import EconErrors
 from lib.embeds.error import GenericErrors
@@ -126,13 +125,6 @@ async def cmd(ctx, bet: int):
 
         embed = blackjack_finished(ctx, Currency.format_human(bet), player_hand_value,
                                    dealer_hand_value, Currency.format_human(payout), status)
-
-        item_reward = ItemHandler(ctx)
-        field = await item_reward.rave_coin(is_won=is_won, bet=bet, field="")
-        field = await item_reward.bitch_coin(status, field)
-
-        if field is not "":
-            embed.add_field(name="Extra Rewards", value=field, inline=False)
 
         if playing_embed:
             await ctx.edit(embed=embed, view=None, content=ctx.author.mention)
