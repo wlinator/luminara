@@ -11,6 +11,7 @@ from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 
 _logs = logging.getLogger('Racu.Core')
+_art = JsonCache.read_json("art")
 _data = JsonCache.read_json("resources")
 
 
@@ -26,8 +27,8 @@ async def cmd(command, ctx, unix_timestamp):
     )
     embed.set_author(name=f"{metadata.__title__} v{metadata.__version__}",
                      url=_data["gitlab_url"],
-                     icon_url=_data["icons"]["racu_logo_transparent"])
-    embed.set_thumbnail(url=_data["icons"]["racu_logo"])
+                     icon_url=_art["logo"]["transparent"])
+    embed.set_thumbnail(url=_art["logo"]["opaque"])
 
     embed.add_field(name="Author", value=f"[{metadata.__author__}]({_data['author_url']})", inline=False)
     embed.add_field(name="Uptime", value=f"<t:{unix_timestamp}:R>")
