@@ -136,40 +136,40 @@ class Economy(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
-    @commands.slash_command(
-        name="stats",
-        description="Display your stats (BETA)",
-        guild_only=True
-    )
-    @commands.guild_only()
-    @checks.allowed_in_channel()
-    async def stats_command(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
-        return await stats.cmd(self, ctx, game)
-
-    @commands.command(
-        name="stats",
-        aliases=["stat"],
-        help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
-    )
-    @commands.guild_only()
-    @checks.allowed_in_channel()
-    async def stats_command_prefix(self, ctx, *, game: str):
-
-        if game.lower() == "blackjack" or game.lower() == "bj":
-            game = "BlackJack"
-        elif game.lower() == "slots" or game.lower() == "slot":
-            game = "Slots"
-        else:
-            raise commands.BadArgument
-
-        return await stats.cmd(self, ctx, game)
-
-    @stats_command_prefix.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_bet(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_argument(ctx))
+    # @commands.slash_command(
+    #     name="stats",
+    #     description="Display your stats (BETA)",
+    #     guild_only=True
+    # )
+    # @commands.guild_only()
+    # @checks.allowed_in_channel()
+    # async def stats_command(self, ctx, *, game: discord.Option(choices=["BlackJack", "Slots"])):
+    #     return await stats.cmd(self, ctx, game)
+    #
+    # @commands.command(
+    #     name="stats",
+    #     aliases=["stat"],
+    #     help="Display your gambling stats, you can choose between \"blackjack\" or \"slots\"."
+    # )
+    # @commands.guild_only()
+    # @checks.allowed_in_channel()
+    # async def stats_command_prefix(self, ctx, *, game: str):
+    #
+    #     if game.lower() == "blackjack" or game.lower() == "bj":
+    #         game = "BlackJack"
+    #     elif game.lower() == "slots" or game.lower() == "slot":
+    #         game = "Slots"
+    #     else:
+    #         raise commands.BadArgument
+    #
+    #     return await stats.cmd(self, ctx, game)
+    #
+    # @stats_command_prefix.error
+    # async def on_command_error(self, ctx, error):
+    #     if isinstance(error, commands.MissingRequiredArgument):
+    #         await ctx.respond(embed=EconErrors.missing_bet(ctx))
+    #     elif isinstance(error, commands.BadArgument):
+    #         await ctx.respond(embed=EconErrors.bad_argument(ctx))
 
 
 def setup(client):
