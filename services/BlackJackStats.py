@@ -44,3 +44,12 @@ class BlackJackStats:
             "winning_amount": winning_amount,
             "losing_amount": losing_amount
         }
+
+    @staticmethod
+    def get_total_rows_count():
+        query = """
+                SELECT SUM(TABLE_ROWS)
+                FROM INFORMATION_SCHEMA.TABLES
+                """
+
+        return database.select_query_one(query)
