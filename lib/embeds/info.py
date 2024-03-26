@@ -3,11 +3,11 @@ import discord
 from config.parser import JsonCache
 from lib import formatter
 
-resources = JsonCache.read_json("resources")
+resources = JsonCache.read_json("art")
 
-question_icon = resources["icons"]["racu_question"]
-exclam_icon = resources["icons"]["racu_exclam"]
-streak_icon = resources["icons"]["racu_streak"]
+question_icon = resources["icons"]["question"]
+exclam_icon = resources["icons"]["exclam"]
+streak_icon = resources["icons"]["streak"]
 
 
 def clean_info_embed(ctx):
