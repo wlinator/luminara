@@ -4,8 +4,7 @@ import discord
 from discord.ext import commands, bridge, tasks
 from lib import checks
 from lib.embeds.info import MiscInfo
-from lib.embeds.error import IntroErrors
-from modules.misc import introduction, invite, backup
+from modules.misc import introduction, invite, backup, info
 from modules.config import prefix
 
 
@@ -59,6 +58,17 @@ class Misc(commands.Cog):
     @checks.allowed_in_channel()
     async def prefix_command(self, ctx):
         return await prefix.get_cmd(ctx)
+
+    @bridge.bridge_command(
+        name="info",
+        aliases=["stats"]
+    )
+    async def info_command(self, ctx):
+        """
+        Shows basic stats for Racu.
+        """
+        unix_timestamp = int(round(self.start_time.timestamp()))
+        return await info.cmd(self, ctx, unix_timestamp)
 
     @bridge.bridge_command(
         name="introduction",
