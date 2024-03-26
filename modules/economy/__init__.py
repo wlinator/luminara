@@ -91,18 +91,18 @@ class Economy(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.respond(embed=EconErrors.bad_argument(ctx))
 
-    @bridge.bridge_command(
-        name="inventory",
-        aliases=["inv"],
-        description="Display your inventory.",
-        help="Display your inventory, this will also show your Racu badges if you have any.",
-        guild_only=True
-    )
-    @commands.guild_only()
-    @checks.allowed_in_channel()
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def inventory(self, ctx):
-        return await inventory.cmd(self, ctx)
+    # @bridge.bridge_command(
+    #     name="inventory",
+    #     aliases=["inv"],
+    #     description="Display your inventory.",
+    #     help="Display your inventory, this will also show your Racu badges if you have any.",
+    #     guild_only=True
+    # )
+    # @commands.guild_only()
+    # @checks.allowed_in_channel()
+    # @commands.cooldown(1, 10, commands.BucketType.user)
+    # async def inventory(self, ctx):
+    #     return await inventory.cmd(self, ctx)
 
     @bridge.bridge_command(
         name="slots",
