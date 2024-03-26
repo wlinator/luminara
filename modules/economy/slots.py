@@ -65,9 +65,6 @@ async def cmd(self, ctx, bet):
     else:
         ctx_currency.take_balance(bet)
 
-    # item_reward = ItemHandler(ctx)
-    # await item_reward.rave_coin(is_won=is_won, bet=bet)
-
     stats = SlotsStats(
         user_id=ctx.author.id,
         is_won=is_won,
