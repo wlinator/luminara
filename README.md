@@ -2,6 +2,8 @@
 
 ![Racu art](art/mothra.png)
 
+Some icons used in Racu are provided by [Icons8](https://icons8.com/).
+
 ## Self host
 **The next part of this README explains how to self-host Racu, this allows you to host your own version of my code and create a personalized Discord bot.**
 
