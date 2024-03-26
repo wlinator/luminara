@@ -1,6 +1,6 @@
 # You can invite me with [this link](https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot). Thanks for using Racu!
 
-![Racu art](art/mothra.png)
+![Racu art](art/racu_logo.png)
 
 Some icons used in Racu are provided by [Icons8](https://icons8.com/).
 
