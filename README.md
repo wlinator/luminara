@@ -35,3 +35,7 @@ docker compose up -d --build
 - `MARIADB_USER`: the username for your MariaDB database.
 - `MARIADB_PASSWORD`: the password for your database.
 - `MARIADB_ROOT_PASSWORD`: the root password for your database. (can be ignored unless you have a specific use for it)
+
+---
+
+Some icons used in Racu are provided by [Icons8](https://icons8.com/).
