@@ -33,7 +33,7 @@ async def cmd(command, ctx, unix_timestamp):
     embed.add_field(name="Uptime", value=f"<t:{unix_timestamp}:R>")
     embed.add_field(name="Latency", value=f"{round(1000 * command.client.latency)}ms")
     embed.add_field(name="Memory", value=f"{memory_usage_in_mb:.2f} MB")
-    embed.add_field(name="System", value=f"{platform.release()} ({os.name})")
+    embed.add_field(name="System", value=f"{platform.system()} ({os.name})")
     embed.add_field(name="API", value=f"v{discord.__version__}")
     embed.add_field(name="Database", value=f"{total_rows} records")
 
