@@ -22,7 +22,7 @@ class BotAdmin(commands.Cog):
     )
     @commands.guild_only()
     @commands.is_owner()
-    async def award_command(self, ctx, *, user: discord.User, amount: int):
+    async def award_command(self, ctx, user: discord.User, *, amount: int):
         return await award.cmd(ctx, user, amount)
 
     @award_command.error

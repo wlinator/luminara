@@ -6,7 +6,6 @@ from collections import Counter
 import discord
 import pytz
 
-from handlers.ItemHandler import ItemHandler
 from lib.embeds.error import EconErrors
 from config.parser import JsonCache
 from services.Currency import Currency
@@ -57,12 +56,6 @@ async def cmd(self, ctx, bet):
     # output final result
     finished_output = slots_finished(ctx, type, Currency.format_human(bet),
                                      Currency.format_human(payout), results, emojis)
-
-    item_reward = ItemHandler(ctx)
-    field = await item_reward.rave_coin(is_won=is_won, bet=bet, field="")
-
-    if field is not "":
-        finished_output.add_field(name="Extra Rewards", value=field, inline=False)
 
     await ctx.edit(embed=finished_output)
 

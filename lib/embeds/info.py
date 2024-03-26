@@ -12,7 +12,7 @@ streak_icon = resources["icons"]["racu_streak"]
 
 def clean_info_embed(ctx):
     embed = discord.Embed(
-        color=discord.Color.brand_green(),
+        color=discord.Color.blurple(),
         description=f"**{ctx.author.name}** "
     )
 
