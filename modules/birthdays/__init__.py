@@ -5,7 +5,7 @@ import random
 import discord
 from discord.ext import commands, tasks, bridge
 
-from config import json_loader
+from config.parser import JsonCache
 from lib import time, checks
 from lib.embeds.error import BdayErrors
 from modules.birthdays import upcoming, birthday
@@ -13,7 +13,7 @@ from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 
 logs = logging.getLogger('Racu.Core')
-data = json_loader.load_birthday()
+data = JsonCache.read_json("birthday")
 month_mapping = data["month_mapping"]
 messages = data["birthday_messages"]
 
@@ -30,8 +30,8 @@ class Birthdays(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.check(checks.birthday_module)
-    @commands.check(checks.channel)
+    @checks.birthdays_enabled()
+    @checks.allowed_in_channel()
     async def set_birthday(self, ctx, month: str, *, day: int):
         """
         Set your birthday. You can use abbreviations for months, like "jan" and "nov".
@@ -56,8 +56,8 @@ class Birthdays(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.check(checks.birthday_module)
-    @commands.check(checks.channel)
+    @checks.birthdays_enabled()
+    @checks.allowed_in_channel()
     async def upcoming_birthdays(self, ctx):
         """
         Shows the upcoming birthdays in this server.

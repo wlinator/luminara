@@ -1,48 +1,37 @@
-import os
-
-import discord
-from dotenv import load_dotenv
-from lib.embeds.error import BdayErrors, GenericErrors
+from discord.ext import commands
+from lib.exceptions import RacuExceptions
 from services.GuildConfig import GuildConfig
 
-load_dotenv('.env')
 
+def birthdays_enabled():
+    async def predicate(ctx):
+        if ctx.guild is None:
+            return True
 
-async def birthday_module(ctx):
-    """
-        Whether the Birthday module is enabled in a server depends on the field "birthday_channel_id" in racudb.server_config
-        NULL or INVALID: disabled
-    """
-    guild_config = GuildConfig(ctx.guild.id)
+        guild_config = GuildConfig(ctx.guild.id)
 
-    if not guild_config.birthday_channel_id:
-        await ctx.respond(embed=BdayErrors.birthdays_disabled(ctx))
-        return False
-    
-    return True
+        if not guild_config.birthday_channel_id:
+            raise RacuExceptions.BirthdaysDisabled
 
-
-async def channel(ctx):
-
-    if ctx.guild is None:
         return True
 
-    guild_config = GuildConfig(ctx.guild.id)
-    command_channel_id = guild_config.command_channel_id
+    return commands.check(predicate)
 
-    if command_channel_id:
-        if ctx.channel.id != command_channel_id:
 
-            try:
-                command_channel = await ctx.guild.fetch_channel(command_channel_id)
-                await ctx.respond(embed=GenericErrors.channel_not_allowed(ctx, command_channel),
-                                  delete_after=5, ephemeral=True)
-                return False
+def allowed_in_channel():
+    async def predicate(ctx):
+        if ctx.guild is None:
+            return True
 
-            except (discord.HTTPException, discord.NotFound):
-                return True
+        guild_config = GuildConfig(ctx.guild.id)
+        command_channel_id = guild_config.command_channel_id
 
-            except discord.Forbidden:
-                return False
+        if command_channel_id:
+            command_channel = await ctx.bot.get_or_fetch_channel(ctx.guild, command_channel_id)
 
-    return True
+            if ctx.channel.id != command_channel_id and command_channel:
+                raise RacuExceptions.NotAllowedInChannel(command_channel)
+
+        return True
+
+    return commands.check(predicate)

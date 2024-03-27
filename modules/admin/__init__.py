@@ -2,10 +2,9 @@ import discord
 from discord.ext import commands, bridge
 from modules.admin import award, sql
 from lib.embeds.error import EconErrors
-from lib import checks
 
 
-class Admin(commands.Cog):
+class BotAdmin(commands.Cog):
 
     """
     This module is intended for commands that only bot owners can do.
@@ -23,8 +22,7 @@ class Admin(commands.Cog):
     )
     @commands.guild_only()
     @commands.is_owner()
-    @commands.check(checks.channel)
-    async def award_command(self, ctx, *, user: discord.User, amount: int):
+    async def award_command(self, ctx, user: discord.User, *, amount: int):
         return await award.cmd(ctx, user, amount)
 
     @award_command.error
@@ -41,7 +39,6 @@ class Admin(commands.Cog):
         help="Perform a SELECT query in the database. This can only be done by the owner of Racu."
     )
     @commands.is_owner()
-    @commands.check(checks.channel)
     async def select(self, ctx, *, query: str):
         return await sql.select_cmd(ctx, query)
 
@@ -52,10 +49,9 @@ class Admin(commands.Cog):
         help="Change a value in the database. This can only be done by the owner of Racu. (DANGEROUS)"
     )
     @commands.is_owner()
-    @commands.check(checks.channel)
     async def inject(self, ctx, *, query: str):
         return await sql.inject_cmd(ctx, query)
 
 
 def setup(client):
-    client.add_cog(Admin(client))
+    client.add_cog(BotAdmin(client))
