@@ -17,7 +17,7 @@ class Levels(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.check(checks.channel)
+    @checks.allowed_in_channel()
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def level_command(self, ctx):
         await level.cmd(ctx)
@@ -30,7 +30,7 @@ class Levels(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.check(checks.channel)
+    @checks.allowed_in_channel()
     @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard_command(self, ctx):
         return await leaderboard.cmd(ctx)

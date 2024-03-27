@@ -1,9 +1,24 @@
 {
   "emotes_guild_id": 1038051105642401812,
-  "rc_guild_id": 719227135151046699,
+  "gitlab_url": "https://gitlab.com/wlinator/Racu",
+  "author_url": "<https://discord.com/users/784783517845946429>",
+  "guild_specific": {
+    "guild_id": 719227135151046699,
+    "intro_channel_id": 973619250507972618,
+    "question_mapping": {
+      "(Nick)name": "Let's start with your nickname. How would you like to be identified in the server?",
+        "Age": "How old are you?",
+        "Region": "Where do you live?",
+        "Languages": "Which languages do you speak?",
+        "Pronouns": "What are your preferred pronouns?",
+        "Sexuality": "What's your sexuality?",
+        "Relationship status": "What's your current relationship status?",
+        "Likes & interests": "Likes & interests",
+        "Dislikes": "Dislikes",
+        "EXTRAS": "EXTRAS: job status, zodiac sign, hobbies, etc. Tell us about yourself!"
+    }
+  },
   "daily_reward": 500,
-  "exchange_rate": 75000,
-  "bet_limit": 1000000,
   "blackjack": {
     "emotes": {
       "hit": "<:hit:1119262723285467156>",

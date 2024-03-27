@@ -1,17 +1,15 @@
 import os
 
 import discord
-from discord.ext import bridge
 from dotenv import load_dotenv
 
-from lib.embeds.greet import Greet
-from config import json_loader
+from handlers import LoggingHandler, ErrorHandler
 from handlers.ReactionHandler import ReactionHandler
 from handlers.XPHandler import XPHandler
-from handlers import LoggingHandler, ErrorHandler
+from lib.embeds.greet import Greet
+from services.Client import RacuBot
 from services.GuildConfig import GuildConfig
 from services.Help import RacuHelp
-from services.Client import RacuBot
 
 load_dotenv('.env')
 instance = os.getenv("INSTANCE")
@@ -49,7 +47,7 @@ async def on_message(message):
         xp_handler = XPHandler()
         await xp_handler.process_xp(message)
 
-        reaction_handler = ReactionHandler(reactions)
+        reaction_handler = ReactionHandler()
         await reaction_handler.handle_message(message)
 
     except Exception as error:
@@ -115,12 +113,6 @@ async def on_application_command_error(ctx, error) -> None:
 @client.event
 async def on_error(event: str, *args, **kwargs) -> None:
     await ErrorHandler.on_error(event, *args, **kwargs)
-
-
-# load all json
-strings = json_loader.load_strings()
-economy_config = json_loader.load_economy_config()
-reactions = json_loader.load_reactions()
 
 
 def load_modules():

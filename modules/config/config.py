@@ -1,6 +1,9 @@
 import discord
+
+from config.parser import JsonCache
 from services.GuildConfig import GuildConfig
-from main import strings
+
+strings = JsonCache.read_json("strings")
 
 
 async def cmd(self, ctx):

@@ -1,8 +1,12 @@
 import discord
+
+from config.parser import JsonCache
 from lib import formatter
 
-question_icon = "https://i.imgur.com/8xccUws.png"
-exclam_icon = "https://i.imgur.com/vitwMUu.png"
+resources = JsonCache.read_json("art")
+
+question_icon = resources["icons"]["question"]
+exclam_icon = resources["icons"]["exclam"]
 
 
 def clean_error_embed(ctx):
@@ -224,6 +228,15 @@ class MiscErrors:
 
         return embed
 
+    @staticmethod
+    def intro_no_guild(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "you're not in a server that supports introductions."
+        embed.set_footer(text="this will be updated soon, stay tuned",
+                         icon_url=exclam_icon)
+
+        return embed
+
 
 class HelpErrors:
     @staticmethod
@@ -234,5 +247,25 @@ class HelpErrors:
         embed = clean_error_embed(ctx)
         embed.description += error
         embed.set_footer(text=f"See '{formatter.get_prefix(ctx)}help'", icon_url=question_icon)
+
+        return embed
+
+
+class IntroErrors:
+    @staticmethod
+    def timeout(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "you ran out of time to answer this question."
+        embed.set_footer(text=f"Please do {formatter.get_prefix(ctx)}{formatter.get_invoked_name(ctx)} again",
+                         icon_url=exclam_icon)
+
+        return embed
+
+    @staticmethod
+    def too_long(ctx):
+        embed = clean_error_embed(ctx)
+        embed.description += "your answer was too long, please keep it below 200 characters."
+        embed.set_footer(text=f"Please do {formatter.get_prefix(ctx)}{formatter.get_invoked_name(ctx)} again",
+                         icon_url=exclam_icon)
 
         return embed

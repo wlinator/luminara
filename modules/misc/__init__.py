@@ -1,8 +1,10 @@
 import datetime
+
+import discord
 from discord.ext import commands, bridge, tasks
 from lib import checks
 from lib.embeds.info import MiscInfo
-from modules.misc import introduction, invite, backup
+from modules.misc import introduction, invite, backup, info
 from modules.config import prefix
 
 
@@ -24,7 +26,7 @@ class Misc(commands.Cog):
         help="Simple status check, this command will not return the latency of the bot process as this is "
              "fairly irrelevant. If the bot replies, it's good to go.",
     )
-    @commands.check(checks.channel)
+    @checks.allowed_in_channel()
     async def ping(self, ctx):
         return await ctx.respond(embed=MiscInfo.ping(ctx, self.client))
 
@@ -33,7 +35,7 @@ class Misc(commands.Cog):
         description="Racu uptime",
         help="See how long Racu has been online, the uptime shown will reset when the Misc module is reloaded.",
     )
-    @commands.check(checks.channel)
+    @checks.allowed_in_channel()
     async def uptime(self, ctx):
 
         unix_timestamp = int(round(self.start_time.timestamp()))
@@ -53,9 +55,20 @@ class Misc(commands.Cog):
         guild_only=True
     )
     @commands.guild_only()
-    @commands.check(checks.channel)
+    @checks.allowed_in_channel()
     async def prefix_command(self, ctx):
         return await prefix.get_cmd(ctx)
+
+    @bridge.bridge_command(
+        name="info",
+        aliases=["stats"]
+    )
+    async def info_command(self, ctx):
+        """
+        Shows basic stats for Racu.
+        """
+        unix_timestamp = int(round(self.start_time.timestamp()))
+        return await info.cmd(self, ctx, unix_timestamp)
 
     @bridge.bridge_command(
         name="introduction",

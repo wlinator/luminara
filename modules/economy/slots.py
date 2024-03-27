@@ -6,12 +6,12 @@ from collections import Counter
 import discord
 import pytz
 
-from handlers.ItemHandler import ItemHandler
 from lib.embeds.error import EconErrors
-from main import economy_config
+from config.parser import JsonCache
 from services.Currency import Currency
 from services.SlotsStats import SlotsStats
 
+resources = JsonCache.read_json("resources")
 est = pytz.timezone('US/Eastern')
 
 
@@ -27,7 +27,7 @@ async def cmd(self, ctx, bet):
         return await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
     # # check if the bet exceeds the bet limit
-    # bet_limit = int(economy_config["bet_limit"])
+    # bet_limit = int(resources["bet_limit"])
     # if abs(bet) > bet_limit:
     #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
     #     return await ctx.respond(content=message)
@@ -57,12 +57,6 @@ async def cmd(self, ctx, bet):
     finished_output = slots_finished(ctx, type, Currency.format_human(bet),
                                      Currency.format_human(payout), results, emojis)
 
-    item_reward = ItemHandler(ctx)
-    field = await item_reward.rave_coin(is_won=is_won, bet=bet, field="")
-
-    if field is not "":
-        finished_output.add_field(name="Extra Rewards", value=field, inline=False)
-
     await ctx.edit(embed=finished_output)
 
     # user payout
@@ -70,9 +64,6 @@ async def cmd(self, ctx, bet):
         ctx_currency.add_balance(payout)
     else:
         ctx_currency.take_balance(bet)
-
-    # item_reward = ItemHandler(ctx)
-    # await item_reward.rave_coin(is_won=is_won, bet=bet)
 
     stats = SlotsStats(
         user_id=ctx.author.id,
@@ -88,7 +79,7 @@ async def cmd(self, ctx, bet):
 
 
 def get_emotes(client):
-    decoration = economy_config["slots"]["emotes"]
+    decoration = resources["slots"]["emotes"]
     emojis = {name: client.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
     return emojis
 
@@ -96,7 +87,7 @@ def get_emotes(client):
 def calculate_slots_results(bet, results):
     type = None
     multiplier = None
-    rewards = economy_config["slots"]["reward_multipliers"]
+    rewards = resources["slots"]["reward_multipliers"]
 
     # count occurrences of each item in the list
     counts = Counter(results)

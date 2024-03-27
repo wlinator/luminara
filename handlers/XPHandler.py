@@ -1,17 +1,17 @@
 import logging
 import random
 import time
+
 import discord
 
-from config import json_loader
-from services.Currency import Currency
-from services.Xp import Xp
-from services.GuildConfig import GuildConfig
+from config.parser import JsonCache
 from lib import formatter
+from services.GuildConfig import GuildConfig
+from services.Xp import Xp
 
+strings = JsonCache.read_json("strings")
+level_messages = JsonCache.read_json("levels")
 logs = logging.getLogger('Racu.Core')
-strings = json_loader.load_strings()
-level_messages = json_loader.load_levels()
 
 
 class XPHandler:
@@ -48,11 +48,13 @@ class XPHandler:
                 else:
                     await message.reply(content=level_message)
 
-            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {level_config.level}.")
+            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {level_config.level} "
+                      f"in guild {message.guild.name} ({message.guild.id}).")
 
         else:
             logs.info(f"[XpHandler] {message.author.name} gained {level_config.xp_gain} XP | "
-                      f"lv {level_config.level} with {level_config.xp} XP.")
+                      f"lv {level_config.level} with {level_config.xp} XP. | "
+                      f"guild: {message.guild.name} ({message.guild.id})")
 
         level_config.ctime = current_time + level_config.new_cooldown
         level_config.push()

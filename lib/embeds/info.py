@@ -1,13 +1,18 @@
 import discord
+
+from config.parser import JsonCache
 from lib import formatter
 
-question_icon = "https://i.imgur.com/8xccUws.png"
-exclam_icon = "https://i.imgur.com/vitwMUu.png"
+resources = JsonCache.read_json("art")
+
+question_icon = resources["icons"]["question"]
+exclam_icon = resources["icons"]["exclam"]
+streak_icon = resources["icons"]["streak"]
 
 
 def clean_info_embed(ctx):
     embed = discord.Embed(
-        color=discord.Color.brand_green(),
+        color=discord.Color.blurple(),
         description=f"**{ctx.author.name}** "
     )
 
@@ -22,7 +27,7 @@ class EconInfo:
 
         if streak > 1:
             embed.set_footer(text=f"You're on a streak of {streak} days",
-                             icon_url=exclam_icon)
+                             icon_url=streak_icon)
 
         return embed
 

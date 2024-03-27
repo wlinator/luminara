@@ -1,16 +1,17 @@
 import logging
 
 import discord
-from discord.ext import commands, bridge
 from discord.commands import SlashCommandGroup
-from services.GuildConfig import GuildConfig
-from lib import formatter, embeds_old
-from modules.config import config, prefix
+from discord.ext import commands, bridge
+
+from config.parser import JsonCache
+from lib import formatter
 from lib.embeds.error import MiscErrors
-import main
+from lib.embeds.greet import Greet
+from modules.config import config, prefix
+from services.GuildConfig import GuildConfig
 
-from main import strings
-
+strings = JsonCache.read_json("strings")
 logs = logging.getLogger('Racu.Core')
 
 
@@ -241,7 +242,7 @@ class Config(commands.Cog):
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
         await ctx.respond(embed=embed)
 
-        embed = embeds_old.welcome_message(ctx.author, text)
+        embed = Greet.message(ctx.author, text)
         return await ctx.send(embed=embed, content=ctx.author.mention)
 
     @level_config.command(
