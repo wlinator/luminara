@@ -276,7 +276,7 @@ class ModErrors:
     def mod_error(ctx, error):
         embed = clean_error_embed(ctx)
         embed.description += error
-        embed.set_footer(text=f"Please do {formatter.get_prefix(ctx)}{formatter.get_invoked_name(ctx)} again",
-                         icon_url=exclam_icon)
+        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
+                         icon_url=question_icon)
 
         return embed
