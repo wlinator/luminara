@@ -38,7 +38,8 @@ class ModEmbeds:
         embed = clean_mod_embed()
         embed.set_author(name="Member Banned", icon_url=hammer_icon)
 
-        embed.add_field(name="Username", value=f"{member_name} ({member_id})", inline=False)
+        embed.add_field(name="Username", value=member_name, inline=False)
+        embed.add_field(name="User ID", value=member_id, inline=False)
         embed.add_field(name="Moderator", value=ctx.author.mention, inline=False)
         embed.add_field(name="Reason", value=shorten(reason, 37))
 
