@@ -28,8 +28,8 @@ class RacuBot(bridge.Bot):
 
         ctx = await self.get_context(message)
 
-        async with ctx.typing():
-            await self.invoke(ctx)
+        #async with ctx.typing():
+        await self.invoke(ctx)
 
     @staticmethod
     async def get_or_fetch_channel(guild, channel_id):
