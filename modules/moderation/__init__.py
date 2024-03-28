@@ -44,8 +44,8 @@ class Moderation(commands.Cog):
         """
         await ban.unban_user(ctx, target, reason)
 
-    async def cog_command_error(self, ctx: ApplicationContext, error: Exception) -> None:
-        await ctx.respond(embed=ModErrors.mod_error(ctx, str(error)))
+    # async def cog_command_error(self, ctx: ApplicationContext, error: Exception) -> None:
+    #     await ctx.respond(embed=ModErrors.mod_error(ctx, str(error)))
 
 
 def setup(client):
