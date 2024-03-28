@@ -51,7 +51,7 @@ class Birthdays(commands.Cog):
 
     @bridge.bridge_command(
         name="upcoming",
-        aliases=["birthdayupcoming", "ub"],
+        aliases=["birthdayupcoming"],
         description="See upcoming birthdays!",
         guild_only=True
     )

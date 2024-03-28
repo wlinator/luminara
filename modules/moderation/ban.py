@@ -2,13 +2,13 @@ import logging
 
 import discord
 from modules.moderation import functions
-from lib.embeds.moderation import ModEmbeds, shorten
+from lib.embeds.moderation import ModEmbeds, ModErrors ,shorten
 
 
 _logs = logging.getLogger('Racu.Core')
 
 
-async def user(cog, ctx, target: discord.User, reason):
+async def ban_user(cog, ctx, target: discord.User, reason):
     # see if user is in guild
     member = await cog.client.get_or_fetch_member(ctx.guild, target.id)
 
@@ -38,4 +38,17 @@ async def user(cog, ctx, target: discord.User, reason):
     else:
         await ctx.guild.ban(target, reason=f"moderator: {ctx.author.name} | reason: {shorten(reason, 200)}")
         return await ctx.respond(embed=ModEmbeds.user_banned(ctx, target.id, reason))
+
+
+async def unban_user(ctx, target: discord.User, reason):
+    if not reason:
+        reason = "No reason provided."
+
+    try:
+        await ctx.guild.unban(target, reason=f"moderator: {ctx.author.name} | reason: {shorten(reason, 200)}")
+        return await ctx.respond(embed=ModEmbeds.user_unban(ctx, target.id))
+
+    except (discord.NotFound, discord.HTTPException):
+        return await ctx.respond(embed=ModErrors.user_not_banned(ctx, target.id))
+
 

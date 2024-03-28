@@ -269,3 +269,14 @@ class IntroErrors:
                          icon_url=exclam_icon)
 
         return embed
+
+
+class ModErrors:
+    @staticmethod
+    def mod_error(ctx, error):
+        embed = clean_error_embed(ctx)
+        embed.description += error
+        embed.set_footer(text=f"Please do {formatter.get_prefix(ctx)}{formatter.get_invoked_name(ctx)} again",
+                         icon_url=exclam_icon)
+
+        return embed
