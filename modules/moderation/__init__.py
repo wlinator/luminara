@@ -21,7 +21,10 @@ class Moderation(commands.Cog):
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
-    async def ban_command(self, ctx, target: discord.User, *, reason: str):
+    async def ban_command(self, ctx, target: discord.User, *, reason: str = None):
+        """
+        Bans a user from the guild, you can mention the user, use ID or provide their username.
+        """
         await ban.user(self, ctx, target, reason)
 
 
