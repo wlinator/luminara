@@ -22,6 +22,15 @@ class RacuBot(bridge.Bot):
         Event is called when RESUME request fails.
         """
 
+    async def process_commands(self, message: discord.Message):
+        if message.author.bot:
+            return
+
+        ctx = await self.get_context(message)
+
+        async with ctx.typing():
+            await self.invoke(ctx)
+
     @staticmethod
     async def get_or_fetch_channel(guild, channel_id):
         channel = guild.get_channel(channel_id)
