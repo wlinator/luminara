@@ -34,3 +34,16 @@ class RacuBot(bridge.Bot):
                 return None
 
         return channel
+
+    @staticmethod
+    async def get_or_fetch_member(guild, user_id):
+        member = guild.get_member(user_id)
+
+        if not member:
+            try:
+                member = await guild.fetch_member(user_id)
+
+            except (discord.HTTPException, discord.NotFound, discord.Forbidden):
+                return None
+
+        return member
