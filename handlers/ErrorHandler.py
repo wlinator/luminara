@@ -39,6 +39,7 @@ async def on_command_error(ctx, error):
         pass
 
     elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
+
         """subclasses of this exception"""
         if isinstance(error, RacuExceptions.NotAllowedInChannel):
             await ctx.respond(embed=GenericErrors.channel_not_allowed(ctx, error.command_channel),
