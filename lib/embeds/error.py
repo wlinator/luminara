@@ -31,7 +31,7 @@ class GenericErrors:
     @staticmethod
     def bad_arg(ctx, error):
         embed = clean_error_embed(ctx)
-        embed.description += str(error)
+        embed.description += formatter.shorten(str(error), 100)
         embed.set_footer(text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
                          icon_url=question_icon)
 

@@ -1,4 +1,5 @@
 import discord
+import textwrap
 from services.GuildConfig import GuildConfig
 
 
@@ -23,6 +24,10 @@ def template(text, username, level=None):
         text = text.replace(placeholder, value)
 
     return text
+
+
+def shorten(text, width) -> str:
+    return textwrap.shorten(text, width=width, placeholder="...")
 
 
 def get_prefix(ctx):
