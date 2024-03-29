@@ -3,6 +3,7 @@ import os
 import platform
 
 import discord
+from lib import metadata
 from discord.ext import bridge
 
 logs = logging.getLogger('Racu.Core')
@@ -10,7 +11,9 @@ logs = logging.getLogger('Racu.Core')
 
 class RacuBot(bridge.Bot):
     async def on_ready(self):
-        logs.info(f"[INFO] Logged in as {self.user.name} | {self.user.id}")
+        logs.info("-------------------------------------------------------")
+        logs.info(f"[INFO] {metadata.__title__} v{metadata.__version__}")
+        logs.info(f"[INFO] Logged in with ID {self.user.id}")
         logs.info(f"[INFO] discord.py API version: {discord.__version__}")
         logs.info(f"[INFO] Python version: {platform.python_version()}")
         logs.info(f"[INFO] Running on: {platform.system()} {platform.release()} ({os.name})")
