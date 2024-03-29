@@ -37,13 +37,6 @@ class Economy(commands.Cog):
     async def blackjack_command(self, ctx, *, bet: int):
         return await blackjack.cmd(ctx, bet)
 
-    @blackjack_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_bet(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
-
     @bridge.bridge_command(
         name="daily",
         aliases=["timely"],
@@ -84,13 +77,6 @@ class Economy(commands.Cog):
 
         return await give.cmd(ctx, member, amount)
 
-    @give_command_prefixed.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_argument(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_argument(ctx))
-
     # @bridge.bridge_command(
     #     name="inventory",
     #     aliases=["inv"],
@@ -116,13 +102,6 @@ class Economy(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slots_command(self, ctx, *, bet: int):
         return await slots.cmd(self, ctx, bet)
-
-    @slots_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_bet(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
 
 def setup(client):

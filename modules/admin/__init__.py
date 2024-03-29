@@ -25,13 +25,6 @@ class BotAdmin(commands.Cog):
     async def award_command(self, ctx, user: discord.User, *, amount: int):
         return await award.cmd(ctx, user, amount)
 
-    @award_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_bet(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
-
     @bridge.bridge_command(
         name="sqlselect",
         aliases=["sqls"],

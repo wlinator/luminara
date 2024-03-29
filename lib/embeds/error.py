@@ -23,7 +23,17 @@ class GenericErrors:
     def default_exception(ctx):
         embed = clean_error_embed(ctx)
         embed.description += "something went wrong."
-        embed.set_footer(text="Try the command again", icon_url=exclam_icon)
+        embed.set_footer(text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
+                         icon_url=question_icon)
+
+        return embed
+
+    @staticmethod
+    def bad_arg(ctx, error):
+        embed = clean_error_embed(ctx)
+        embed.description += str(error).lower()
+        embed.set_footer(text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
+                         icon_url=question_icon)
 
         return embed
 
