@@ -1,8 +1,8 @@
 import logging
 import os
-import discord
 import platform
 
+import discord
 from discord.ext import bridge
 
 logs = logging.getLogger('Racu.Core')

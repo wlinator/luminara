@@ -1,9 +1,8 @@
 import discord
 from discord.ext import commands
-from lib.embeds.error import HelpErrors
 from dotenv import load_dotenv
-from lib import checks
-import os
+
+from lib.embeds.error import HelpErrors
 
 load_dotenv('.env')
 

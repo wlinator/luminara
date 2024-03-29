@@ -84,7 +84,7 @@ class XPHandler:
                 if not guild_config.level_message:
                     level_message = XPHandler.level_message_generic(level_config.level, author)
                 else:
-                    level_message = formatter.template(guild_config.level_message,author.name, level_config.level)
+                    level_message = formatter.template(guild_config.level_message, author.name, level_config.level)
             case _:
                 raise Exception
 
@@ -125,8 +125,8 @@ class XPHandler:
         guild = user.guild
 
         if (
-            guild.id != 719227135151046699 or
-            not (level % 5 == 0 and 5 <= level <= 100)
+                guild.id != 719227135151046699 or
+                not (level % 5 == 0 and 5 <= level <= 100)
         ):
             return
 

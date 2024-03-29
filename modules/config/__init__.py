@@ -6,7 +6,6 @@ from discord.ext import commands, bridge
 
 from config.parser import JsonCache
 from lib import formatter
-from lib.embeds.error import MiscErrors
 from lib.embeds.greet import Greet
 from modules.config import config, set_prefix
 from services.GuildConfig import GuildConfig

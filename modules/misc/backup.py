@@ -51,7 +51,6 @@ async def backup_cleanup(dbx):
 
 
 async def backup(self):
-
     if instance.lower() == "main":
         try:
             await create_db_backup(dbx)

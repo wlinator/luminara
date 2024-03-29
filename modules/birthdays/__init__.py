@@ -7,7 +7,6 @@ from discord.ext import commands, tasks, bridge
 
 from config.parser import JsonCache
 from lib import time, checks
-from lib.embeds.error import BdayErrors
 from modules.birthdays import upcoming, birthday
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
