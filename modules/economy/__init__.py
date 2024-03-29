@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands, bridge
 
 from lib import checks
-from lib.embeds.error import EconErrors
 from modules.economy import blackjack, slots, balance, stats, give, inventory, daily
 
 

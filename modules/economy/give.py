@@ -1,7 +1,6 @@
 import discord
-
 from discord.ext import commands
-from lib.embeds.error import EconErrors
+
 from services.Currency import Currency
 
 

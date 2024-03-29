@@ -1,11 +1,10 @@
 import discord
 from discord.ext import commands, bridge
+
 from modules.admin import award, sql
-from lib.embeds.error import EconErrors
 
 
 class BotAdmin(commands.Cog):
-
     """
     This module is intended for commands that only bot owners can do.
     For server configuration with Racu, see the "config" module.

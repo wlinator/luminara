@@ -1,4 +1,5 @@
 import discord
+
 from config.parser import JsonCache
 
 resources = JsonCache.read_json("art")

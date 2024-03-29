@@ -1,10 +1,10 @@
 import logging
 
 import discord
-from modules.moderation import functions
-from lib.embeds.moderation import ModEmbeds, ModErrors
-from lib import formatter
 
+from lib import formatter
+from lib.embeds.moderation import ModEmbeds, ModErrors
+from modules.moderation import functions
 
 _logs = logging.getLogger('Racu.Core')
 
@@ -42,7 +42,6 @@ async def ban_user(cog, ctx, target: discord.User, reason):
 
 
 async def unban_user(ctx, target: discord.User, reason):
-
     if not reason:
         reason = "No reason provided."
 
@@ -52,5 +51,3 @@ async def unban_user(ctx, target: discord.User, reason):
 
     except (discord.NotFound, discord.HTTPException):
         return await ctx.respond(embed=ModErrors.user_not_banned(ctx, target.id))
-
-

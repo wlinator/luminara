@@ -1,10 +1,9 @@
-from services.GuildConfig import GuildConfig
-from lib.embeds.info import MiscInfo
 from lib.embeds.error import MiscErrors
+from lib.embeds.info import MiscInfo
+from services.GuildConfig import GuildConfig
 
 
 async def set_cmd(ctx, prefix):
-
     if len(prefix) > 25:
         return await ctx.respond(embed=MiscErrors.prefix_too_long(ctx))
 

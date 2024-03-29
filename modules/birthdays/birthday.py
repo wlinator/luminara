@@ -3,13 +3,11 @@ import datetime
 
 from discord.ext import commands
 
-from lib.embeds.error import BdayErrors
 from lib.embeds.info import BdayInfo
 from services.Birthday import Birthday
 
 
 async def cmd(ctx, month, month_index, day):
-
     leap_year = 2020
     max_days = calendar.monthrange(leap_year, month_index)[1]
 

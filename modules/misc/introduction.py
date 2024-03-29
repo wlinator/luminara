@@ -2,11 +2,11 @@ import asyncio
 import logging
 
 import discord
-from config.parser import JsonCache
 
+from config.parser import JsonCache
+from lib import interaction
 from lib.embeds.error import MiscErrors, IntroErrors
 from lib.embeds.intro import General, Questions
-from lib import interaction
 
 resources = JsonCache.read_json("resources")
 logs = logging.getLogger('Racu.Core')

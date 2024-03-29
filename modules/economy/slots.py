@@ -4,10 +4,9 @@ import random
 from collections import Counter
 
 import discord
-from discord.ext import commands
 import pytz
+from discord.ext import commands
 
-from lib.embeds.error import EconErrors
 from config.parser import JsonCache
 from services.Currency import Currency
 from services.SlotsStats import SlotsStats

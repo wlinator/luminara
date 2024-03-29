@@ -1,16 +1,16 @@
-import random
 import logging
+import random
 from datetime import datetime
 
 import discord
-from discord.ext import commands
 import pytz
+from discord.ext import commands
 from dotenv import load_dotenv
 
+from config.parser import JsonCache
 from lib import interaction
 from lib.embeds.error import EconErrors
 from lib.embeds.error import GenericErrors
-from config.parser import JsonCache
 from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 
@@ -228,7 +228,7 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
         value = f"You lost **${bet}**."
         thumbnail_url = "https://i.imgur.com/rc68c43.png"
         color = discord.Color.red()
-    
+
     elif status == 2:
         name = "You won with a score of 21!"
         value = f"You won **${payout}**."

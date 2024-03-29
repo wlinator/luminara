@@ -1,7 +1,7 @@
 import discord
 
-from lib import formatter
 from config.parser import JsonCache
+from lib import formatter
 
 art = JsonCache.read_json("art")
 hammer_icon = art["icons"]["hammer"]

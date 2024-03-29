@@ -1,5 +1,7 @@
-import discord
 import textwrap
+
+import discord
+
 from services.GuildConfig import GuildConfig
 
 

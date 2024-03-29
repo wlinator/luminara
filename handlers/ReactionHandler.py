@@ -1,6 +1,6 @@
 import random
+
 from config.parser import JsonCache
-from lib import checks
 
 
 class ReactionHandler:
