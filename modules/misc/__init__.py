@@ -5,7 +5,7 @@ from discord.ext import commands, bridge, tasks
 from lib import checks
 from lib.embeds.info import MiscInfo
 from modules.misc import introduction, invite, backup, info
-from modules.config import prefix
+from modules.config import set_prefix
 
 
 class Misc(commands.Cog):
@@ -57,7 +57,7 @@ class Misc(commands.Cog):
     @commands.guild_only()
     @checks.allowed_in_channel()
     async def prefix_command(self, ctx):
-        return await prefix.get_cmd(ctx)
+        return await set_prefix.get_cmd(ctx)
 
     @bridge.bridge_command(
         name="info",

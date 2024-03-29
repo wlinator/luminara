@@ -4,6 +4,7 @@ import random
 from collections import Counter
 
 import discord
+from discord.ext import commands
 import pytz
 
 from lib.embeds.error import EconErrors
@@ -22,9 +23,9 @@ async def cmd(self, ctx, bet):
     # check if the user has enough cash
     player_balance = ctx_currency.balance
     if bet > player_balance:
-        return await ctx.respond(embed=EconErrors.insufficient_balance(ctx))
+        raise commands.BadArgument("you don't have enough cash.")
     elif bet <= 0:
-        return await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
+        raise commands.BadArgument("the bet you entered is invalid.")
 
     # # check if the bet exceeds the bet limit
     # bet_limit = int(resources["bet_limit"])
