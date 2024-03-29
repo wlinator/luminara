@@ -1,4 +1,5 @@
 import discord
+from services.GuildConfig import GuildConfig
 
 
 def template(text, username, level=None):
@@ -26,14 +27,12 @@ def template(text, username, level=None):
 
 def get_prefix(ctx):
     """
-    Attempt to get the prefix, if the command was used as a SlashCommand, return "/"
+    Attempt to get the prefix.
     """
     try:
-        prefix = ctx.clean_prefix
-    except (discord.ApplicationCommandInvokeError, AttributeError):
-        prefix = "/"
-
-    return prefix
+        return GuildConfig.get_prefix(ctx.guild.id)
+    except AttributeError:
+        return "."
 
 
 def get_invoked_name(ctx):
