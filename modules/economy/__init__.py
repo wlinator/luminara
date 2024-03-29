@@ -73,7 +73,7 @@ class Economy(commands.Cog):
         try:
             member = await ctx.guild.fetch_member(user.id)
         except discord.HTTPException:
-            raise commands.BadArgument
+            raise commands.BadArgument("I couldn't find that user in this server.")
 
         return await give.cmd(ctx, member, amount)
 

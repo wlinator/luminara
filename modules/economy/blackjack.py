@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 
 import discord
+from discord.ext import commands
 import pytz
 from dotenv import load_dotenv
 
@@ -43,9 +44,9 @@ async def cmd(ctx, bet: int):
     # check if the user has enough cash
     player_balance = ctx_currency.balance
     if bet > player_balance:
-        return await ctx.respond(embed=EconErrors.insufficient_balance(ctx))
+        raise commands.BadArgument("you don't have enough cash.")
     elif bet <= 0:
-        return await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
+        raise commands.BadArgument("the bet you entered is invalid.")
 
     active_blackjack_games[ctx.author.id] = True
 

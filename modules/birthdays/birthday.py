@@ -14,7 +14,7 @@ async def cmd(ctx, month, month_index, day):
     max_days = calendar.monthrange(leap_year, month_index)[1]
 
     if not (1 <= day <= max_days):
-        return await ctx.respond(embed=BdayErrors.invalid_date(ctx))
+        raise commands.BadArgument("the date you entered is invalid.")
 
     date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
     date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
@@ -32,7 +32,7 @@ async def get_month_name(string, mapping):
         if string.startswith(month):
             return mapping[month]
 
-    raise commands.BadArgument
+    raise commands.BadArgument("I couldn't recognize that month.")
 
 
 async def get_month_index(string, mapping):
