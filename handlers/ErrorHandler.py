@@ -11,7 +11,10 @@ logs = logging.getLogger('Racu.Core')
 
 
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
+    if isinstance(error, commands.CommandNotFound):
+        pass
+
+    elif isinstance(error, commands.CommandOnCooldown):
 
         seconds = error.retry_after
         minutes = seconds // 60
@@ -35,8 +38,8 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.NotOwner):
         await ctx.respond(embed=GenericErrors.owner_only(ctx))
 
-    elif isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument, commands.CommandNotFound)):
-        pass
+    elif isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
+        return await ctx.respond(embed=GenericErrors.bad_arg(ctx, error))
 
     elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
 

@@ -49,11 +49,6 @@ class Config(commands.Cog):
 
         await prefix.set_cmd(ctx, new_prefix)
 
-    @setprefix_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=MiscErrors.prefix_missing(ctx))
-
     config = SlashCommandGroup("config", "server config commands.", guild_only=True,
                                default_member_permissions=discord.Permissions(manage_channels=True))
     birthday_config = config.create_subgroup(name="birthdays")

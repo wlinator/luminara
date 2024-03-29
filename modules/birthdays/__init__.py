@@ -42,13 +42,6 @@ class Birthdays(commands.Cog):
         month_index = await birthday.get_month_index(month_name, month_mapping)
         await birthday.cmd(ctx, month_name, month_index, day)
 
-    @set_birthday.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=BdayErrors.missing_arg(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=BdayErrors.bad_month(ctx))
-
     @bridge.bridge_command(
         name="upcoming",
         aliases=["birthdayupcoming"],
