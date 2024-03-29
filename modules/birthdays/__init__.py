@@ -7,7 +7,6 @@ from discord.ext import commands, tasks, bridge
 
 from config.parser import JsonCache
 from lib import time, checks
-from lib.embeds.error import BdayErrors
 from modules.birthdays import upcoming, birthday
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
@@ -41,13 +40,6 @@ class Birthdays(commands.Cog):
         month_name = await birthday.get_month_name(month, month_mapping)
         month_index = await birthday.get_month_index(month_name, month_mapping)
         await birthday.cmd(ctx, month_name, month_index, day)
-
-    @set_birthday.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=BdayErrors.missing_arg(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=BdayErrors.bad_month(ctx))
 
     @bridge.bridge_command(
         name="upcoming",

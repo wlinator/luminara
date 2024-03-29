@@ -1,15 +1,16 @@
-import random
 import logging
+import random
 from datetime import datetime
 
 import discord
 import pytz
+from discord.ext import commands
 from dotenv import load_dotenv
 
+from config.parser import JsonCache
 from lib import interaction
 from lib.embeds.error import EconErrors
 from lib.embeds.error import GenericErrors
-from config.parser import JsonCache
 from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 
@@ -43,9 +44,9 @@ async def cmd(ctx, bet: int):
     # check if the user has enough cash
     player_balance = ctx_currency.balance
     if bet > player_balance:
-        return await ctx.respond(embed=EconErrors.insufficient_balance(ctx))
+        raise commands.BadArgument("you don't have enough cash.")
     elif bet <= 0:
-        return await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
+        raise commands.BadArgument("the bet you entered is invalid.")
 
     active_blackjack_games[ctx.author.id] = True
 
@@ -227,7 +228,7 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
         value = f"You lost **${bet}**."
         thumbnail_url = "https://i.imgur.com/rc68c43.png"
         color = discord.Color.red()
-    
+
     elif status == 2:
         name = "You won with a score of 21!"
         value = f"You won **${payout}**."

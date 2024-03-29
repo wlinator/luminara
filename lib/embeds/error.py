@@ -23,7 +23,17 @@ class GenericErrors:
     def default_exception(ctx):
         embed = clean_error_embed(ctx)
         embed.description += "something went wrong."
-        embed.set_footer(text="Try the command again", icon_url=exclam_icon)
+        embed.set_footer(text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
+                         icon_url=question_icon)
+
+        return embed
+
+    @staticmethod
+    def bad_arg(ctx, error):
+        embed = clean_error_embed(ctx)
+        embed.description += formatter.shorten(str(error), 100)
+        embed.set_footer(text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
+                         icon_url=question_icon)
 
         return embed
 
@@ -88,57 +98,6 @@ class GenericErrors:
 
 
 class EconErrors:
-    @staticmethod
-    def missing_bet(ctx):
-        """
-        See MissingRequiredArgument
-        """
-        embed = clean_error_embed(ctx)
-        embed.description += "please enter a bet."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-        return embed
-
-    @staticmethod
-    def missing_argument(ctx):
-        """
-        See MissingRequiredArgument
-        """
-        embed = clean_error_embed(ctx)
-        embed.description += "your command is missing an argument."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-        return embed
-
-    @staticmethod
-    def bad_bet_argument(ctx):
-        """
-        See BadArgument
-        """
-        embed = clean_error_embed(ctx)
-        embed.description += "the bet you entered is invalid."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-        return embed
-
-    @staticmethod
-    def bad_argument(ctx):
-        """
-        See BadArgument
-        """
-        embed = clean_error_embed(ctx)
-        embed.description += "the argument you entered is invalid."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-        return embed
-
-    @staticmethod
-    def insufficient_balance(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "you don't have enough cash."
-        embed.set_footer(text=f"Do '{formatter.get_prefix(ctx)}balance' to see how much you can spend",
-                         icon_url=question_icon)
-        return embed
 
     @staticmethod
     def daily_already_claimed(ctx, unix_time):
@@ -174,55 +133,12 @@ class BdayErrors:
 
         return embed
 
-    @staticmethod
-    def invalid_date(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "the date you entered is invalid."
-
-        return embed
-
-    @staticmethod
-    def slash_command_only(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "you can use only slash commands for the birthday system."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-
-        return embed
-
-    @staticmethod
-    def bad_month(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "I couldn't recognize that month."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-
-        return embed
-
-    @staticmethod
-    def missing_arg(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "please enter a month and a day, in that order."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-
-        return embed
-
 
 class MiscErrors:
     @staticmethod
     def prefix_too_long(ctx):
         embed = clean_error_embed(ctx)
         embed.description += "this prefix is too long."
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
-
-        return embed
-
-    @staticmethod
-    def prefix_missing(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "please specify a new prefix."
         embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
                          icon_url=question_icon)
 
@@ -267,16 +183,5 @@ class IntroErrors:
         embed.description += "your answer was too long, please keep it below 200 characters."
         embed.set_footer(text=f"Please do {formatter.get_prefix(ctx)}{formatter.get_invoked_name(ctx)} again",
                          icon_url=exclam_icon)
-
-        return embed
-
-
-class ModErrors:
-    @staticmethod
-    def mod_error(ctx, error):
-        embed = clean_error_embed(ctx)
-        embed.description += error
-        embed.set_footer(text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-                         icon_url=question_icon)
 
         return embed

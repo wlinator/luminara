@@ -1,9 +1,10 @@
 import logging
 
 import discord
-from modules.moderation import functions
-from lib.embeds.moderation import ModEmbeds, ModErrors, shorten
 
+from lib import formatter
+from lib.embeds.moderation import ModEmbeds, ModErrors
+from modules.moderation import functions
 
 _logs = logging.getLogger('Racu.Core')
 
@@ -31,25 +32,22 @@ async def ban_user(cog, ctx, target: discord.User, reason):
         member_name = member.name
         member_id = member.id
 
-        await member.ban(reason=f"moderator: {ctx.author.name} | reason: {shorten(reason, 200)}")
+        await member.ban(reason=f"moderator: {ctx.author.name} | reason: {formatter.shorten(reason, 200)}")
         return await ctx.respond(embed=ModEmbeds.member_banned(ctx, member_name, member_id, reason, dm_sent))
 
     # not a member in this guild, so ban right away
     else:
-        await ctx.guild.ban(target, reason=f"moderator: {ctx.author.name} | reason: {shorten(reason, 200)}")
+        await ctx.guild.ban(target, reason=f"moderator: {ctx.author.name} | reason: {formatter.shorten(reason, 200)}")
         return await ctx.respond(embed=ModEmbeds.user_banned(ctx, target.id, reason))
 
 
 async def unban_user(ctx, target: discord.User, reason):
-
     if not reason:
         reason = "No reason provided."
 
     try:
-        await ctx.guild.unban(target, reason=f"moderator: {ctx.author.name} | reason: {shorten(reason, 200)}")
+        await ctx.guild.unban(target, reason=f"moderator: {ctx.author.name} | reason: {formatter.shorten(reason, 200)}")
         return await ctx.respond(embed=ModEmbeds.user_unban(ctx, target.id))
 
     except (discord.NotFound, discord.HTTPException):
         return await ctx.respond(embed=ModErrors.user_not_banned(ctx, target.id))
-
-

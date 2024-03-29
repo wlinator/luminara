@@ -1,11 +1,11 @@
 import logging
+import os
+
 import mysql.connector
 from dotenv import load_dotenv
-import os
 
 logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
-
 
 cnxpool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name='core-pool',

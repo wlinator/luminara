@@ -1,14 +1,7 @@
-import datetime
-
 import discord
-from discord import ApplicationContext
-from discord.ext import commands, bridge, tasks
+from discord.ext import commands, bridge
+
 from modules.moderation import ban
-from lib.embeds.error import ModErrors
-from lib import checks
-from lib.embeds.info import MiscInfo
-from modules.misc import introduction, invite, backup, info
-from modules.config import prefix
 
 
 class Moderation(commands.Cog):
