@@ -6,6 +6,7 @@ from services.SlotsStats import SlotsStats
 strings = JsonCache.read_json("strings")
 resources = JsonCache.read_json("resources")
 
+
 async def cmd(self, ctx, game):
     output = ""
 

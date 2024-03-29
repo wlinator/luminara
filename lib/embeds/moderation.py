@@ -1,7 +1,7 @@
 import discord
-import textwrap
 
 from config.parser import JsonCache
+from lib import formatter
 
 art = JsonCache.read_json("art")
 hammer_icon = art["icons"]["hammer"]
@@ -25,10 +25,6 @@ def _clean_mod_error_embed(ctx):
     return embed
 
 
-def shorten(text, width) -> str:
-    return textwrap.shorten(text, width=width, placeholder="...")
-
-
 class ModEmbeds:
 
     @staticmethod
@@ -38,7 +34,7 @@ class ModEmbeds:
 
         embed.add_field(name="User ID", value=target_id, inline=False)
         embed.add_field(name="Moderator", value=ctx.author.mention, inline=False)
-        embed.add_field(name="Reason", value=shorten(reason, 37))
+        embed.add_field(name="Reason", value=formatter.shorten(reason, 37))
 
         return embed
 
@@ -50,7 +46,7 @@ class ModEmbeds:
         embed.add_field(name="Username", value=member_name, inline=False)
         embed.add_field(name="User ID", value=member_id, inline=False)
         embed.add_field(name="Moderator", value=ctx.author.mention, inline=False)
-        embed.add_field(name="Reason", value=shorten(reason, 37))
+        embed.add_field(name="Reason", value=formatter.shorten(reason, 37))
 
         if not dm_sent:
             embed.set_footer(text="couldn't notify them in DM", icon_url=cross_icon)
@@ -63,7 +59,7 @@ class ModEmbeds:
         embed.set_author(name="Banned", icon_url=hammer_icon)
         embed.description = f"You were banned from **{ctx.guild.name}**."
         embed.add_field(name="Moderator", value=ctx.author.name, inline=False)
-        embed.add_field(name="Reason", value=shorten(reason, 200), inline=False)
+        embed.add_field(name="Reason", value=formatter.shorten(reason, 200), inline=False)
 
         return embed
 

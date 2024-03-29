@@ -1,4 +1,5 @@
 import discord
+
 from lib.exceptions import RacuExceptions
 
 

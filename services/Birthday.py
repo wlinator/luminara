@@ -52,4 +52,3 @@ class Birthday:
             upcoming.append((user_id, birthday))
 
         return upcoming
-

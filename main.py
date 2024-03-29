@@ -35,7 +35,6 @@ logs = LoggingHandler.setup_logger()
 
 @client.listen()
 async def on_message(message):
-
     if (
             message.author.bot or
             message.guild is None or
@@ -116,13 +115,12 @@ async def on_error(event: str, *args, **kwargs) -> None:
 
 
 def load_modules():
-
     module_list = [d for d in os.listdir("modules") if os.path.isdir(os.path.join("modules", d))]
     loaded_modules = set()
 
     for module in module_list:
         if module in loaded_modules:
-            continue # module is already loaded
+            continue  # module is already loaded
 
         try:
             client.load_extension(f"modules.{module}")

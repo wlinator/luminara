@@ -10,8 +10,8 @@ async def cmd(self, ctx):
     guild_config = GuildConfig(ctx.guild.id)
 
     embed = discord.Embed(
-        color = discord.Color.embed_background(),
-        description = f"Guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration"
+        color=discord.Color.embed_background(),
+        description=f"Guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration"
     )
     icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
     embed.set_author(name=f"{ctx.guild.name} config", icon_url=icon)
@@ -92,4 +92,3 @@ async def cmd(self, ctx):
     embed.add_field(name="LEVELS", value=level_config, inline=False)
 
     await ctx.respond(embed=embed)
-

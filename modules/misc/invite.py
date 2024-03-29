@@ -1,6 +1,8 @@
 import logging
+
 import discord
 from discord.ui import View
+
 from lib.embeds.info import MiscInfo
 
 logs = logging.getLogger('Racu.Core')

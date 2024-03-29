@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands, bridge
 
 from lib import checks
-from lib.embeds.error import EconErrors
 from modules.economy import blackjack, slots, balance, stats, give, inventory, daily
 
 
@@ -36,13 +35,6 @@ class Economy(commands.Cog):
     @checks.allowed_in_channel()
     async def blackjack_command(self, ctx, *, bet: int):
         return await blackjack.cmd(ctx, bet)
-
-    @blackjack_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_bet(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
     @bridge.bridge_command(
         name="daily",
@@ -80,16 +72,9 @@ class Economy(commands.Cog):
         try:
             member = await ctx.guild.fetch_member(user.id)
         except discord.HTTPException:
-            raise commands.BadArgument
+            raise commands.BadArgument("I couldn't find that user in this server.")
 
         return await give.cmd(ctx, member, amount)
-
-    @give_command_prefixed.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_argument(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_argument(ctx))
 
     # @bridge.bridge_command(
     #     name="inventory",
@@ -116,13 +101,6 @@ class Economy(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slots_command(self, ctx, *, bet: int):
         return await slots.cmd(self, ctx, bet)
-
-    @slots_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=EconErrors.missing_bet(ctx))
-        elif isinstance(error, commands.BadArgument):
-            await ctx.respond(embed=EconErrors.bad_bet_argument(ctx))
 
 
 def setup(client):

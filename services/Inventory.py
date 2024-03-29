@@ -1,7 +1,7 @@
 import logging
 
-from services import Item
 from db import database
+from services import Item
 
 logs = logging.getLogger('Racu.Core')
 

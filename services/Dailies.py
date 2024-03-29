@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from db import database
 from config.parser import JsonCache
+from db import database
 from services.Currency import Currency
 
 resources = JsonCache.read_json("resources")
@@ -111,4 +111,3 @@ class Dailies:
             rank += 1
 
         return leaderboard
-

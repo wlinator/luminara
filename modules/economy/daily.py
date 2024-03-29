@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
 import lib.time
-from lib.embeds.info import EconInfo
 from lib.embeds.error import EconErrors
+from lib.embeds.info import EconInfo
 from services.Currency import Currency
 from services.Dailies import Dailies
 
