@@ -41,17 +41,17 @@ class RacuHelp(commands.HelpCommand):
         await channel.send(embed=embed)
 
     async def send_command_help(self, command):
-        embed = discord.Embed(title=f"{self.context.clean_prefix}{command.qualified_name}",
-                              color=discord.Color.blurple())
-        if command.help:
-            embed.description = command.help
+        embed = discord.Embed(
+            title=f"{self.context.clean_prefix}{command.qualified_name}",
+            color=discord.Color.blurple(),
+            description=command.help
+        )
 
         usage_value = '`%s%s %s`' % (self.context.clean_prefix, command.qualified_name, command.signature)
-
         for alias in command.aliases:
             usage_value += '\n`%s%s %s`' % (self.context.clean_prefix, alias, command.signature)
+        embed.add_field(name="Usage", value=usage_value, inline=False)
 
-        embed.add_field(name="Usage", value=usage_value)
         channel = self.get_destination()
         await channel.send(embed=embed)
 
