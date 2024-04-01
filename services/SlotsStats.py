@@ -7,6 +7,7 @@ class SlotsStats:
     """
     Handles statistics for the /slots command
     """
+
     def __init__(self, user_id, is_won, bet, payout, spin_type, icons):
         self.user_id = user_id
         self.is_won = is_won

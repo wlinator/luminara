@@ -1,11 +1,11 @@
 import datetime
 
-import discord
 from discord.ext import commands, bridge, tasks
+
 from lib import checks
 from lib.embeds.info import MiscInfo
+from modules.config import set_prefix
 from modules.misc import introduction, invite, backup, info
-from modules.config import prefix
 
 
 class Misc(commands.Cog):
@@ -37,7 +37,6 @@ class Misc(commands.Cog):
     )
     @checks.allowed_in_channel()
     async def uptime(self, ctx):
-
         unix_timestamp = int(round(self.start_time.timestamp()))
         return await ctx.respond(embed=MiscInfo.uptime(ctx, self.client, unix_timestamp))
 
@@ -57,7 +56,7 @@ class Misc(commands.Cog):
     @commands.guild_only()
     @checks.allowed_in_channel()
     async def prefix_command(self, ctx):
-        return await prefix.get_cmd(ctx)
+        return await set_prefix.get_cmd(ctx)
 
     @bridge.bridge_command(
         name="info",

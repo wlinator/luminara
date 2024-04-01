@@ -6,9 +6,8 @@ from discord.ext import commands, bridge
 
 from config.parser import JsonCache
 from lib import formatter
-from lib.embeds.error import MiscErrors
 from lib.embeds.greet import Greet
-from modules.config import config, prefix
+from modules.config import config, set_prefix
 from services.GuildConfig import GuildConfig
 
 strings = JsonCache.read_json("strings")
@@ -41,18 +40,13 @@ class Config(commands.Cog):
     )
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
-    async def setprefix_command(self, ctx, *, new_prefix: str):
+    async def setprefix_command(self, ctx, *, prefix: str):
         """
         Set the prefix for Racu in this server. The maximum length of a prefix is 25.
         Requires Manage Channels permissions.
         """
 
-        await prefix.set_cmd(ctx, new_prefix)
-
-    @setprefix_command.error
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.respond(embed=MiscErrors.prefix_missing(ctx))
+        await set_prefix.set_cmd(ctx, prefix)
 
     config = SlashCommandGroup("config", "server config commands.", guild_only=True,
                                default_member_permissions=discord.Permissions(manage_channels=True))
