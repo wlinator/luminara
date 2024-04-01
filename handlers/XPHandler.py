@@ -117,6 +117,10 @@ class XPHandler:
         message_list = level_messages[level_range]
         random_message = random.choice(message_list)
         start_string = strings["level_up_prefix"].format(author.name)
+
+        if level > 10:
+            level = 1
+
         return start_string + random_message.format(level)
 
     @staticmethod
