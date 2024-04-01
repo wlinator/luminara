@@ -1,6 +1,8 @@
-from services.Birthday import Birthday
-import discord
 import datetime
+
+import discord
+
+from services.Birthday import Birthday
 
 
 async def cmd(ctx):
@@ -19,7 +21,7 @@ async def cmd(ctx):
             member = await ctx.guild.fetch_member(user_id)
             name = member.name
         except discord.HTTPException:
-            continue # skip user if not in guild
+            continue  # skip user if not in guild
 
         try:
             birthday_date = datetime.datetime.strptime(birthday, "%m-%d")
@@ -34,7 +36,7 @@ async def cmd(ctx):
             inline=False
         )
 
-        found_birthdays +=1
+        found_birthdays += 1
         if found_birthdays >= 5:
             break
 

@@ -1,5 +1,4 @@
 import os
-import random
 import time
 
 from dotenv import load_dotenv
@@ -148,4 +147,3 @@ class Xp:
 
         # For levels below 10 and levels 110 and above
         return 10 * current_level + 27 if current_level < 10 else 42 * current_level + 37
-
