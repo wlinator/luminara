@@ -1,11 +1,12 @@
 import os
+import traceback
 
 import discord
 from dotenv import load_dotenv
 
 from handlers import LoggingHandler, ErrorHandler
 from handlers.ReactionHandler import ReactionHandler
-from handlers.XPHandler import XPHandler
+from handlers.xp_handler import XPHandler
 from lib.embeds.greet import Greet
 from services.Client import RacuBot
 from services.GuildConfig import GuildConfig
@@ -50,8 +51,8 @@ async def on_message(message):
         await reaction_handler.handle_message(message)
 
     except Exception as error:
-        logs.error(f"[EventHandler] on_message (check debug log): {error}", exc_info=False)
-        logs.debug(f"[EventHandler] on_message (w/ stacktrace): {error}", exc_info=True)
+        logs.error(f"[EventHandler] on_message (check debug log): {error}", exc_info=True)
+        traceback.print_tb(error.__traceback__)
 
 
 @client.event
