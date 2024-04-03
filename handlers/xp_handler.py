@@ -122,7 +122,7 @@ class XPHandler:
     async def assign_level_role(guild, user, level: int) -> None:
         _rew = LevelReward(guild.id)
         role_id = _rew.role(level)
-        reason = "Racu Role Rewards"
+        reason = "Automated Level Reward"
 
         if role_id:
 
