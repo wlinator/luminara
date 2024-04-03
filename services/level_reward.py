@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 from db import database
+from discord.ext import commands
 import logging
-
-import pytz
 
 from config.parser import JsonCache
 
@@ -30,6 +29,24 @@ class LevelReward:
 
         _logs.info(rewards)
         return rewards
+
+    def add_reward(self, level: int, role_id: int, persistent: bool):
+        query = """
+                INSERT INTO level_rewards (guild_id, level, role_id, persistent)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE role_id = %s, persistent = %s;
+                """
+
+        database.execute_query(query, (self.guild_id, level, role_id, persistent, role_id, persistent))
+
+    def remove_reward(self, level: int):
+        query = """
+                DELETE FROM level_rewards
+                WHERE guild_id = %s
+                AND level = %s;
+                """
+
+        database.execute_query(query, (self.guild_id, level))
 
     def role(self, level: int):
         if self.rewards:
