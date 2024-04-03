@@ -31,6 +31,10 @@ async def show(ctx):
 
 async def add_reward(ctx, level, role_id, persistent):
     level_reward = LevelReward(ctx.guild.id)
+
+    if len(level_reward.rewards) >= 10:
+        raise discord.BadArgument("a server can't have more than 10 XP rewards.")
+
     level_reward.add_reward(level, role_id, persistent)
     await show(ctx)
 
