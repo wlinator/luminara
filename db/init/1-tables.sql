@@ -94,7 +94,7 @@ CREATE TABLE level_rewards (
     role_id BIGINT,
     persistent BOOLEAN,
 
-    PRIMARY KEY (guild_id, role_id)
+    PRIMARY KEY (guild_id, level)
 );
 
 CREATE TABLE blacklist_user (
