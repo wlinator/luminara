@@ -68,7 +68,7 @@ class Config(commands.Cog):
     )
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
-    async def xp_reward_command_add(self, ctx, level: int, role: discord.Role, persistent: bool):
+    async def xp_reward_command_add(self, ctx, level: int, role: discord.Role, persistent: bool = False):
         """
         [Read the guide before editing](https://gitlab.com/wlinator/Racu/wikis/Role-Rewards).
         """
