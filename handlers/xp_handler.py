@@ -7,6 +7,7 @@ import discord
 from config.parser import JsonCache
 from lib import formatter
 from services.GuildConfig import GuildConfig
+from services.level_reward import LevelReward
 from services.Xp import Xp
 
 strings = JsonCache.read_json("strings")
@@ -48,6 +49,8 @@ class XPHandler:
                 else:
                     await message.reply(content=level_message)
 
+            await self.assign_level_role(message.guild, message.author, level_config.level)
+
             logs.info(f"[XpHandler] {message.author.name} leveled up to lv {level_config.level} "
                       f"in guild {message.guild.name} ({message.guild.id}).")
 
@@ -58,10 +61,6 @@ class XPHandler:
 
         level_config.ctime = current_time + level_config.new_cooldown
         level_config.push()
-
-        # Legacy code for Rave Cave level roles
-        # turn into a global system soon
-        await self.legacy_assign_level_role(message.author, level_config.level)
 
     @staticmethod
     async def get_level_channel(message, guild_config):
@@ -120,50 +119,19 @@ class XPHandler:
         return start_string + random_message.format(level)
 
     @staticmethod
-    async def legacy_assign_level_role(user, level):
+    async def assign_level_role(guild, user, level: int) -> None:
+        _rew = LevelReward(guild.id)
+        role_id = _rew.role(level)
+        reason = "Racu Role Rewards"
 
-        guild = user.guild
+        if role_id:
 
-        if (
-                guild.id != 719227135151046699 or
-                not (level % 5 == 0 and 5 <= level <= 100)
-        ):
-            return
+            role = guild.get_role(role_id)
+            if role:
+                await user.add_roles(role, reason=reason)
 
-        level_roles = {
-            "level_5": 1118491431036792922,
-            "level_10": 1118491486259003403,
-            "level_15": 1118491512536301570,
-            "level_20": 1118491532111126578,
-            "level_25": 1118491554005393458,
-            "level_30": 1118491572770713710,
-            "level_35": 1118491596820840492,
-            "level_40": 1118491622045405287,
-            "level_45": 1118491650721853500,
-            "level_50": 1118491681004732466,
-            "level_55": 1191681166848303135,
-            "level_60": 1191681220145319956,
-            "level_65": 1191681253322264587,
-            "level_70": 1191681274180554792,
-            "level_75": 1191681293277216859,
-            "level_80": 1191681312269017180,
-            "level_85": 1191681337560662086,
-            "level_90": 1191681359995998209,
-            "level_95": 1191681384113262683,
-            "level_100": 1191681405445492778,
-            # Add more level roles as needed
-        }
-
-        current_level_role = None
-        new_level_role_id = level_roles.get(f"level_{level}")
-
-        for role in user.roles:
-            if role.id in level_roles.values() and role.id != new_level_role_id:
-                current_level_role = role
-                break
-
-        new_level_role = guild.get_role(new_level_role_id)
-        await user.add_roles(new_level_role)
-
-        if current_level_role:
-            await user.remove_roles(current_level_role)
+            previous = _rew.replace_previous_reward(level)
+            if previous[1]:
+                role = guild.get_role(previous[0])
+                if role:
+                    await user.remove_roles(role, reason=reason)

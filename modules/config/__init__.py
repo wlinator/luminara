@@ -48,6 +48,19 @@ class Config(commands.Cog):
 
         await set_prefix.set_cmd(ctx, prefix)
 
+    @bridge.bridge_command(
+        name="xpreward",
+        aliases=["xprew", "xpr"],
+        guild_only="True"
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
+    async def xpreward_command(self, ctx, level: int, roles: discord.Role):
+        """
+        Reward members for reaching a level. Guide: https://gitlab.com/wlinator/Racu/wikis/Role-Rewards
+        """
+        pass
+
     config = SlashCommandGroup("config", "server config commands.", guild_only=True,
                                default_member_permissions=discord.Permissions(manage_channels=True))
     birthday_config = config.create_subgroup(name="birthdays")
