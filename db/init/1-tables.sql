@@ -88,6 +88,15 @@ CREATE TABLE guild_config (
     PRIMARY KEY (guild_id)
 );
 
+CREATE TABLE level_rewards (
+    guild_id BIGINT NOT NULL,
+    level INT NOT NULL,
+    role_id BIGINT,
+    persistent BOOLEAN,
+
+    PRIMARY KEY (guild_id, role_id)
+);
+
 CREATE TABLE blacklist_user (
     user_id BIGINT NOT NULL,
     reason TEXT,
