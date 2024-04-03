@@ -128,10 +128,16 @@ class XPHandler:
 
             role = guild.get_role(role_id)
             if role:
-                await user.add_roles(role, reason=reason)
+                try:
+                    await user.add_roles(role, reason=reason)
+                except (discord.Forbidden, discord.NotFound, discord.HTTPException):
+                    pass
 
             previous = _rew.replace_previous_reward(level)
             if previous[1]:
                 role = guild.get_role(previous[0])
                 if role:
-                    await user.remove_roles(role, reason=reason)
+                    try:
+                        await user.remove_roles(role, reason=reason)
+                    except (discord.Forbidden, discord.NotFound, discord.HTTPException):
+                        pass
