@@ -1,4 +1,3 @@
-import logging
 import os
 import time
 
@@ -10,7 +9,6 @@ from db import database
 load_dotenv('.env')
 xp_gain_per_message = int(os.getenv("XP_GAIN_PER_MESSAGE"))
 xp_gain_cooldown = int(os.getenv("XP_GAIN_COOLDOWN"))
-_logs = logging.getLogger('Racu.Core')
 
 class XpService:
     """
@@ -168,7 +166,6 @@ class XpRewardService:
         for row in data:
             rewards[int(row[0])] = [int(row[1]), bool(row[2])]
 
-        _logs.info(rewards)
         return rewards
 
     def add_reward(self, level: int, role_id: int, persistent: bool):
@@ -198,7 +195,6 @@ class XpRewardService:
 
             if level in self.rewards:
                 role_id = self.rewards.get(level)[0]
-                _logs.info(role_id)
                 return role_id
 
         return None
