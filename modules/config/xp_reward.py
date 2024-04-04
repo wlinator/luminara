@@ -17,7 +17,7 @@ async def show(ctx):
     icon = ctx.guild.icon if ctx.guild.icon else art["logo"]["opaque"]
     embed.set_author(name="Level Rewards", icon_url=icon)
 
-    for level in sorted(sorted(level_reward.rewards.keys())):
+    for level in sorted(level_reward.rewards.keys()):
         role_id, persistent = level_reward.rewards.get(level)
         role = ctx.guild.get_role(role_id)
 
@@ -39,4 +39,3 @@ async def remove_reward(ctx, level):
     level_reward = XpRewardService(ctx.guild.id)
     level_reward.remove_reward(level)
     await show(ctx)
-
