@@ -1,5 +1,6 @@
 import os
 import traceback
+import asyncio
 
 import discord
 from dotenv import load_dotenv
@@ -44,8 +45,15 @@ async def on_message(message):
         return
 
     try:
-        xp_handler = XPHandler()
-        await xp_handler.process_xp(message)
+        _xp = XPHandler(message)
+        leveled_up = _xp.process()
+
+        if leveled_up:
+            coros = [
+                asyncio.create_task(_xp.notify()),
+                asyncio.create_task(_xp.reward())
+            ]
+            await asyncio.wait(coros)
 
         reaction_handler = ReactionHandler()
         await reaction_handler.handle_message(message)
