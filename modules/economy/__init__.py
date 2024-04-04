@@ -62,8 +62,7 @@ class Economy(commands.Cog):
 
     @commands.command(
         name="give",
-        help="Give another user some cash. You can use someone's user ID or mention someone. The user has to be in the "
-             "guild you invoke this command in."
+        help="Give another user some cash. You can use a user ID or mention them."
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
