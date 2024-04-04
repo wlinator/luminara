@@ -79,7 +79,7 @@ class Birthdays(commands.Cog):
 
                 message = random.choice(messages)
                 embed.description = message.format(member.name)
-                channel = await guild.fetch_channel(guild_config.birthday_channel_id)
+                channel = await self.client.get_or_fetch_channel(guild, guild_config.birthday_channel_id)
                 await channel.send(embed=embed, content=member.mention)
                 logs.info(f"[BirthdayHandler] Success! user/guild/channel ID: {member.id}/{guild.id}/{channel.id}")
 

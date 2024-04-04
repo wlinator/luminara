@@ -7,8 +7,7 @@ import discord
 from config.parser import JsonCache
 from lib import formatter
 from services.GuildConfig import GuildConfig
-from services.level_reward import LevelReward
-from services.Xp import Xp
+from services.xp_service import XpService, XpRewardService
 
 strings = JsonCache.read_json("strings")
 level_messages = JsonCache.read_json("levels")
@@ -21,7 +20,7 @@ class XPHandler:
 
     async def process_xp(self, message):
 
-        level_config = Xp(message.author.id, message.guild.id)
+        level_config = XpService(message.author.id, message.guild.id)
         guild_config = GuildConfig(message.guild.id)
         current_time = time.time()
 
@@ -32,7 +31,7 @@ class XPHandler:
         level_config.xp += level_config.xp_gain
 
         # check if total XP now exceeds level req
-        xp_needed_for_new_level = Xp.xp_needed_for_next_level(level_config.level)
+        xp_needed_for_new_level = XpService.xp_needed_for_next_level(level_config.level)
 
         if level_config.xp >= xp_needed_for_new_level:
             level_config.level += 1
@@ -120,7 +119,7 @@ class XPHandler:
 
     @staticmethod
     async def assign_level_role(guild, user, level: int) -> None:
-        _rew = LevelReward(guild.id)
+        _rew = XpRewardService(guild.id)
         role_id = _rew.role(level)
         reason = "Automated Level Reward"
 
