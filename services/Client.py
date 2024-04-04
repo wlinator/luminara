@@ -3,8 +3,9 @@ import os
 import platform
 
 import discord
-from lib import metadata
 from discord.ext import bridge
+
+from lib import metadata
 
 logs = logging.getLogger('Racu.Core')
 
