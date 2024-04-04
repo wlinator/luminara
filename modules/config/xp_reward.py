@@ -21,7 +21,7 @@ async def show(ctx):
         role_id, persistent = level_reward.rewards.get(level)
         role = ctx.guild.get_role(role_id)
 
-        embed.description += f"\n**Level {level}** -> {role.mention}"
+        embed.description += f"\n**Level {level}** -> {role.mention if role else 'Role not found'}"
 
         if bool(persistent):
             embed.description += " (persistent)"
