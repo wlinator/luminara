@@ -9,57 +9,80 @@ from lib import formatter
 from services.GuildConfig import GuildConfig
 from services.xp_service import XpService, XpRewardService
 
-strings = JsonCache.read_json("strings")
-level_messages = JsonCache.read_json("levels")
-logs = logging.getLogger('Racu.Core')
+_strings = JsonCache.read_json("strings")
+_messages = JsonCache.read_json("levels")
+_logs = logging.getLogger('Racu.Core')
 
 
 class XPHandler:
-    def __init__(self):
-        pass
+    def __init__(self, message):
+        self.message = message
+        self.author = message.author
+        self.guild = message.guild
+        self.channel = message.channel
 
-    async def process_xp(self, message):
+        self.xp_conf = XpService(self.author.id, self.guild.id)
+        self.guild_conf = None
 
-        level_config = XpService(message.author.id, message.guild.id)
-        guild_config = GuildConfig(message.guild.id)
-        current_time = time.time()
+    def process(self) -> bool:
+        _xp = self.xp_conf
+        _now = time.time()
+        leveled_up = False
 
-        if level_config.ctime and current_time < level_config.ctime:
-            return  # cooldown
+        if _xp.cooldown_time and _now < _xp.cooldown_time:
+            return False
 
-        # award ENV XP_GAIN_PER_MESSAGE
-        level_config.xp += level_config.xp_gain
+        # award the amount of XP specified in .env
+        _xp.xp += _xp.xp_gain
 
-        # check if total XP now exceeds level req
-        xp_needed_for_new_level = XpService.xp_needed_for_next_level(level_config.level)
+        # check if total xp now exceeds the xp required to level up
+        if _xp.xp >= XpService.xp_needed_for_next_level(_xp.level):
+            _xp.level += 1
+            _xp.xp = 0
+            leveled_up = True
 
-        if level_config.xp >= xp_needed_for_new_level:
-            level_config.level += 1
-            level_config.xp = 0
+        _xp.cooldown_time = _now + _xp.new_cooldown
+        _xp.push()
+        return leveled_up
 
-            level_message = await self.get_level_message(guild_config, level_config, message.author)
+    async def notify(self) -> None:
+        _xp = self.xp_conf
+        _gd = GuildConfig(self.guild.id)
 
-            if level_message:
+        level_message = await self.get_level_message(_gd, _xp, self.author)
 
-                level_channel = await self.get_level_channel(message, guild_config)
+        if level_message:
+            level_channel = await self.get_level_channel(self.message, _gd)
 
-                if level_channel:
-                    await level_channel.send(content=level_message)
-                else:
-                    await message.reply(content=level_message)
+            if level_channel:
+                await level_channel.send(content=level_message)
+            else:
+                await self.message.reply(content=level_message)
 
-            await self.assign_level_role(message.guild, message.author, level_config.level)
+    async def reward(self) -> None:
+        _xp = self.xp_conf
+        _rew = XpRewardService(self.guild.id)
 
-            logs.info(f"[XpHandler] {message.author.name} leveled up to lv {level_config.level} "
-                      f"in guild {message.guild.name} ({message.guild.id}).")
+        role_id = _rew.role(_xp.level)
+        reason = 'Automated Level Reward'
 
-        else:
-            logs.info(f"[XpHandler] {message.author.name} gained {level_config.xp_gain} XP | "
-                      f"lv {level_config.level} with {level_config.xp} XP. | "
-                      f"guild: {message.guild.name} ({message.guild.id})")
+        if role_id:
 
-        level_config.ctime = current_time + level_config.new_cooldown
-        level_config.push()
+            role = self.guild.get_role(role_id)
+            if role:
+                try:
+                    await self.author.add_roles(role, reason=reason)
+                except (discord.Forbidden, discord.NotFound, discord.HTTPException):
+                    pass
+
+            previous = _rew.replace_previous_reward(_xp.level)
+            if previous[1]:
+                role = self.guild.get_role(previous[0])
+                if role:
+                    try:
+                        await self.author.remove_roles(role, reason=reason)
+                    except (discord.Forbidden, discord.NotFound, discord.HTTPException):
+                        pass
 
     @staticmethod
     async def get_level_channel(message, guild_config):
@@ -77,7 +100,7 @@ class XPHandler:
             case 0:
                 level_message = None
             case 1:
-                level_message = XPHandler.level_messages_whimsical(level_config.level, author)
+                level_message = XPHandler.messages_whimsical(level_config.level, author)
             case 2:
                 if not guild_config.level_message:
                     level_message = XPHandler.level_message_generic(level_config.level, author)
@@ -90,10 +113,10 @@ class XPHandler:
 
     @staticmethod
     def level_message_generic(level, author):
-        return strings["level_up"].format(author.name, level)
+        return _strings["level_up"].format(author.name, level)
 
     @staticmethod
-    def level_messages_whimsical(level, author):
+    def messages_whimsical(level, author):
         """
         v2 of the level messages, randomized output from levels.en-US.JSON.
         :param level:
@@ -102,7 +125,7 @@ class XPHandler:
         """
 
         level_range = None
-        for key in level_messages.keys():
+        for key in _messages.keys():
             start, end = map(int, key.split('-'))
             if start <= level <= end:
                 level_range = key
@@ -112,31 +135,7 @@ class XPHandler:
             # generic fallback
             return XPHandler.level_message_generic(level, author)
 
-        message_list = level_messages[level_range]
+        message_list = _messages[level_range]
         random_message = random.choice(message_list)
-        start_string = strings["level_up_prefix"].format(author.name)
+        start_string = _strings["level_up_prefix"].format(author.name)
         return start_string + random_message.format(level)
-
-    @staticmethod
-    async def assign_level_role(guild, user, level: int) -> None:
-        _rew = XpRewardService(guild.id)
-        role_id = _rew.role(level)
-        reason = "Automated Level Reward"
-
-        if role_id:
-
-            role = guild.get_role(role_id)
-            if role:
-                try:
-                    await user.add_roles(role, reason=reason)
-                except (discord.Forbidden, discord.NotFound, discord.HTTPException):
-                    pass
-
-            previous = _rew.replace_previous_reward(level)
-            if previous[1]:
-                role = guild.get_role(previous[0])
-                if role:
-                    try:
-                        await user.remove_roles(role, reason=reason)
-                    except (discord.Forbidden, discord.NotFound, discord.HTTPException):
-                        pass
