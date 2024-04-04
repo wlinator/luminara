@@ -7,7 +7,7 @@ from discord.ext import commands, bridge
 from config.parser import JsonCache
 from lib import formatter
 from lib.embeds.greet import Greet
-from modules.config import config, set_prefix
+from modules.config import config, set_prefix, xp_reward
 from services.GuildConfig import GuildConfig
 
 strings = JsonCache.read_json("strings")
@@ -48,6 +48,48 @@ class Config(commands.Cog):
 
         await set_prefix.set_cmd(ctx, prefix)
 
+    @bridge.bridge_command(
+        name="xprewards",
+        aliases=["xpr"],
+        guild_only="True"
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
+    async def xp_reward_command_show(self, ctx):
+        """
+        [Read the guide before editing](https://gitlab.com/wlinator/Racu/wikis/Role-Rewards).
+        """
+        await xp_reward.show(ctx)
+
+    @bridge.bridge_command(
+        name="addxpreward",
+        aliases=["axpr"],
+        guild_only="True"
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
+    async def xp_reward_command_add(self, ctx, level: int, role: discord.Role, persistent: bool = False):
+        """
+        [Read the guide before editing](https://gitlab.com/wlinator/Racu/wikis/Role-Rewards).
+        """
+        await xp_reward.add_reward(ctx, level, role.id, persistent)
+
+    @bridge.bridge_command(
+        name="removexpreward",
+        aliases=["rxpr"],
+        guild_only="True"
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
+    async def xp_reward_command_remove(self, ctx, level: int):
+        """
+        [Read the guide before editing](https://gitlab.com/wlinator/Racu/wikis/Role-Rewards).
+        """
+        await xp_reward.remove_reward(ctx, level)
+
+    """
+    The guild config code is a mess.
+    """
     config = SlashCommandGroup("config", "server config commands.", guild_only=True,
                                default_member_permissions=discord.Permissions(manage_channels=True))
     birthday_config = config.create_subgroup(name="birthdays")
