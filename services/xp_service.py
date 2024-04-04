@@ -1,14 +1,15 @@
 import os
 import time
 
-from dotenv import load_dotenv
 from discord.ext import commands
+from dotenv import load_dotenv
 
 from db import database
 
 load_dotenv('.env')
 xp_gain_per_message = int(os.getenv("XP_GAIN_PER_MESSAGE"))
 xp_gain_cooldown = int(os.getenv("XP_GAIN_COOLDOWN"))
+
 
 class XpService:
     """
@@ -147,6 +148,7 @@ class XpService:
 
         # For levels below 10 and levels 110 and above
         return 10 * current_level + 27 if current_level < 10 else 42 * current_level + 37
+
 
 class XpRewardService:
     def __init__(self, guild_id):
