@@ -3,6 +3,7 @@ import os
 import time
 
 from dotenv import load_dotenv
+from discord.ext import commands
 
 from db import database
 
@@ -171,6 +172,10 @@ class XpRewardService:
         return rewards
 
     def add_reward(self, level: int, role_id: int, persistent: bool):
+
+        if len(self.rewards) >= 25:
+            raise commands.BadArgument("a server can't have more than 25 xp rewards.")
+
         query = """
                 INSERT INTO level_rewards (guild_id, level, role_id, persistent)
                 VALUES (%s, %s, %s, %s)
