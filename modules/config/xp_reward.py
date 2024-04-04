@@ -1,13 +1,13 @@
 import discord
 
-from services.level_reward import LevelReward
 from config.parser import JsonCache
+from services.xp_service import XpRewardService
 
 art = JsonCache.read_json("art")
 
 
 async def show(ctx):
-    level_reward = LevelReward(ctx.guild.id)
+    level_reward = XpRewardService(ctx.guild.id)
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
@@ -30,13 +30,13 @@ async def show(ctx):
 
 
 async def add_reward(ctx, level, role_id, persistent):
-    level_reward = LevelReward(ctx.guild.id)
+    level_reward = XpRewardService(ctx.guild.id)
     level_reward.add_reward(level, role_id, persistent)
     await show(ctx)
 
 
 async def remove_reward(ctx, level):
-    level_reward = LevelReward(ctx.guild.id)
+    level_reward = XpRewardService(ctx.guild.id)
     level_reward.remove_reward(level)
     await show(ctx)
 

@@ -5,13 +5,13 @@ import discord
 
 from services.Currency import Currency
 from services.Dailies import Dailies
-from services.Xp import Xp
+from services.xp_service import XpService
 
 logs = logging.getLogger('Racu.Core')
 
 
 async def cmd(ctx):
-    xp_lb = Xp.load_leaderboard(ctx.guild.id)
+    xp_lb = XpService.load_leaderboard(ctx.guild.id)
 
     options = LeaderboardCommandOptions()
     view = LeaderboardCommandView(ctx, options)
@@ -117,7 +117,7 @@ class LeaderboardCommandView(discord.ui.View):
         icon = self.ctx.guild.icon if self.ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
 
         if interaction.data["values"][0] == "xp":
-            xp_lb = Xp.load_leaderboard(self.ctx.guild.id)
+            xp_lb = XpService.load_leaderboard(self.ctx.guild.id)
             embed.set_author(name="Level Leaderboard", icon_url=icon)
             embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
 
