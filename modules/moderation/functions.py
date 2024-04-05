@@ -1,4 +1,5 @@
 import discord
+from discord.ext.commands import BadArgument
 
 from lib.exceptions import RacuExceptions
 
@@ -15,6 +16,8 @@ def actionable(target: discord.Member, invoker: discord.Member, bot_user: discor
     Returns:
         True if the client's highest role AND the invoker's highest role are higher than the target.
     """
+    if target == invoker:
+        raise BadArgument("you can't ban yourself.")
 
     if target.top_role >= invoker.top_role and invoker != invoker.guild.owner:
         raise RacuExceptions.UserHierarchy
