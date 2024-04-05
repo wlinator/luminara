@@ -39,8 +39,7 @@ logs = LoggingHandler.setup_logger()
 async def on_message(message):
     if (
             message.author.bot or
-            message.guild is None or
-            instance.lower() != "main"
+            message.guild is None
     ):
         return
 
@@ -67,11 +66,7 @@ async def on_message(message):
 async def on_member_join(member):
     config = GuildConfig(member.guild.id)
 
-    if (not config.welcome_channel_id
-
-            # comment next line if debugging greetings
-            or instance.lower() != "main"
-    ):
+    if not config.welcome_channel_id:
         return
 
     embed = Greet.message(member, config.welcome_message)
