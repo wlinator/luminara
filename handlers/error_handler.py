@@ -4,11 +4,13 @@ import traceback
 
 import discord
 from discord.ext import commands
+from discord.ext.commands import Cog
 
 from lib.embeds.error import GenericErrors, BdayErrors
 from lib.exceptions import RacuExceptions
 
 logs = logging.getLogger('Racu.Core')
+_logs = logging.getLogger('Racu.Core')
 
 
 async def on_command_error(ctx, error):
@@ -56,10 +58,45 @@ async def on_command_error(ctx, error):
         await ctx.respond(embed=GenericErrors.default_exception(ctx))
         traceback.print_tb(error.__traceback__)
 
-    logs.error(f"[CommandHandler] on_command_error: {error}")
-
 
 async def on_error(event: str, *args, **kwargs) -> None:
     logs.error(f"[EventHandler] on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
     logs.error(f"[EventHandler] on_error EXCEPTION: {sys.exc_info()}")
     traceback.print_exc()
+
+
+class ErrorListener(Cog):
+    def __init__(self, client):
+        self.client = client
+
+    @Cog.listener()
+    async def on_command_error(self, ctx, error) -> None:
+        await on_command_error(ctx, error)
+        log_msg = '[CommandHandler] %s executed .%s | PREFIX' % (ctx.author.name, ctx.command.qualified_name)
+
+        if ctx.guild is not None:
+            log_msg += f" | guild: {ctx.guild.name} "
+        else:
+            log_msg += f" | in DMs"
+
+        _logs.info(f"{log_msg} | FAILED: {error}")
+
+    @Cog.listener()
+    async def on_application_command_error(self, ctx, error) -> None:
+        await on_command_error(ctx, error)
+        log_msg = '[CommandHandler] %s executed /%s | SLASH' % (ctx.author.name, ctx.command.qualified_name)
+
+        if ctx.guild is not None:
+            log_msg += f" | guild: {ctx.guild.name} "
+        else:
+            log_msg += f" | in DMs"
+
+        _logs.info(f"{log_msg} | FAILED: {error}")
+
+    @Cog.listener()
+    async def on_error(self, event: str, *args, **kwargs) -> None:
+        await on_error(event, *args, **kwargs)
+
+
+def setup(client):
+    client.add_cog(ErrorListener(client))
