@@ -1,7 +1,7 @@
 import discord
+from discord.ext.commands import BadArgument
 
 from lib.exceptions import RacuExceptions
-from discord.ext.commands import BadArgument
 
 
 def actionable(target: discord.Member, invoker: discord.Member, bot_user: discord.Member) -> None:

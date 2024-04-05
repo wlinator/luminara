@@ -1,12 +1,12 @@
+import asyncio
 import logging
 import random
 import time
-import asyncio
 
 import discord
+from discord.ext.commands import Cog
 
 from config.parser import JsonCache
-from discord.ext.commands import Cog
 from lib import formatter
 from services.GuildConfig import GuildConfig
 from services.xp_service import XpService, XpRewardService
