@@ -31,7 +31,7 @@ docker compose up -d --build
 ## ⚙️ Environment variables
 
 - `TOKEN`: your Discord Bot Token, you can get this [here](https://discord.com/developers/applications).
-- `INSTANCE`: this should always be "MAIN" unless you plan to run multiple bots (for testing purposes).
+- `INSTANCE`: this can be anything, only set it as "MAIN" if you've configured Dropbox backups.
 - `OWNER_ID`: the Discord user ID of the person who will act as owner of this bot.
 
 - `XP_GAIN_PER_MESSAGE`: how much XP should be awarded to a user per message.
