@@ -1,7 +1,8 @@
 import random
 
-from config.parser import JsonCache
 from discord.ext.commands import Cog
+
+from config.parser import JsonCache
 
 _reactions = JsonCache.read_json("reactions")
 _8ball = _reactions["eightball"]
