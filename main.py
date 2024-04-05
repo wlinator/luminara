@@ -7,6 +7,7 @@ import services.Client
 import services.GuildConfig
 import services.Help
 import services.logging_service
+import config.parser
 
 load_dotenv('.env')
 _logs = services.logging_service.setup_logger()
@@ -47,10 +48,10 @@ def load_modules():
             try:
                 client.load_extension(f"{directory}.{item}")
                 loaded.add(item)
-                _logs.info(f'[{directory.upper()}] {item.upper()} loaded.')
+                _logs.info(f'[{directory}] {item.upper()} loaded.')
 
             except Exception as e:
-                _logs.error(f'[{directory.upper()}] Failed to load {item.upper()}: {e}')
+                _logs.error(f'[{directory}] Failed to load {item.upper()}: {e}')
 
 
 if __name__ == '__main__':
@@ -62,6 +63,10 @@ if __name__ == '__main__':
     _logs.info("RACU IS BOOTING")
     _logs.info("\n")
 
+    # cache all JSON
+    [config.parser.JsonCache.read_json(file[:-5]) for file in os.listdir("config/JSON") if file.endswith(".json")]
+
+    # load command and listener cogs
     load_modules()
 
     # empty line to separate modules from system info in logs
