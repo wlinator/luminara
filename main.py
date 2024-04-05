@@ -48,10 +48,10 @@ def load_modules():
             try:
                 client.load_extension(f"{directory}.{item}")
                 loaded.add(item)
-                _logs.info(f'[{directory}] {item.upper()} loaded.')
+                _logs.info(f'[{directory.capitalize()}] {item.upper()} loaded.')
 
             except Exception as e:
-                _logs.error(f'[{directory}] Failed to load {item.upper()}: {e}')
+                _logs.error(f'[{directory.capitalize()}] Failed to load {item.upper()}: {e}')
 
 
 if __name__ == '__main__':
