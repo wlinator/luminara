@@ -2,12 +2,12 @@
 
 ![Racu art](art/racu_logo.png)
 
-## Self host
+## Self-host
 
 **The next part of this README explains how to self-host Racu, this allows you to host your own version of my code and
 create a personalized Discord bot.**
 
-### 📲 Installation
+### Installation
 
 Racu is containerized: its core, database, database admin platform and logger run on Docker without any extra
 configuration.
@@ -19,7 +19,7 @@ won't explain how to do this. Figure it out on your own.**
 git clone https://gitlab.com/wlinator/racu && cd racu
 ```
 
-Copy `.env.template` to `.env` and fill out the [variables](#env-keys).
+Copy `.env.template` to `.env` and fill out the [variables](#environment-variables).
 
 **Optional:** copy `users.yml.example` to `users.yml` to properly configure Dozzle logs. Check the file for more
 information.
@@ -28,7 +28,7 @@ information.
 docker compose up -d --build
 ```
 
-## ⚙️ Environment variables
+## Environment variables
 
 - `TOKEN`: your Discord Bot Token, you can get this [here](https://discord.com/developers/applications).
 - `INSTANCE`: this can be anything, only set it as "MAIN" if you've configured Dropbox backups.
