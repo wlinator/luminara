@@ -1,10 +1,12 @@
 import logging
 import random
 import time
+import asyncio
 
 import discord
 
 from config.parser import JsonCache
+from discord.ext.commands import Cog
 from lib import formatter
 from services.GuildConfig import GuildConfig
 from services.xp_service import XpService, XpRewardService
@@ -139,3 +141,30 @@ class XPHandler:
         random_message = random.choice(message_list)
         start_string = _strings["level_up_prefix"].format(author.name)
         return start_string + random_message.format(level)
+
+
+class XpListener(Cog):
+    def __init__(self, client):
+        self.client = client
+
+    @Cog.listener('on_message')
+    async def xp_listener(self, message):
+        if (
+                message.author.bot or
+                message.guild is None
+        ):
+            return
+
+        _xp = XPHandler(message)
+        leveled_up = _xp.process()
+
+        if leveled_up:
+            coros = [
+                asyncio.create_task(_xp.notify()),
+                asyncio.create_task(_xp.reward())
+            ]
+            await asyncio.wait(coros)
+
+
+def setup(client):
+    client.add_cog(XpListener(client))
