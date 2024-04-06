@@ -24,13 +24,11 @@ services:
       MARIADB_DATABASE: racudb
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d/
-      - dbdata:/var/lib/mysql
+      - dbdata:/var/lib/mysql/
     logging:
       driver: "json-file"
       options:
         max-size: "50m"
-    ports:
-      - 3306:3306
     healthcheck:
       test: [ "CMD", "mariadb", "-h", "localhost", "-u", "${MARIADB_USER}", "-p${MARIADB_PASSWORD}", "-e", "SELECT 1" ]
       interval: 5s

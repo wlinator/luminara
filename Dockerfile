@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
-    apt-get install -y locales mariadb-client && \
+    apt-get install -y locales && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure locales
 
@@ -16,4 +16,4 @@ COPY . .
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-CMD [ "python", "./main.py" ]
+CMD [ "python", "./Racu.py" ]
