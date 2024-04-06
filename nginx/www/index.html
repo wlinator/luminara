@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" href="favicon.ico" type="image/x-icon">
+      <title>Racu by wlinator</title>
+      <style>
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+	line-height: 1.6;
+	color: white;
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+	background-color: #333333;
+}
+
+.dark-mode {
+	background-color: #333333;
+	color: white;
+}
+
+.container {
+	max-width: 35em;
+	margin: auto;
+	padding: 1em;
+	flex: 1;
+}
+
+h1 {
+	font-size: 1.5em;
+}
+
+p {
+	margin-bottom: 1em;
+}
+
+a {
+	text-decoration: none;
+	color: yellow;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+footer {
+	text-align: center;
+	font-size: 0.8em;
+	margin-top: auto;
+	/* This will push the footer to the bottom */
+}
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <h1>Racu by wlinator</h1>
+         <p>If you're not an admin of Racu, this website holds no value for you. I use this domain to host a web-based IRC client and a tool to check my Docker logs and database.</p>
+         <p>The following services require authentication:</p>
+         <ul>
+            <li><a href="/irc">The Lounge IRC</a></li>
+            <li><a href="/db">MariaDB Adminer</a></li>
+            <li><a href="/docker">Dozzle</a></li>
+         </ul>
+         <img src="racu_logo.webp"/>
+      </div>
+      <footer>
+         <p>&copy; 2020-2024 | <em>This page is hosted with the nginx web server.</em></p>
+      </footer>
+   </body>
+</html>
