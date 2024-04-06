@@ -43,19 +43,20 @@ services:
       options:
         max-size: "50m"
     ports:
-      - 8085:8080
+      - 8080:8080
 
   dozzle:
     container_name: dozzle
     image: amir20/dozzle:latest
+    environment:
+      DOZZLE_ADDR: :8081
+      DOZZLE_BASE: /docker
+      DOZZLE_AUTH_PROVIDER: simple
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/data
     ports:
-      - 8080:8080
-    environment:
-      DOZZLE_AUTH_PROVIDER: simple
-
+      - 8081:8081
 
 volumes:
   dbdata:
