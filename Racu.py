@@ -56,8 +56,8 @@ def load_modules():
 
 if __name__ == '__main__':
     """
-    This code is only ran when main.py is the primary module,
-    thus NOT when main is imported from a cog. (sys.modules)
+    This code is only ran when Racu.py is the primary module,
+    so NOT when main is imported from a cog. (sys.modules)
     """
 
     _logs.info("RACU IS BOOTING")
