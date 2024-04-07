@@ -28,7 +28,7 @@ class Config(commands.Cog):
     async def config_command(self, ctx):
         """
         Shows information about how Racu is configured in your server.
-        Config guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration
+        Config guide: https://wiki.wlinator.org/serverconfig
         """
 
         await config.cmd(self, ctx)
@@ -57,7 +57,7 @@ class Config(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_show(self, ctx):
         """
-        [Read the guide before editing](https://gitlab.com/wlinator/Racu/wikis/Role-Rewards).
+        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
         """
         await xp_reward.show(ctx)
 
@@ -70,7 +70,7 @@ class Config(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_add(self, ctx, level: int, role: discord.Role, persistent: bool = False):
         """
-        [Read the guide before editing](https://gitlab.com/wlinator/Racu/wikis/Role-Rewards).
+        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
         """
         await xp_reward.add_reward(ctx, level, role.id, persistent)
 
@@ -83,7 +83,7 @@ class Config(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_remove(self, ctx, level: int):
         """
-        [Read the guide before editing](https://gitlab.com/wlinator/Racu/wikis/Role-Rewards).
+        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
         """
         await xp_reward.remove_reward(ctx, level)
 
