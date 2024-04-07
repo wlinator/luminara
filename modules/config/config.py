@@ -11,7 +11,7 @@ async def cmd(self, ctx):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description=f"Guide: https://gitlab.com/wlinator/Racu/-/wikis/Server-Configuration"
+        description=f"Guide: https://wiki.wlinator.org/serverconfig"
     )
     icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
     embed.set_author(name=f"{ctx.guild.name} config", icon_url=icon)
