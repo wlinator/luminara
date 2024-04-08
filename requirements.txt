@@ -3,5 +3,5 @@ python-dotenv==1.0.1
 setuptools==69.2.0
 pytz==2024.1
 dropbox==11.36.2
-mysql-connector-python==8.3.0
+mariadb==1.1.10
 psutil==5.9.8
