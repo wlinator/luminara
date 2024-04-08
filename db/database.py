@@ -1,24 +1,34 @@
 import logging
 import os
 
-import mysql.connector
+import mariadb
 from dotenv import load_dotenv
 
-logs = logging.getLogger('Racu.Core')
+_logs = logging.getLogger('Racu.Core')
 load_dotenv('.env')
 
-cnxpool = mysql.connector.pooling.MySQLConnectionPool(
-    pool_name='core-pool',
-    pool_size=25,
-    host='db',
-    user=os.getenv("MARIADB_USER"),
-    password=os.getenv("MARIADB_PASSWORD"),
-    database='racudb'
-)
+def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
+    pool = mariadb.ConnectionPool(
+        host="db",
+        port=3306,
+        database="racudb",
+        user=os.getenv("MARIADB_USER"),
+        password=os.getenv("MARIADB_PASSWORD"),
+        pool_name=name,
+        pool_size=size
+    )
+
+    return pool
+
+try:
+    _cnxpool = create_connection_pool("core-pool", 25)
+except mariadb.Error as e:
+    _logs.critical(f"[CRITICAL] Couldn't create MariaDB connection pool: {e}")
+    raise e
 
 
 def execute_query(query, values=None):
-    conn = cnxpool.get_connection()
+    conn = _cnxpool.get_connection()
     cursor = conn.cursor()
 
     if values:
@@ -28,15 +38,12 @@ def execute_query(query, values=None):
 
     conn.commit()
     conn.close()
-    logs.debug(f"database.execute_query: 'query': {query}, 'values': {values}")
     return cursor
 
 
 def select_query(query, values=None):
-    conn = cnxpool.get_connection()
+    conn = _cnxpool.get_connection()
     cursor = conn.cursor()
-
-    logs.debug(f"database.select_query: 'query': {query}, 'values': {values}")
 
     if values:
         cursor.execute(query, values)
@@ -50,10 +57,8 @@ def select_query(query, values=None):
 
 
 def select_query_one(query, values=None):
-    conn = cnxpool.get_connection()
+    conn = _cnxpool.get_connection()
     cursor = conn.cursor()
-
-    logs.debug(f"database.select_query_one: 'query': {query}, 'values': {values}")
 
     if values:
         cursor.execute(query, values)
