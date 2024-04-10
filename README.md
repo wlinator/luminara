@@ -7,13 +7,14 @@
 **The next part of this README explains how to self-host Racu, this allows you to host your own version of my code and
 create a personalized Discord bot.**
 
+**Note: because the `.slots` and `.blackjack` commands use custom (animated) emoji, these commands will break when you self-host Racu. Please replace the ID values in `config/JSON/resources.json` with your own set of emotes, or ask [wlinator](<https://discord.com/users/784783517845946429>) to let your bot join [Racu's Emote Server](https://discord.gg/B9jm2NgX5H).**
+
 ### Installation
 
 Racu is containerized: its core, database, database admin platform and logger run on Docker without any extra
 configuration.
 However, you CAN run it locally without Docker by hosting MariaDB on your machine with the login credentials specified
-in [.env](.env.template) and installing **Python 3.11** with the [required pip packages](requirements.txt). **Note: I
-won't explain how to do this. Figure it out on your own.**
+in [.env](.env.template) and installing **Python 3.12** with the [required pip packages](requirements.txt).
 
 ```sh
 git clone https://gitlab.com/wlinator/racu && cd racu
