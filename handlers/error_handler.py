@@ -73,6 +73,7 @@ class ErrorListener(Cog):
     async def on_command_error(self, ctx, error) -> None:
 
         # on a prefix command, don't send anything if channel check fails. (to prevent spam in non-bot channels)
+        # current issues with this: await ctx.trigger_typing() is still invoked for 10 seconds.
         if not isinstance(error, RacuExceptions.NotAllowedInChannel):
             await on_command_error(ctx, error)
 
