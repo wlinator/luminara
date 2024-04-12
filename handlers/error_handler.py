@@ -73,10 +73,9 @@ class ErrorListener(Cog):
     async def on_command_error(self, ctx, error) -> None:
 
         # on a prefix command, don't send anything if channel check fails. (to prevent spam in non-bot channels)
-        if isinstance(error, RacuExceptions.NotAllowedInChannel):
-            return
+        if not isinstance(error, RacuExceptions.NotAllowedInChannel):
+            await on_command_error(ctx, error)
 
-        await on_command_error(ctx, error)
         log_msg = '[CommandHandler] %s executed .%s | PREFIX' % (ctx.author.name, ctx.command.qualified_name)
 
         if ctx.guild is not None:
