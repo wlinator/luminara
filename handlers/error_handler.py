@@ -48,8 +48,8 @@ async def on_command_error(ctx, error):
 
         """subclasses of this exception"""
         if isinstance(error, RacuExceptions.NotAllowedInChannel):
-            await ctx.respond(embed=GenericErrors.channel_not_allowed(ctx, error.command_channel),
-                              delete_after=5, ephemeral=True)
+            await ctx.respond(content=f"You can only do that command in {error.command_channel.mention}.",
+                              ephemeral=True)
 
         elif isinstance(error, RacuExceptions.BirthdaysDisabled):
             await ctx.respond(embed=BdayErrors.birthdays_disabled(ctx))
@@ -71,6 +71,11 @@ class ErrorListener(Cog):
 
     @Cog.listener()
     async def on_command_error(self, ctx, error) -> None:
+
+        # on a prefix command, don't send anything if channel check fails. (to prevent spam in non-bot channels)
+        if isinstance(error, RacuExceptions.NotAllowedInChannel):
+            return
+
         await on_command_error(ctx, error)
         log_msg = '[CommandHandler] %s executed .%s | PREFIX' % (ctx.author.name, ctx.command.qualified_name)
 
