@@ -1,7 +1,6 @@
 from discord.ext import commands
 
 import lib.formatter
-import lib.checks
 
 
 class Help(commands.Cog):
@@ -13,7 +12,6 @@ class Help(commands.Cog):
         name="help",
         description="Get Racu help.",
     )
-    @lib.checks.allowed_in_channel()
     async def help_command(self, ctx):
         prefix = lib.formatter.get_prefix(ctx)
         return await ctx.respond(content=f"Please use Racu's prefix to get help. Type `{prefix}help`", ephemeral=True)
