@@ -44,6 +44,7 @@ class Misc(commands.Cog):
         description="Generate an invite link.",
         help="Generate a link to invite Racu to your own server!"
     )
+    @checks.allowed_in_channel()
     async def invite_command(self, ctx):
         return await invite.cmd(ctx)
 
@@ -64,6 +65,7 @@ class Misc(commands.Cog):
         description="Shows basic Racu stats.",
         help="Shows basic Racu stats."
     )
+    @checks.allowed_in_channel()
     async def info_command(self, ctx):
         unix_timestamp = int(round(self.start_time.timestamp()))
         return await info.cmd(self, ctx, unix_timestamp)
