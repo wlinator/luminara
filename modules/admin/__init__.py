@@ -4,7 +4,7 @@ from discord.ext import commands, bridge
 from modules.admin import award, sql
 
 
-class BotAdmin(commands.Cog):
+class BotAdmin(commands.Cog, name="Bot Admin"):
     """
     This module is intended for commands that only bot owners can do.
     For server configuration with Racu, see the "config" module.
