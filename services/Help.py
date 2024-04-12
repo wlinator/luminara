@@ -17,7 +17,8 @@ class RacuHelp(commands.HelpCommand):
         self.command_attrs = {
             "aliases": ["h"],
             "help": "Show a list of commands, or information about a specific command when an argument is passed.",
-            "name": "help"
+            "name": "help",
+            "hidden": True
         }
 
     def get_command_qualified_name(self, command):
