@@ -23,8 +23,7 @@ class Misc(commands.Cog):
         name="ping",
         aliases=["p", "status"],
         description="Simple status check.",
-        help="Simple status check, this command will not return the latency of the bot process as this is "
-             "fairly irrelevant. If the bot replies, it's good to go.",
+        help="Simple status check.",
     )
     @checks.allowed_in_channel()
     async def ping(self, ctx):
@@ -32,8 +31,8 @@ class Misc(commands.Cog):
 
     @bridge.bridge_command(
         name="uptime",
-        description="Racu uptime",
-        help="See how long Racu has been online, the uptime shown will reset when the Misc module is reloaded.",
+        description="See Racu's uptime since the last update.",
+        help="See how long Racu has been online since his last update.",
     )
     @checks.allowed_in_channel()
     async def uptime(self, ctx):
@@ -42,15 +41,17 @@ class Misc(commands.Cog):
 
     @bridge.bridge_command(
         name="invite",
-        description="Generate an invite link",
+        description="Generate an invite link.",
         help="Generate a link to invite Racu to your own server!"
     )
+    @checks.allowed_in_channel()
     async def invite_command(self, ctx):
         return await invite.cmd(ctx)
 
     @bridge.bridge_command(
         name="prefix",
-        description="See the server's current prefix",
+        description="See the server's current prefix.",
+        help="See the server's current prefix.",
         guild_only=True
     )
     @commands.guild_only()
@@ -60,12 +61,12 @@ class Misc(commands.Cog):
 
     @bridge.bridge_command(
         name="info",
-        aliases=["stats"]
+        aliases=["stats"],
+        description="Shows basic Racu stats.",
+        help="Shows basic Racu stats."
     )
+    @checks.allowed_in_channel()
     async def info_command(self, ctx):
-        """
-        Shows basic stats for Racu.
-        """
         unix_timestamp = int(round(self.start_time.timestamp()))
         return await info.cmd(self, ctx, unix_timestamp)
 
@@ -73,9 +74,9 @@ class Misc(commands.Cog):
         name="introduction",
         aliases=["intro", "introduce"],
         guild_only=False,
-        description="This command can only be done in DMs.",
-        help="Introduce yourself to a server. For now this command "
-             "can only be done in ONE server and only as a __slash command in Racu's DMs__."
+        description="This command can only be used in DMs.",
+        help="Introduce yourself. For now this command "
+             "can only be done in ONE server and only in Racu's DMs."
     )
     @commands.dm_only()
     async def intro_command(self, ctx):
