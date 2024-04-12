@@ -31,7 +31,7 @@ class Misc(commands.Cog):
 
     @bridge.bridge_command(
         name="uptime",
-        description="Racu uptime",
+        description="See Racu's uptime since the last update.",
         help="See how long Racu has been online since his last update.",
     )
     @checks.allowed_in_channel()
@@ -41,7 +41,7 @@ class Misc(commands.Cog):
 
     @bridge.bridge_command(
         name="invite",
-        description="Generate an invite link",
+        description="Generate an invite link.",
         help="Generate a link to invite Racu to your own server!"
     )
     async def invite_command(self, ctx):
