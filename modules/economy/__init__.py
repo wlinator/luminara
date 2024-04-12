@@ -13,8 +13,8 @@ class Economy(commands.Cog):
     @bridge.bridge_command(
         name="balance",
         aliases=["bal", "$"],
-        description="See how much cash you have.",
-        help="Shows your current Racu balance. The economy system is global, meaning your balance will be the same in "
+        description="Shows your current Racu balance.",
+        help="Shows your current Racu balance. The economy system is global, meaning your balance will be synced in "
              "all servers.",
         guild_only=True
     )
@@ -39,8 +39,8 @@ class Economy(commands.Cog):
     @bridge.bridge_command(
         name="daily",
         aliases=["timely"],
-        description="Claim your daily cash!",
-        help="Claim your daily reward! The daily reset is at 7 AM EST.",
+        description="Claim your daily reward!",
+        help="Claim your daily reward! Reset is at 7 AM EST.",
         guild_only=True
     )
     @commands.guild_only()
@@ -51,8 +51,7 @@ class Economy(commands.Cog):
 
     @commands.slash_command(
         name="give",
-        description="Give another user some currency.",
-        help="Give another server member some cash.",
+        description="Give a server member some cash.",
         guild_only=True
     )
     @commands.guild_only()
@@ -62,7 +61,7 @@ class Economy(commands.Cog):
 
     @commands.command(
         name="give",
-        help="Give another user some cash. You can use a user ID or mention them."
+        help="Give a server member some cash. You can use ID or mention them."
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
@@ -75,24 +74,11 @@ class Economy(commands.Cog):
 
         return await give.cmd(ctx, member, amount)
 
-    # @bridge.bridge_command(
-    #     name="inventory",
-    #     aliases=["inv"],
-    #     description="Display your inventory.",
-    #     help="Display your inventory, this will also show your Racu badges if you have any.",
-    #     guild_only=True
-    # )
-    # @commands.guild_only()
-    # @checks.allowed_in_channel()
-    # @commands.cooldown(1, 10, commands.BucketType.user)
-    # async def inventory(self, ctx):
-    #     return await inventory.cmd(self, ctx)
-
     @bridge.bridge_command(
         name="slots",
         aliases=["slot"],
-        descriptions="Spin the slots for a chance to win the jackpot!",
-        help="Starts a slots game.",
+        descriptions="Start a slots game.",
+        help="Spin the slots for a chance to win the jackpot!",
         guild_only=True
     )
     @commands.guild_only()

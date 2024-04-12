@@ -13,7 +13,7 @@ class Levels(commands.Cog):
         name="level",
         aliases=["rank", "xp"],
         description="Displays your level and server rank.",
-        help="Displays your level and rank in the current server.",
+        help="Displays your level and server rank.",
         guild_only=True
     )
     @commands.guild_only()
@@ -26,7 +26,7 @@ class Levels(commands.Cog):
         name="leaderboard",
         aliases=["lb", "xplb"],
         description="Are ya winning' son?",
-        help="Shows the guild's level leaderboard by default. You can switch to currency and /daily leaderboard.",
+        help="Shows three different leaderboards: levels, currency and daily streaks.",
         guild_only=True
     )
     @commands.guild_only()
