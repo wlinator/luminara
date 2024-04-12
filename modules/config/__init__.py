@@ -21,70 +21,62 @@ class Config(commands.Cog):
     @bridge.bridge_command(
         name="configuration",
         aliases=["config"],
+        description="Show your server configuration.",
+        help="Shows information about how Racu is configured in your server. "
+             "[Read the guide](https://wiki.wlinator.org/serverconfig).",
         guild_only=True
     )
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
     async def config_command(self, ctx):
-        """
-        Shows information about how Racu is configured in your server.
-        Config guide: https://wiki.wlinator.org/serverconfig
-        """
-
         await config.cmd(self, ctx)
 
     @bridge.bridge_command(
         name="setprefix",
         aliases=["sp"],
+        description="Set Racu's prefix.",
+        help="Set the prefix for Racu in this server. The maximum length of a prefix is 25.",
         guild_only=True
     )
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
-    async def setprefix_command(self, ctx, *, prefix: str):
-        """
-        Set the prefix for Racu in this server. The maximum length of a prefix is 25.
-        Requires Manage Channels permissions.
-        """
-
+    async def prefix_set_command(self, ctx, *, prefix: str):
         await set_prefix.set_cmd(ctx, prefix)
 
     @bridge.bridge_command(
         name="xprewards",
         aliases=["xpr"],
+        description="Show your server's XP rewards list.",
+        help="Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_show(self, ctx):
-        """
-        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
-        """
         await xp_reward.show(ctx)
 
     @bridge.bridge_command(
         name="addxpreward",
         aliases=["axpr"],
+        description="Add a Racu XP reward.",
+        help="Add a Racu XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_add(self, ctx, level: int, role: discord.Role, persistent: bool = False):
-        """
-        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
-        """
         await xp_reward.add_reward(ctx, level, role.id, persistent)
 
     @bridge.bridge_command(
         name="removexpreward",
         aliases=["rxpr"],
+        description="Remove a Racu XP reward.",
+        help="Remove a Racu XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_remove(self, ctx, level: int):
-        """
-        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
-        """
         await xp_reward.remove_reward(ctx, level)
 
     """
@@ -100,7 +92,7 @@ class Config(commands.Cog):
 
     @birthday_config.command(
         name="channel",
-        description="Set the birthday channel, this will automatically enable the module."
+        description="Set the birthday announcements channel."
     )
     async def config_birthdays_channel(self, ctx, *, channel: discord.TextChannel):
         guild_config = GuildConfig(ctx.guild.id)
@@ -118,7 +110,7 @@ class Config(commands.Cog):
 
     @birthday_config.command(
         name="disable",
-        description="Disables birthday commands and announcements.",
+        description="Disable the birthday module.",
     )
     async def config_birthdays_disable(self, ctx):
         guild_config = GuildConfig(ctx.guild.id)
@@ -141,7 +133,7 @@ class Config(commands.Cog):
 
     @command_config.command(
         name="channel",
-        description="If set, commands can only be done in the specified channel."
+        description="Configure where members can use Racu commands."
     )
     async def config_commands_channel(self, ctx, *, channel: discord.TextChannel):
         guild_config = GuildConfig(ctx.guild.id)
@@ -176,50 +168,50 @@ class Config(commands.Cog):
 
         return await ctx.respond(embed=embed)
 
-    @intro_config.command(
-        name="channel",
-        description="Set the introductions channel. This will automatically enable the module."
-    )
-    async def config_intros_channel(self, ctx, *, channel: discord.TextChannel):
-        guild_config = GuildConfig(ctx.guild.id)
-        guild_config.intro_channel_id = channel.id
-        guild_config.push()
-
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-            description=f"✅ | New introductions will be sent in {channel.mention}."
-        )
-        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-
-        return await ctx.respond(embed=embed)
-
-    @intro_config.command(
-        name="disable",
-        introduction="Disable the introductions module."
-    )
-    async def config_intros_disable(self, ctx):
-        guild_config = GuildConfig(ctx.guild.id)
-
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-        )
-        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-
-        if not guild_config.intro_channel_id:
-            embed.description = "👍 | The introductions module was already disabled."
-            return await ctx.respond(embed=embed)
-
-        else:
-            guild_config.intro_channel_id = None
-            guild_config.push()
-            embed.description = "✅ | The introductions module was successfully disabled."
-            return await ctx.respond(embed=embed)
+    # @intro_config.command(
+    #     name="channel",
+    #     description="Set the introductions channel."
+    # )
+    # async def config_intros_channel(self, ctx, *, channel: discord.TextChannel):
+    #     guild_config = GuildConfig(ctx.guild.id)
+    #     guild_config.intro_channel_id = channel.id
+    #     guild_config.push()
+    #
+    #     embed = discord.Embed(
+    #         color=discord.Color.orange(),
+    #         description=f"✅ | New introductions will be sent in {channel.mention}."
+    #     )
+    #     guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+    #     embed.set_author(name="Server Configuration", icon_url=guild_icon)
+    #
+    #     return await ctx.respond(embed=embed)
+    #
+    # @intro_config.command(
+    #     name="disable",
+    #     introduction="Disable the introductions module."
+    # )
+    # async def config_intros_disable(self, ctx):
+    #     guild_config = GuildConfig(ctx.guild.id)
+    #
+    #     embed = discord.Embed(
+    #         color=discord.Color.orange(),
+    #     )
+    #     guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+    #     embed.set_author(name="Server Configuration", icon_url=guild_icon)
+    #
+    #     if not guild_config.intro_channel_id:
+    #         embed.description = "👍 | The introductions module was already disabled."
+    #         return await ctx.respond(embed=embed)
+    #
+    #     else:
+    #         guild_config.intro_channel_id = None
+    #         guild_config.push()
+    #         embed.description = "✅ | The introductions module was successfully disabled."
+    #         return await ctx.respond(embed=embed)
 
     @welcome_config.command(
         name="channel",
-        description="Sets the welcome message channel, This will automatically enable the module."
+        description="Set the greeting announcements channel."
     )
     async def config_welcome_channel(self, ctx, *, channel: discord.TextChannel):
         guild_config = GuildConfig(ctx.guild.id)
@@ -237,7 +229,7 @@ class Config(commands.Cog):
 
     @welcome_config.command(
         name="disable",
-        description="Disables welcome messages in this server."
+        description="Disable greetings in this server."
     )
     async def config_welcome_disable(self, ctx):
         guild_config = GuildConfig(ctx.guild.id)
@@ -261,7 +253,7 @@ class Config(commands.Cog):
 
     @welcome_config.command(
         name="template",
-        description="Racu will use this template text in the \"description\" field in the welcome embed."
+        description="Make a custom greeting template."
     )
     async def config_welcome_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
         guild_config = GuildConfig(ctx.guild.id)
@@ -283,7 +275,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="channel",
-        description="Sets the channel for level announcements."
+        description="Set the level announcements channel."
     )
     async def config_level_channel(self, ctx, *, channel: discord.TextChannel):
         guild_config = GuildConfig(ctx.guild.id)
@@ -304,7 +296,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="currentchannel",
-        description="Level announcements will be sent in the same channel of the message that triggers this event."
+        description="Send level announcements in the member's current channel."
     )
     async def config_level_samechannel(self, ctx):
         guild_config = GuildConfig(ctx.guild.id)
@@ -367,7 +359,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="type",
-        description="Toggle level announcement types (whimsical or generic). If used, the template is removed."
+        description="Set the level announcements type."
     )
     async def config_level_type(self, ctx, *, type: discord.Option(choices=["whimsical", "generic"])):
         guild_config = GuildConfig(ctx.guild.id)
@@ -399,7 +391,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="template",
-        description=f"If set, Racu will only use this template for level announcements. See '.help config' for info."
+        description=f"Make a custom leveling template."
     )
     async def config_level_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
         guild_config = GuildConfig(ctx.guild.id)

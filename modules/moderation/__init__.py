@@ -12,33 +12,28 @@ class Moderation(commands.Cog):
     @bridge.bridge_command(
         name="ban",
         aliases=["b"],
+        description="Ban a user from the server.",
+        help="Bans a user from the server, you can use ID or mention them.",
         guild_only=True
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
     async def ban_command(self, ctx, target: discord.User, *, reason: str = None):
-        """
-        Bans a user from the guild, you can mention the user, use ID or provide their username.
-        """
         await ban.ban_user(self, ctx, target, reason)
 
     @bridge.bridge_command(
         name="unban",
         aliases=["ub", "pardon"],
+        description="Unbans a user from the server.",
+        help="Unbans a user from the server, you can use ID or provide their username.",
         guild_only=True
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
     async def unban_command(self, ctx, target: discord.User, *, reason: str = None):
-        """
-        Unbans a user from the guild. If the user wasn't banned, this command will still process.
-        """
         await ban.unban_user(ctx, target, reason)
-
-    # async def cog_command_error(self, ctx: ApplicationContext, error: Exception) -> None:
-    #     await ctx.respond(embed=ModErrors.mod_error(ctx, str(error)))
 
 
 def setup(client):

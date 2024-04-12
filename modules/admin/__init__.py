@@ -4,7 +4,7 @@ from discord.ext import commands, bridge
 from modules.admin import award, sql
 
 
-class BotAdmin(commands.Cog):
+class BotAdmin(commands.Cog, name="Bot Admin"):
     """
     This module is intended for commands that only bot owners can do.
     For server configuration with Racu, see the "config" module.
@@ -15,7 +15,7 @@ class BotAdmin(commands.Cog):
 
     @bridge.bridge_command(
         name="award",
-        description="Award currency - owner only command.",
+        description="This command can only be performed by a bot administrator.",
         help="Awards cash to a specific user. This command can only be performed by a bot administrator.",
         guild_only=True
     )
@@ -27,8 +27,8 @@ class BotAdmin(commands.Cog):
     @bridge.bridge_command(
         name="sqlselect",
         aliases=["sqls"],
-        description="Perform a SELECT query in the database.",
-        help="Perform a SELECT query in the database. This can only be done by the owner of Racu."
+        description="This command can only be performed by a bot administrator.",
+        help="Perform a SELECT query in the database. This command can only be performed by a bot administrator."
     )
     @commands.is_owner()
     async def select(self, ctx, *, query: str):
@@ -37,8 +37,8 @@ class BotAdmin(commands.Cog):
     @bridge.bridge_command(
         name="sqlinject",
         aliases=["sqli"],
-        description="Change a value in the database. (DANGEROUS)",
-        help="Change a value in the database. This can only be done by the owner of Racu. (DANGEROUS)"
+        description="This command can only be performed by a bot administrator.",
+        help="Change a value in the database. This command can only be performed by a bot administrator."
     )
     @commands.is_owner()
     async def inject(self, ctx, *, query: str):

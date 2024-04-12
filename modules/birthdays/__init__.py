@@ -34,7 +34,6 @@ class Birthdays(commands.Cog):
     async def set_birthday(self, ctx, month: str, *, day: int):
         """
         Set your birthday. You can use abbreviations for months, like "jan" and "nov".
-        Racu reads only the first three characters to decide the month.
         """
 
         month_name = await birthday.get_month_name(month, month_mapping)
@@ -43,8 +42,8 @@ class Birthdays(commands.Cog):
 
     @bridge.bridge_command(
         name="upcoming",
-        aliases=["birthdayupcoming"],
-        description="See upcoming birthdays!",
+        aliases=["upcomingbirthdays"],
+        description="Shows the upcoming birthdays in this server.",
         guild_only=True
     )
     @commands.guild_only()
