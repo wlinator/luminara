@@ -39,7 +39,7 @@ class Economy(commands.Cog):
     @bridge.bridge_command(
         name="daily",
         aliases=["timely"],
-        description="Claim your daily reward!",
+        description="Claim your daily reward.",
         help="Claim your daily reward! Reset is at 7 AM EST.",
         guild_only=True
     )
@@ -77,7 +77,7 @@ class Economy(commands.Cog):
     @bridge.bridge_command(
         name="slots",
         aliases=["slot"],
-        descriptions="Start a slots game.",
+        description="Start a slots game.",
         help="Spin the slots for a chance to win the jackpot!",
         guild_only=True
     )
