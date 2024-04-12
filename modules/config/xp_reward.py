@@ -11,7 +11,7 @@ async def show(ctx):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description="[Read the guide before editing](https://wiki.wlinator.org/xprewards).\n"
+        description="Read [the guide](https://wiki.wlinator.org/xprewards) before editing.\n"
     )
 
     icon = ctx.guild.icon if ctx.guild.icon else art["logo"]["opaque"]

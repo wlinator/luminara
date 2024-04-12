@@ -21,70 +21,62 @@ class Config(commands.Cog):
     @bridge.bridge_command(
         name="configuration",
         aliases=["config"],
+        description="Show your server configuration.",
+        help="Shows information about how Racu is configured in your server. "
+             "[Read the guide](https://wiki.wlinator.org/serverconfig).",
         guild_only=True
     )
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
     async def config_command(self, ctx):
-        """
-        Shows information about how Racu is configured in your server.
-        Config guide: https://wiki.wlinator.org/serverconfig
-        """
-
         await config.cmd(self, ctx)
 
     @bridge.bridge_command(
         name="setprefix",
         aliases=["sp"],
+        description="Set Racu's prefix.",
+        help="Set the prefix for Racu in this server. The maximum length of a prefix is 25.",
         guild_only=True
     )
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
-    async def setprefix_command(self, ctx, *, prefix: str):
-        """
-        Set the prefix for Racu in this server. The maximum length of a prefix is 25.
-        Requires Manage Channels permissions.
-        """
-
+    async def prefix_set_command(self, ctx, *, prefix: str):
         await set_prefix.set_cmd(ctx, prefix)
 
     @bridge.bridge_command(
         name="xprewards",
         aliases=["xpr"],
+        description="Show your XP rewards list.",
+        help="Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_show(self, ctx):
-        """
-        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
-        """
         await xp_reward.show(ctx)
 
     @bridge.bridge_command(
         name="addxpreward",
         aliases=["axpr"],
+        description="Add a Racu XP reward.",
+        help="Add a Racu XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_add(self, ctx, level: int, role: discord.Role, persistent: bool = False):
-        """
-        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
-        """
         await xp_reward.add_reward(ctx, level, role.id, persistent)
 
     @bridge.bridge_command(
         name="removexpreward",
         aliases=["rxpr"],
+        description="Remove a Racu XP reward.",
+        help="Remove a Racu XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_remove(self, ctx, level: int):
-        """
-        [Read the guide before editing](https://wiki.wlinator.org/xprewards).
-        """
         await xp_reward.remove_reward(ctx, level)
 
     """
