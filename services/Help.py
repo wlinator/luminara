@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from config.parser import JsonCache
 from lib.embeds.error import HelpErrors
+import lib.checks
 
 art = JsonCache.read_json("art")
 load_dotenv('.env')
@@ -28,8 +29,11 @@ class RacuHelp(commands.HelpCommand):
         embed = discord.Embed(color=discord.Color.blurple())
 
         embed.set_author(name="Help Command", icon_url=art["logo"]["transparent"])
-        embed.description = ("Still need help? See [the wiki](https://wiki.wlinator.org/)!\n"
-                             "Bug reports & feature requests go [here](https://gitlab.com/wlinator/Racu/-/issues/new).")
+        embed.description = (
+            "Still need help? See [the wiki](https://wiki.wlinator.org/)!\n"
+            "Bug reports & feature requests go [here](https://gitlab.com/wlinator/Racu/-/issues/new).\n\n"
+            "Full list of commands: https://wiki.wlinator.org/cmdlist"
+        )
 
         for cog, racu_commands in mapping.items():
 
