@@ -2,13 +2,11 @@ import os
 import time
 
 from discord.ext import commands
-from dotenv import load_dotenv
 
 from db import database
 
-load_dotenv('.env')
-xp_gain_per_message = int(os.getenv("XP_GAIN_PER_MESSAGE"))
-xp_gain_cooldown = int(os.getenv("XP_GAIN_COOLDOWN"))
+xp_gain_per_message = int(os.environ.get("RACU_XP_GAIN_PER_MESSAGE"))
+xp_gain_cooldown = int(os.environ.get("RACU_XP_GAIN_COOLDOWN"))
 
 
 class XpService:

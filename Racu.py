@@ -16,7 +16,7 @@ async def get_prefix(bot, message):
     except AttributeError:
         return "."
 
-owner_ids = set(os.environ.get('OWNER_IDS').split(','))
+owner_ids = set(os.environ.get('RACU_OWNER_IDS').split(','))
 client = services.Client.RacuBot(
     owner_ids=owner_ids,
     command_prefix=get_prefix,
@@ -69,4 +69,4 @@ if __name__ == '__main__':
     # empty line to separate modules from system info in logs
     _logs.info("\n")
 
-    client.run(os.getenv('TOKEN'))
+    client.run(os.environ.get('RACU_TOKEN'))
