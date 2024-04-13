@@ -2,23 +2,23 @@ import logging
 import os
 
 import mariadb
-from dotenv import load_dotenv
 
 _logs = logging.getLogger('Racu.Core')
-load_dotenv('.env')
+
 
 def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
     pool = mariadb.ConnectionPool(
         host="db",
         port=3306,
-        database="racudb",
-        user=os.getenv("MARIADB_USER"),
-        password=os.getenv("MARIADB_PASSWORD"),
+        database=os.environ.get("MARIADB_DATABASE"),
+        user=os.environ.get("MARIADB_USER"),
+        password=os.environ.get("MARIADB_PASSWORD"),
         pool_name=name,
         pool_size=size
     )
 
     return pool
+
 
 try:
     _cnxpool = create_connection_pool("core-pool", 25)

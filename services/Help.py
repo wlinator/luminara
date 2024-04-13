@@ -1,13 +1,10 @@
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 
 from config.parser import JsonCache
 from lib.embeds.error import HelpErrors
-import lib.checks
 
 art = JsonCache.read_json("art")
-load_dotenv('.env')
 
 
 class RacuHelp(commands.HelpCommand):

@@ -8,6 +8,19 @@ services:
       driver: "json-file"
       options:
         max-size: "50m"
+    environment:
+      RACU_TOKEN: ${TOKEN}
+      RACU_INSTANCE: BETA
+      RACU_OWNER_IDS: 784783517845946429
+      RACU_XP_GAIN_PER_MESSAGE: 1
+      RACU_XP_GAIN_COOLDOWN: 8
+      RACU_DBX_OAUTH2_REFRESH_TOKEN: ${DBX_OAUTH2_REFRESH_TOKEN}
+      RACU_DBX_APP_KEY: ${DBX_APP_KEY}
+      RACU_DBX_APP_SECRET: ${DBX_APP_SECRET}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_DATABASE: racudb
     volumes:
       - debuglog:/usr/src/app/logs
     depends_on:

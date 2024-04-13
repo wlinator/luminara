@@ -5,7 +5,6 @@ from datetime import datetime
 import discord
 import pytz
 from discord.ext import commands
-from dotenv import load_dotenv
 
 from config.parser import JsonCache
 from lib import interaction
@@ -16,7 +15,6 @@ from services.Currency import Currency
 
 resources = JsonCache.read_json("resources")
 logs = logging.getLogger('Racu.Core')
-load_dotenv('.env')
 est = pytz.timezone('US/Eastern')
 active_blackjack_games = {}
 
