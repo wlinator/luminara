@@ -10,40 +10,44 @@ create a personalized Discord bot.**
 **Note: because the `.slots` and `.blackjack` commands use custom (animated) emoji, these commands will break when you self-host Racu. Please replace the ID values in `config/JSON/resources.json` with your own set of emotes, or ask [wlinator](<https://discord.com/users/784783517845946429>) to let your bot join [Racu's Emote Server](https://discord.gg/B9jm2NgX5H).**
 
 ### Installation
+#### Docker
+By default, Racu comes containerized with mariadb, its core application, [adminer](https://www.adminer.org/), and [dozzle](https://dozzle.dev/). 
+However, to let Dozzle function as intended, copy `users.yml.example` to `users.yml` and configure an auth user. (See the file for more info).
 
-Racu is containerized: its core, database, database admin platform and logger run on Docker without any extra
-configuration.
-However, you CAN run it locally without Docker by hosting MariaDB on your machine with the login credentials specified
-in [.env](.env.template) and installing **Python 3.12** with the [required pip packages](requirements.txt).
+To install Racu, run these commands:
 
-```sh
+```commandline
 git clone https://gitlab.com/wlinator/racu && cd racu
 ```
 
 Copy `.env.template` to `.env` and fill out the [variables](#environment-variables).
 
-**Optional:** copy `users.yml.example` to `users.yml` to properly configure Dozzle logs. Check the file for more
-information.
-
-```sh
+```commandline
 docker compose up -d --build
 ```
 
-## Environment variables
+Note: This won't affect the functioning of the bot, but it's best practice to set up a reverse proxy for adminer and dozzle.
+- Adminer on `port 8080`
+- Dozzle on `port 8081`
 
-- `TOKEN`: your Discord Bot Token, you can get this [here](https://discord.com/developers/applications).
-- `INSTANCE`: this can be anything, only set it as "MAIN" if you've configured Dropbox backups.
-- `OWNER_ID`: the Discord user ID of the person who will act as owner of this bot.
+#### Alternative
+You can run Racu without Docker, however I don't provide support or documentation for this. Here are some requirements to get you started.
 
-- `XP_GAIN_PER_MESSAGE`: how much XP should be awarded to a user per message.
-- `XP_GAIN_COOLDOWN`: XP earning cooldown time in seconds.
+- MariaDB server on port 3306.
+- Python 3.11 with the [required pip packages](requirements.txt).
+- See the environment variables in [docker-compose.yml](docker-compose.yml) and set them manually.
 
-- The values with "DBX" can be ignored unless you plan to make database backups with Dropbox. In that case enter your
-  Dropbox API credentials.
 
-- `MARIADB_USER`: the username for your MariaDB database.
-- `MARIADB_PASSWORD`: the password for your database.
-- `MARIADB_ROOT_PASSWORD`: the root password for your database. (can be ignored unless you have a specific use for it)
+## Environment variables (.env)
+
+`TOKEN`: your Discord Bot Token, you can get this [here](https://discord.com/developers/applications). </br>
+`DBX_OAUTH2_REFRESH_TOKEN`, `DBX_APP_KEY`, `DBX_APP_SECRET`: set these up if you want to make database backups to your Dropbox app. </br>
+`MARIADB_USER`: the username for your MariaDB database. </br>
+`MARIADB_PASSWORD`: the password for your database. </br>
+`MARIADB_ROOT_PASSWORD`: the root password for your database. (can be ignored unless you have a specific use for it) </br>
+`MARIADB_DATABASE`: the name of your database.
+
+Other variables can be specified in `docker.compose.yml` (core)
 
 ---
 

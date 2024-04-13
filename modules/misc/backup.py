@@ -4,17 +4,15 @@ import subprocess
 from datetime import datetime
 
 import dropbox
-from dotenv import load_dotenv
 
 logs = logging.getLogger('Racu.Core')
-load_dotenv('.env')
 
-oauth2_refresh_token = os.getenv("DBX_OAUTH2_REFRESH_TOKEN")
-app_key = os.getenv("DBX_APP_KEY")
-app_secret = os.getenv("DBX_APP_SECRET")
-instance = os.getenv("INSTANCE")
-mariadb_user = os.getenv("MARIADB_USER")
-mariadb_password = os.getenv("MARIADB_PASSWORD")
+oauth2_refresh_token = os.environ.get("RACU_DBX_OAUTH2_REFRESH_TOKEN")
+app_key = os.environ.get("RACU_DBX_APP_KEY")
+app_secret = os.environ.get("RACU_DBX_APP_SECRET")
+instance = os.environ.get("RACU_INSTANCE")
+mariadb_user = os.environ.get("RACU_MARIADB_USER")
+mariadb_password = os.environ.get("RACU_MARIADB_PASSWORD")
 
 if instance.lower() == "main":
     dbx = dropbox.Dropbox(

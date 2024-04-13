@@ -1,15 +1,12 @@
 import os
 
 import discord
-from dotenv import load_dotenv
-
 import services.Client
 import services.GuildConfig
 import services.Help
 import services.logging_service
 import config.parser
 
-load_dotenv('.env')
 _logs = services.logging_service.setup_logger()
 
 
@@ -19,9 +16,9 @@ async def get_prefix(bot, message):
     except AttributeError:
         return "."
 
-
+owner_ids = set(os.environ.get('RACU_OWNER_IDS').split(','))
 client = services.Client.RacuBot(
-    owner_id=int(os.getenv('OWNER_ID')),
+    owner_ids=owner_ids,
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
     status=discord.Status.online,
@@ -72,4 +69,4 @@ if __name__ == '__main__':
     # empty line to separate modules from system info in logs
     _logs.info("\n")
 
-    client.run(os.getenv('TOKEN'))
+    client.run(os.environ.get('RACU_TOKEN'))
