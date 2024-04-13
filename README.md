@@ -11,8 +11,7 @@ create a personalized Discord bot.**
 
 ### Installation
 #### Docker
-By default, Racu comes containerized with mariadb, its core application, [adminer](https://www.adminer.org/), and [dozzle](https://dozzle.dev/). 
-However, to let Dozzle function as intended, copy `users.yml.example` to `users.yml` and configure an auth user. (See the file for more info).
+Racu comes containerized with essential components such as MariaDB, its core application, Adminer, and Dozzle. To ensure smooth operation of Dozzle, it's necessary to copy `users.yml.example` to `users.yml` and configure an authentication user as outlined in the file. Refer to the file for detailed instructions.
 
 To install Racu, run these commands:
 
@@ -26,9 +25,9 @@ Copy `.env.template` to `.env` and fill out the [variables](#environment-variabl
 docker compose up -d --build
 ```
 
-Note: This won't affect the functioning of the bot, but it's best practice to set up a reverse proxy for adminer and dozzle.
-- Adminer on `port 8080`
-- Dozzle on `port 8081`
+Please note that it's highly recommended to establish a reverse proxy setup for Adminer and Dozzle, ensuring better security and accessibility.
+- Adminer should be directed to port 8080.
+- Dozzle should be mapped to port 8081.
 
 #### Alternative
 You can run Racu without Docker, however I don't provide support or documentation for this. Here are some requirements to get you started.
@@ -40,12 +39,12 @@ You can run Racu without Docker, however I don't provide support or documentatio
 
 ## Environment variables (.env)
 
-`TOKEN`: your Discord Bot Token, you can get this [here](https://discord.com/developers/applications). </br>
-`DBX_OAUTH2_REFRESH_TOKEN`, `DBX_APP_KEY`, `DBX_APP_SECRET`: set these up if you want to make database backups to your Dropbox app. </br>
-`MARIADB_USER`: the username for your MariaDB database. </br>
-`MARIADB_PASSWORD`: the password for your database. </br>
-`MARIADB_ROOT_PASSWORD`: the root password for your database. (can be ignored unless you have a specific use for it) </br>
-`MARIADB_DATABASE`: the name of your database.
+- `TOKEN`: your Discord Bot Token, you can get this [here](https://discord.com/developers/applications).  
+- `DBX_*`: set these up if you want to make database backups to your Dropbox app.  
+- `MARIADB_USER`: the username for your MariaDB database.  
+- `MARIADB_PASSWORD`: the password for your database.  
+- `MARIADB_ROOT_PASSWORD`: can be ignored unless you have a specific use for it.
+- `MARIADB_DATABASE`: the name of your database.
 
 Other variables can be specified in `docker.compose.yml` (core)
 
