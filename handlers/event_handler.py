@@ -1,3 +1,4 @@
+# noinspection PyInterpreter
 import logging
 
 from discord.ext.commands import Cog
@@ -25,6 +26,13 @@ class EventHandler(Cog):
             await member.guild.get_channel(config.welcome_channel_id).send(embed=embed, content=member.mention)
         except Exception as e:
             _logs.info(f"[GreetingHandler] Message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
+
+    # @Cog.listener()
+    # async def on_member_update(self, before, after):
+    #     config = GuildConfig(after.guild.id)
+    #
+    #     if not config.boost_channel_id:
+    #         return
 
     @Cog.listener()
     async def on_command_completion(self, ctx) -> None:
