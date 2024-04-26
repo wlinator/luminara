@@ -12,7 +12,7 @@ class Boost:
     @staticmethod
     def message(member, template=None):
         embed = discord.Embed(
-            color=discord.Color.embed_background(),
+            color=discord.Color.nitro_pink(),
             description=f"_ _\nThanks for boosting, **{member.name}**!!"
         )
 
