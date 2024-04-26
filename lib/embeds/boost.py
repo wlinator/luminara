@@ -14,7 +14,7 @@ class Boost:
         embed = discord.Embed(
             color=discord.Color.nitro_pink(),
             title="New Booster",
-            description=f"_ _\nThanks for boosting, **{member.name}**!!"
+            description=f"Thanks for boosting, **{member.name}**!!"
         )
 
         if template:
