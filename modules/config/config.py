@@ -62,6 +62,25 @@ async def cmd(self, ctx):
 
     embed.add_field(name="GREETINGS", value=greeting_config, inline=False)
 
+    # boosts
+    if guild_config.boost_channel_id:
+        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.boost_channel_id)
+
+        if channel:
+            boost_config = f"✅ | in {channel.mention}"
+
+            if guild_config.boost_message:
+                boost_config += f" with template:\n```{guild_config.boost_message}```"
+            else:
+                boost_config += f" without custom template."
+
+        else:
+            boost_config = f"❌ | enable the module with `/config boosts channel`"
+    else:
+        boost_config = f"❌ | enable the module with `/config boosts channel`"
+
+    embed.add_field(name="BOOST ANNOUNCEMENTS", value=boost_config, inline=False)
+
     # levels
     if guild_config.level_message_type == 0:
         level_config = f"❌ | enable levels with `/config levels enable`"
