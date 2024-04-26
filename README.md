@@ -7,7 +7,7 @@
 **The next part of this README explains how to self-host Racu, this allows you to host your own version of my code and
 create a personalized Discord bot.**
 
-**Note: because the `.slots` and `.blackjack` commands use custom (animated) emoji, these commands will break when you self-host Racu. Please replace the ID values in `config/JSON/resources.json` with your own set of emotes, or ask [wlinator](<https://discord.com/users/784783517845946429>) to let your bot join [Racu's Emote Server](https://discord.gg/B9jm2NgX5H).**
+**Note: because the `.slots` and `.blackjack` commands use custom (animated) emoji, these commands will break when you self-host Racu. Please replace the ID values in `config/JSON/resources.json` with your own set of emotes.**
 
 ### Installation
 #### Docker
