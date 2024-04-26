@@ -11,6 +11,7 @@ class GuildConfig:
         self.welcome_message = None
         self.boost_channel_id = None
         self.boost_message = None
+        self.boost_image_url = None
         self.level_channel_id = None
         self.level_message = None
         self.level_message_type = 1
@@ -24,13 +25,14 @@ class GuildConfig:
         query = """
                         SELECT birthday_channel_id, command_channel_id, intro_channel_id,
                                       welcome_channel_id, welcome_message, boost_channel_id, 
-                                      boost_message, level_channel_id, level_message, level_message_type
+                                      boost_message, boost_image_url, level_channel_id, 
+                                      level_message, level_message_type
                         FROM guild_config WHERE guild_id = %s
                         """
 
         try:
             (birthday_channel_id, command_channel_id, intro_channel_id,
-             welcome_channel_id, welcome_message, boost_channel_id, boost_message,
+             welcome_channel_id, welcome_message, boost_channel_id, boost_message, boost_image_url,
              level_channel_id, level_message, level_message_type) = \
                 database.select_query(query, (self.guild_id,))[0]
 
@@ -41,6 +43,7 @@ class GuildConfig:
             self.welcome_message = welcome_message
             self.boost_channel_id = boost_channel_id
             self.boost_message = boost_message
+            self.boost_image_url = boost_image_url
             self.level_channel_id = level_channel_id
             self.level_message = level_message
             self.level_message_type = level_message_type
@@ -61,6 +64,7 @@ class GuildConfig:
                     welcome_message = %s,
                     boost_channel_id = %s,
                     boost_message = %s,
+                    boost_image_url = %s,
                     level_channel_id = %s,
                     level_message = %s,
                     level_message_type = %s
@@ -69,7 +73,7 @@ class GuildConfig:
 
         database.execute_query(query, (self.birthday_channel_id, self.command_channel_id,
                                        self.intro_channel_id, self.welcome_channel_id, self.welcome_message,
-                                       self.boost_channel_id, self.boost_message,
+                                       self.boost_channel_id, self.boost_message, self.boost_image_url,
                                        self.level_channel_id, self.level_message,
                                        self.level_message_type, self.guild_id))
 
