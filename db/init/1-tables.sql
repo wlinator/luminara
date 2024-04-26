@@ -84,6 +84,7 @@ CREATE TABLE guild_config (
     welcome_message TEXT,
     boost_channel_id BIGINT,
     boost_message TEXT,
+    boost_image_url TEXT,
     level_channel_id BIGINT,   /* level-up messages, if NULL the level-up message will be shown in current msg channel*/
     level_message TEXT,  /* if NOT NULL and LEVEL_TYPE = 2, this can be a custom level up message. */
     level_message_type TINYINT(1) NOT NULL DEFAULT 1,   /* 0: no level up messages, 1: levels.en-US.json, 2: generic message */

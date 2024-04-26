@@ -8,6 +8,7 @@ from config.parser import JsonCache
 from lib import formatter
 from lib.embeds.greet import Greet
 from lib.embeds.boost import Boost
+from lib.embeds.error import GenericErrors
 from modules.config import config, set_prefix, xp_reward
 from services.GuildConfig import GuildConfig
 
@@ -336,7 +337,42 @@ class Config(commands.Cog):
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
         await ctx.respond(embed=embed)
 
-        embed = Boost.message(ctx.author, text)
+        embed = Boost.message(ctx.author, text, guild_config.boost_image_url)
+        return await ctx.send(embed=embed, content=ctx.author.mention)
+
+    @boost_config.command(
+        name="image",
+        description="Add a custom image that will used for booster announcements."
+    )
+    async def config_boosts_image(self, ctx, *, image_url: str):
+        guild_config = GuildConfig(ctx.guild.id)
+
+        if image_url.lower() == "original":
+            guild_config.boost_image_url = None
+            guild_config.push()
+            image_url = None
+
+        elif not image_url.endswith(".jpg") and not image_url.lower().endswith(".png"):
+            return await ctx.respond(embed=GenericErrors.bad_url(ctx))
+
+        elif not image_url.startswith("http://") and not image_url.startswith("https://"):
+            return await ctx.respond(embed=GenericErrors.bad_url(ctx, "invalid URL."))
+
+        else:
+            guild_config.boost_image_url = image_url
+            guild_config.push()
+
+        embed = discord.Embed(
+            color=discord.Color.orange(),
+            description=f"✅ | The booster image was successfully updated."
+        )
+        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        embed.add_field(name="Image", value=image_url if image_url else "Original Image", inline=False)
+        embed.add_field(name="Example", value="An example will be sent in a separate message.", inline=False)
+        embed.set_author(name="Server Configuration", icon_url=guild_icon)
+        await ctx.respond(embed=embed)
+
+        embed = Boost.message(ctx.author, guild_config.boost_message, image_url)
         return await ctx.send(embed=embed, content=ctx.author.mention)
 
     @level_config.command(

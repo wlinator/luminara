@@ -41,7 +41,7 @@ class EventHandler(Cog):
         if not config.boost_channel_id:
             return
 
-        embed = lib.embeds.boost.Boost.message(member, config.boost_message)
+        embed = lib.embeds.boost.Boost.message(member, config.boost_message, config.boost_image_url)
 
         try:
             await member.guild.get_channel(config.boost_channel_id).send(embed=embed, content=member.mention)
