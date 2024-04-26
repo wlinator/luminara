@@ -23,8 +23,6 @@ class GenericErrors:
     def default_exception(ctx):
         embed = clean_error_embed(ctx)
         embed.description += "something went wrong."
-        embed.set_footer(text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
-                         icon_url=question_icon)
 
         return embed
 
@@ -34,6 +32,13 @@ class GenericErrors:
         embed.description += formatter.shorten(str(error), 100)
         embed.set_footer(text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
                          icon_url=question_icon)
+
+        return embed
+
+    @staticmethod
+    def bad_url(ctx, error="the image URL must end with `.jpg` or `.png`."):
+        embed = clean_error_embed(ctx)
+        embed.description += formatter.shorten(str(error), 100)
 
         return embed
 

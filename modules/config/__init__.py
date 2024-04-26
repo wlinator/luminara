@@ -7,6 +7,8 @@ from discord.ext import commands, bridge
 from config.parser import JsonCache
 from lib import formatter
 from lib.embeds.greet import Greet
+from lib.embeds.boost import Boost
+from lib.embeds.error import GenericErrors
 from modules.config import config, set_prefix, xp_reward
 from services.GuildConfig import GuildConfig
 
@@ -88,6 +90,7 @@ class Config(commands.Cog):
     command_config = config.create_subgroup(name="commands")
     intro_config = config.create_subgroup(name="intros")
     welcome_config = config.create_subgroup(name="greetings")
+    boost_config = config.create_subgroup(name="boosts")
     level_config = config.create_subgroup(name="levels")
 
     @birthday_config.command(
@@ -271,6 +274,105 @@ class Config(commands.Cog):
         await ctx.respond(embed=embed)
 
         embed = Greet.message(ctx.author, text)
+        return await ctx.send(embed=embed, content=ctx.author.mention)
+
+    @boost_config.command(
+        name="channel",
+        description="Set the boost announcements channel."
+    )
+    async def config_boosts_channel(self, ctx, *, channel: discord.TextChannel):
+        guild_config = GuildConfig(ctx.guild.id)
+        guild_config.boost_channel_id = channel.id
+        guild_config.push()
+
+        embed = discord.Embed(
+            color=discord.Color.orange(),
+            description=f"✅ | I will announce server boosts in {channel.mention}."
+        )
+        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        embed.set_author(name="Server Configuration", icon_url=guild_icon)
+
+        return await ctx.respond(embed=embed)
+
+    @boost_config.command(
+        name="disable",
+        description="Disable boost announcements in this server."
+    )
+    async def config_boosts_disable(self, ctx):
+        guild_config = GuildConfig(ctx.guild.id)
+
+        embed = discord.Embed(
+            color=discord.Color.orange(),
+        )
+        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        embed.set_author(name="Server Configuration", icon_url=guild_icon)
+
+        if not guild_config.boost_channel_id:
+            embed.description = "👍 | Boost announcements were already disabled."
+            return await ctx.respond(embed=embed)
+
+        else:
+            guild_config.boost_channel_id = None
+            guild_config.boost_message = None
+            guild_config.push()
+            embed.description = "✅ | Boost announcements are successfully disabled."
+            return await ctx.respond(embed=embed)
+
+    @boost_config.command(
+        name="template",
+        description="Make a custom boost announcement template."
+    )
+    async def config_boosts_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
+        guild_config = GuildConfig(ctx.guild.id)
+        guild_config.boost_message = text
+        guild_config.push()
+
+        embed = discord.Embed(
+            color=discord.Color.orange(),
+            description=f"✅ | The booster template was successfully updated."
+        )
+        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        embed.add_field(name="Template", value=text, inline=False)
+        embed.add_field(name="Example", value="An example will be sent in a separate message.", inline=False)
+        embed.set_author(name="Server Configuration", icon_url=guild_icon)
+        await ctx.respond(embed=embed)
+
+        embed = Boost.message(ctx.author, text, guild_config.boost_image_url)
+        return await ctx.send(embed=embed, content=ctx.author.mention)
+
+    @boost_config.command(
+        name="image",
+        description="Add a custom image that will used for booster announcements."
+    )
+    async def config_boosts_image(self, ctx, *, image_url: str):
+        guild_config = GuildConfig(ctx.guild.id)
+
+        if image_url.lower() == "original":
+            guild_config.boost_image_url = None
+            guild_config.push()
+            image_url = None
+
+        elif not image_url.endswith(".jpg") and not image_url.lower().endswith(".png"):
+            return await ctx.respond(embed=GenericErrors.bad_url(ctx))
+
+        elif not image_url.startswith("http://") and not image_url.startswith("https://"):
+            return await ctx.respond(embed=GenericErrors.bad_url(ctx, "invalid URL."))
+
+        else:
+            guild_config.boost_image_url = image_url
+            guild_config.push()
+
+        embed = discord.Embed(
+            color=discord.Color.orange(),
+            description=f"✅ | The booster image was successfully updated."
+        )
+        guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        embed.add_field(name="Image", value=image_url if image_url else "Original Image", inline=False)
+        embed.add_field(name="Example", value="An example will be sent in a separate message.", inline=False)
+        embed.set_author(name="Server Configuration", icon_url=guild_icon)
+        await ctx.respond(embed=embed)
+
+        embed = Boost.message(ctx.author, guild_config.boost_message, image_url)
         return await ctx.send(embed=embed, content=ctx.author.mention)
 
     @level_config.command(
