@@ -16,9 +16,8 @@ async def get_prefix(bot, message):
     except AttributeError:
         return "."
 
-owner_ids = set(os.environ.get('RACU_OWNER_IDS').split(','))
 client = services.Client.RacuBot(
-    owner_ids=owner_ids,
+    owner_id=int(os.environ.get('RACU_OWNER_ID')),
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
     status=discord.Status.online,
