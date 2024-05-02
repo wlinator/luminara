@@ -27,8 +27,6 @@ class RacuHelp(commands.HelpCommand):
 
         embed.set_author(name="Help Command", icon_url=art["logo"]["transparent"])
         embed.description = (
-            "Still need help? See [the wiki](https://wiki.wlinator.org/)!\n"
-            "Bug reports & feature requests go [here](https://gitlab.com/wlinator/Racu/-/issues/new).\n\n"
             "Full list of commands: https://wiki.wlinator.org/cmdlist"
         )
 
