@@ -14,5 +14,5 @@ def get_latest_git_tag():
 
 __title__ = "Racu"
 __version__ = get_latest_git_tag()
-__author__ = "wl.inator"
+__author__ = "wlinator"
 __license__ = "MIT License"
