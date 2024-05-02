@@ -1,6 +1,6 @@
 # You can invite me with [this link](https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot). Thanks for using Racu!
 
-![Racu art](art/racu_logo.png)
+![Racu art](https://git.wlinator.org/assets/img/logo.png)
 
 ## Self-host
 
