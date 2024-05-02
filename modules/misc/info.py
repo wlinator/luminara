@@ -26,11 +26,11 @@ async def cmd(command, ctx, unix_timestamp):
         color=discord.Color.orange()
     )
     embed.set_author(name=f"{metadata.__title__} v{metadata.__version__}",
-                     url=_data["gitlab_url"],
+                     url=_data["repository_url"],
                      icon_url=_art["logo"]["transparent"])
     embed.set_thumbnail(url=_art["logo"]["opaque"])
 
-    embed.add_field(name="Author", value=f"[{metadata.__author__}]({_data['author_url']})", inline=False)
+    #embed.add_field(name="Author", value=f"{metadata.__author__}", inline=False)
     embed.add_field(name="Uptime", value=f"<t:{unix_timestamp}:R>")
     embed.add_field(name="Latency", value=f"{round(1000 * command.client.latency)}ms")
     embed.add_field(name="Memory", value=f"{memory_usage_in_mb:.2f} MB")
