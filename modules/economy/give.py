@@ -9,6 +9,8 @@ async def cmd(ctx, user, amount):
         raise commands.BadArgument("you can't give money to yourself.")
     elif user.bot:
         raise commands.BadArgument("you can't give money to a bot.")
+    elif amount <= 0:
+        raise commands.BadArgument("invalid amount.")
 
     # Currency handler
     ctx_currency = Currency(ctx.author.id)
