@@ -5,8 +5,8 @@ from discord.ext import commands
 
 from db import database
 
-xp_gain_per_message = int(os.environ.get("RACU_XP_GAIN_PER_MESSAGE"))
-xp_gain_cooldown = int(os.environ.get("RACU_XP_GAIN_COOLDOWN"))
+xp_gain_per_message = int(os.environ.get("LUMI_XP_GAIN_PER_MESSAGE"))
+xp_gain_cooldown = int(os.environ.get("LUMI_XP_GAIN_COOLDOWN"))
 
 
 class XpService:
