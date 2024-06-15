@@ -1,4 +1,4 @@
-# You can invite me with [this link](https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot). Thanks for using Lumi!
+# You can invite me with [this link](https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot). Thanks for using Luminara!
 
 ![Lumi art](https://git.wlinator.org/assets/img/logo.png)
 
@@ -16,7 +16,7 @@ Lumi comes containerized with essential components such as MariaDB, its core app
 To install Lumi, run these commands:
 
 ```commandline
-git clone https://gitlab.com/wlinator/racu && cd racu
+git clone https://git.wlinator.org/Luminara/Core && cd Core
 ```
 
 Copy `.env.template` to `.env` and fill out the [variables](#environment-variables).
