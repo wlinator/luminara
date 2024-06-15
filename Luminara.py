@@ -17,7 +17,7 @@ async def get_prefix(bot, message):
         return "."
 
 client = services.Client.LumiBot(
-    owner_id=int(os.environ.get('RACU_OWNER_ID')),
+    owner_id=int(os.environ.get('LUMI_OWNER_ID')),
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
     status=discord.Status.online,
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     so NOT when main is imported from a cog. (sys.modules)
     """
 
-    _logs.info("RACU IS BOOTING")
+    _logs.info("LUMI IS BOOTING")
     _logs.info("\n")
 
     # cache all JSON
@@ -68,4 +68,4 @@ if __name__ == '__main__':
     # empty line to separate modules from system info in logs
     _logs.info("\n")
 
-    client.run(os.environ.get('RACU_TOKEN'))
+    client.run(os.environ.get('LUMI_TOKEN'))

@@ -7,10 +7,10 @@ import dropbox
 
 logs = logging.getLogger('Lumi.Core')
 
-oauth2_refresh_token = os.environ.get("RACU_DBX_OAUTH2_REFRESH_TOKEN")
-app_key = os.environ.get("RACU_DBX_APP_KEY")
-app_secret = os.environ.get("RACU_DBX_APP_SECRET")
-instance = os.environ.get("RACU_INSTANCE")
+oauth2_refresh_token = os.environ.get("LUMI_DBX_OAUTH2_REFRESH_TOKEN")
+app_key = os.environ.get("LUMI_DBX_APP_KEY")
+app_secret = os.environ.get("LUMI_DBX_APP_SECRET")
+instance = os.environ.get("LUMI_INSTANCE")
 mariadb_user = os.environ.get("MARIADB_USER")
 mariadb_password = os.environ.get("MARIADB_PASSWORD")
 
