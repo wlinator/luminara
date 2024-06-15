@@ -5,7 +5,7 @@ from datetime import datetime
 
 import dropbox
 
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 oauth2_refresh_token = os.environ.get("RACU_DBX_OAUTH2_REFRESH_TOKEN")
 app_key = os.environ.get("RACU_DBX_APP_KEY")
@@ -27,7 +27,7 @@ else:
 
 async def create_db_backup(dbx, path="db/rcu.db"):
     backup_name = datetime.today().strftime('%Y-%m-%d_%H%M')
-    backup_name += f"_racu.sql"
+    backup_name += f"_lumi.sql"
 
     command = f"mariadb-dump --user={mariadb_user} --password={mariadb_password} " \
               f"--host=db --single-transaction --all-databases > ./db/init/2-data.sql"

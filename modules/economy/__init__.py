@@ -13,8 +13,8 @@ class Economy(commands.Cog):
     @bridge.bridge_command(
         name="balance",
         aliases=["bal", "$"],
-        description="Shows your current Racu balance.",
-        help="Shows your current Racu balance. The economy system is global, meaning your balance will be synced in "
+        description="Shows your current Lumi balance.",
+        help="Shows your current Lumi balance. The economy system is global, meaning your balance will be synced in "
              "all servers.",
         guild_only=True
     )

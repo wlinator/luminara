@@ -3,7 +3,7 @@ import logging
 from db import database
 from services import Item
 
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 
 class Inventory:

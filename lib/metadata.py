@@ -12,7 +12,7 @@ def get_latest_git_tag():
         return "BETA"
 
 
-__title__ = "Racu"
+__title__ = "Lumi"
 __version__ = get_latest_git_tag()
 __author__ = "wlinator"
 __license__ = "MIT License"

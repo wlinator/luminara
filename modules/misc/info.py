@@ -10,7 +10,7 @@ from lib import metadata
 from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 
-_logs = logging.getLogger('Racu.Core')
+_logs = logging.getLogger('Lumi.Core')
 _art = JsonCache.read_json("art")
 _data = JsonCache.read_json("resources")
 

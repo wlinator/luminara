@@ -9,7 +9,7 @@ from lib.embeds.error import MiscErrors, IntroErrors
 from lib.embeds.intro import General, Questions
 
 resources = JsonCache.read_json("resources")
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 
 async def cmd(self, ctx: discord.ApplicationContext):

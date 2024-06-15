@@ -17,7 +17,7 @@ async def cmd(self, ctx, game):
         total_bet = Currency.format_human(stats["total_bet"])
         total_payout = Currency.format_human(stats["total_payout"])
 
-        # output = f"{ctx.author.name}'s racu stats\n\n"
+        # output = f"{ctx.author.name}'s lumi stats\n\n"
         output = strings["stats_blackjack"].format(
             stats["amount_of_games"],
             total_bet,

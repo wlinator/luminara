@@ -7,7 +7,7 @@ from lib.embeds.error import HelpErrors
 art = JsonCache.read_json("art")
 
 
-class RacuHelp(commands.HelpCommand):
+class LumiHelp(commands.HelpCommand):
 
     def __init__(self, **options):
         super().__init__(**options)
@@ -30,9 +30,9 @@ class RacuHelp(commands.HelpCommand):
             "Full list of commands: https://wiki.wlinator.org/cmdlist"
         )
 
-        for cog, racu_commands in mapping.items():
+        for cog, lumi_commands in mapping.items():
 
-            filtered = await self.filter_commands(racu_commands, sort=True)
+            filtered = await self.filter_commands(lumi_commands, sort=True)
 
             if command_signatures := [
                 self.get_command_qualified_name(c) for c in filtered

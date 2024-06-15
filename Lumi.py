@@ -16,12 +16,12 @@ async def get_prefix(bot, message):
     except AttributeError:
         return "."
 
-client = services.Client.RacuBot(
+client = services.Client.LumiBot(
     owner_id=int(os.environ.get('RACU_OWNER_ID')),
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
     status=discord.Status.online,
-    help_command=services.Help.RacuHelp()
+    help_command=services.Help.LumiHelp()
 )
 
 
@@ -52,7 +52,7 @@ def load_modules():
 
 if __name__ == '__main__':
     """
-    This code is only ran when Racu.py is the primary module,
+    This code is only ran when Lumi.py is the primary module,
     so NOT when main is imported from a cog. (sys.modules)
     """
 

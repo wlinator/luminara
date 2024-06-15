@@ -3,7 +3,7 @@ import os
 
 import mariadb
 
-_logs = logging.getLogger('Racu.Core')
+_logs = logging.getLogger('Lumi.Core')
 
 
 def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:

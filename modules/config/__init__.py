@@ -13,7 +13,7 @@ from modules.config import config, set_prefix, xp_reward
 from services.GuildConfig import GuildConfig
 
 strings = JsonCache.read_json("strings")
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 
 class Config(commands.Cog):
@@ -24,7 +24,7 @@ class Config(commands.Cog):
         name="configuration",
         aliases=["config"],
         description="Show your server configuration.",
-        help="Shows information about how Racu is configured in your server. "
+        help="Shows information about how Lumi is configured in your server. "
              "[Read the guide](https://wiki.wlinator.org/serverconfig).",
         guild_only=True
     )
@@ -36,8 +36,8 @@ class Config(commands.Cog):
     @bridge.bridge_command(
         name="setprefix",
         aliases=["sp"],
-        description="Set Racu's prefix.",
-        help="Set the prefix for Racu in this server. The maximum length of a prefix is 25.",
+        description="Set Lumi's prefix.",
+        help="Set the prefix for Lumi in this server. The maximum length of a prefix is 25.",
         guild_only=True
     )
     @commands.guild_only()
@@ -60,8 +60,8 @@ class Config(commands.Cog):
     @bridge.bridge_command(
         name="addxpreward",
         aliases=["axpr"],
-        description="Add a Racu XP reward.",
-        help="Add a Racu XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
+        description="Add a Lumi XP reward.",
+        help="Add a Lumi XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
@@ -72,8 +72,8 @@ class Config(commands.Cog):
     @bridge.bridge_command(
         name="removexpreward",
         aliases=["rxpr"],
-        description="Remove a Racu XP reward.",
-        help="Remove a Racu XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
+        description="Remove a Lumi XP reward.",
+        help="Remove a Lumi XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True"
     )
     @commands.guild_only()
@@ -136,7 +136,7 @@ class Config(commands.Cog):
 
     @command_config.command(
         name="channel",
-        description="Configure where members can use Racu commands."
+        description="Configure where members can use Lumi commands."
     )
     async def config_commands_channel(self, ctx, *, channel: discord.TextChannel):
         guild_config = GuildConfig(ctx.guild.id)
@@ -164,7 +164,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | Server members can now use Racu commands in all channels. "
+            description=f"✅ | Server members can now use Lumi commands in all channels. "
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
@@ -419,7 +419,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="disable",
-        description="Disable levels and the Racu XP system."
+        description="Disable levels and the Lumi XP system."
     )
     async def config_level_disable(self, ctx):
         guild_config = GuildConfig(ctx.guild.id)
@@ -428,7 +428,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | The Racu XP system was successfully disabled."
+            description=f"✅ | The Lumi XP system was successfully disabled."
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
@@ -437,7 +437,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="enable",
-        description="Enable levels and the Racu XP system."
+        description="Enable levels and the Lumi XP system."
     )
     async def config_level_enable(self, ctx):
         guild_config = GuildConfig(ctx.guild.id)
@@ -449,13 +449,13 @@ class Config(commands.Cog):
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
 
         if guild_config.level_message_type != 0:
-            embed.description = "👍 | The Racu XP system was already enabled."
+            embed.description = "👍 | The Lumi XP system was already enabled."
             return await ctx.respond(embed=embed)
 
         else:
             guild_config.level_message_type = 1
             guild_config.push()
-            embed.description = f"✅ | The Racu XP system was successfully enabled."
+            embed.description = f"✅ | The Lumi XP system was successfully enabled."
             embed.set_footer(text="Note: see '.help config' for more info.")
             return await ctx.respond(embed=embed)
 

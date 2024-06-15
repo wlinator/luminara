@@ -10,11 +10,11 @@ class Help(commands.Cog):
 
     @commands.slash_command(
         name="help",
-        description="Get Racu help.",
+        description="Get Lumi help.",
     )
     async def help_command(self, ctx):
         prefix = lib.formatter.get_prefix(ctx)
-        return await ctx.respond(content=f"Please use Racu's prefix to get help. Type `{prefix}help`", ephemeral=True)
+        return await ctx.respond(content=f"Please use Lumi's prefix to get help. Type `{prefix}help`", ephemeral=True)
 
 
 def setup(client):
