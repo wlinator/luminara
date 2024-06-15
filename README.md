@@ -16,7 +16,7 @@ Lumi comes containerized with essential components such as MariaDB, its core app
 To install Lumi, run these commands:
 
 ```commandline
-git clone https://git.wlinator.org/Luminara/Core && cd Core
+git clone https://git.wlinator.org/Luminara/Lumi && cd Core
 ```
 
 Copy `.env.template` to `.env` and fill out the [variables](#environment-variables).
