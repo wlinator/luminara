@@ -71,7 +71,7 @@ class GenericErrors:
     @staticmethod
     def owner_only(ctx):
         embed = clean_error_embed(ctx)
-        embed.description += "this command requires Racu ownership permissions."
+        embed.description += "this command requires Lumi ownership permissions."
 
         return embed
 

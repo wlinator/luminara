@@ -29,6 +29,6 @@ class ReactionHandler:
     async def handle_message(self, message):
         content = message.content.lower()
 
-        if (content.startswith("Racu ") or content.startswith("Racu, ")) and content.endswith("?"):
+        if (content.startswith("Lumi ") or content.startswith("Lumi, ")) and content.endswith("?"):
             response = random.choice(self.eightball)
             await message.reply(content=response)

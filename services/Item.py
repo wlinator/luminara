@@ -3,7 +3,7 @@ import sqlite3
 
 from db import database
 
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 
 class Item:

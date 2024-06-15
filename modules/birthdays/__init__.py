@@ -11,7 +11,7 @@ from modules.birthdays import upcoming, birthday
 from services.Birthday import Birthday
 from services.GuildConfig import GuildConfig
 
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 data = JsonCache.read_json("birthday")
 month_mapping = data["month_mapping"]
 messages = data["birthday_messages"]

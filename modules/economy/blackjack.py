@@ -14,7 +14,7 @@ from services.BlackJackStats import BlackJackStats
 from services.Currency import Currency
 
 resources = JsonCache.read_json("resources")
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 est = pytz.timezone('US/Eastern')
 active_blackjack_games = {}
 

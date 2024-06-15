@@ -25,7 +25,7 @@ class Levels(commands.Cog):
     @bridge.bridge_command(
         name="leaderboard",
         aliases=["lb", "xplb"],
-        description="See the Racu leaderboards.",
+        description="See the Lumi leaderboards.",
         help="Shows three different leaderboards: levels, currency and daily streaks.",
         guild_only=True
     )

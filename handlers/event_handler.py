@@ -8,7 +8,7 @@ from lib.embeds.boost import Boost
 import lib.embeds.boost
 from services.GuildConfig import GuildConfig
 
-_logs = logging.getLogger('Racu.Core')
+_logs = logging.getLogger('Lumi.Core')
 
 
 class EventHandler(Cog):

@@ -1,7 +1,7 @@
 import discord
 from discord.ext.commands import BadArgument
 
-from lib.exceptions import RacuExceptions
+from lib.exceptions import LumiExceptions
 
 
 def actionable(target: discord.Member, invoker: discord.Member, bot_user: discord.Member) -> None:
@@ -20,7 +20,7 @@ def actionable(target: discord.Member, invoker: discord.Member, bot_user: discor
         raise BadArgument("you can't ban yourself.")
 
     if target.top_role >= invoker.top_role and invoker != invoker.guild.owner:
-        raise RacuExceptions.UserHierarchy
+        raise LumiExceptions.UserHierarchy
 
     elif target.top_role >= bot_user.top_role:
-        raise RacuExceptions.BotHierarchy
+        raise LumiExceptions.BotHierarchy

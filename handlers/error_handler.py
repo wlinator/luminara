@@ -7,10 +7,10 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 
 from lib.embeds.error import GenericErrors, BdayErrors
-from lib.exceptions import RacuExceptions
+from lib.exceptions import LumiExceptions
 
-logs = logging.getLogger('Racu.Core')
-_logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
+_logs = logging.getLogger('Lumi.Core')
 
 
 async def on_command_error(ctx, error):
@@ -47,11 +47,11 @@ async def on_command_error(ctx, error):
     elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
 
         """subclasses of this exception"""
-        if isinstance(error, RacuExceptions.NotAllowedInChannel):
+        if isinstance(error, LumiExceptions.NotAllowedInChannel):
             await ctx.respond(content=f"You can only do that command in {error.command_channel.mention}.",
                               ephemeral=True)
 
-        elif isinstance(error, RacuExceptions.BirthdaysDisabled):
+        elif isinstance(error, LumiExceptions.BirthdaysDisabled):
             await ctx.respond(embed=BdayErrors.birthdays_disabled(ctx))
 
     else:
@@ -74,7 +74,7 @@ class ErrorListener(Cog):
 
         # on a prefix command, don't send anything if channel check fails. (to prevent spam in non-bot channels)
         # current issues with this: await ctx.trigger_typing() is still invoked for 10 seconds.
-        if not isinstance(error, RacuExceptions.NotAllowedInChannel):
+        if not isinstance(error, LumiExceptions.NotAllowedInChannel):
             await on_command_error(ctx, error)
 
         log_msg = '[CommandHandler] %s executed .%s | PREFIX' % (ctx.author.name, ctx.command.qualified_name)

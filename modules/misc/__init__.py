@@ -31,8 +31,8 @@ class Misc(commands.Cog):
 
     @bridge.bridge_command(
         name="uptime",
-        description="See Racu's uptime since the last update.",
-        help="See how long Racu has been online since his last update.",
+        description="See Lumi's uptime since the last update.",
+        help="See how long Lumi has been online since his last update.",
     )
     @checks.allowed_in_channel()
     async def uptime(self, ctx):
@@ -42,7 +42,7 @@ class Misc(commands.Cog):
     @bridge.bridge_command(
         name="invite",
         description="Generate an invite link.",
-        help="Generate a link to invite Racu to your own server!"
+        help="Generate a link to invite Lumi to your own server!"
     )
     @checks.allowed_in_channel()
     async def invite_command(self, ctx):
@@ -62,8 +62,8 @@ class Misc(commands.Cog):
     @bridge.bridge_command(
         name="info",
         aliases=["stats"],
-        description="Shows basic Racu stats.",
-        help="Shows basic Racu stats."
+        description="Shows basic Lumi stats.",
+        help="Shows basic Lumi stats."
     )
     @checks.allowed_in_channel()
     async def info_command(self, ctx):
@@ -76,7 +76,7 @@ class Misc(commands.Cog):
         guild_only=False,
         description="This command can only be used in DMs.",
         help="Introduce yourself. For now this command "
-             "can only be done in ONE server and only in Racu's DMs."
+             "can only be done in ONE server and only in Lumi's DMs."
     )
     @commands.dm_only()
     async def intro_command(self, ctx):

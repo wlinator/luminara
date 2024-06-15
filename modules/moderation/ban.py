@@ -6,7 +6,7 @@ from lib import formatter
 from lib.embeds.moderation import ModEmbeds, ModErrors
 from modules.moderation import functions
 
-_logs = logging.getLogger('Racu.Core')
+_logs = logging.getLogger('Lumi.Core')
 
 
 async def ban_user(cog, ctx, target: discord.User, reason):

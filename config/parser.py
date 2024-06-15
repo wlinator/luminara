@@ -1,7 +1,7 @@
 import json
 import logging
 
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 
 class JsonCache:

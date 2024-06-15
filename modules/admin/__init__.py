@@ -7,7 +7,7 @@ from modules.admin import award, sql
 class BotAdmin(commands.Cog, name="Bot Admin"):
     """
     This module is intended for commands that only bot owners can do.
-    For server configuration with Racu, see the "config" module.
+    For server configuration with Lumi, see the "config" module.
     """
 
     def __init__(self, client):

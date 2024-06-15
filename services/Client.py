@@ -7,10 +7,10 @@ from discord.ext import bridge
 
 from lib import metadata
 
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 
-class RacuBot(bridge.Bot):
+class LumiBot(bridge.Bot):
     async def on_ready(self):
         logs.info("-------------------------------------------------------")
         logs.info(f"[INFO] {metadata.__title__} v{metadata.__version__}")

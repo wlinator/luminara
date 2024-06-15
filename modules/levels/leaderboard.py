@@ -7,7 +7,7 @@ from services.Currency import Currency
 from services.Dailies import Dailies
 from services.xp_service import XpService
 
-logs = logging.getLogger('Racu.Core')
+logs = logging.getLogger('Lumi.Core')
 
 
 async def cmd(ctx):
@@ -66,7 +66,7 @@ class LeaderboardCommandOptions(discord.ui.Select):
                 ),
                 discord.SelectOption(
                     label="Currency",
-                    description="Who is the richest Racu user?",
+                    description="Who is the richest Lumi user?",
                     value="currency",
                     emoji="💸"
                 ),
