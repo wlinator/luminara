@@ -1,19 +1,19 @@
 {
   "logo": {
-    "opaque": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_logo.png?_=1",
-    "transparent": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_logo_transparent.png?_=1"
+    "opaque": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_logo.png",
+    "transparent": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_logo_transparent.png?_=1"
   },
   "icons": {
-    "exclam": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_exclam.png?_=2",
-    "question": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_question.png?_=2",
-    "hammer": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_hammer.png?_=1",
-    "cross": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_cross.png?_=1",
-    "streak": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_streak.png?_=2",
-    "streak_bronze": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_streak_bronze.png?_=1",
-    "streak_silver": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_streak_silver.png?_=1",
-    "streak_gold": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_streak_gold.png?_=1",
-    "money_bag": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_money_bag.png?_=1",
-    "money_coins": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_money_coins.png?_=1",
-    "boost": "https://gitlab.com/wlinator/Racu/-/raw/main/art/racu_boost.png"
+    "exclam": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_exclam.png?_=2",
+    "question": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_question.png?_=2",
+    "hammer": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_hammer.png?_=1",
+    "cross": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_cross.png?_=1",
+    "streak": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak.png?_=2",
+    "streak_bronze": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_bronze.png?_=1",
+    "streak_silver": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_silver.png?_=1",
+    "streak_gold": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_gold.png?_=1",
+    "money_bag": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_money_bag.png?_=1",
+    "money_coins": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_money_coins.png?_=1",
+    "boost": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_boost.png"
   }
 }
