@@ -16,4 +16,4 @@ COPY . .
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-CMD [ "python", "./Lumi.py" ]
+CMD [ "python", "./Luminara.py" ]
