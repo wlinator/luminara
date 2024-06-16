@@ -72,6 +72,15 @@ class MiscInfo:
 
         return embed
 
+    @staticmethod
+    def xkcd(comic_id, comic_title, comic_description, image_url):
+        embed = discord.Embed(color=discord.Color.blurple())
+        embed.title = f"xkcd {comic_id} - {comic_title}"
+        embed.description = comic_description
+        embed.set_image(url=image_url)
+
+        return embed
+
 
 class BdayInfo:
     @staticmethod
