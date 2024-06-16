@@ -1,11 +1,12 @@
 import datetime
 
 from discord.ext import commands, bridge, tasks
+from discord.commands import SlashCommandGroup
 
 from lib import checks
 from lib.embeds.info import MiscInfo
 from modules.config import set_prefix
-from modules.misc import introduction, invite, backup, info
+from modules.misc import introduction, invite, backup, info, xkcd
 
 
 class Misc(commands.Cog):
@@ -81,6 +82,26 @@ class Misc(commands.Cog):
     @commands.dm_only()
     async def intro_command(self, ctx):
         return await introduction.cmd(self, ctx)
+
+    """
+    xkcd submodule - slash command only
+    """
+    xkcd = SlashCommandGroup("xkcd", "A webcomic of romance, sarcasm, math, and language.", guild_only=False)
+
+    @xkcd.command(name="latest", description="Get the latest xkcd comic.")
+    @checks.allowed_in_channel()
+    async def xckd_latest(self, ctx):
+        return await xkcd.print_comic(ctx, latest=True)
+
+    @xkcd.command(name="random", description="Get a random xkcd comic.")
+    @checks.allowed_in_channel()
+    async def xckd_latest(self, ctx):
+        return await xkcd.print_comic(ctx)
+
+    @xkcd.command(name="search", description="Search for a xkcd comic by ID.")
+    @checks.allowed_in_channel()
+    async def xckd_latest(self, ctx, *, id: int):
+        return await xkcd.print_comic(ctx, number=id)
 
 
 def setup(client):
