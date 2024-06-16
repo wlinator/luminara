@@ -86,21 +86,18 @@ class Misc(commands.Cog):
     """
     xkcd submodule - slash command only
     """
-    xkcd = SlashCommandGroup("xkcd", "A webcomic of romance, sarcasm, math, and language.", guild_only=False)
+    xkcd = SlashCommandGroup("xkcd", "A web comic of romance, sarcasm, math, and language.", guild_only=False)
 
     @xkcd.command(name="latest", description="Get the latest xkcd comic.")
-    @checks.allowed_in_channel()
-    async def xckd_latest(self, ctx):
+    async def xkcd_latest(self, ctx):
         return await xkcd.print_comic(ctx, latest=True)
 
     @xkcd.command(name="random", description="Get a random xkcd comic.")
-    @checks.allowed_in_channel()
-    async def xckd_latest(self, ctx):
+    async def xkcd_latest(self, ctx):
         return await xkcd.print_comic(ctx)
 
     @xkcd.command(name="search", description="Search for a xkcd comic by ID.")
-    @checks.allowed_in_channel()
-    async def xckd_latest(self, ctx, *, id: int):
+    async def xkcd_latest(self, ctx, *, id: int):
         return await xkcd.print_comic(ctx, number=id)
 
 
