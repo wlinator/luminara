@@ -11,12 +11,12 @@ create a personalized Discord bot.**
 
 ### Installation
 #### Docker
-Lumi comes containerized with essential components such as MariaDB, its core application, Adminer, and Dozzle. To ensure smooth operation of Dozzle, it's necessary to copy `users.yml.example` to `users.yml` and configure an authentication user as outlined in the file. Refer to the file for detailed instructions.
+Lumi comes containerized with essential components such as MariaDB, its core application and Adminer. 
 
 To install Lumi, run these commands:
 
 ```commandline
-git clone https://git.wlinator.org/Luminara/Lumi && cd Core
+git clone https://git.wlinator.org/Luminara/Lumi && cd Lumi
 ```
 
 Copy `.env.template` to `.env` and fill out the [variables](#environment-variables).
@@ -25,9 +25,8 @@ Copy `.env.template` to `.env` and fill out the [variables](#environment-variabl
 docker compose up -d --build
 ```
 
-Please note that it's highly recommended to establish a reverse proxy setup for Adminer and Dozzle, ensuring better security and accessibility.
+Please note that it's highly recommended to establish a reverse proxy setup for Adminer, ensuring better security and accessibility.
 - Adminer should be directed to port 8080.
-- Dozzle should be mapped to port 8081.
 
 #### Alternative
 You can run Lumi without Docker, however I don't provide support or documentation for this. Here are some requirements to get you started.
