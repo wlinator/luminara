@@ -38,7 +38,21 @@ class Birthdays(commands.Cog):
 
         month_name = await birthday.get_month_name(month, month_mapping)
         month_index = await birthday.get_month_index(month_name, month_mapping)
-        await birthday.cmd(ctx, month_name, month_index, day)
+        await birthday.set_birthday(ctx, month_name, month_index, day)
+
+    @bridge.bridge_command(
+        name="deletebirthday",
+        aliases=["deletebday"],
+        description="Delete your birthday in this server.",
+        guild_only=True
+    )
+    @commands.guild_only()
+    async def delete_birthday(self, ctx):
+        """
+        Delete your birthday in this server.
+        """
+
+        await birthday.delete_birthday(ctx)
 
     @bridge.bridge_command(
         name="upcoming",

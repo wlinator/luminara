@@ -19,6 +19,14 @@ class Birthday:
 
         database.execute_query(query, (self.user_id, self.guild_id, birthday))
 
+    def delete(self):
+        query = """
+                DELETE FROM birthdays
+                WHERE user_id = %s AND guild_id = %s;
+                """
+
+        database.execute_query(query, (self.user_id, self.guild_id))
+
     @staticmethod
     def get_birthdays_today():
         query = """
