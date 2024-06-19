@@ -89,3 +89,10 @@ class BdayInfo:
         embed.description += f"your birthday was set to {month} {day}."
 
         return embed
+
+    @staticmethod
+    def delete(ctx):
+        embed = clean_info_embed(ctx)
+        embed.description += "your birthday was deleted from this server."
+
+        return embed

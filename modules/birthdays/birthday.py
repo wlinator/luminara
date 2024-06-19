@@ -7,7 +7,7 @@ from lib.embeds.info import BdayInfo
 from services.Birthday import Birthday
 
 
-async def cmd(ctx, month, month_index, day):
+async def set_birthday(ctx, month, month_index, day):
     leap_year = 2020
     max_days = calendar.monthrange(leap_year, month_index)[1]
 
@@ -21,6 +21,12 @@ async def cmd(ctx, month, month_index, day):
     birthday.set(date_obj)
 
     await ctx.respond(embed=BdayInfo.set_month(ctx, month, day))
+
+
+async def delete_birthday(ctx):
+    birthday = Birthday(ctx.author.id, ctx.guild.id)
+    birthday.delete()
+    await ctx.respond(embed=BdayInfo.delete(ctx))
 
 
 async def get_month_name(string, mapping):
