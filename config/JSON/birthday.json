@@ -1,18 +1,9 @@
 {
-  "month_mapping": {
-    "jan": "January",
-    "feb": "February",
-    "mar": "March",
-    "apr": "April",
-    "may": "May",
-    "jun": "June",
-    "jul": "July",
-    "aug": "August",
-    "sep": "September",
-    "oct": "October",
-    "nov": "November",
-    "dec": "December"
-  },
+  "months": [
+    "January", "February", "March", "April",
+    "May", "June", "July", "August",
+    "September", "October", "November", "December"
+  ],
   "birthday_messages": [
     "🎂 Happy Birthday, **{0}**! 🎉 Wishing you a day filled with joy and laughter.",
     "🎈 It's party time! Happy Birthday, **{0}**! 🎉",
