@@ -16,7 +16,7 @@ services:
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
     volumes:
-      - debuglog:/usr/src/app/logs
+      - debug_log:/usr/src/app/logs
     depends_on:
       db:
         condition: service_healthy
@@ -30,8 +30,8 @@ services:
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
     volumes:
-      - ./db/init:/docker-entrypoint-initdb.d/
-      - dbdata:/var/lib/mysql/
+      - ./db/migrations:/docker-entrypoint-initdb.d/
+      - database:/var/lib/mysql/
     healthcheck:
       test: [ "CMD", "mariadb", "-h", "localhost", "-u", "${MARIADB_USER}", "-p${MARIADB_PASSWORD}", "-e", "SELECT 1" ]
       interval: 5s
@@ -45,5 +45,5 @@ services:
       - 8080:8080
 
 volumes:
-  dbdata:
-  debuglog:
+  database:
+  debug_log:

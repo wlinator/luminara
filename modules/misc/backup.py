@@ -30,11 +30,11 @@ async def create_db_backup(dbx, path="db/rcu.db"):
     backup_name += f"_lumi.sql"
 
     command = f"mariadb-dump --user={mariadb_user} --password={mariadb_password} " \
-              f"--host=db --single-transaction --all-databases > ./db/init/2-data.sql"
+              f"--host=db --single-transaction --all-databases > ./db/migrations/100-dump.sql"
 
     subprocess.check_output(command, shell=True)
 
-    with open("./db/init/2-data.sql", "rb") as f:
+    with open("./db/migrations/100-dump.sql", "rb") as f:
         dbx.files_upload(f.read(), f"/{backup_name}")
 
 
