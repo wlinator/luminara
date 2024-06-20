@@ -1,24 +1,20 @@
-import logging
 import os
 import platform
+from loguru import logger
 
 import discord
 from discord.ext import bridge
 
 from lib import metadata
 
-logs = logging.getLogger('Lumi.Core')
-
 
 class LumiBot(bridge.Bot):
     async def on_ready(self):
-        logs.info("-------------------------------------------------------")
-        logs.info(f"[INFO] {metadata.__title__} v{metadata.__version__}")
-        logs.info(f"[INFO] Logged in with ID {self.user.id}")
-        logs.info(f"[INFO] discord.py API version: {discord.__version__}")
-        logs.info(f"[INFO] Python version: {platform.python_version()}")
-        logs.info(f"[INFO] Running on: {platform.system()} {platform.release()} ({os.name})")
-        logs.info("-------------------------------------------------------")
+        logger.info(f"{metadata.__title__} v{metadata.__version__}")
+        logger.info(f"[Logged in with ID {self.user.id}")
+        logger.info(f"discord.py API version: {discord.__version__}")
+        logger.info(f"Python version: {platform.python_version()}")
+        logger.info(f"[Running on: {platform.system()} {platform.release()} ({os.name})")
 
         """
         https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready

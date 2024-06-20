@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import random
 import time
 
@@ -13,7 +12,6 @@ from services.xp_service import XpService, XpRewardService
 
 _strings = JsonCache.read_json("strings")
 _messages = JsonCache.read_json("levels")
-_logs = logging.getLogger('Lumi.Core')
 
 
 class XPHandler:
