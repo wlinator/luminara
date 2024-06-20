@@ -122,7 +122,11 @@ class LeaderboardCommandView(discord.ui.View):
             embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
 
             rank = 1
-            for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
+            for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb, start=1):
+
+                if rank == 6:
+                    break
+
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
                 except discord.HTTPException:
