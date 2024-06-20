@@ -112,4 +112,3 @@ class SlotsStats:
             "games_won_three_diamonds": games_won_three_diamonds,
             "games_won_jackpot": games_won_jackpot
         }
-

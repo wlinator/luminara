@@ -3,8 +3,8 @@ import logging
 import random
 
 import discord
-from discord.ext import commands, tasks, bridge
 from discord.commands import SlashCommandGroup
+from discord.ext import commands, tasks
 
 from config.parser import JsonCache
 from lib import time, checks
@@ -70,7 +70,7 @@ class Birthdays(commands.Cog):
                 await channel.send(embed=embed, content=member.mention)
                 _logs.info(f"[BirthdayHandler] Success! user/guild/channel ID: {member.id}/{guild.id}/{channel.id}")
 
-            except Exception as error:
+            except Exception:
                 _logs.info(f"[BirthdayHandler] Skipped processing user/guild {user_id}/{guild_id}")
 
             # wait one second to avoid rate limits

@@ -1,6 +1,7 @@
 from discord.ext import commands
-from services import xkcd_service
+
 from lib.embeds.info import MiscInfo
+from services import xkcd_service
 
 _xkcd = xkcd_service.Client()
 

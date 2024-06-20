@@ -43,7 +43,7 @@
   "stats_all_title": "Total Lumi Stats - {0}",
   "stats_all_footer": "Want to see your own stats? Do '/stats me'.",
   "stats_games": "Games played: {0}",
-  "stats_games_valuet": "Games played: **{0}**\nGames won: **{1}**\nGames lost: **{2}**",
+  "stats_games_valued": "Games played: **{0}**\nGames won: **{1}**\nGames lost: **{2}**",
   "stats_games_value": "`{0}` wins & `{1}` losses.",
   "stats_cashflow": "Cashflow",
   "stats_cashflow_value": "Total bets/payouts: `${0}` / `${1}`",

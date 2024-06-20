@@ -1,7 +1,7 @@
 import discord
 
-from config.parser import JsonCache
 import lib.formatter
+from config.parser import JsonCache
 
 resources = JsonCache.read_json("art")
 exclaim_icon = resources["icons"]["exclaim"]

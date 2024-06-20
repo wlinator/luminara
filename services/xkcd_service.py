@@ -26,7 +26,7 @@ class HttpError(Exception):
 
 class Comic:
     """
-    A class representing an xkcd comic.
+    A class representing a xkcd comic.
     """
 
     def __init__(
@@ -47,19 +47,15 @@ class Comic:
         self.comic_url: str | None = comic_url
         self.explanation_url: str | None = explanation_url
 
-    def _determine_date(self, xkcd_dict: dict[str, Any]) -> datetime.date | None:
+    @staticmethod
+    def _determine_date(xkcd_dict: dict[str, Any]) -> datetime.date | None:
         """
         Determine the date of the comic.
+        Args:
+            xkcd_dict:
 
-        Parameters
-        ----------
-        xkcd_dict : dict[str, Any]
-            The dictionary containing the comic data.
+        Returns:
 
-        Returns
-        -------
-        datetime.date | None
-            The date of the comic.
         """
         try:
             return datetime.date(

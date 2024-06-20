@@ -7,8 +7,8 @@ import psutil
 
 from config.parser import JsonCache
 from lib import metadata
-from services.stats_service import BlackJackStats
 from services.currency_service import Currency
+from services.stats_service import BlackJackStats
 
 _logs = logging.getLogger('Lumi.Core')
 _art = JsonCache.read_json("art")
@@ -30,7 +30,7 @@ async def cmd(command, ctx, unix_timestamp):
                      icon_url=_art["logo"]["transparent"])
     embed.set_thumbnail(url=_art["logo"]["opaque"])
 
-    #embed.add_field(name="Author", value=f"{metadata.__author__}", inline=False)
+    # embed.add_field(name="Author", value=f"{metadata.__author__}", inline=False)
     embed.add_field(name="Uptime", value=f"<t:{unix_timestamp}:R>")
     embed.add_field(name="Latency", value=f"{round(1000 * command.client.latency)}ms")
     embed.add_field(name="Memory", value=f"{memory_usage_in_mb:.2f} MB")

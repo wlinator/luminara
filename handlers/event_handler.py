@@ -3,9 +3,8 @@ import logging
 
 from discord.ext.commands import Cog
 
-from lib.embeds.greet import Greet
-from lib.embeds.boost import Boost
 import lib.embeds.boost
+from lib.embeds.greet import Greet
 from services.config_service import GuildConfig
 
 _logs = logging.getLogger('Lumi.Core')

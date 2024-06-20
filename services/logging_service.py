@@ -8,8 +8,8 @@ import pytz
 
 
 class LumiFormatter(logging.Formatter):
-    def __init__(self, fmt=None, datefmt=None):
-        super().__init__(fmt, datefmt)
+    def __init__(self, fmt=None, dateformat=None):
+        super().__init__(fmt, dateformat)
         self.timezone = pytz.timezone('US/Eastern')
 
     def format(self, record):
@@ -21,10 +21,10 @@ class LumiFormatter(logging.Formatter):
         record.msg = message
         return super().format(record)
 
-    def formatTime(self, record, datefmt=None):
+    def formatTime(self, record, dateformat=None):
         timestamp = self.timezone.localize(datetime.fromtimestamp(record.created))
-        if datefmt:
-            return timestamp.strftime(datefmt)
+        if dateformat:
+            return timestamp.strftime(dateformat)
         else:
             return str(timestamp)
 
@@ -36,7 +36,7 @@ def setup_logger():
 
     debug_log_file = os.path.join(logs_folder, 'debug.log')
 
-    with open(debug_log_file, 'w') as f:
+    with open(debug_log_file, 'w'):
         pass
 
     # Initialize the logger
@@ -51,8 +51,7 @@ def setup_logger():
     # CONSOLE HANDLER
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
-    console_formatter = LumiFormatter('[%(asctime)s] [%(name)s] %(message)s',
-                                      datefmt='%Y-%m-%d %H:%M:%S')
+    console_formatter = LumiFormatter('[%(asctime)s] [%(name)s] %(message)s')
 
     console_handler.setFormatter(console_formatter)
     logger.addHandler(console_handler)
@@ -61,8 +60,7 @@ def setup_logger():
     max_log_size_bytes = 10 * 1024 * 1024  # max. 10 MB
     debug_file_handler = RotatingFileHandler(debug_log_file, maxBytes=max_log_size_bytes, backupCount=5)
     debug_file_handler.setLevel(logging.DEBUG)
-    debug_file_formatter = LumiFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-                                         datefmt='%Y-%m-%d %H:%M:%S')
+    debug_file_formatter = LumiFormatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
     debug_file_handler.setFormatter(debug_file_formatter)
     logger.addHandler(debug_file_handler)
 

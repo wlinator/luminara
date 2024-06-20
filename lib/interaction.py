@@ -114,9 +114,6 @@ class Confirm(View):
         await interaction.response.edit_message(view=None)
         self.stop()
 
-    # async def on_timeout(self):
-    #     await self.ctx.
-
     async def interaction_check(self, interaction) -> bool:
         if interaction.user != self.ctx.author:
             await interaction.response.send_message("You can't use these buttons, they're someone else's!",
