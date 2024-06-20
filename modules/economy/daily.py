@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 import lib.time
 from lib.embeds.error import EconErrors
 from lib.embeds.info import EconInfo
-from services.Currency import Currency
-from services.Dailies import Dailies
+from services.currency_service import Currency
+from services.daily_service import Dailies
 
 
 async def cmd(ctx):

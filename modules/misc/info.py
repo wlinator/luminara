@@ -7,8 +7,8 @@ import psutil
 
 from config.parser import JsonCache
 from lib import metadata
-from services.BlackJackStats import BlackJackStats
-from services.Currency import Currency
+from services.stats_service import BlackJackStats
+from services.currency_service import Currency
 
 _logs = logging.getLogger('Lumi.Core')
 _art = JsonCache.read_json("art")

@@ -10,7 +10,7 @@ from lib.embeds.greet import Greet
 from lib.embeds.boost import Boost
 from lib.embeds.error import GenericErrors
 from modules.config import config, set_prefix, xp_reward
-from services.GuildConfig import GuildConfig
+from services.config_service import GuildConfig
 
 strings = JsonCache.read_json("strings")
 logs = logging.getLogger('Lumi.Core')

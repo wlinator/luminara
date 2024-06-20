@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from services.Currency import Currency
+from services.currency_service import Currency
 
 
 async def cmd(ctx, user, amount):

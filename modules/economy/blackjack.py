@@ -10,8 +10,8 @@ from config.parser import JsonCache
 from lib import interaction
 from lib.embeds.error import EconErrors
 from lib.embeds.error import GenericErrors
-from services.BlackJackStats import BlackJackStats
-from services.Currency import Currency
+from services.stats_service import BlackJackStats
+from services.currency_service import Currency
 
 resources = JsonCache.read_json("resources")
 logs = logging.getLogger('Lumi.Core')

@@ -1,6 +1,6 @@
 from lib.embeds.error import MiscErrors
 from lib.embeds.info import MiscInfo
-from services.GuildConfig import GuildConfig
+from services.config_service import GuildConfig
 
 
 async def set_cmd(ctx, prefix):

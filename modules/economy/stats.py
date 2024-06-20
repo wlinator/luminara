@@ -1,7 +1,6 @@
 from config.parser import JsonCache
-from services.BlackJackStats import BlackJackStats
-from services.Currency import Currency
-from services.SlotsStats import SlotsStats
+from services.stats_service import BlackJackStats, SlotsStats
+from services.currency_service import Currency
 
 strings = JsonCache.read_json("strings")
 resources = JsonCache.read_json("resources")

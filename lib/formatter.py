@@ -2,7 +2,7 @@ import textwrap
 
 import discord
 
-from services.GuildConfig import GuildConfig
+from services.config_service import GuildConfig
 
 
 def template(text, username, level=None):

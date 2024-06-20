@@ -8,8 +8,8 @@ import pytz
 from discord.ext import commands
 
 from config.parser import JsonCache
-from services.Currency import Currency
-from services.SlotsStats import SlotsStats
+from services.currency_service import Currency
+from services.stats_service import SlotsStats
 
 resources = JsonCache.read_json("resources")
 est = pytz.timezone('US/Eastern')

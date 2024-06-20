@@ -1,6 +1,6 @@
 import discord
 
-from services.Currency import Currency
+from services.currency_service import Currency
 
 
 async def cmd(ctx):
