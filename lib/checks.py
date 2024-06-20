@@ -1,7 +1,7 @@
 from discord.ext import commands
 
 from lib.exceptions import LumiExceptions
-from services.GuildConfig import GuildConfig
+from services.config_service import GuildConfig
 
 
 def birthdays_enabled():

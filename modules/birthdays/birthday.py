@@ -4,7 +4,7 @@ import datetime
 from discord.ext import commands
 
 from lib.embeds.info import BdayInfo
-from services.Birthday import Birthday
+from services.birthday_service import Birthday
 
 
 async def set_birthday(ctx, month, month_index, day):

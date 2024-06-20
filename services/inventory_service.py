@@ -1,7 +1,7 @@
 import logging
 
 from db import database
-from services import Item
+from services import item_service
 
 logs = logging.getLogger('Lumi.Core')
 
@@ -10,7 +10,7 @@ class Inventory:
     def __init__(self, user_id):
         self.user_id = user_id
 
-    def add_item(self, item: Item.Item, quantity=1):
+    def add_item(self, item: item_service.Item, quantity=1):
         """
         Adds an item with a specific count (default 1) to the database, if there are
         no records of this user having that item yet, it will just add a record with quantity=quantity.
@@ -27,7 +27,7 @@ class Inventory:
 
         database.execute_query(query, (self.user_id, item.id, abs(quantity), abs(quantity)))
 
-    def take_item(self, item: Item.Item, quantity=1):
+    def take_item(self, item: item_service.Item, quantity=1):
 
         query = """
         INSERT INTO inventory (user_id, item_id, quantity)
@@ -47,12 +47,12 @@ class Inventory:
         items_dict = {}
         for row in results:
             item_id, quantity = row
-            item = Item.Item(item_id)
+            item = item_service.Item(item_id)
             items_dict[item] = quantity
 
         return items_dict
 
-    def get_item_quantity(self, item: Item.Item):
+    def get_item_quantity(self, item: item_service.Item):
         query = "SELECT COALESCE(quantity, 0) FROM inventory WHERE user_id = %s AND item_id = %s"
         result = database.select_query_one(query, (self.user_id, item.id))
         return result

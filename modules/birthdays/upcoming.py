@@ -2,7 +2,7 @@ import datetime
 
 import discord
 
-from services.Birthday import Birthday
+from services.birthday_service import Birthday
 
 
 async def cmd(ctx):

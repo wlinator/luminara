@@ -1,7 +1,7 @@
 import discord
 
 from config.parser import JsonCache
-from services.GuildConfig import GuildConfig
+from services.config_service import GuildConfig
 
 strings = JsonCache.read_json("strings")
 

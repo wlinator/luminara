@@ -4,7 +4,7 @@ import pytz
 
 from config.parser import JsonCache
 from db import database
-from services.Currency import Currency
+from services.currency_service import Currency
 
 resources = JsonCache.read_json("resources")
 

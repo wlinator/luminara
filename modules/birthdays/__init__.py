@@ -8,8 +8,8 @@ from discord.ext import commands, tasks, bridge
 from config.parser import JsonCache
 from lib import time, checks
 from modules.birthdays import upcoming, birthday
-from services.Birthday import Birthday
-from services.GuildConfig import GuildConfig
+from services.birthday_service import Birthday
+from services.config_service import GuildConfig
 
 logs = logging.getLogger('Lumi.Core')
 data = JsonCache.read_json("birthday")

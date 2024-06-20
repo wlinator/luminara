@@ -1,9 +1,9 @@
 import os
 
 import discord
-import services.Client
-import services.GuildConfig
-import services.Help
+import Client
+import services.config_service
+import services.help_service
 import services.logging_service
 import config.parser
 
@@ -16,12 +16,12 @@ async def get_prefix(bot, message):
     except AttributeError:
         return "."
 
-client = services.Client.LumiBot(
+client = Client.LumiBot(
     owner_id=int(os.environ.get('LUMI_OWNER_ID')),
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
     status=discord.Status.online,
-    help_command=services.Help.LumiHelp()
+    help_command=services.help_service.LumiHelp()
 )
 
 

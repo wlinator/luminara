@@ -8,7 +8,7 @@ from discord.ext.commands import Cog
 
 from config.parser import JsonCache
 from lib import formatter
-from services.GuildConfig import GuildConfig
+from services.config_service import GuildConfig
 from services.xp_service import XpService, XpRewardService
 
 _strings = JsonCache.read_json("strings")

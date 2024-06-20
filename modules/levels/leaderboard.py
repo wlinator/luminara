@@ -3,8 +3,8 @@ from datetime import datetime
 
 import discord
 
-from services.Currency import Currency
-from services.Dailies import Dailies
+from services.currency_service import Currency
+from services.daily_service import Dailies
 from services.xp_service import XpService
 
 logs = logging.getLogger('Lumi.Core')

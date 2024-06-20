@@ -1,6 +1,6 @@
 import discord
 
-from services.Inventory import Inventory
+from services.inventory_service import Inventory
 
 
 async def cmd(self, ctx):

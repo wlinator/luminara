@@ -6,7 +6,7 @@ from discord.ext.commands import Cog
 from lib.embeds.greet import Greet
 from lib.embeds.boost import Boost
 import lib.embeds.boost
-from services.GuildConfig import GuildConfig
+from services.config_service import GuildConfig
 
 _logs = logging.getLogger('Lumi.Core')
 
