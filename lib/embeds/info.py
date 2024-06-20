@@ -6,7 +6,7 @@ from lib import formatter
 resources = JsonCache.read_json("art")
 
 question_icon = resources["icons"]["question"]
-exclam_icon = resources["icons"]["exclam"]
+exclaim_icon = resources["icons"]["exclaim"]
 streak_icon = resources["icons"]["streak"]
 
 
@@ -37,7 +37,7 @@ class MiscInfo:
     def ping(ctx, client):
         embed = clean_info_embed(ctx)
         embed.description += "I'm online!"
-        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclam_icon)
+        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon)
 
         return embed
 
@@ -45,7 +45,7 @@ class MiscInfo:
     def uptime(ctx, client, unix_time):
         embed = clean_info_embed(ctx)
         embed.description += f"I've been online since <t:{unix_time}:R>"
-        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclam_icon)
+        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon)
 
         return embed
 

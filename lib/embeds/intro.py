@@ -5,7 +5,7 @@ from config.parser import JsonCache
 resources = JsonCache.read_json("art")
 
 question_icon = resources["icons"]["question"]
-exclam_icon = resources["icons"]["exclam"]
+exclaim_icon = resources["icons"]["exclaim"]
 
 
 def clean_intro_embed(ctx):
@@ -22,7 +22,7 @@ class Questions:
     def question(ctx, text):
         embed = clean_intro_embed(ctx)
         embed.description += text
-        embed.set_footer(text="Type your answer below", icon_url=exclam_icon)
+        embed.set_footer(text="Type your answer below", icon_url=exclaim_icon)
 
         return embed
 
@@ -33,7 +33,7 @@ class General:
         embed = clean_intro_embed(ctx)
         embed.description += (f"this command will serve as a questionnaire for your entry to {channel.mention}. "
                               f"Please keep your answers \"PG-13\" and don't abuse this command.")
-        embed.set_footer(text="Click the button below to start", icon_url=exclam_icon)
+        embed.set_footer(text="Click the button below to start", icon_url=exclaim_icon)
 
         return embed
 

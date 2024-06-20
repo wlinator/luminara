@@ -6,7 +6,7 @@ from lib import formatter
 resources = JsonCache.read_json("art")
 
 question_icon = resources["icons"]["question"]
-exclam_icon = resources["icons"]["exclam"]
+exclaim_icon = resources["icons"]["exclaim"]
 
 
 class Greet:
