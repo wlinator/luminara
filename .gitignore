@@ -1,6 +1,7 @@
 venv/
 .idea/
 __pycache__/
+.run/
 
 *.db
 .env
@@ -8,4 +9,4 @@ __pycache__/
 
 users.yml
 db/data/
-db/init/v2-update.sql
+db/migrations/100-dump.sql
