@@ -15,17 +15,17 @@ mariadb_user = os.environ.get("MARIADB_USER")
 mariadb_password = os.environ.get("MARIADB_PASSWORD")
 
 if instance.lower() == "main":
-    dbx = dropbox.Dropbox(
+    _dbx = dropbox.Dropbox(
         app_key=app_key,
         app_secret=app_secret,
         oauth2_refresh_token=oauth2_refresh_token
     )
 else:
     # can be ignored
-    dbx = None
+    _dbx = None
 
 
-async def create_db_backup(dbx, path="db/rcu.db"):
+async def create_db_backup():
     backup_name = datetime.today().strftime('%Y-%m-%d_%H%M')
     backup_name += f"_lumi.sql"
 
@@ -35,24 +35,24 @@ async def create_db_backup(dbx, path="db/rcu.db"):
     subprocess.check_output(command, shell=True)
 
     with open("./db/migrations/100-dump.sql", "rb") as f:
-        dbx.files_upload(f.read(), f"/{backup_name}")
+        _dbx.files_upload(f.read(), f"/{backup_name}")
 
 
-async def backup_cleanup(dbx):
+async def backup_cleanup():
     all_backup_files = []
 
-    for entry in dbx.files_list_folder('').entries:
+    for entry in _dbx.files_list_folder('').entries:
         all_backup_files.append(entry.name)
 
     for file in sorted(all_backup_files[:-48]):
-        dbx.files_delete_v2('/' + file)
+        _dbx.files_delete_v2('/' + file)
 
 
 async def backup(self):
     if instance.lower() == "main":
         try:
-            await create_db_backup(dbx)
-            await backup_cleanup(dbx)
+            await create_db_backup()
+            await backup_cleanup()
 
             logs.info("[BACKUP] database backup success.")
 

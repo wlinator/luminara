@@ -1,7 +1,7 @@
 import datetime
 
-from discord.ext import commands, bridge, tasks
 from discord.commands import SlashCommandGroup
+from discord.ext import commands, bridge, tasks
 
 from lib import checks
 from lib.embeds.info import MiscInfo

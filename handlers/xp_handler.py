@@ -159,11 +159,11 @@ class XpListener(Cog):
         leveled_up = _xp.process()
 
         if leveled_up:
-            coros = [
+            coroutines = [
                 asyncio.create_task(_xp.notify()),
                 asyncio.create_task(_xp.reward())
             ]
-            await asyncio.wait(coros)
+            await asyncio.wait(coroutines)
 
 
 def setup(client):

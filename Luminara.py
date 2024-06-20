@@ -1,20 +1,22 @@
 import os
 
 import discord
+
 import Client
+import config.parser
 import services.config_service
 import services.help_service
 import services.logging_service
-import config.parser
 
 _logs = services.logging_service.setup_logger()
 
 
 async def get_prefix(bot, message):
     try:
-        return services.GuildConfig.GuildConfig.get_prefix(message.guild.id)
+        return services.config_service.GuildConfig.get_prefix(message.guild.id)
     except AttributeError:
         return "."
+
 
 client = Client.LumiBot(
     owner_id=int(os.environ.get('LUMI_OWNER_ID')),
