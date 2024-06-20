@@ -150,9 +150,14 @@ class MiscErrors:
         return embed
 
     @staticmethod
-    def intro_no_guild(ctx):
+    def intro_no_guild(ctx, client_side=False):
         embed = clean_error_embed(ctx)
-        embed.description += "you're not in a server that supports introductions."
+
+        if not client_side:
+            embed.description += "you're not in a server that supports introductions."
+        else:
+            embed.description += "I'm not in a server that supports introductions."
+
         embed.set_footer(text="this will be updated soon, stay tuned",
                          icon_url=exclaim_icon)
 

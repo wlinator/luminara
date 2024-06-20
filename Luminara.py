@@ -1,6 +1,8 @@
 import os
+import sys
 
 import discord
+from loguru import logger
 
 import Client
 import config.parser
@@ -8,7 +10,17 @@ import services.config_service
 import services.help_service
 import services.logging_service
 
-_logs = services.logging_service.setup_logger()
+# Remove the default logger configuration
+logger.remove()
+
+# Add a new logger configuration with colors and a short datetime format
+log_format = (
+    "<green>{time:YY-MM-DD HH:mm:ss}</green> | "
+    "<level>{level: <8}</level> | "
+    # "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+    "<level>{message}</level>"
+)
+logger.add(sys.stdout, format=log_format, colorize=True, level="DEBUG")
 
 
 async def get_prefix(bot, message):
@@ -46,10 +58,10 @@ def load_modules():
             try:
                 client.load_extension(f"{directory}.{item}")
                 loaded.add(item)
-                _logs.info(f'[{directory.capitalize()}] {item.upper()} loaded.')
+                logger.debug(f'{item.upper()} loaded.')
 
             except Exception as e:
-                _logs.error(f'[{directory.capitalize()}] Failed to load {item.upper()}: {e}')
+                logger.error(f'Failed to load {item.upper()}: {e}')
 
 
 if __name__ == '__main__':
@@ -58,16 +70,12 @@ if __name__ == '__main__':
     so NOT when main is imported from a cog. (sys.modules)
     """
 
-    _logs.info("LUMI IS BOOTING")
-    _logs.info("\n")
+    logger.info("LUMI IS BOOTING")
 
     # cache all JSON
     [config.parser.JsonCache.read_json(file[:-5]) for file in os.listdir("config/JSON") if file.endswith(".json")]
 
     # load command and listener cogs
     load_modules()
-
-    # empty line to separate modules from system info in logs
-    _logs.info("\n")
 
     client.run(os.environ.get('LUMI_TOKEN'))
