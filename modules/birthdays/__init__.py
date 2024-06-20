@@ -4,17 +4,18 @@ import random
 
 import discord
 from discord.ext import commands, tasks, bridge
+from discord.commands import SlashCommandGroup
 
 from config.parser import JsonCache
 from lib import time, checks
-from modules.birthdays import upcoming, birthday
+from modules.birthdays import birthday
 from services.birthday_service import Birthday
 from services.config_service import GuildConfig
 
-logs = logging.getLogger('Lumi.Core')
-data = JsonCache.read_json("birthday")
-month_mapping = data["month_mapping"]
-messages = data["birthday_messages"]
+_logs = logging.getLogger('Lumi.Core')
+_data = JsonCache.read_json("birthday")
+_months = _data["months"]
+_messages = _data["birthday_messages"]
 
 
 class Birthdays(commands.Cog):
@@ -22,59 +23,32 @@ class Birthdays(commands.Cog):
         self.client = client
         self.daily_birthday_check.start()
 
-    @bridge.bridge_command(
-        name="birthday",
-        aliases=["bday"],
-        description="Set your birthday.",
-        guild_only=True
-    )
-    @commands.guild_only()
+    """
+    birthday module - slash command only
+    """
+    birthday = SlashCommandGroup(name="birthday", description="Birthday commands.", guild_only=True)
+
+    @birthday.command(name="set", description="Set your birthday in this server.")
     @checks.birthdays_enabled()
-    @checks.allowed_in_channel()
-    async def set_birthday(self, ctx, month: str, *, day: int):
-        """
-        Set your birthday. You can use abbreviations for months, like "jan" and "nov".
-        """
+    async def set_birthday(self, ctx, month: discord.Option(choices=_months), day: int):
+        index = _months.index(month) + 1
+        await birthday.add(ctx, month, index, day)
 
-        month_name = await birthday.get_month_name(month, month_mapping)
-        month_index = await birthday.get_month_index(month_name, month_mapping)
-        await birthday.set_birthday(ctx, month_name, month_index, day)
-
-    @bridge.bridge_command(
-        name="deletebirthday",
-        aliases=["deletebday"],
-        description="Delete your birthday in this server.",
-        guild_only=True
-    )
+    @birthday.command(name="delete", description="Delete your birthday in this server.")
     @commands.guild_only()
     async def delete_birthday(self, ctx):
-        """
-        Delete your birthday in this server.
-        """
+        await birthday.delete(ctx)
 
-        await birthday.delete_birthday(ctx)
-
-    @bridge.bridge_command(
-        name="upcoming",
-        aliases=["upcomingbirthdays"],
-        description="Shows the upcoming birthdays in this server.",
-        guild_only=True
-    )
-    @commands.guild_only()
+    @birthday.command(name="upcoming", description="Shows the upcoming birthdays in this server.")
     @checks.birthdays_enabled()
-    @checks.allowed_in_channel()
     async def upcoming_birthdays(self, ctx):
-        """
-        Shows the upcoming birthdays in this server.
-        """
-
-        await upcoming.cmd(ctx)
+        await birthday.upcoming(ctx)
 
     @tasks.loop(hours=23, minutes=55)
     async def daily_birthday_check(self):
 
         wait_time = time.seconds_until(7, 0)
-        logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
+        _logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
         await asyncio.sleep(wait_time)
 
         embed = discord.Embed(color=discord.Color.embed_background())
@@ -87,17 +61,17 @@ class Birthdays(commands.Cog):
                 guild_config = GuildConfig(guild.id)
 
                 if not guild_config.birthday_channel_id:
-                    logs.info(f"[BirthdayHandler] Guild with ID {guild.id} skipped: no birthday channel defined.")
+                    _logs.info(f"[BirthdayHandler] Guild with ID {guild.id} skipped: no birthday channel defined.")
                     return
 
-                message = random.choice(messages)
+                message = random.choice(_messages)
                 embed.description = message.format(member.name)
                 channel = await self.client.get_or_fetch_channel(guild, guild_config.birthday_channel_id)
                 await channel.send(embed=embed, content=member.mention)
-                logs.info(f"[BirthdayHandler] Success! user/guild/channel ID: {member.id}/{guild.id}/{channel.id}")
+                _logs.info(f"[BirthdayHandler] Success! user/guild/channel ID: {member.id}/{guild.id}/{channel.id}")
 
             except Exception as error:
-                logs.info(f"[BirthdayHandler] Skipped processing user/guild {user_id}/{guild_id}")
+                _logs.info(f"[BirthdayHandler] Skipped processing user/guild {user_id}/{guild_id}")
 
             # wait one second to avoid rate limits
             await asyncio.sleep(1)
