@@ -1,12 +1,13 @@
 import datetime
 
+import discord
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, bridge, tasks
 
 from lib import checks
 from lib.embeds.info import MiscInfo
 from modules.config import set_prefix
-from modules.misc import introduction, invite, backup, info, xkcd
+from modules.misc import avatar, introduction, invite, backup, info, xkcd
 
 
 class Misc(commands.Cog):
@@ -19,6 +20,18 @@ class Misc(commands.Cog):
     @tasks.loop(hours=1)
     async def do_backup(self):
         await backup.backup(self)
+
+    @bridge.bridge_command(
+        name="avatar",
+        aliases=["av"],
+        description="Get a user's avatar.",
+        help="Get a user's avatar.",
+        guild_only=True,
+    )
+    @commands.guild_only()
+    @checks.allowed_in_channel()
+    async def avatar(self, ctx, *, user: discord.Member | None = None):
+        return await avatar.get_avatar(ctx, user)
 
     @bridge.bridge_command(
         name="ping",
