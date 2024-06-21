@@ -1,9 +1,7 @@
-import logging
+from loguru import logger
 
 from db import database
 from services import item_service
-
-logs = logging.getLogger('Lumi.Core')
 
 
 class Inventory:
@@ -76,5 +74,5 @@ class Inventory:
             return item_names
 
         except Exception as e:
-            logs.error(e)
+            logger.error(e)
             return []

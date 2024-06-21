@@ -1,6 +1,6 @@
-import logging
 import os
 import platform
+from loguru import logger
 
 import discord
 import psutil
@@ -10,7 +10,6 @@ from lib import metadata
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
 
-_logs = logging.getLogger('Lumi.Core')
 _art = JsonCache.read_json("art")
 _data = JsonCache.read_json("resources")
 
@@ -38,4 +37,4 @@ async def cmd(command, ctx, unix_timestamp):
     embed.add_field(name="API", value=f"v{discord.__version__}")
     embed.add_field(name="Database", value=f"{total_rows} records")
 
-    return await ctx.respond(embed=embed)
+    await ctx.respond(embed=embed)

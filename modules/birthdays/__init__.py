@@ -1,5 +1,5 @@
+from loguru import logger
 import asyncio
-import logging
 import random
 
 import discord
@@ -12,7 +12,6 @@ from modules.birthdays import birthday
 from services.birthday_service import Birthday
 from services.config_service import GuildConfig
 
-_logs = logging.getLogger('Lumi.Core')
 _data = JsonCache.read_json("birthday")
 _months = _data["months"]
 _messages = _data["birthday_messages"]
@@ -48,7 +47,7 @@ class Birthdays(commands.Cog):
     async def daily_birthday_check(self):
 
         wait_time = time.seconds_until(7, 0)
-        _logs.info(f"[BirthdayHandler] Waiting until 7 AM Eastern for daily check: {round(wait_time)}s")
+        logger.debug(f"Waiting until 7 AM Eastern for the daily birthday check: {round(wait_time)}s left.")
         await asyncio.sleep(wait_time)
 
         embed = discord.Embed(color=discord.Color.embed_background())
@@ -61,17 +60,17 @@ class Birthdays(commands.Cog):
                 guild_config = GuildConfig(guild.id)
 
                 if not guild_config.birthday_channel_id:
-                    _logs.info(f"[BirthdayHandler] Guild with ID {guild.id} skipped: no birthday channel defined.")
+                    logger.debug(f"Birthday announcements in guild with ID {guild.id} skipped: no birthday channel.")
                     return
 
                 message = random.choice(_messages)
                 embed.description = message.format(member.name)
                 channel = await self.client.get_or_fetch_channel(guild, guild_config.birthday_channel_id)
                 await channel.send(embed=embed, content=member.mention)
-                _logs.info(f"[BirthdayHandler] Success! user/guild/channel ID: {member.id}/{guild.id}/{channel.id}")
+                logger.debug(f"Birthday announcement Success! user/guild/chan ID: {member.id}/{guild.id}/{channel.id}")
 
-            except Exception:
-                _logs.info(f"[BirthdayHandler] Skipped processing user/guild {user_id}/{guild_id}")
+            except Exception as e:
+                logger.warning(f"Birthday announcement skipped processing user/guild {user_id}/{guild_id} | {e}")
 
             # wait one second to avoid rate limits
             await asyncio.sleep(1)

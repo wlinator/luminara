@@ -1,5 +1,5 @@
 import asyncio
-import logging
+from loguru import logger
 
 import discord
 
@@ -9,7 +9,6 @@ from lib.embeds.error import MiscErrors, IntroErrors
 from lib.embeds.intro import General, Questions
 
 resources = JsonCache.read_json("resources")
-logs = logging.getLogger('Lumi.Core')
 
 
 async def cmd(self, ctx: discord.ApplicationContext):
@@ -21,10 +20,13 @@ async def cmd(self, ctx: discord.ApplicationContext):
     Therefore, we check if the user is in that guild.
     """
     guild = self.client.get_guild(int(resources["guild_specific"]["guild_id"]))
+
     try:
         _ = await guild.fetch_member(ctx.author.id)
     except discord.HTTPException:
         return await ctx.respond(embed=MiscErrors.intro_no_guild(ctx))
+    except AttributeError:
+        return await ctx.respond(embed=MiscErrors.intro_no_guild(ctx, client_side=True))
 
     """
     A list of questions and corresponding field names
@@ -72,9 +74,7 @@ async def cmd(self, ctx: discord.ApplicationContext):
             await channel.send(embed=preview, content=f"Introduction by {ctx.author.mention}")
             await ctx.send(embed=General.post_confirmation(ctx, channel))
 
-            logs.info(f"[CommandHandler] {ctx.author.name} introduction was submitted "
-                      f"in guild {guild.name} ({guild.id}).")
-
+            logger.debug(f"Introduction by {ctx.author.name} was submitted in guild {guild.name} ({guild.id}).")
             return
 
         else:

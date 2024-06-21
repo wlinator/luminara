@@ -1,9 +1,7 @@
-import logging
+from loguru import logger
 import os
 
 import mariadb
-
-_logs = logging.getLogger('Lumi.Core')
 
 
 def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
@@ -23,7 +21,7 @@ def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
 try:
     _cnxpool = create_connection_pool("core-pool", 25)
 except mariadb.Error as e:
-    _logs.critical(f"[CRITICAL] Couldn't create MariaDB connection pool: {e}")
+    logger.critical(f"Couldn't create the MariaDB connection pool: {e}")
     raise e
 
 

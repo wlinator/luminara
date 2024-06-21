@@ -1,13 +1,10 @@
-# noinspection PyInterpreter
-import logging
+from loguru import logger
 
 from discord.ext.commands import Cog
 
 import lib.embeds.boost
 from lib.embeds.greet import Greet
 from services.config_service import GuildConfig
-
-_logs = logging.getLogger('Lumi.Core')
 
 
 class EventHandler(Cog):
@@ -26,7 +23,7 @@ class EventHandler(Cog):
         try:
             await member.guild.get_channel(config.welcome_channel_id).send(embed=embed, content=member.mention)
         except Exception as e:
-            _logs.info(f"[GreetingHandler] Message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
+            logger.warning(f"Greet message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
 
     @Cog.listener()
     async def on_member_update(self, before, after):
@@ -45,25 +42,25 @@ class EventHandler(Cog):
         try:
             await member.guild.get_channel(config.boost_channel_id).send(embed=embed, content=member.mention)
         except Exception as e:
-            _logs.info(f"[BoostHandler] Message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
+            logger.warning(f"Boost message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
 
     @Cog.listener()
     async def on_command_completion(self, ctx) -> None:
-        log_msg = '[CommandHandler] %s executed .%s | PREFIX' % (ctx.author.name, ctx.command.qualified_name)
+        log_msg = '%s executed .%s' % (ctx.author.name, ctx.command.qualified_name)
 
         if ctx.guild is not None:
-            _logs.info(f"{log_msg} | guild: {ctx.guild.name} ")
+            logger.debug(f"{log_msg} | guild: {ctx.guild.name} ")
         else:
-            _logs.info(f"{log_msg} | in DMs")
+            logger.debug(f"{log_msg} in DMs")
 
     @Cog.listener()
     async def on_application_command_completion(self, ctx) -> None:
-        log_msg = '[CommandHandler] %s executed /%s | SLASH' % (ctx.author.name, ctx.command.qualified_name)
+        log_msg = '%s executed /%s' % (ctx.author.name, ctx.command.qualified_name)
 
         if ctx.guild is not None:
-            _logs.info(f"{log_msg} | guild: {ctx.guild.name} ")
+            logger.debug(f"{log_msg} | guild: {ctx.guild.name} ")
         else:
-            _logs.info(f"{log_msg} | in DMs")
+            logger.debug(f"{log_msg} in DMs")
 
 
 def setup(client):
