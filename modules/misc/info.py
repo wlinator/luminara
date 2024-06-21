@@ -1,6 +1,7 @@
 import logging
 import os
 import platform
+from loguru import logger
 
 import discord
 import psutil
@@ -38,4 +39,12 @@ async def cmd(command, ctx, unix_timestamp):
     embed.add_field(name="API", value=f"v{discord.__version__}")
     embed.add_field(name="Database", value=f"{total_rows} records")
 
-    return await ctx.respond(embed=embed)
+    image = _art["logo"]["opaque"]
+    embed.set_image(url=image)
+
+    await ctx.respond(embed=embed)
+
+    # get discord url of uploaded image in embed
+    image_url = embed.image.url
+    logger.info(f"Image URL: {image_url}")
+
