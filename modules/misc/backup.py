@@ -1,11 +1,9 @@
-import logging
+from loguru import logger
 import os
 import subprocess
 from datetime import datetime
 
 import dropbox
-
-logs = logging.getLogger('Lumi.Core')
 
 oauth2_refresh_token = os.environ.get("LUMI_DBX_OAUTH2_REFRESH_TOKEN")
 app_key = os.environ.get("LUMI_DBX_APP_KEY")
@@ -48,16 +46,16 @@ async def backup_cleanup():
         _dbx.files_delete_v2('/' + file)
 
 
-async def backup(self):
+async def backup():
     if instance.lower() == "main":
+        logger.debug("Backing up the database.")
         try:
             await create_db_backup()
             await backup_cleanup()
 
-            logs.info("[BACKUP] database backup success.")
+            logger.debug("The database was backed up successfully.")
 
         except Exception as error:
-            logs.error(f"[BACKUP] database backup failed. {error}")
-            logs.info(f"[BACKUP] Dropbox failure: {error}")
+            logger.error(f"database backup failed. {error}")
     else:
-        logs.info("[BACKUP] No backup was made, instance not \"MAIN\".")
+        logger.debug("No backup was made, instance not \"MAIN\".")

@@ -1,9 +1,7 @@
-import logging
 import sqlite3
+from loguru import logger
 
 from db import database
-
-logs = logging.getLogger('Lumi.Core')
 
 
 class Item:
@@ -62,7 +60,7 @@ class Item:
             return item_names
 
         except sqlite3.Error:
-            logs.error(sqlite3.Error)
+            logger.error(sqlite3.Error)
             return []
 
     @staticmethod

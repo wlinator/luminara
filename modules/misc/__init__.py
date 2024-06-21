@@ -19,7 +19,7 @@ class Misc(commands.Cog):
 
     @tasks.loop(hours=1)
     async def do_backup(self):
-        await backup.backup(self)
+        await backup.backup()
 
     @bridge.bridge_command(
         name="avatar",

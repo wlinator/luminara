@@ -8,7 +8,6 @@ import Client
 import config.parser
 import services.config_service
 import services.help_service
-import services.logging_service
 
 # Remove the default logger configuration
 logger.remove()

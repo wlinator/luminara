@@ -1,4 +1,3 @@
-import logging
 import os
 import platform
 from loguru import logger
@@ -11,7 +10,6 @@ from lib import metadata
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
 
-_logs = logging.getLogger('Lumi.Core')
 _art = JsonCache.read_json("art")
 _data = JsonCache.read_json("resources")
 
@@ -47,4 +45,3 @@ async def cmd(command, ctx, unix_timestamp):
     # get discord url of uploaded image in embed
     image_url = embed.image.url
     logger.info(f"Image URL: {image_url}")
-

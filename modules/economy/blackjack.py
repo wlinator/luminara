@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 import random
 from datetime import datetime
 
@@ -14,7 +14,6 @@ from services.currency_service import Currency
 from services.stats_service import BlackJackStats
 
 resources = JsonCache.read_json("resources")
-logs = logging.getLogger('Lumi.Core')
 est = pytz.timezone('US/Eastern')
 active_blackjack_games = {}
 
@@ -170,7 +169,7 @@ async def cmd(ctx, bet: int):
 
     except Exception as e:
         await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        logs.error("[CommandHandler] Something went wrong in the gambling command: ", e)
+        logger.error("Something went wrong in the blackjack command: ", e)
 
     finally:
         # remove player from active games list
