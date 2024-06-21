@@ -1,6 +1,6 @@
-import logging
 import sys
 import traceback
+from loguru import logger
 
 import discord
 from discord.ext import commands
@@ -8,8 +8,6 @@ from discord.ext.commands import Cog
 
 from lib.embeds.error import GenericErrors, BdayErrors
 from lib.exceptions import LumiExceptions
-
-_logs = logging.getLogger('Lumi.Core')
 
 
 async def on_command_error(ctx, error):
@@ -55,12 +53,12 @@ async def on_command_error(ctx, error):
 
     else:
         await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        traceback.print_tb(error.__traceback__)
+        logger.error(f"on_command_error: errors.command.{ctx.command.qualified_name} | user: {ctx.author.name}")
 
 
 async def on_error(event: str, *args, **kwargs) -> None:
-    _logs.error(f"[EventHandler] on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
-    _logs.error(f"[EventHandler] on_error EXCEPTION: {sys.exc_info()}")
+    logger.exception(f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
+    logger.exception(f"on_error EXCEPTION: {sys.exc_info()}")
     traceback.print_exc()
 
 
@@ -76,26 +74,32 @@ class ErrorListener(Cog):
         if not isinstance(error, LumiExceptions.NotAllowedInChannel):
             await on_command_error(ctx, error)
 
-        log_msg = '[CommandHandler] %s executed .%s | PREFIX' % (ctx.author.name, ctx.command.qualified_name)
+        log_msg = '%s executed .%s' % (ctx.author.name, ctx.command.qualified_name)
 
         if ctx.guild is not None:
             log_msg += f" | guild: {ctx.guild.name} "
         else:
-            log_msg += f" | in DMs"
+            log_msg += " in DMs"
 
-        _logs.info(f"{log_msg} | FAILED: {error}")
+        # make error shorter than full screen width
+        if len(str(error)) > 80:
+            error = str(error)[:80] + "..."
+        logger.warning(f"{log_msg} | FAILED: {error}")
 
     @Cog.listener()
     async def on_application_command_error(self, ctx, error) -> None:
         await on_command_error(ctx, error)
-        log_msg = '[CommandHandler] %s executed /%s | SLASH' % (ctx.author.name, ctx.command.qualified_name)
+        log_msg = '%s executed /%s' % (ctx.author.name, ctx.command.qualified_name)
 
         if ctx.guild is not None:
             log_msg += f" | guild: {ctx.guild.name} "
         else:
-            log_msg += f" | in DMs"
+            log_msg += " in DMs"
 
-        _logs.info(f"{log_msg} | FAILED: {error}")
+        # make error shorter than full screen width
+        if len(str(error)) > 80:
+            error = str(error)[:80] + "..."
+        logger.warning(f"{log_msg} | FAILED: {error}")
 
     @Cog.listener()
     async def on_error(self, event: str, *args, **kwargs) -> None:

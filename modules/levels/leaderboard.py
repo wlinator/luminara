@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 
 import discord
@@ -6,8 +5,6 @@ import discord
 from services.currency_service import Currency
 from services.daily_service import Dailies
 from services.xp_service import XpService
-
-logs = logging.getLogger('Lumi.Core')
 
 
 async def cmd(ctx):

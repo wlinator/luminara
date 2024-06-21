@@ -1,11 +1,8 @@
-import logging
-
 import discord
 from discord.ui import View
 
 from lib.embeds.info import MiscInfo
 
-logs = logging.getLogger('Lumi.Core')
 url = "https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot"
 
 
