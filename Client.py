@@ -11,10 +11,10 @@ from lib import metadata
 class LumiBot(bridge.Bot):
     async def on_ready(self):
         logger.info(f"{metadata.__title__} v{metadata.__version__}")
-        logger.info(f"[Logged in with ID {self.user.id}")
+        logger.info(f"Logged in with ID {self.user.id}")
         logger.info(f"discord.py API version: {discord.__version__}")
         logger.info(f"Python version: {platform.python_version()}")
-        logger.info(f"[Running on: {platform.system()} {platform.release()} ({os.name})")
+        logger.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
 
         """
         https://docs.pycord.dev/en/stable/api/events.html#discord.on_ready
