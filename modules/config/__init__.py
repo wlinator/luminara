@@ -1,4 +1,4 @@
-import logging
+
 
 import discord
 from discord.commands import SlashCommandGroup
@@ -13,7 +13,6 @@ from modules.config import config, set_prefix, xp_reward
 from services.config_service import GuildConfig
 
 strings = JsonCache.read_json("strings")
-logs = logging.getLogger('Lumi.Core')
 
 
 class Config(commands.Cog):
