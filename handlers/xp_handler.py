@@ -1,4 +1,3 @@
-import asyncio
 import random
 import time
 
@@ -64,10 +63,9 @@ class XPHandler:
         _rew = XpRewardService(self.guild.id)
 
         role_id = _rew.role(_xp.level)
-        reason = 'Automated Level Reward'
+        reason = "Automated Level Reward"
 
         if role_id:
-
             role = self.guild.get_role(role_id)
             if role:
                 try:
@@ -103,9 +101,13 @@ class XPHandler:
                 level_message = XPHandler.messages_whimsical(level_config.level, author)
             case 2:
                 if not guild_config.level_message:
-                    level_message = XPHandler.level_message_generic(level_config.level, author)
+                    level_message = XPHandler.level_message_generic(
+                        level_config.level, author
+                    )
                 else:
-                    level_message = formatter.template(guild_config.level_message, author.name, level_config.level)
+                    level_message = formatter.template(
+                        guild_config.level_message, author.name, level_config.level
+                    )
             case _:
                 raise Exception
 
@@ -126,7 +128,7 @@ class XPHandler:
 
         level_range = None
         for key in _messages.keys():
-            start, end = map(int, key.split('-'))
+            start, end = map(int, key.split("-"))
             if start <= level <= end:
                 level_range = key
                 break
@@ -145,23 +147,23 @@ class XpListener(Cog):
     def __init__(self, client):
         self.client = client
 
-    @Cog.listener('on_message')
-    async def xp_listener(self, message):
-        if (
-                message.author.bot or
-                message.guild is None
-        ):
-            return
+    # @Cog.listener('on_message')
+    # async def xp_listener(self, message):
+    #     if (
+    #             message.author.bot or
+    #             message.guild is None
+    #     ):
+    #         return
 
-        _xp = XPHandler(message)
-        leveled_up = _xp.process()
+    #     _xp = XPHandler(message)
+    #     leveled_up = _xp.process()
 
-        if leveled_up:
-            coroutines = [
-                asyncio.create_task(_xp.notify()),
-                asyncio.create_task(_xp.reward())
-            ]
-            await asyncio.wait(coroutines)
+    #     if leveled_up:
+    #         coroutines = [
+    #             asyncio.create_task(_xp.notify()),
+    #             asyncio.create_task(_xp.reward())
+    #         ]
+    #         await asyncio.wait(coroutines)
 
 
 def setup(client):

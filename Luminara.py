@@ -1,5 +1,6 @@
 import os
 import sys
+import asyncio
 
 import discord
 from loguru import logger
@@ -20,7 +21,7 @@ log_format = (
     # "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
     "<level>{message}</level>"
 )
-logger.add(sys.stdout, format=log_format, colorize=True, level="DEBUG")
+logger.add(sys.stderr, format=log_format, colorize=True, level="DEBUG")
 
 
 async def get_prefix(bot, message):
@@ -76,13 +77,12 @@ def load_modules():
                 logger.error(f"Failed to load {item.upper()}: {e}")
 
 
-if __name__ == "__main__":
-    """
-    This code is only ran when Lumi.py is the primary module,
-    so NOT when main is imported from a cog. (sys.modules)
-    """
-
+async def main():
     logger.info("LUMI IS BOOTING")
+
+    # connect to the database
+    await Client.db.connect()
+    logger.debug("Database connection established.")
 
     # cache all JSON
     [
@@ -94,4 +94,11 @@ if __name__ == "__main__":
     # load command and listener cogs
     load_modules()
 
+
+if __name__ == "__main__":
+    """
+    This code is only ran when Lumi.py is the primary module,
+    so NOT when main is imported from a cog. (sys.modules)
+    """
+    asyncio.run(main())
     client.run(os.environ.get("TOKEN"))
