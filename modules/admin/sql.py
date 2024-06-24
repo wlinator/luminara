@@ -1,7 +1,5 @@
 import sqlite3
 
-from db import database
-
 
 async def select_cmd(ctx, query: str):
     if query.lower().startswith("select "):
@@ -12,7 +10,9 @@ async def select_cmd(ctx, query: str):
     except sqlite3.Error as error:
         results = error
 
-    return await ctx.respond(content=f"```SELECT {query}```\n```{results}```", ephemeral=True)
+    return await ctx.respond(
+        content=f"```SELECT {query}```\n```{results}```", ephemeral=True
+    )
 
 
 async def inject_cmd(ctx, query: str):
@@ -20,4 +20,7 @@ async def inject_cmd(ctx, query: str):
         database.execute_query(query)
         await ctx.respond(content=f"That worked!\n```{query}```", ephemeral=True)
     except sqlite3.Error as error:
-        await ctx.respond(content=f"Query:\n```{query}```\nError message:\n```{error}```", ephemeral=True)
+        await ctx.respond(
+            content=f"Query:\n```{query}```\nError message:\n```{error}```",
+            ephemeral=True,
+        )

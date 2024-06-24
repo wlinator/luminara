@@ -1,8 +1,6 @@
 from loguru import logger
 import os
 
-import mariadb
-
 
 def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
     pool = mariadb.ConnectionPool(
@@ -12,7 +10,7 @@ def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
         user=os.environ.get("MARIADB_USER"),
         password=os.environ.get("MARIADB_PASSWORD"),
         pool_name=name,
-        pool_size=size
+        pool_size=size,
     )
 
     return pool

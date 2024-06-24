@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import pytz
 
 from config.parser import JsonCache
-from db import database
 from services.currency_service import Currency
 
 resources = JsonCache.read_json("resources")
@@ -13,9 +12,11 @@ class Dailies:
     def __init__(self, user_id):
         self.user_id = user_id
         self.amount = 0
-        self.tz = pytz.timezone('US/Eastern')
+        self.tz = pytz.timezone("US/Eastern")
         self.time_now = datetime.now(tz=self.tz)
-        self.reset_time = self.time_now.replace(hour=7, minute=0, second=0, microsecond=0)
+        self.reset_time = self.time_now.replace(
+            hour=7, minute=0, second=0, microsecond=0
+        )
 
         data = Dailies.get_data(user_id)
 
@@ -47,7 +48,6 @@ class Dailies:
             return True
 
         else:
-
             if self.time_now < self.reset_time:
                 self.reset_time -= timedelta(days=1)
 
@@ -67,7 +67,10 @@ class Dailies:
 
         check_1 = self.claimed_at.date() == (self.time_now - timedelta(days=1)).date()
         check_2 = self.claimed_at.date() == (self.time_now - timedelta(days=2)).date()
-        check_3 = self.claimed_at.date() == self.time_now.date() and self.claimed_at < self.reset_time
+        check_3 = (
+            self.claimed_at.date() == self.time_now.date()
+            and self.claimed_at < self.reset_time
+        )
 
         return check_1 or check_2 or check_3
 

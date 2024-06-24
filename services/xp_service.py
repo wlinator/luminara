@@ -3,10 +3,9 @@ import time
 
 from discord.ext import commands
 
-from db import database
 
-xp_gain_per_message = int(os.environ.get("LUMI_XP_GAIN_PER_MESSAGE"))
-xp_gain_cooldown = int(os.environ.get("LUMI_XP_GAIN_COOLDOWN"))
+xp_gain_per_message = int(os.environ.get("XP_GAIN_PER_MESSAGE"))
+xp_gain_cooldown = int(os.environ.get("XP_GAIN_COOLDOWN"))
 
 
 class XpService:
@@ -34,7 +33,10 @@ class XpService:
                 SET user_xp = %s, user_level = %s, cooldown = %s
                 WHERE user_id = %s AND guild_id = %s
                 """
-        database.execute_query(query, (self.xp, self.level, self.cooldown_time, self.user_id, self.guild_id))
+        database.execute_query(
+            query,
+            (self.xp, self.level, self.cooldown_time, self.user_id, self.guild_id),
+        )
 
     def fetch_or_create_xp(self):
         """
@@ -43,7 +45,9 @@ class XpService:
         query = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = %s AND guild_id = %s"
 
         try:
-            (user_xp, user_level, cooldown) = database.select_query(query, (self.user_id, self.guild_id))[0]
+            (user_xp, user_level, cooldown) = database.select_query(
+                query, (self.user_id, self.guild_id)
+            )[0]
         except (IndexError, TypeError):
             (user_xp, user_level, cooldown) = (None, None, None)
 
@@ -108,7 +112,9 @@ class XpService:
             user_level = row[2]
             needed_xp_for_next_level = XpService.xp_needed_for_next_level(user_level)
 
-            leaderboard.append((row_user_id, user_xp, user_level, needed_xp_for_next_level))
+            leaderboard.append(
+                (row_user_id, user_xp, user_level, needed_xp_for_next_level)
+            )
 
         return leaderboard
 
@@ -145,7 +151,9 @@ class XpService:
                 return formula(current_level)
 
         # For levels below 10 and levels 110 and above
-        return 10 * current_level + 27 if current_level < 10 else 42 * current_level + 37
+        return (
+            10 * current_level + 27 if current_level < 10 else 42 * current_level + 37
+        )
 
 
 class XpRewardService:
@@ -169,7 +177,6 @@ class XpRewardService:
         return rewards
 
     def add_reward(self, level: int, role_id: int, persistent: bool):
-
         if len(self.rewards) >= 25:
             raise commands.BadArgument("a server can't have more than 25 xp rewards.")
 
@@ -179,7 +186,9 @@ class XpRewardService:
                 ON DUPLICATE KEY UPDATE role_id = %s, persistent = %s;
                 """
 
-        database.execute_query(query, (self.guild_id, level, role_id, persistent, role_id, persistent))
+        database.execute_query(
+            query, (self.guild_id, level, role_id, persistent, role_id, persistent)
+        )
 
     def remove_reward(self, level: int):
         query = """
@@ -192,7 +201,6 @@ class XpRewardService:
 
     def role(self, level: int):
         if self.rewards:
-
             if level in self.rewards:
                 role_id = self.rewards.get(level)[0]
                 return role_id

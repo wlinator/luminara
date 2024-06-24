@@ -1,8 +1,9 @@
-from db import database
+from Client import db
 
 
 class GuildConfig:
     def __init__(self, guild_id):
+        self.table = db.guild_config
         self.guild_id = guild_id
         self.birthday_channel_id = None
         self.command_channel_id = None
@@ -31,10 +32,19 @@ class GuildConfig:
                         """
 
         try:
-            (birthday_channel_id, command_channel_id, intro_channel_id,
-             welcome_channel_id, welcome_message, boost_channel_id, boost_message, boost_image_url,
-             level_channel_id, level_message, level_message_type) = \
-                database.select_query(query, (self.guild_id,))[0]
+            (
+                birthday_channel_id,
+                command_channel_id,
+                intro_channel_id,
+                welcome_channel_id,
+                welcome_message,
+                boost_channel_id,
+                boost_message,
+                boost_image_url,
+                level_channel_id,
+                level_message,
+                level_message_type,
+            ) = database.select_query(query, (self.guild_id,))[0]
 
             self.birthday_channel_id = birthday_channel_id
             self.command_channel_id = command_channel_id
@@ -71,14 +81,25 @@ class GuildConfig:
                 WHERE guild_id = %s;
                 """
 
-        database.execute_query(query, (self.birthday_channel_id, self.command_channel_id,
-                                       self.intro_channel_id, self.welcome_channel_id, self.welcome_message,
-                                       self.boost_channel_id, self.boost_message, self.boost_image_url,
-                                       self.level_channel_id, self.level_message,
-                                       self.level_message_type, self.guild_id))
+        database.execute_query(
+            query,
+            (
+                self.birthday_channel_id,
+                self.command_channel_id,
+                self.intro_channel_id,
+                self.welcome_channel_id,
+                self.welcome_message,
+                self.boost_channel_id,
+                self.boost_message,
+                self.boost_image_url,
+                self.level_channel_id,
+                self.level_message,
+                self.level_message_type,
+                self.guild_id,
+            ),
+        )
 
-    @staticmethod
-    def get_prefix(guild_id):
+    def get_prefix(self, guild_id):
         """
         Gets the prefix from a given guild.
         This function is done as static method to make the prefix fetch process faster.
@@ -93,8 +114,7 @@ class GuildConfig:
 
         return prefix if prefix else "."
 
-    @staticmethod
-    def set_prefix(guild_id, prefix):
+    def set_prefix(self, guild_id, prefix):
         """
         Sets the prefix for a given guild.
         """

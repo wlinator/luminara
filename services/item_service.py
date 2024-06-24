@@ -1,8 +1,6 @@
 import sqlite3
 from loguru import logger
 
-from db import database
-
 
 class Item:
     def __init__(self, item_id):

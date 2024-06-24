@@ -1,6 +1,5 @@
 from loguru import logger
 
-from db import database
 from services import item_service
 
 
@@ -23,10 +22,11 @@ class Inventory:
         ON DUPLICATE KEY UPDATE quantity = quantity + %s;
         """
 
-        database.execute_query(query, (self.user_id, item.id, abs(quantity), abs(quantity)))
+        database.execute_query(
+            query, (self.user_id, item.id, abs(quantity), abs(quantity))
+        )
 
     def take_item(self, item: item_service.Item, quantity=1):
-
         query = """
         INSERT INTO inventory (user_id, item_id, quantity)
         VALUES (%s, %s, 0)
@@ -36,7 +36,9 @@ class Inventory:
         END;
         """
 
-        database.execute_query(query, (self.user_id, item.id, self.user_id, item.id, abs(quantity)))
+        database.execute_query(
+            query, (self.user_id, item.id, self.user_id, item.id, abs(quantity))
+        )
 
     def get_inventory(self):
         query = "SELECT item_id, quantity FROM inventory WHERE user_id = %s AND quantity > 0"

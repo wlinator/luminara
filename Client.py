@@ -4,8 +4,12 @@ from loguru import logger
 
 import discord
 from discord.ext import bridge
+from prisma import Prisma
 
 from lib import metadata
+
+
+db = Prisma(log_queries=True, auto_register=True)
 
 
 class LumiBot(bridge.Bot):

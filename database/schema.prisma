@@ -1,0 +1,111 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = -1
+}
+
+model xp {
+  user_id    BigInt
+  guild_id   BigInt
+  user_xp    Int
+  user_level Int
+  cooldown   Float?
+  @@id([user_id, guild_id])
+}
+
+model currency {
+  user_id BigInt @id
+  balance BigInt
+}
+
+model blackjack {
+  id          Int     @id @default(autoincrement())
+  user_id     BigInt?
+  is_won      Boolean?
+  bet         BigInt?
+  payout      BigInt?
+  hand_player String?
+  hand_dealer String?
+}
+
+model slots {
+  id        Int     @id @default(autoincrement())
+  user_id   BigInt?
+  is_won    Boolean?
+  bet       BigInt?
+  payout    BigInt?
+  spin_type String?
+  icons     String?
+}
+
+model dailies {
+  id         Int     @id @default(autoincrement())
+  user_id    BigInt?
+  amount     BigInt?
+  claimed_at String?
+  streak     Int?
+}
+
+model item {
+  id          Int     @id @default(autoincrement())
+  name        String?
+  display_name String?
+  description String?
+  image_url   String?
+  emote_id    BigInt?
+  quote       String?
+  type        String?
+  inventory   inventory[]
+}
+
+model inventory {
+  user_id  BigInt
+  item_id  Int
+  quantity Int
+  item     item    @relation(fields: [item_id], references: [id])
+  @@id([user_id, item_id])
+}
+
+model birthdays {
+  user_id  BigInt
+  guild_id BigInt
+  birthday DateTime?
+  @@id([user_id, guild_id])
+}
+
+model guild_config {
+  guild_id             BigInt  @id
+  prefix               String?
+  birthday_channel_id  BigInt?
+  command_channel_id   BigInt?
+  intro_channel_id     BigInt?
+  welcome_channel_id   BigInt?
+  welcome_message      String?
+  boost_channel_id     BigInt?
+  boost_message        String?
+  boost_image_url      String?
+  level_channel_id     BigInt?
+  level_message        String?
+  level_message_type   Int     @default(1)
+}
+
+model level_rewards {
+  guild_id   BigInt
+  level      Int
+  role_id    BigInt?
+  persistent Boolean?
+  @@id([guild_id, level])
+}
+
+model blacklist_user {
+  user_id   BigInt   @id
+  reason    String?
+  timestamp DateTime @default(now())
+  active    Boolean  @default(true)
+}

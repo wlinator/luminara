@@ -2,8 +2,6 @@ import datetime
 
 import pytz
 
-from db import database
-
 
 class Birthday:
     def __init__(self, user_id, guild_id):
