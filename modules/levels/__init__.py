@@ -5,7 +5,6 @@ from modules.levels import level, leaderboard
 
 
 class Levels(commands.Cog):
-
     def __init__(self, client):
         self.client = client
 
@@ -14,7 +13,7 @@ class Levels(commands.Cog):
         aliases=["rank", "xp"],
         description="Displays your level and server rank.",
         help="Displays your level and server rank.",
-        guild_only=True
+        guild_only=True,
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
@@ -27,7 +26,7 @@ class Levels(commands.Cog):
         aliases=["lb", "xplb"],
         description="See the Lumi leaderboards.",
         help="Shows three different leaderboards: levels, currency and daily streaks.",
-        guild_only=True
+        guild_only=True,
     )
     @commands.guild_only()
     @checks.allowed_in_channel()

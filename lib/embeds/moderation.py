@@ -9,24 +9,20 @@ cross_icon = art["icons"]["cross"]
 
 
 def _clean_mod_embed():
-    embed = discord.Embed(
-        color=discord.Color.blurple()
-    )
+    embed = discord.Embed(color=discord.Color.blurple())
 
     return embed
 
 
 def _clean_mod_error_embed(ctx):
     embed = discord.Embed(
-        color=discord.Color.red(),
-        description=f"**{ctx.author.name}** "
+        color=discord.Color.red(), description=f"**{ctx.author.name}** "
     )
 
     return embed
 
 
 class ModEmbeds:
-
     @staticmethod
     def user_banned(ctx, target_id, reason) -> discord.Embed:
         embed = _clean_mod_embed()
@@ -39,7 +35,9 @@ class ModEmbeds:
         return embed
 
     @staticmethod
-    def member_banned(ctx, member_name, member_id, reason, dm_sent: bool) -> discord.Embed:
+    def member_banned(
+        ctx, member_name, member_id, reason, dm_sent: bool
+    ) -> discord.Embed:
         embed = _clean_mod_embed()
         embed.set_author(name="Member Banned", icon_url=hammer_icon)
 
@@ -59,14 +57,18 @@ class ModEmbeds:
         embed.set_author(name="Banned", icon_url=hammer_icon)
         embed.description = f"You were banned from **{ctx.guild.name}**."
         embed.add_field(name="Moderator", value=ctx.author.name, inline=False)
-        embed.add_field(name="Reason", value=formatter.shorten(reason, 200), inline=False)
+        embed.add_field(
+            name="Reason", value=formatter.shorten(reason, 200), inline=False
+        )
 
         return embed
 
     @staticmethod
     def user_unban(ctx, user_id):
         embed = _clean_mod_embed()
-        embed.description = f"**{ctx.author.name}** you unbanned user with ID `{user_id}`."
+        embed.description = (
+            f"**{ctx.author.name}** you unbanned user with ID `{user_id}`."
+        )
 
         return embed
 

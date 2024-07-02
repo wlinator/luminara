@@ -16,5 +16,7 @@ async def cmd(ctx):
 class InviteButton(View):
     def __init__(self):
         super().__init__(timeout=None)
-        invite_button = discord.ui.Button(label="Invite Lumi", style=discord.ButtonStyle.url, url=url)
+        invite_button = discord.ui.Button(
+            label="Invite Lumi", style=discord.ButtonStyle.url, url=url
+        )
         self.add_item(invite_button)

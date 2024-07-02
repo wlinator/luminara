@@ -15,6 +15,7 @@ class BirthdaysDisabled(commands.CheckFailure):
     """
     Raised when the birthdays module is disabled in ctx.guild.
     """
+
     pass
 
 

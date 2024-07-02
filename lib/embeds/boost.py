@@ -14,7 +14,7 @@ class Boost:
         embed = discord.Embed(
             color=discord.Color.nitro_pink(),
             title="New Booster",
-            description=f"Thanks for boosting, **{member.name}**!!"
+            description=f"Thanks for boosting, **{member.name}**!!",
         )
 
         if template:
@@ -23,7 +23,9 @@ class Boost:
 
         embed.set_author(name=member.name, icon_url=member.display_avatar)
         embed.set_image(url=image_url if image_url else boost_icon)
-        embed.set_footer(text=f"Total server boosts: {member.guild.premium_subscription_count}",
-                         icon_url=exclaim_icon)
+        embed.set_footer(
+            text=f"Total server boosts: {member.guild.premium_subscription_count}",
+            icon_url=exclaim_icon,
+        )
 
         return embed

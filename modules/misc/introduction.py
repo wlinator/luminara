@@ -34,7 +34,9 @@ async def cmd(self, ctx: discord.ApplicationContext):
     """
     question_mapping = resources["guild_specific"]["question_mapping"]
 
-    channel = await self.client.get_or_fetch_channel(guild, int(resources["guild_specific"]["intro_channel_id"]))
+    channel = await self.client.get_or_fetch_channel(
+        guild, int(resources["guild_specific"]["intro_channel_id"])
+    )
     view = interaction.IntroButtons(ctx)
     await ctx.respond(embed=General.start(ctx, channel), view=view)
     await view.wait()
@@ -43,8 +45,11 @@ async def cmd(self, ctx: discord.ApplicationContext):
         return await ctx.send(embed=General.clicked_stop(ctx))
 
     elif view.clickedStart:
+
         def check(message):
-            return message.author == ctx.author and isinstance(message.channel, discord.DMChannel)
+            return message.author == ctx.author and isinstance(
+                message.channel, discord.DMChannel
+            )
 
         answer_mapping = {}
 
@@ -52,7 +57,7 @@ async def cmd(self, ctx: discord.ApplicationContext):
             await ctx.send(embed=Questions.question(ctx, question))
 
             try:
-                answer = await self.client.wait_for('message', check=check, timeout=120)
+                answer = await self.client.wait_for("message", check=check, timeout=120)
                 answer_mapping[key] = answer.content.replace("\n", " ")
 
                 if len(answer_mapping[key]) > 200:
@@ -71,10 +76,14 @@ async def cmd(self, ctx: discord.ApplicationContext):
         await view.wait()
 
         if view.clickedConfirm:
-            await channel.send(embed=preview, content=f"Introduction by {ctx.author.mention}")
+            await channel.send(
+                embed=preview, content=f"Introduction by {ctx.author.mention}"
+            )
             await ctx.send(embed=General.post_confirmation(ctx, channel))
 
-            logger.debug(f"Introduction by {ctx.author.name} was submitted in guild {guild.name} ({guild.id}).")
+            logger.debug(
+                f"Introduction by {ctx.author.name} was submitted in guild {guild.name} ({guild.id})."
+            )
             return
 
         else:

@@ -3,7 +3,7 @@ import subprocess
 
 def get_latest_git_tag():
     try:
-        command = ['git', 'describe', '--abbrev=0', '--tags']
+        command = ["git", "describe", "--abbrev=0", "--tags"]
         output = subprocess.check_output(command).decode().strip()
         return output
 

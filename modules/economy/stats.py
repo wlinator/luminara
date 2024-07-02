@@ -18,10 +18,7 @@ async def cmd(self, ctx, game):
 
         # output = f"{ctx.author.name}'s lumi stats\n\n"
         output = strings["stats_blackjack"].format(
-            stats["amount_of_games"],
-            total_bet,
-            stats["winning_amount"],
-            total_payout
+            stats["amount_of_games"], total_bet, stats["winning_amount"], total_payout
         )
 
     elif game == "Slots":
@@ -31,12 +28,16 @@ async def cmd(self, ctx, game):
         total_bet = Currency.format_human(stats["total_bet"])
         total_payout = Currency.format_human(stats["total_payout"])
 
-        output = strings["stats_slots"].format(stats["amount_of_games"], total_bet, total_payout)
+        output = strings["stats_slots"].format(
+            stats["amount_of_games"], total_bet, total_payout
+        )
         output += "\n\n"
 
         pair_emote = self.client.get_emoji(resources["slots"]["emotes"]["slots_0_id"])
         three_emote = self.client.get_emoji(resources["slots"]["emotes"]["slots_4_id"])
-        diamonds_emote = self.client.get_emoji(resources["slots"]["emotes"]["slots_5_id"])
+        diamonds_emote = self.client.get_emoji(
+            resources["slots"]["emotes"]["slots_5_id"]
+        )
         seven_emote = self.client.get_emoji(resources["slots"]["emotes"]["slots_6_id"])
 
         output += f"{pair_emote} | **{stats['games_won_pair']}** pairs.\n"

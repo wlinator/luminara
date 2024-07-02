@@ -12,7 +12,7 @@ from services.currency_service import Currency
 from services.stats_service import SlotsStats
 
 resources = JsonCache.read_json("resources")
-est = pytz.timezone('US/Eastern')
+est = pytz.timezone("US/Eastern")
 
 
 async def cmd(self, ctx, bet):
@@ -46,16 +46,26 @@ async def cmd(self, ctx, bet):
     emojis = get_emotes(self.client)
 
     # start with default "spinning" embed
-    await ctx.respond(embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, emojis))
+    await ctx.respond(
+        embed=slots_spinning(ctx, 3, Currency.format_human(bet), results, emojis)
+    )
     await asyncio.sleep(1)
 
     for i in range(2, 0, -1):
-        await ctx.edit(embed=slots_spinning(ctx, i, Currency.format_human(bet), results, emojis))
+        await ctx.edit(
+            embed=slots_spinning(ctx, i, Currency.format_human(bet), results, emojis)
+        )
         await asyncio.sleep(1)
 
     # output final result
-    finished_output = slots_finished(ctx, type, Currency.format_human(bet),
-                                     Currency.format_human(payout), results, emojis)
+    finished_output = slots_finished(
+        ctx,
+        type,
+        Currency.format_human(bet),
+        Currency.format_human(payout),
+        results,
+        emojis,
+    )
 
     await ctx.edit(embed=finished_output)
 
@@ -71,7 +81,7 @@ async def cmd(self, ctx, bet):
         bet=bet,
         payout=payout,
         spin_type=type,
-        icons=results
+        icons=results,
     )
 
     ctx_currency.push()
@@ -104,7 +114,6 @@ def calculate_slots_results(bet, results):
 
     # 3 of a kind
     elif len(counts) == 1:
-
         if results[0] == 5:
             type = "three_diamonds"
             multiplier = rewards[type]
@@ -139,21 +148,23 @@ def slots_spinning(ctx, spinning_icons_amount, bet, results, emojis):
         one = first_slots_emote
         two = second_slots_emote
 
-    description = f"🎰{emojis['S_Wide']}{emojis['L_Wide']}{emojis['O_Wide']}{emojis['T_Wide']}{emojis['S_Wide']}🎰\n" \
-                  f"{emojis['CBorderTLeft']}{emojis['HBorderT']}{emojis['HBorderT']}{emojis['HBorderT']}" \
-                  f"{emojis['HBorderT']}{emojis['HBorderT']}{emojis['CBorderTRight']}\n" \
-                  f"{emojis['VBorder']}{one}{emojis['VBorder']}{two}{emojis['VBorder']}" \
-                  f"{three}{emojis['VBorder']}\n" \
-                  f"{emojis['CBorderBLeft']}{emojis['HBorderB']}{emojis['HBorderB']}{emojis['HBorderB']}" \
-                  f"{emojis['HBorderB']}{emojis['HBorderB']}{emojis['CBorderBRight']}\n" \
-                  f"{emojis['Blank']}{emojis['Blank']}❓❓❓{emojis['Blank']}{emojis['Blank']}{emojis['Blank']}"
-
-    embed = discord.Embed(
-        description=description
+    description = (
+        f"🎰{emojis['S_Wide']}{emojis['L_Wide']}{emojis['O_Wide']}{emojis['T_Wide']}{emojis['S_Wide']}🎰\n"
+        f"{emojis['CBorderTLeft']}{emojis['HBorderT']}{emojis['HBorderT']}{emojis['HBorderT']}"
+        f"{emojis['HBorderT']}{emojis['HBorderT']}{emojis['CBorderTRight']}\n"
+        f"{emojis['VBorder']}{one}{emojis['VBorder']}{two}{emojis['VBorder']}"
+        f"{three}{emojis['VBorder']}\n"
+        f"{emojis['CBorderBLeft']}{emojis['HBorderB']}{emojis['HBorderB']}{emojis['HBorderB']}"
+        f"{emojis['HBorderB']}{emojis['HBorderB']}{emojis['CBorderBRight']}\n"
+        f"{emojis['Blank']}{emojis['Blank']}❓❓❓{emojis['Blank']}{emojis['Blank']}{emojis['Blank']}"
     )
+
+    embed = discord.Embed(description=description)
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Bet ${bet} • jackpot = x15 • {current_time}",
-                     icon_url="https://i.imgur.com/wFsgSnr.png")
+    embed.set_footer(
+        text=f"Bet ${bet} • jackpot = x15 • {current_time}",
+        icon_url="https://i.imgur.com/wFsgSnr.png",
+    )
 
     return embed
 
@@ -190,27 +201,30 @@ def slots_finished(ctx, payout_type, bet, payout, results, emojis):
         is_lost = False
         color = discord.Color.green()
 
-    description = f"🎰{emojis['S_Wide']}{emojis['L_Wide']}{emojis['O_Wide']}{emojis['T_Wide']}{emojis['S_Wide']}🎰\n" \
-                  f"{emojis['CBorderTLeft']}{emojis['HBorderT']}{emojis['HBorderT']}{emojis['HBorderT']}" \
-                  f"{emojis['HBorderT']}{emojis['HBorderT']}{emojis['CBorderTRight']}\n" \
-                  f"{emojis['VBorder']}{first_slots_emote}{emojis['VBorder']}{second_slots_emote}" \
-                  f"{emojis['VBorder']}{third_slots_emote}{emojis['VBorder']}\n" \
-                  f"{emojis['CBorderBLeft']}{emojis['HBorderB']}{emojis['HBorderB']}{emojis['HBorderB']}" \
-                  f"{emojis['HBorderB']}{emojis['HBorderB']}{emojis['CBorderBRight']}"
+    description = (
+        f"🎰{emojis['S_Wide']}{emojis['L_Wide']}{emojis['O_Wide']}{emojis['T_Wide']}{emojis['S_Wide']}🎰\n"
+        f"{emojis['CBorderTLeft']}{emojis['HBorderT']}{emojis['HBorderT']}{emojis['HBorderT']}"
+        f"{emojis['HBorderT']}{emojis['HBorderT']}{emojis['CBorderTRight']}\n"
+        f"{emojis['VBorder']}{first_slots_emote}{emojis['VBorder']}{second_slots_emote}"
+        f"{emojis['VBorder']}{third_slots_emote}{emojis['VBorder']}\n"
+        f"{emojis['CBorderBLeft']}{emojis['HBorderB']}{emojis['HBorderB']}{emojis['HBorderB']}"
+        f"{emojis['HBorderB']}{emojis['HBorderB']}{emojis['CBorderBRight']}"
+    )
 
     if is_lost:
-        description += f"\n{emojis['Blank']}{emojis['LCentered']}{emojis['OCentered']}{emojis['SCentered']}" \
-                       f"{emojis['ECentered']}{emojis['lost']}{emojis['Blank']}"
+        description += (
+            f"\n{emojis['Blank']}{emojis['LCentered']}{emojis['OCentered']}{emojis['SCentered']}"
+            f"{emojis['ECentered']}{emojis['lost']}{emojis['Blank']}"
+        )
     else:
         description += f"\n{emojis['Blank']}🎉{emojis['WSmall']}{emojis['ISmall']}{emojis['NSmall']}🎉{emojis['Blank']}"
 
-    embed = discord.Embed(
-        color=color,
-        description=description
-    )
+    embed = discord.Embed(color=color, description=description)
     embed.add_field(name=field_name, value=field_value, inline=False)
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Game finished • {current_time}",
-                     icon_url="https://i.imgur.com/wFsgSnr.png")
+    embed.set_footer(
+        text=f"Game finished • {current_time}",
+        icon_url="https://i.imgur.com/wFsgSnr.png",
+    )
 
     return embed

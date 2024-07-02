@@ -10,8 +10,7 @@ async def cmd(ctx):
     balance = Currency.format(ctx_currency.balance)
 
     embed = discord.Embed(
-        color=discord.Color.embed_background(),
-        description=f"**Cash**: ${balance}"
+        color=discord.Color.embed_background(), description=f"**Cash**: ${balance}"
     )
     embed.set_author(name=f"{ctx.author.name}'s wallet", icon_url=ctx.author.avatar.url)
 

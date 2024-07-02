@@ -15,7 +15,9 @@ async def print_comic(ctx, latest=False, number: int = None):
         else:
             comic = _xkcd.get_random_comic(raw_comic_image=True)
 
-        description = f"[Explainxkcd]({comic.explanation_url}) | [Webpage]({comic.comic_url})"
+        description = (
+            f"[Explainxkcd]({comic.explanation_url}) | [Webpage]({comic.comic_url})"
+        )
         embed = MiscInfo.xkcd(comic.id, comic.title, description, comic.image_url)
         return await ctx.respond(embed=embed)
 

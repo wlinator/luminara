@@ -4,7 +4,9 @@ from discord.ext.commands import BadArgument
 from lib.exceptions import LumiExceptions
 
 
-def actionable(target: discord.Member, invoker: discord.Member, bot_user: discord.Member) -> None:
+def actionable(
+    target: discord.Member, invoker: discord.Member, bot_user: discord.Member
+) -> None:
     """
     Checks if the invoker and client have a higher role than the target user.
 

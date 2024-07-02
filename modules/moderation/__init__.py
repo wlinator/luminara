@@ -5,7 +5,6 @@ from modules.moderation import ban
 
 
 class Moderation(commands.Cog):
-
     def __init__(self, client):
         self.client = client
 
@@ -14,7 +13,7 @@ class Moderation(commands.Cog):
         aliases=["b"],
         description="Ban a user from the server.",
         help="Bans a user from the server, you can use ID or mention them.",
-        guild_only=True
+        guild_only=True,
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
@@ -27,7 +26,7 @@ class Moderation(commands.Cog):
         aliases=["ub", "pardon"],
         description="Unbans a user from the server.",
         help="Unbans a user from the server, you can use ID or provide their username.",
-        guild_only=True
+        guild_only=True,
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)

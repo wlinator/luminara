@@ -4,7 +4,7 @@ import pytz
 
 
 def seconds_until(hours, minutes):
-    eastern_timezone = pytz.timezone('US/Eastern')
+    eastern_timezone = pytz.timezone("US/Eastern")
 
     now = datetime.datetime.now(eastern_timezone)
 

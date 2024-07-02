@@ -30,11 +30,11 @@ class Comic:
     """
 
     def __init__(
-            self,
-            xkcd_dict: dict[str, Any],
-            raw_image: bytes | None = None,
-            comic_url: str | None = None,
-            explanation_url: str | None = None,
+        self,
+        xkcd_dict: dict[str, Any],
+        raw_image: bytes | None = None,
+        comic_url: str | None = None,
+        explanation_url: str | None = None,
     ) -> None:
         self.id: int | None = xkcd_dict.get("num")
         self.date: datetime.date | None = self._determine_date(xkcd_dict)
@@ -102,9 +102,9 @@ class Comic:
 
 class Client:
     def __init__(
-            self,
-            api_url: str = "https://xkcd.com",
-            explanation_wiki_url: str = "https://www.explainxkcd.com/wiki/index.php/",
+        self,
+        api_url: str = "https://xkcd.com",
+        explanation_wiki_url: str = "https://www.explainxkcd.com/wiki/index.php/",
     ) -> None:
         self._api_url = api_url
         self._explanation_wiki_url = explanation_wiki_url
@@ -154,7 +154,9 @@ class Client:
         comic_url: str = f"{self._api_url}/{response_dict['num']}/"
         explanation_url: str = f"{self._explanation_wiki_url}{response_dict['num']}"
 
-        return Comic(response_dict, comic_url=comic_url, explanation_url=explanation_url)
+        return Comic(
+            response_dict, comic_url=comic_url, explanation_url=explanation_url
+        )
 
     def _fetch_comic(self, comic_id: int, raw_comic_image: bool) -> Comic:
         """
@@ -252,14 +254,18 @@ class Client:
         HttpError
             If the request fails.
         """
-        comic_url = self.latest_comic_url() if comic_id <= 0 else self.comic_id_url(comic_id)
+        comic_url = (
+            self.latest_comic_url() if comic_id <= 0 else self.comic_id_url(comic_id)
+        )
 
         try:
             response = httpx.get(comic_url)
             response.raise_for_status()
 
         except httpx.HTTPStatusError as exc:
-            raise HttpError(exc.response.status_code, exc.response.reason_phrase) from exc
+            raise HttpError(
+                exc.response.status_code, exc.response.reason_phrase
+            ) from exc
 
         return response.text
 
@@ -291,7 +297,9 @@ class Client:
             response.raise_for_status()
 
         except httpx.HTTPStatusError as exc:
-            raise HttpError(exc.response.status_code, exc.response.reason_phrase) from exc
+            raise HttpError(
+                exc.response.status_code, exc.response.reason_phrase
+            ) from exc
 
         return response.content
 

@@ -21,9 +21,13 @@ class EventHandler(Cog):
         embed = Greet.message(member, config.welcome_message)
 
         try:
-            await member.guild.get_channel(config.welcome_channel_id).send(embed=embed, content=member.mention)
+            await member.guild.get_channel(config.welcome_channel_id).send(
+                embed=embed, content=member.mention
+            )
         except Exception as e:
-            logger.warning(f"Greet message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
+            logger.warning(
+                f"Greet message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}"
+            )
 
     @Cog.listener()
     async def on_member_update(self, before, after):
@@ -37,16 +41,22 @@ class EventHandler(Cog):
         if not config.boost_channel_id:
             return
 
-        embed = lib.embeds.boost.Boost.message(member, config.boost_message, config.boost_image_url)
+        embed = lib.embeds.boost.Boost.message(
+            member, config.boost_message, config.boost_image_url
+        )
 
         try:
-            await member.guild.get_channel(config.boost_channel_id).send(embed=embed, content=member.mention)
+            await member.guild.get_channel(config.boost_channel_id).send(
+                embed=embed, content=member.mention
+            )
         except Exception as e:
-            logger.warning(f"Boost message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}")
+            logger.warning(
+                f"Boost message not sent in '{member.guild.name}'. Channel ID may be invalid. {e}"
+            )
 
     @Cog.listener()
     async def on_command_completion(self, ctx) -> None:
-        log_msg = '%s executed .%s' % (ctx.author.name, ctx.command.qualified_name)
+        log_msg = "%s executed .%s" % (ctx.author.name, ctx.command.qualified_name)
 
         if ctx.guild is not None:
             logger.debug(f"{log_msg} | guild: {ctx.guild.name} ")
@@ -55,7 +65,7 @@ class EventHandler(Cog):
 
     @Cog.listener()
     async def on_application_command_completion(self, ctx) -> None:
-        log_msg = '%s executed /%s' % (ctx.author.name, ctx.command.qualified_name)
+        log_msg = "%s executed /%s" % (ctx.author.name, ctx.command.qualified_name)
 
         if ctx.guild is not None:
             logger.debug(f"{log_msg} | guild: {ctx.guild.name} ")

@@ -22,6 +22,8 @@ async def cmd(ctx):
 
     ctx_daily.refresh()
 
-    embed = EconInfo.daily_reward_claimed(ctx, Currency.format(ctx_daily.amount), ctx_daily.streak)
+    embed = EconInfo.daily_reward_claimed(
+        ctx, Currency.format(ctx_daily.amount), ctx_daily.streak
+    )
 
     await ctx.respond(embed=embed)

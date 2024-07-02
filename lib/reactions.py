@@ -23,12 +23,14 @@ class ReactionHandler:
             "My reply is no.",
             "My sources say no.",
             "Outlook not so good.",
-            "Very doubtful."
+            "Very doubtful.",
         ]
 
     async def handle_message(self, message):
         content = message.content.lower()
 
-        if (content.startswith("Lumi ") or content.startswith("Lumi, ")) and content.endswith("?"):
+        if (
+            content.startswith("Lumi ") or content.startswith("Lumi, ")
+        ) and content.endswith("?"):
             response = random.choice(self.eightball)
             await message.reply(content=response)

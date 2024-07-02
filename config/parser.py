@@ -9,7 +9,7 @@ class JsonCache:
     def read_json(path):
         """Read and cache the JSON data if not already cached."""
         if path not in JsonCache._cache:
-            with open(f"config/JSON/{path}.json", 'r') as file:
+            with open(f"config/JSON/{path}.json", "r") as file:
                 JsonCache._cache[path] = json.load(file)
                 logger.debug(f"{path}.json was loaded and cached.")
 

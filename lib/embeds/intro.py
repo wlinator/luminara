@@ -10,8 +10,7 @@ exclaim_icon = resources["icons"]["exclaim"]
 
 def clean_intro_embed(ctx):
     embed = discord.Embed(
-        color=discord.Color.blurple(),
-        description=f"**{ctx.author.name}** "
+        color=discord.Color.blurple(), description=f"**{ctx.author.name}** "
     )
 
     return embed
@@ -31,8 +30,10 @@ class General:
     @staticmethod
     def start(ctx, channel):
         embed = clean_intro_embed(ctx)
-        embed.description += (f"this command will serve as a questionnaire for your entry to {channel.mention}. "
-                              f"Please keep your answers \"PG-13\" and don't abuse this command.")
+        embed.description += (
+            f"this command will serve as a questionnaire for your entry to {channel.mention}. "
+            f'Please keep your answers "PG-13" and don\'t abuse this command.'
+        )
         embed.set_footer(text="Click the button below to start", icon_url=exclaim_icon)
 
         return embed
