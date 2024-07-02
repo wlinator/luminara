@@ -153,6 +153,7 @@ venv.bak/
 
 # Local dev database
 prisma/database.db
+*.db
 
 # private key for github
 github-private-key.pem
