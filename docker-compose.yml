@@ -1,6 +1,7 @@
 services:
   core:
     build: .
+    container_name: luminara
     restart: always
     environment:
       LUMI_TOKEN: ${TOKEN}
@@ -15,14 +16,12 @@ services:
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
-    volumes:
-      - debug_log:/usr/src/app/logs
     depends_on:
       db:
         condition: service_healthy
-
   db:
     image: mariadb
+    container_name: luminara_db
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
@@ -33,17 +32,26 @@ services:
       - ./db/migrations:/docker-entrypoint-initdb.d/
       - database:/var/lib/mysql/
     healthcheck:
-      test: [ "CMD", "mariadb", "-h", "localhost", "-u", "${MARIADB_USER}", "-p${MARIADB_PASSWORD}", "-e", "SELECT 1" ]
+      test:
+        [
+          "CMD",
+          "mariadb",
+          "-h",
+          "localhost",
+          "-u",
+          "${MARIADB_USER}",
+          "-p${MARIADB_PASSWORD}",
+          "-e",
+          "SELECT 1",
+        ]
       interval: 5s
       timeout: 10s
       retries: 5
-
   adminer:
     image: adminer
+    container_name: luminara_adminer
     restart: always
     ports:
       - 8080:8080
-
 volumes:
   database:
-  debug_log:
