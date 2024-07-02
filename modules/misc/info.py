@@ -1,6 +1,5 @@
 import os
 import platform
-from loguru import logger
 
 import discord
 import psutil
@@ -21,12 +20,12 @@ async def cmd(command, ctx, unix_timestamp):
     total_rows = BlackJackStats.get_total_rows_count()
     total_rows = Currency.format(total_rows)
 
-    embed = discord.Embed(
-        color=discord.Color.orange()
+    embed = discord.Embed(color=discord.Color.orange())
+    embed.set_author(
+        name=f"{metadata.__title__} v{metadata.__version__}",
+        url=_data["repository_url"],
+        icon_url=_art["logo"]["transparent"],
     )
-    embed.set_author(name=f"{metadata.__title__} v{metadata.__version__}",
-                     url=_data["repository_url"],
-                     icon_url=_art["logo"]["transparent"])
     embed.set_thumbnail(url=_art["logo"]["opaque"])
 
     # embed.add_field(name="Author", value=f"{metadata.__author__}", inline=False)

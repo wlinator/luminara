@@ -16,6 +16,7 @@ model xp {
   user_xp    Int
   user_level Int
   cooldown   Float?
+
   @@id([user_id, guild_id])
 }
 
@@ -25,7 +26,7 @@ model currency {
 }
 
 model blackjack {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   user_id     BigInt?
   is_won      Boolean?
   bet         BigInt?
@@ -35,7 +36,7 @@ model blackjack {
 }
 
 model slots {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   user_id   BigInt?
   is_won    Boolean?
   bet       BigInt?
@@ -53,22 +54,23 @@ model dailies {
 }
 
 model item {
-  id          Int     @id @default(autoincrement())
-  name        String?
+  id           Int         @id @default(autoincrement())
+  name         String?
   display_name String?
-  description String?
-  image_url   String?
-  emote_id    BigInt?
-  quote       String?
-  type        String?
-  inventory   inventory[]
+  description  String?
+  image_url    String?
+  emote_id     BigInt?
+  quote        String?
+  type         String?
+  inventory    inventory[]
 }
 
 model inventory {
   user_id  BigInt
   item_id  Int
   quantity Int
-  item     item    @relation(fields: [item_id], references: [id])
+  item     item   @relation(fields: [item_id], references: [id])
+
   @@id([user_id, item_id])
 }
 
@@ -76,23 +78,24 @@ model birthdays {
   user_id  BigInt
   guild_id BigInt
   birthday DateTime?
+
   @@id([user_id, guild_id])
 }
 
 model guild_config {
-  guild_id             BigInt  @id
-  prefix               String?
-  birthday_channel_id  BigInt?
-  command_channel_id   BigInt?
-  intro_channel_id     BigInt?
-  welcome_channel_id   BigInt?
-  welcome_message      String?
-  boost_channel_id     BigInt?
-  boost_message        String?
-  boost_image_url      String?
-  level_channel_id     BigInt?
-  level_message        String?
-  level_message_type   Int     @default(1)
+  guild_id            BigInt  @id
+  prefix              String?
+  birthday_channel_id BigInt?
+  command_channel_id  BigInt?
+  intro_channel_id    BigInt?
+  welcome_channel_id  BigInt?
+  welcome_message     String?
+  boost_channel_id    BigInt?
+  boost_message       String?
+  boost_image_url     String?
+  level_channel_id    BigInt?
+  level_message       String?
+  level_message_type  Int     @default(1)
 }
 
 model level_rewards {
@@ -100,6 +103,7 @@ model level_rewards {
   level      Int
   role_id    BigInt?
   persistent Boolean?
+
   @@id([guild_id, level])
 }
 

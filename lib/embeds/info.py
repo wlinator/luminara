@@ -11,12 +11,9 @@ streak_icon = resources["icons"]["streak"]
 
 
 def clean_info_embed(ctx):
-    embed = discord.Embed(
-        color=discord.Color.blurple(),
-        description=f"**{ctx.author.name}** "
+    return discord.Embed(
+        color=discord.Color.blurple(), description=f"**{ctx.author.name}** "
     )
-
-    return embed
 
 
 class EconInfo:
@@ -26,8 +23,9 @@ class EconInfo:
         embed.description += f"you claimed your reward of **${formatted_amount}**!"
 
         if streak > 1:
-            embed.set_footer(text=f"You're on a streak of {streak} days",
-                             icon_url=streak_icon)
+            embed.set_footer(
+                text=f"You're on a streak of {streak} days", icon_url=streak_icon
+            )
 
         return embed
 
@@ -37,7 +35,9 @@ class MiscInfo:
     def ping(ctx, client):
         embed = clean_info_embed(ctx)
         embed.description += "I'm online!"
-        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon)
+        embed.set_footer(
+            text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon
+        )
 
         return embed
 
@@ -45,7 +45,9 @@ class MiscInfo:
     def uptime(ctx, client, unix_time):
         embed = clean_info_embed(ctx)
         embed.description += f"I've been online since <t:{unix_time}:R>"
-        embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon)
+        embed.set_footer(
+            text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon
+        )
 
         return embed
 
@@ -64,11 +66,13 @@ class MiscInfo:
         return embed
 
     @staticmethod
-    def get_prefix(ctx, prefix):
+    async def get_prefix(ctx, prefix):
         embed = clean_info_embed(ctx)
         embed.description += f"my prefix is `{prefix}`"
-        embed.set_footer(text=f"You can change this with '{formatter.get_prefix(ctx)}setprefix'",
-                         icon_url=question_icon)
+        embed.set_footer(
+            text=f"You can change this with '{await formatter.get_prefix(ctx)}setprefix'",
+            icon_url=question_icon,
+        )
 
         return embed
 

@@ -2,7 +2,7 @@ import textwrap
 
 import discord
 
-from services.config_service import GuildConfig
+from database.controllers.guild_config import GuildConfigController
 
 
 def template(text, username, level=None):
@@ -19,7 +19,7 @@ def template(text, username, level=None):
     """
     replacements = {
         "{user}": username,
-        "{level}": str(level) if level is not None else ""
+        "{level}": str(level) if level is not None else "",
     }
 
     for placeholder, value in replacements.items():
@@ -32,14 +32,12 @@ def shorten(text, width) -> str:
     return textwrap.shorten(text, width=width, placeholder="...")
 
 
-def get_prefix(ctx):
+async def get_prefix(ctx):
     """
     Attempt to get the prefix.
     """
-    try:
-        return GuildConfig.get_prefix(ctx.guild.id)
-    except AttributeError:
-        return "."
+    guild_config = GuildConfigController(ctx.guild.id)
+    return await guild_config.get_prefix()
 
 
 def get_invoked_name(ctx):

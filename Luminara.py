@@ -26,9 +26,8 @@ logger.add(sys.stderr, format=log_format, colorize=True, level="DEBUG")
 
 async def get_prefix(bot, message):
     try:
-        # return services.config_service.GuildConfig.get_prefix(message.guild.id)
-        config = guild_config.GuildConfigController()
-        return await config.get_prefix(message.guild.id)
+        config = guild_config.GuildConfigController(message.guild.id)
+        return await config.get_prefix()
     except AttributeError:
         return "."
 

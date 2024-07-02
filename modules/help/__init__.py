@@ -4,7 +4,6 @@ import lib.formatter
 
 
 class Help(commands.Cog):
-
     def __init__(self, client):
         self.client = client
 
@@ -13,8 +12,11 @@ class Help(commands.Cog):
         description="Get Lumi help.",
     )
     async def help_command(self, ctx):
-        prefix = lib.formatter.get_prefix(ctx)
-        return await ctx.respond(content=f'Please use Lumi\'s prefix to get help. Type `{prefix}help`', ephemeral=True)
+        prefix = await lib.formatter.get_prefix(ctx)
+        return await ctx.respond(
+            content=f"Please use Lumi's prefix to get help. Type `{prefix}help`",
+            ephemeral=True,
+        )
 
 
 def setup(client):

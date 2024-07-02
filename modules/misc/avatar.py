@@ -2,7 +2,6 @@ from io import BytesIO
 
 import discord
 import httpx
-from loguru import logger
 
 client = httpx.AsyncClient()
 

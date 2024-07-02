@@ -11,60 +11,70 @@ async def cmd(self, ctx):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description=f"Guide: https://wiki.wlinator.org/serverconfig"
+        description="Guide: https://wiki.wlinator.org/serverconfig",
     )
     icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
     embed.set_author(name=f"{ctx.guild.name} config", icon_url=icon)
 
     # birthdays
     if guild_config.birthday_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.birthday_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild, guild_config.birthday_channel_id
+        )
 
         if channel:
             birthday_config = f"✅ | in {channel.mention}."
         else:
-            birthday_config = f"❌ | enable the module with `/config birthdays channel`"
+            birthday_config = "❌ | enable the module with `/config birthdays channel`"
 
     else:
-        birthday_config = f"❌ | enable the module with `/config birthdays channel`"
+        birthday_config = "❌ | enable the module with `/config birthdays channel`"
 
     embed.add_field(name="BIRTHDAYS", value=birthday_config, inline=False)
 
     # commands
     if guild_config.command_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.command_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild, guild_config.command_channel_id
+        )
 
         if channel:
             commands_config = f"✅ | commands only allowed in {channel.mention}."
         else:
-            commands_config = f"✅ | commands allowed anywhere."
+            commands_config = "✅ | commands allowed anywhere."
     else:
-        commands_config = f"✅ | commands allowed anywhere."
+        commands_config = "✅ | commands allowed anywhere."
 
     embed.add_field(name="COMMANDS", value=commands_config, inline=False)
 
     # greetings
     if guild_config.welcome_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.welcome_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild, guild_config.welcome_channel_id
+        )
 
         if channel:
             greeting_config = f"✅ | in {channel.mention}"
 
             if guild_config.welcome_message:
-                greeting_config += f" with template:\n```{guild_config.welcome_message}```"
+                greeting_config += (
+                    f" with template:\n```{guild_config.welcome_message}```"
+                )
             else:
-                greeting_config += f" without custom template."
+                greeting_config += " without custom template."
 
         else:
-            greeting_config = f"❌ | enable the module with `/config greetings channel`"
+            greeting_config = "❌ | enable the module with `/config greetings channel`"
     else:
-        greeting_config = f"❌ | enable the module with `/config greetings channel`"
+        greeting_config = "❌ | enable the module with `/config greetings channel`"
 
     embed.add_field(name="GREETINGS", value=greeting_config, inline=False)
 
     # boosts
     if guild_config.boost_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.boost_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild, guild_config.boost_channel_id
+        )
 
         if channel:
             boost_config = f"✅ | in {channel.mention}"
@@ -73,41 +83,45 @@ async def cmd(self, ctx):
                 if guild_config.boost_image_url:
                     boost_config += f" with custom image and template:\n```{guild_config.boost_message}```"
                 else:
-                    boost_config += f" with custom template:\n```{guild_config.boost_message}```"
+                    boost_config += (
+                        f" with custom template:\n```{guild_config.boost_message}```"
+                    )
             else:
                 if guild_config.boost_image_url:
                     boost_config += " with custom image, but no template."
                 else:
-                    boost_config += f" without custom image or template."
+                    boost_config += " without custom image or template."
 
         else:
-            boost_config = f"❌ | enable the module with `/config boosts channel`"
+            boost_config = "❌ | enable the module with `/config boosts channel`"
     else:
-        boost_config = f"❌ | enable the module with `/config boosts channel`"
+        boost_config = "❌ | enable the module with `/config boosts channel`"
 
     embed.add_field(name="BOOSTS", value=boost_config, inline=False)
 
     # levels
     if guild_config.level_message_type == 0:
-        level_config = f"❌ | enable levels with `/config levels enable`"
+        level_config = "❌ | enable levels with `/config levels enable`"
 
     elif guild_config.level_message_type == 1:
-        level_config = f"✅ | whimsical/sarcastic announcements"
+        level_config = "✅ | whimsical/sarcastic announcements"
 
     else:
-        level_config = f"✅ | generic announcements"
+        level_config = "✅ | generic announcements"
 
     if guild_config.level_channel_id and guild_config.level_message_type != 0:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.level_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild, guild_config.level_channel_id
+        )
 
         if channel:
             level_config += f" in {channel.mention}"
         else:
-            level_config += f" in the user's current channel"
+            level_config += " in the user's current channel"
 
     else:
         if guild_config.level_message_type != 0:
-            level_config += f" in the user's current channel"
+            level_config += " in the user's current channel"
 
     if guild_config.level_message and guild_config.level_message_type == 2:
         level_config += f" with template:\n```{guild_config.level_message}```"
