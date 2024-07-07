@@ -1,9 +1,12 @@
 import asyncio
+import contextlib
 import random
 import time
+from typing import Optional
 
 import discord
-from discord.ext.commands import Cog
+from discord.ext import commands
+from Client import LumiBot
 
 from config.parser import JsonCache
 from lib import formatter
@@ -15,19 +18,32 @@ _messages = JsonCache.read_json("levels")
 
 
 class XPHandler:
-    def __init__(self, message):
-        self.message = message
-        self.author = message.author
-        self.guild = message.guild
-        self.channel = message.channel
+    def __init__(self, client: LumiBot, message: discord.Message) -> None:
+        """
+        Initializes the XPHandler with the given message.
 
-        self.xp_conf = XpService(self.author.id, self.guild.id)
-        self.guild_conf = None
+        Args:
+            message (discord.Message): The message object.
+        """
+        self.client = client
+        self.message: discord.Message = message
+        self.author: discord.Member | discord.User = message.author
+        self.guild: discord.Guild | None = message.guild
+        self.xp_conf: XpService = XpService(
+            self.author.id, self.guild.id if self.guild else 0
+        )
+        self.guild_conf: Optional[GuildConfig] = None
 
     def process(self) -> bool:
-        _xp = self.xp_conf
-        _now = time.time()
-        leveled_up = False
+        """
+        Processes the XP gain and level up for the user.
+
+        Returns:
+            bool: True if the user leveled up, False otherwise.
+        """
+        _xp: XpService = self.xp_conf
+        _now: float = time.time()
+        leveled_up: bool = False
 
         if _xp.cooldown_time and _now < _xp.cooldown_time:
             return False
@@ -46,13 +62,24 @@ class XPHandler:
         return leveled_up
 
     async def notify(self) -> None:
-        _xp = self.xp_conf
-        _gd = GuildConfig(self.guild.id)
+        """
+        Notifies the user and the guild about the level up.
+        """
+        if self.guild is None:
+            return
 
-        level_message = await self.get_level_message(_gd, _xp, self.author)
+        _xp: XpService = self.xp_conf
+        _gd: GuildConfig = GuildConfig(self.guild.id)
+
+        level_message: Optional[str] = None  # Initialize level_message
+
+        if isinstance(self.author, discord.Member):
+            level_message = await self.get_level_message(_gd, _xp, self.author)
 
         if level_message:
-            level_channel = await self.get_level_channel(self.message, _gd)
+            level_channel: Optional[discord.TextChannel] = await self.get_level_channel(
+                self.message, _gd
+            )
 
             if level_channel:
                 await level_channel.send(content=level_message)
@@ -60,42 +87,70 @@ class XPHandler:
                 await self.message.reply(content=level_message)
 
     async def reward(self) -> None:
-        _xp = self.xp_conf
-        _rew = XpRewardService(self.guild.id)
+        """
+        Rewards the user with a role for leveling up.
+        """
+        if self.guild is None:
+            return
 
-        role_id = _rew.role(_xp.level)
-        reason = 'Automated Level Reward'
+        _xp: XpService = self.xp_conf
+        _rew: XpRewardService = XpRewardService(self.guild.id)
 
-        if role_id:
+        if role_id := _rew.get_role(_xp.level):
+            reason: str = "Automated Level Reward"
 
-            role = self.guild.get_role(role_id)
-            if role:
-                try:
-                    await self.author.add_roles(role, reason=reason)
-                except (discord.Forbidden, discord.NotFound, discord.HTTPException):
-                    pass
+            if role := self.guild.get_role(role_id):
+                with contextlib.suppress(
+                    discord.Forbidden, discord.NotFound, discord.HTTPException
+                ):
+                    if isinstance(self.author, discord.Member):
+                        await self.author.add_roles(role, reason=reason)
+            previous, replace = _rew.should_replace_previous_reward(_xp.level)
 
-            previous = _rew.replace_previous_reward(_xp.level)
-            if previous[1]:
-                role = self.guild.get_role(previous[0])
-                if role:
-                    try:
+            if replace and isinstance(self.author, discord.Member):
+                if role := self.guild.get_role(previous or role_id):
+                    with contextlib.suppress(
+                        discord.Forbidden, discord.NotFound, discord.HTTPException
+                    ):
                         await self.author.remove_roles(role, reason=reason)
-                    except (discord.Forbidden, discord.NotFound, discord.HTTPException):
-                        pass
 
-    @staticmethod
-    async def get_level_channel(message, guild_config):
-        if guild_config.level_channel_id:
-            try:
-                return message.guild.get_channel(guild_config.level_channel_id)
-            except discord.HTTPException:
-                pass  # channel not found
+    async def get_level_channel(
+        self, message: discord.Message, guild_config: GuildConfig
+    ) -> Optional[discord.TextChannel]:
+        """
+        Retrieves the level up notification channel for the guild.
 
+        Args:
+            message (discord.Message): The message object.
+            guild_config (GuildConfig): The guild configuration.
+
+        Returns:
+            Optional[discord.abc.GuildChannel]: The level up notification channel, or None if not found.
+        """
+        if guild_config.level_channel_id and message.guild:
+            context = await self.client.get_context(message)
+
+            with contextlib.suppress(discord.HTTPException):
+                return await self.client.convert_to_text_channel(
+                    context, guild_config.level_channel_id
+                )
         return None
 
     @staticmethod
-    async def get_level_message(guild_config, level_config, author):
+    async def get_level_message(
+        guild_config: GuildConfig, level_config: XpService, author: discord.Member
+    ) -> Optional[str]:
+        """
+        Retrieves the level up message for the user.
+
+        Args:
+            guild_config (GuildConfig): The guild configuration.
+            level_config (XpService): The XP service configuration.
+            author (discord.Member): The user who leveled up.
+
+        Returns:
+            Optional[str]: The level up message, or None if not found.
+        """
         match guild_config.level_message_type:
             case 0:
                 level_message = None
@@ -103,30 +158,47 @@ class XPHandler:
                 level_message = XPHandler.messages_whimsical(level_config.level, author)
             case 2:
                 if not guild_config.level_message:
-                    level_message = XPHandler.level_message_generic(level_config.level, author)
+                    level_message = XPHandler.level_message_generic(
+                        level_config.level, author
+                    )
                 else:
-                    level_message = formatter.template(guild_config.level_message, author.name, level_config.level)
+                    level_message = formatter.template(
+                        guild_config.level_message, author.name, level_config.level
+                    )
             case _:
-                raise Exception
+                raise ValueError("Invalid level message type")
 
         return level_message
 
     @staticmethod
-    def level_message_generic(level, author):
+    def level_message_generic(level: int, author: discord.Member) -> str:
+        """
+        Generates a generic level up message.
+
+        Args:
+            level (int): The new level of the user.
+            author (discord.Member): The user who leveled up.
+
+        Returns:
+            str: The generic level up message.
+        """
         return _strings["level_up"].format(author.name, level)
 
     @staticmethod
-    def messages_whimsical(level, author):
+    def messages_whimsical(level: int, author: discord.Member) -> str:
         """
-        v2 of the level messages, randomized output from levels.en-US.JSON.
-        :param level:
-        :param author:
-        :return:
-        """
+        Generates a whimsical level up message.
 
-        level_range = None
+        Args:
+            level (int): The new level of the user.
+            author (discord.Member): The user who leveled up.
+
+        Returns:
+            str: The whimsical level up message.
+        """
+        level_range: Optional[str] = None
         for key in _messages.keys():
-            start, end = map(int, key.split('-'))
+            start, end = map(int, key.split("-"))
             if start <= level <= end:
                 level_range = key
                 break
@@ -141,28 +213,34 @@ class XPHandler:
         return start_string + random_message.format(level)
 
 
-class XpListener(Cog):
-    def __init__(self, client):
-        self.client = client
+class XpListener(commands.Cog):
+    def __init__(self, client: LumiBot) -> None:
+        """
+        Initializes the XpListener with the given client.
 
-    @Cog.listener('on_message')
-    async def xp_listener(self, message):
-        if (
-                message.author.bot or
-                message.guild is None
-        ):
+        Args:
+            client (commands.Bot): The bot client.
+        """
+        self.client: LumiBot = client
+
+    @commands.Cog.listener("on_message")
+    async def xp_listener(self, message: discord.Message) -> None:
+        """
+        Listens for messages and processes XP gain and level up.
+
+        Args:
+            message (discord.Message): The message object.
+        """
+        if message.author.bot or message.guild is None:
             return
 
-        _xp = XPHandler(message)
-        leveled_up = _xp.process()
-
-        if leveled_up:
-            coroutines = [
-                asyncio.create_task(_xp.notify()),
-                asyncio.create_task(_xp.reward())
-            ]
-            await asyncio.wait(coroutines)
+        _xp: XPHandler = XPHandler(self.client, message)
+        if _xp.process():
+            await asyncio.gather(
+                _xp.notify(),
+                _xp.reward(),
+            )
 
 
-def setup(client):
+def setup(client: LumiBot) -> None:
     client.add_cog(XpListener(client))
