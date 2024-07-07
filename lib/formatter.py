@@ -20,7 +20,7 @@ def template(text: str, username: str, level: int | None = None) -> str:
     """
     replacements: dict[str, str] = {
         "{user}": username,
-        "{level}": str(level) if level is not None else "",
+        "{level}": str(level) if level else "",
     }
 
     for placeholder, value in replacements.items():
@@ -30,6 +30,19 @@ def template(text: str, username: str, level: int | None = None) -> str:
 
 
 def shorten(text: str, width: int = 200) -> str:
+    """
+    Shortens the input text to the specified width by adding a placeholder at the end if the text exceeds the width.
+
+    Args:
+        text (str): The text to be shortened.
+        width (int): The maximum width of the shortened text (default is 200).
+
+    Returns:
+        str: The shortened text.
+
+    Examples:
+        shortened_text = shorten("Lorem ipsum dolor sit amet", 10)
+    """
     return textwrap.shorten(text, width=width, placeholder="...")
 
 
@@ -60,8 +73,6 @@ def get_invoked_name(ctx: commands.Context) -> str | None:
         str: The alias or name of the invoked command.
     """
     try:
-        invoked_with: str | None = ctx.invoked_with
+        return ctx.invoked_with
     except (discord.ApplicationCommandInvokeError, AttributeError):
-        invoked_with: str | None = ctx.command.name if ctx.command else None
-
-    return invoked_with
+        return ctx.command.name if ctx.command else None
