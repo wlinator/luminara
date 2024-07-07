@@ -3,7 +3,9 @@ import platform
 from loguru import logger
 
 import discord
-from discord.ext import bridge
+from discord.ext import bridge, commands
+from discord.ext.commands import TextChannelConverter
+from typing import Optional
 
 from lib import metadata
 
@@ -11,7 +13,7 @@ from lib import metadata
 class LumiBot(bridge.Bot):
     async def on_ready(self):
         logger.info(f"{metadata.__title__} v{metadata.__version__}")
-        logger.info(f"Logged in with ID {self.user.id}")
+        logger.info(f"Logged in with ID {self.user.id if self.user else 'Unknown'}")
         logger.info(f"discord.py API version: {discord.__version__}")
         logger.info(f"Python version: {platform.python_version()}")
         logger.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
@@ -31,6 +33,40 @@ class LumiBot(bridge.Bot):
         if ctx.command:
             await ctx.trigger_typing()
             await self.invoke(ctx)
+
+    @staticmethod
+    async def convert_to_text_channel(
+        ctx: commands.Context, channel_id: int
+    ) -> Optional[discord.TextChannel]:
+        converter = TextChannelConverter()
+
+        try:
+            return await converter.convert(ctx, str(channel_id))
+        except (
+            discord.HTTPException,
+            discord.NotFound,
+            discord.Forbidden,
+            commands.BadArgument,
+        ):
+            return None
+
+    @staticmethod
+    async def convert_to_member(
+        ctx: commands.Context, user_id: int
+    ) -> Optional[discord.Member]:
+        converter = commands.MemberConverter()
+
+        try:
+            member = await converter.convert(ctx, str(user_id))
+        except (
+            discord.HTTPException,
+            discord.NotFound,
+            discord.Forbidden,
+            commands.BadArgument,
+        ):
+            return None
+
+        return member
 
     @staticmethod
     async def get_or_fetch_channel(guild, channel_id):
