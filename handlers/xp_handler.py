@@ -20,9 +20,10 @@ _messages = JsonCache.read_json("levels")
 class XPHandler:
     def __init__(self, client: LumiBot, message: discord.Message) -> None:
         """
-        Initializes the XPHandler with the given message.
+        Initializes the XPHandler with the given client and message.
 
         Args:
+            client (LumiBot): The bot client.
             message (discord.Message): The message object.
         """
         self.client = client
@@ -48,10 +49,10 @@ class XPHandler:
         if _xp.cooldown_time and _now < _xp.cooldown_time:
             return False
 
-        # award the amount of XP specified in .env
+        # Award the amount of XP specified in .env
         _xp.xp += _xp.xp_gain
 
-        # check if total xp now exceeds the xp required to level up
+        # Check if total XP now exceeds the XP required to level up
         if _xp.xp >= XpService.xp_needed_for_next_level(_xp.level):
             _xp.level += 1
             _xp.xp = 0
@@ -125,7 +126,7 @@ class XPHandler:
             guild_config (GuildConfig): The guild configuration.
 
         Returns:
-            Optional[discord.abc.GuildChannel]: The level up notification channel, or None if not found.
+            Optional[discord.TextChannel]: The level up notification channel, or None if not found.
         """
         if guild_config.level_channel_id and message.guild:
             context = await self.client.get_context(message)
@@ -204,7 +205,7 @@ class XPHandler:
                 break
 
         if level_range is None:
-            # generic fallback
+            # Generic fallback
             return XPHandler.level_message_generic(level, author)
 
         message_list = _messages[level_range]
@@ -219,7 +220,7 @@ class XpListener(commands.Cog):
         Initializes the XpListener with the given client.
 
         Args:
-            client (commands.Bot): The bot client.
+            client (LumiBot): The bot client.
         """
         self.client: LumiBot = client
 
