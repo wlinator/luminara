@@ -13,7 +13,7 @@ xp_gain_cooldown: int = int(os.environ.get("LUMI_XP_GAIN_COOLDOWN", 8))
 
 class XpService:
     """
-    Stores and retrieves XP from the database for a given user.
+    Manages XP for a user, including storing, retrieving, and updating XP in the database.
     """
 
     def __init__(self, user_id: int, guild_id: int) -> None:
@@ -50,7 +50,7 @@ class XpService:
 
     def fetch_or_create_xp(self) -> None:
         """
-        Gets a user's XP from the database or inserts a new row if it doesn't exist yet.
+        Retrieves a user's XP from the database or inserts a new row if it doesn't exist yet.
         """
         query: str = "SELECT user_xp, user_level, cooldown FROM xp WHERE user_id = %s AND guild_id = %s"
 
@@ -75,10 +75,10 @@ class XpService:
 
     def calculate_rank(self) -> Optional[int]:
         """
-        Checks which rank a user is in the guild.
+        Determines the rank of a user in the guild based on their XP and level.
 
         Returns:
-            int | None: The rank of the user in the guild, or None if not found.
+            Optional[int]: The rank of the user in the guild, or None if not found.
         """
         query: str = """
                 SELECT user_id, user_xp, user_level
@@ -100,13 +100,13 @@ class XpService:
     @staticmethod
     def load_leaderboard(guild_id: int) -> List[Tuple[int, int, int, int]]:
         """
-        Returns the guild's XP leaderboard.
+        Retrieves the guild's XP leaderboard.
 
         Args:
             guild_id (int): The ID of the guild.
 
         Returns:
-            list: A list of tuples containing user_id, user_xp, user_level, and needed_xp_for_next_level.
+            List[Tuple[int, int, int, int]]: A list of tuples containing user_id, user_xp, user_level, and needed_xp_for_next_level.
         """
         query: str = """
                 SELECT user_id, user_xp, user_level 
@@ -155,7 +155,7 @@ class XpService:
     @staticmethod
     def xp_needed_for_next_level(current_level: int) -> int:
         """
-        Calculates the amount of XP needed to go to the next level, based on the current level.
+        Calculates the amount of XP needed to reach the next level, based on the current level.
 
         Args:
             current_level (int): The current level of the user.
@@ -191,7 +191,7 @@ class XpService:
 
 class XpRewardService:
     """
-    Manages XP rewards for a guild.
+    Manages XP rewards for a guild, including storing, retrieving, and updating rewards in the database.
     """
 
     def __init__(self, guild_id: int) -> None:
