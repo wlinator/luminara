@@ -11,7 +11,7 @@ from lib.interactions.introduction import (
 )
 from lib.embeds.error import MiscErrors, IntroErrors
 from lib.embeds.intro import General, Questions
-from typing import Optional
+from typing import Optional, Union
 
 resources = JsonCache.read_json("resources")
 
@@ -38,9 +38,10 @@ async def cmd(self, ctx: bridge.Context) -> None:
     # This won't be hardcoded in the future (db update)
     question_mapping: dict[str, str] = resources["guild_specific"]["question_mapping"]
 
-    channel = await self.client.convert_to_text_channel(
-        ctx, int(resources["guild_specific"]["intro_channel_id"])
-    )
+    # channel = await self.client.convert_to_text_channel(
+    #     ctx, int(resources["guild_specific"]["intro_channel_id"])
+    # )
+    channel: Optional[discord.abc.GuildChannel] = guild.get_channel(int(resources["guild_specific"]["intro_channel_id"]))    
 
     if channel is None:
         await ctx.respond(embed=IntroErrors.intro_no_channel(ctx))
