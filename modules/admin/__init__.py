@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands, bridge
 
-from modules.admin import award, sql
+from modules.admin import award, sql, blacklist
+from typing import Optional
 
 
 class BotAdmin(commands.Cog, name="Bot Admin"):
@@ -43,6 +44,14 @@ class BotAdmin(commands.Cog, name="Bot Admin"):
     @commands.is_owner()
     async def inject(self, ctx, *, query: str):
         return await sql.inject_cmd(ctx, query)
+    
+    @commands.command(
+        name="blacklist",
+        help="Add or remove a user from the blacklist. This command can only be performed by a bot administrator."
+    )
+    @commands.is_owner()
+    async def blacklist(self, ctx, user: discord.User, *, reason: Optional[str] = None):
+        return await blacklist.blacklist_user(ctx, user, reason)
 
 
 def setup(client):

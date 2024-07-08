@@ -37,8 +37,35 @@ class LumiBot(bridge.Bot):
         ctx = await self.get_context(message)
 
         if ctx.command:
-            await ctx.trigger_typing()
+            # await ctx.trigger_typing()
             await self.invoke(ctx)
+    
+        
+            
+    @staticmethod
+    async def convert_to_user(ctx: commands.Context | bridge.Context, user_id: int) -> Optional[discord.User]: 
+        """
+        Converts a user ID to a User object.
+
+        Args:
+            ctx (commands.Context): The context in which the command was invoked.
+            user_id (int): The ID of the user to convert.
+
+        Returns:
+            Optional[discord.User]: The User object, or None if conversion fails.
+        """
+        try:
+            if isinstance(ctx, bridge.BridgeApplicationContext):
+                return  # TODO: Implement this
+            else:
+                return await commands.UserConverter().convert(ctx, str(user_id))
+        except (
+            discord.HTTPException,
+            discord.NotFound,
+            discord.Forbidden,
+            commands.BadArgument,
+        ):
+            return None
 
     @staticmethod
     async def convert_to_text_channel(
