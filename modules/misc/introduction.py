@@ -11,7 +11,7 @@ from lib.interactions.introduction import (
 )
 from lib.embeds.error import MiscErrors, IntroErrors
 from lib.embeds.intro import General, Questions
-from typing import Optional, Union
+from typing import Optional
 
 resources = JsonCache.read_json("resources")
 
