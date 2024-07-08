@@ -67,7 +67,7 @@ def load_modules():
                 logger.debug(f'{item.upper()} loaded.')
 
             except Exception as e:
-                logger.error(f'Failed to load {item.upper()}: {e}')
+                logger.exception(f'Failed to load {item.upper()}: {e}')
 
 
 if __name__ == '__main__':
