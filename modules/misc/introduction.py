@@ -43,7 +43,7 @@ async def cmd(self, ctx: bridge.Context) -> None:
     # )
     channel: Optional[discord.abc.GuildChannel] = guild.get_channel(int(resources["guild_specific"]["intro_channel_id"]))    
 
-    if channel is None:
+    if channel is None or isinstance(channel, discord.ForumChannel) or isinstance(channel, discord.CategoryChannel):
         await ctx.respond(embed=IntroErrors.intro_no_channel(ctx))
         return
 
