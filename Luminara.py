@@ -28,9 +28,16 @@ async def get_prefix(bot, message):
     except AttributeError:
         return "."
 
+_token: str | None = os.environ.get('LUMI_TOKEN')
+_owner_id: str | None = os.environ.get('LUMI_OWNER_ID')
+
+if not _token:
+    logger.error("LUMI_TOKEN is not set in the environment variables.")
+    exit(1)
+
 
 client = Client.LumiBot(
-    owner_id=int(os.environ.get('LUMI_OWNER_ID')),
+    owner_id=int(_owner_id) if _owner_id else None,
     command_prefix=get_prefix,
     intents=discord.Intents.all(),
     status=discord.Status.online,
@@ -77,4 +84,4 @@ if __name__ == '__main__':
     # load command and listener cogs
     load_modules()
 
-    client.run(os.environ.get('LUMI_TOKEN'))
+    client.run(_token)
