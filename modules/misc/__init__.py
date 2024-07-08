@@ -6,13 +6,14 @@ from discord.ext import commands, bridge, tasks
 
 from lib import checks
 from lib.embeds.info import MiscInfo
+from Client import LumiBot
 from modules.config import set_prefix
 from modules.misc import avatar, introduction, invite, backup, info, xkcd
+from typing import Optional
 
 
 class Misc(commands.Cog):
-
-    def __init__(self, client):
+    def __init__(self, client: LumiBot):
         self.client = client
         self.start_time = datetime.datetime.now()
         self.do_backup.start()
@@ -30,7 +31,7 @@ class Misc(commands.Cog):
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
-    async def avatar(self, ctx, *, user: discord.Member | None = None):
+    async def avatar(self, ctx, *, user: Optional[discord.Member] = None):
         return await avatar.get_avatar(ctx, user)
 
     @bridge.bridge_command(
@@ -51,12 +52,14 @@ class Misc(commands.Cog):
     @checks.allowed_in_channel()
     async def uptime(self, ctx):
         unix_timestamp = int(round(self.start_time.timestamp()))
-        return await ctx.respond(embed=MiscInfo.uptime(ctx, self.client, unix_timestamp))
+        return await ctx.respond(
+            embed=MiscInfo.uptime(ctx, self.client, unix_timestamp)
+        )
 
     @bridge.bridge_command(
         name="invite",
         description="Generate an invite link.",
-        help="Generate a link to invite Lumi to your own server!"
+        help="Generate a link to invite Lumi to your own server!",
     )
     @checks.allowed_in_channel()
     async def invite_command(self, ctx):
@@ -66,7 +69,7 @@ class Misc(commands.Cog):
         name="prefix",
         description="See the server's current prefix.",
         help="See the server's current prefix.",
-        guild_only=True
+        guild_only=True,
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
@@ -77,7 +80,7 @@ class Misc(commands.Cog):
         name="info",
         aliases=["stats"],
         description="Shows basic Lumi stats.",
-        help="Shows basic Lumi stats."
+        help="Shows basic Lumi stats.",
     )
     @checks.allowed_in_channel()
     async def info_command(self, ctx):
@@ -90,7 +93,7 @@ class Misc(commands.Cog):
         guild_only=False,
         description="This command can only be used in DMs.",
         help="Introduce yourself. For now this command "
-             "can only be done in ONE server and only in Lumi's DMs."
+        "can only be done in ONE server and only in Lumi's DMs.",
     )
     @commands.dm_only()
     async def intro_command(self, ctx):
@@ -99,18 +102,20 @@ class Misc(commands.Cog):
     """
     xkcd submodule - slash command only
     """
-    xkcd = SlashCommandGroup("xkcd", "A web comic of romance, sarcasm, math, and language.", guild_only=False)
+    xkcd = SlashCommandGroup(
+        "xkcd", "A web comic of romance, sarcasm, math, and language.", guild_only=False
+    )
 
     @xkcd.command(name="latest", description="Get the latest xkcd comic.")
     async def xkcd_latest(self, ctx):
         return await xkcd.print_comic(ctx, latest=True)
 
     @xkcd.command(name="random", description="Get a random xkcd comic.")
-    async def xkcd_latest(self, ctx):
+    async def xkcd_random(self, ctx):
         return await xkcd.print_comic(ctx)
 
     @xkcd.command(name="search", description="Search for a xkcd comic by ID.")
-    async def xkcd_latest(self, ctx, *, id: int):
+    async def xkcd_search(self, ctx, *, id: int):
         return await xkcd.print_comic(ctx, number=id)
 
 
