@@ -3,6 +3,7 @@ import random
 from discord.ext.commands import Cog
 
 from config.parser import JsonCache
+from services.blacklist_service import BlacklistUserService
 
 _reactions = JsonCache.read_json("reactions")
 _8ball = _reactions["eightball"]
@@ -30,6 +31,9 @@ class ReactionListener(Cog):
 
     @Cog.listener('on_message')
     async def reaction_listener(self, message):
+        if BlacklistUserService.is_user_blacklisted(message.author.id):
+            return
+
         if not message.author.bot:
             await ReactionHandler.respond(message)
 

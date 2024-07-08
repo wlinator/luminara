@@ -8,6 +8,7 @@ import Client
 import config.parser
 import services.config_service
 import services.help_service
+from services.blacklist_service import BlacklistUserService
 
 # Remove the default logger configuration
 logger.remove()
@@ -43,6 +44,12 @@ client = Client.LumiBot(
     status=discord.Status.online,
     help_command=services.help_service.LumiHelp()
 )
+
+@client.check
+async def blacklist_check(ctx):
+    if BlacklistUserService.is_user_blacklisted(ctx.author.id):
+        return False
+    return True
 
 
 def load_modules():
