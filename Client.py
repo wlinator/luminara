@@ -42,7 +42,7 @@ class LumiBot(bridge.Bot):
 
     @staticmethod
     async def convert_to_text_channel(
-        ctx: commands.Context, channel_id: int
+        ctx: commands.Context | bridge.Context, channel_id: int
     ) -> Optional[discord.TextChannel]:
         """
         Converts a channel ID to a TextChannel object.
@@ -57,7 +57,10 @@ class LumiBot(bridge.Bot):
         converter = TextChannelConverter()
 
         try:
-            return await converter.convert(ctx, str(channel_id))
+            if isinstance(ctx, bridge.BridgeApplicationContext):
+                return  # TODO: Implement this
+            else:
+                return await converter.convert(ctx, str(channel_id))
         except (
             discord.HTTPException,
             discord.NotFound,

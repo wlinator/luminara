@@ -10,8 +10,7 @@ exclaim_icon = resources["icons"]["exclaim"]
 
 def clean_intro_embed(ctx):
     embed = discord.Embed(
-        color=discord.Color.blurple(),
-        description=f"**{ctx.author.name}** "
+        color=discord.Color.blurple(), description=f"**{ctx.author.name}** "
     )
 
     return embed
@@ -31,8 +30,11 @@ class General:
     @staticmethod
     def start(ctx, channel):
         embed = clean_intro_embed(ctx)
-        embed.description += (f"this command will serve as a questionnaire for your entry to {channel.mention}. "
-                              f"Please keep your answers \"PG-13\" and don't abuse this command.")
+        embed.description = (
+            (embed.description or "")
+            + f"this command will serve as a questionnaire for your entry to {channel.mention}. "
+            f'Please keep your answers "PG-13" and don\'t abuse this command.'
+        )
         embed.set_footer(text="Click the button below to start", icon_url=exclaim_icon)
 
         return embed
@@ -40,13 +42,16 @@ class General:
     @staticmethod
     def clicked_stop(ctx):
         embed = clean_intro_embed(ctx)
-        embed.description += "the introduction command was stopped."
-
+        embed.description = (
+            embed.description or ""
+        ) + " the introduction command was stopped."
         return embed
 
     @staticmethod
     def preview(ctx, answer_mapping: dict):
-        embed = discord.Embed(color=discord.Color.embed_background(), description="")
+        embed = discord.Embed(
+            color=discord.Color.blurple(), description=""
+        )  # Corrected color
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
 
         for key, answer in answer_mapping.items():
@@ -57,6 +62,6 @@ class General:
     @staticmethod
     def post_confirmation(ctx, channel):
         embed = clean_intro_embed(ctx)
-        embed.description += f"your introduction has been posted in {channel.mention}!"
+        embed.description += f" your introduction has been posted in {channel.mention}!"  # Added space for proper concatenation
 
         return embed
