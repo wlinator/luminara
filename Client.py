@@ -4,7 +4,7 @@ from loguru import logger
 
 import discord
 from discord.ext import bridge, commands
-from discord.ext.commands import TextChannelConverter
+from discord.ext.commands import TextChannelConverter, EmojiConverter
 from typing import Optional
 
 from lib import metadata
@@ -59,6 +59,29 @@ class LumiBot(bridge.Bot):
                 return  # TODO: Implement this
             else:
                 return await commands.UserConverter().convert(ctx, str(user_id))
+        except (
+            discord.HTTPException,
+            discord.NotFound,
+            discord.Forbidden,
+            commands.BadArgument,
+        ):
+            return None
+    
+    @staticmethod
+    async def convert_to_emoji(ctx: commands.Context | bridge.Context, emoji: str) -> Optional[discord.Emoji]:
+        """
+        Converts a emoji to an Emoji object.
+        """
+        converter = EmojiConverter()
+        
+        try:
+            if isinstance(ctx, bridge.BridgeApplicationContext):
+                return  # TODO: Implement this
+            else:
+                return await converter.convert(ctx, emoji)
+        except commands.EmojiNotFound:
+            logger.warning(f"Emoji not found: {emoji}")
+            return None
         except (
             discord.HTTPException,
             discord.NotFound,

@@ -1,8 +1,11 @@
 {
-  "full_content_reactions": {
+  "full_content_responses": {
     "good bot": "thanks :3",
     "fuck you lumi": "Don’t threaten me with a good time.",
     "lumi fuck you": ":("
+  },
+  "partial_content_reactions": {
+    "miboca": "1250772989008674887"
   },
   "eightball": [
     "It is certain.",
