@@ -2,8 +2,7 @@ import random
 import asyncio
 from typing import List, Dict, Any
 
-import discord
-from discord.ext.commands import Cog, Context, EmojiConverter
+from discord.ext.commands import Cog
 from discord import Message
 
 from config.parser import JsonCache
