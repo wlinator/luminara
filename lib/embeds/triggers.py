@@ -8,6 +8,7 @@ resources = JsonCache.read_json("art")
 
 check_icon = resources["icons"]["check"]
 cross_icon = resources["icons"]["cross"]
+exclaim_icon = resources["icons"]["exclaim"]
 logo = resources["logo"]["transparent"]
 
 def create_embed(title: str, description: str, color: int, icon_url: str) -> discord.Embed:
@@ -46,4 +47,35 @@ def create_failure_embed(trigger_text: str, is_emoji: bool, limit_reached: bool 
     else:
         description += "Failed to add custom reaction."
 
-    return create_embed("Custom Reaction Creation Failed", description, 0xFF0000, cross_icon)
+    return create_embed("Custom Reaction Creation Failed", description, 0xFF4500, cross_icon)
+
+
+def create_deletion_embed(trigger_text: str, is_emoji: bool) -> discord.Embed:
+    trigger_text = formatter.shorten(trigger_text, 50)
+    
+    description = f"**Trigger Text:** `{trigger_text}`\n"
+    description += "Custom reaction has been successfully deleted."
+    
+    return create_embed("Custom Reaction Deleted", description, 0xFF8C00, check_icon)
+
+def create_not_found_embed(reaction_id: int) -> discord.Embed:
+    description = f"**Reaction ID:** `{reaction_id}`\n"
+    description += "No custom reaction found with the provided ID."
+    
+    return create_embed("Custom Reaction Not Found", description, 0xFF4500, cross_icon)
+
+def create_no_triggers_embed() -> discord.Embed:
+    description = (
+        "There are no custom reactions set up yet.\n\n"
+        "To create a new custom reaction, use the following commands:\n"
+        "`/trigger add emoji` - Add a new custom emoji reaction.\n"
+        "`/trigger add response` - Add a new custom text reaction.\n\n"
+        "**Emoji Reaction:**\n"
+        "An emoji reaction will react with a specific emoji when the trigger text is detected.\n\n"
+        "**Text Reaction:**\n"
+        "A text reaction will respond with a specific text message when the trigger text is detected."
+    )
+    
+    return create_embed("No Custom Reactions Found", description, 0xFF8C00, exclaim_icon)
+
+
