@@ -76,8 +76,7 @@ class CustomReactionsService:
 
     async def edit_custom_reaction(
         self,
-        guild_id: int,
-        trigger_text: str,
+        reaction_id: int,
         new_response: Optional[str] = None,
         new_emoji_id: Optional[int] = None,
         is_emoji: Optional[bool] = None,
@@ -92,7 +91,7 @@ class CustomReactionsService:
             is_full_match = COALESCE(?, is_full_match),
             is_global = COALESCE(?, is_global),
             updated_at = ?
-        WHERE guild_id = ? AND trigger_text = ?
+        WHERE id = ?
         """
         database.execute_query(
             query,
@@ -103,18 +102,17 @@ class CustomReactionsService:
                 is_full_match,
                 is_global,
                 datetime.utcnow(),
-                guild_id,
-                trigger_text,
+                reaction_id,
             ),
         )
         return True
 
-    async def delete_custom_reaction(self, guild_id: int, trigger_text: str) -> bool:
+    async def delete_custom_reaction(self, reaction_id: int) -> bool:
         query = """
         DELETE FROM custom_reactions
-        WHERE guild_id = ? AND trigger_text = ?
+        WHERE id = ?
         """
-        database.execute_query(query, (guild_id, trigger_text))
+        database.execute_query(query, (reaction_id,))
         return True
 
     async def count_custom_reactions(self, guild_id: int) -> int:
