@@ -4,6 +4,8 @@ import discord
 
 from Client import LumiBot
 from modules.triggers.add import add_reaction
+from modules.triggers.delete import delete_reaction
+from modules.triggers.list import list_reactions
 
 
 class Triggers(commands.Cog):
@@ -44,6 +46,31 @@ class Triggers(commands.Cog):
         is_full_match: bool
     ):
         await add_reaction(ctx, trigger_text, None, emoji.id, True, is_full_match)
+    
+    @trigger.command(
+        name="delete",
+        description="Delete an existing custom reaction.",
+        help="Delete an existing custom reaction from the database.",
+    )
+    @commands.guild_only()
+    async def delete_reaction_command(
+        self,
+        ctx,
+        reaction_id: int
+    ):
+        await delete_reaction(ctx, reaction_id)
+    
+    @trigger.command(
+        name="list",
+        description="List all custom reactions.",
+        help="List all custom reactions for the current guild.",
+    )
+    @commands.guild_only()
+    async def list_reactions_command(
+        self,
+        ctx
+    ):
+        await list_reactions(ctx)
 
 def setup(client: LumiBot):
     client.add_cog(Triggers(client))
