@@ -27,7 +27,7 @@ class CustomReactionsService:
                 "id": reaction[0],
                 "trigger_text": reaction[1],
                 "response": reaction[2],
-                "emoji": reaction[3],
+                "emoji_id": reaction[3],
                 "is_emoji": reaction[4],
                 "is_full_match": reaction[5],
                 "is_global": reaction[6],
@@ -46,7 +46,7 @@ class CustomReactionsService:
         creator_id: int,
         trigger_text: str,
         response: Optional[str] = None,
-        emoji: Optional[str] = None,
+        emoji_id: Optional[int] = None,
         is_emoji: bool = False,
         is_full_match: bool = False,
         is_global: bool = True,
@@ -55,7 +55,7 @@ class CustomReactionsService:
             return False
 
         query = """
-        INSERT INTO custom_reactions (trigger_text, response, emoji, is_emoji, is_full_match, is_global, guild_id, creator_id)
+        INSERT INTO custom_reactions (trigger_text, response, emoji_id, is_emoji, is_full_match, is_global, guild_id, creator_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE trigger_text=trigger_text
         """
@@ -64,7 +64,7 @@ class CustomReactionsService:
             (
                 trigger_text,
                 response,
-                emoji,
+                emoji_id,
                 is_emoji,
                 is_full_match,
                 is_global,
@@ -79,7 +79,7 @@ class CustomReactionsService:
         guild_id: int,
         trigger_text: str,
         new_response: Optional[str] = None,
-        new_emoji: Optional[str] = None,
+        new_emoji_id: Optional[int] = None,
         is_emoji: Optional[bool] = None,
         is_full_match: Optional[bool] = None,
         is_global: Optional[bool] = None,
@@ -87,7 +87,7 @@ class CustomReactionsService:
         query = """
         UPDATE custom_reactions
         SET response = COALESCE(?, response),
-            emoji = COALESCE(?, emoji),
+            emoji_id = COALESCE(?, emoji_id),
             is_emoji = COALESCE(?, is_emoji),
             is_full_match = COALESCE(?, is_full_match),
             is_global = COALESCE(?, is_global),
@@ -98,7 +98,7 @@ class CustomReactionsService:
             query,
             (
                 new_response,
-                new_emoji,
+                new_emoji_id,
                 is_emoji,
                 is_full_match,
                 is_global,

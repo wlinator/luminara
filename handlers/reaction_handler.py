@@ -17,30 +17,57 @@ class ReactionHandler:
         self.content: str = self.message.content.lower()
         self.reaction_service = CustomReactionsService()
 
-    async def run_all_checks(self) -> None:
+    async def run_checks(self) -> None:
         """
-        Runs all checks for reactions and responses.
+        Runs checks for reactions and responses.
+        Guild triggers are prioritized over global triggers if they are identical.
         """
         guild_id = self.message.guild.id if self.message.guild else None
 
         if guild_id:
-            reaction = await self.reaction_service.find_trigger(guild_id, self.content)
-            if reaction:
+            data = await self.reaction_service.find_trigger(guild_id, self.content)
+            if data:
                 processed = False
                 try:
-                    if reaction["type"] == "text":
-                        await self.message.reply(reaction["response"])
-                        processed = True
-                    elif reaction["type"] == "emoji":
-                        await self.message.add_reaction(reaction["response"])
-                        processed = True
+                    if data["type"] == "text":
+                        processed = await self.try_respond(data)
+                    elif data["type"] == "emoji":
+                        processed = await self.try_react(data)
                 except Exception as e:
                     logger.warning(f"Failed to process reaction: {e}")
 
                 if processed:
                     await self.reaction_service.increment_reaction_usage(
-                        int(reaction["id"])
+                        int(data["id"])
                     )
+    
+    async def try_respond(self, data) -> bool:
+        """
+        Tries to respond to the message.
+        """
+        response = data.get("response")
+        if response:
+            try:
+                await self.message.reply(response)
+                return True
+            except Exception:
+                pass
+        return False
+        
+    async def try_react(self, data) -> bool:
+        """
+        Tries to react to the message.
+        """
+        emoji_id = data.get("emoji_id")
+        if emoji_id:
+            try:
+                emoji = self.client.get_emoji(emoji_id)
+                if emoji:
+                    await self.message.add_reaction(emoji)
+                    return True
+            except Exception:
+                pass
+        return False
 
 
 class ReactionListener(Cog):
@@ -57,7 +84,7 @@ class ReactionListener(Cog):
         if not message.author.bot and not BlacklistUserService.is_user_blacklisted(
             message.author.id
         ):
-            await ReactionHandler(self.client, message).run_all_checks()
+            await ReactionHandler(self.client, message).run_checks()
 
 
 def setup(client) -> None:
