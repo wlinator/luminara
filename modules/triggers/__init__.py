@@ -1,9 +1,7 @@
-
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
 import discord
 
-from lib import checks
 from Client import LumiBot
 from modules.triggers.add import add_reaction
 
@@ -13,7 +11,7 @@ class Triggers(commands.Cog):
         self.client = client
 
     trigger = SlashCommandGroup(
-        "trigger", "Manage custom reactions.", guild_only=True
+        "trigger", "Manage custom reactions.", guild_only=True, default_member_permissions=discord.Permissions(manage_guild=True)
     )
     add = trigger.create_subgroup("add", "Add new custom reactions.")
 
@@ -23,7 +21,6 @@ class Triggers(commands.Cog):
         help="Add a new custom text reaction to the database.",
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def add_text_reaction_command(
         self,
         ctx,
@@ -39,7 +36,6 @@ class Triggers(commands.Cog):
         help="Add a new custom emoji reaction to the database.",
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def add_emoji_reaction_command(
         self,
         ctx,
