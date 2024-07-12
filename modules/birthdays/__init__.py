@@ -6,16 +6,11 @@ import discord
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, tasks
 
-from config.parser import JsonCache
+from lib.constants import CONST
 from lib import time, checks
 from modules.birthdays import birthday
 from services.birthday_service import Birthday
 from services.config_service import GuildConfig
-
-_data = JsonCache.read_json("birthday")
-_months = _data["months"]
-_messages = _data["birthday_messages"]
-
 
 class Birthdays(commands.Cog):
     def __init__(self, client):
@@ -29,8 +24,8 @@ class Birthdays(commands.Cog):
 
     @birthday.command(name="set", description="Set your birthday in this server.")
     @checks.birthdays_enabled()
-    async def set_birthday(self, ctx, month: discord.Option(choices=_months), day: int):
-        index = _months.index(month) + 1
+    async def set_birthday(self, ctx, month: discord.Option(choices=CONST.BIRTHDAY_MONTHS), day: int):
+        index = CONST.BIRTHDAY_MONTHS.index(month) + 1
         await birthday.add(ctx, month, index, day)
 
     @birthday.command(name="delete", description="Delete your birthday in this server.")
@@ -63,7 +58,7 @@ class Birthdays(commands.Cog):
                     logger.debug(f"Birthday announcements in guild with ID {guild.id} skipped: no birthday channel.")
                     return
 
-                message = random.choice(_messages)
+                message = random.choice(CONST.BIRTHDAY_MESSAGES)
                 embed.description = message.format(member.name)
                 channel = await self.client.get_or_fetch_channel(guild, guild_config.birthday_channel_id)
                 await channel.send(embed=embed, content=member.mention)

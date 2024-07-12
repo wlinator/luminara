@@ -1,11 +1,6 @@
 import discord
 
-from config.parser import JsonCache
-
-resources = JsonCache.read_json("art")
-
-question_icon = resources["icons"]["question"]
-exclaim_icon = resources["icons"]["exclaim"]
+from lib.constants import CONST
 
 
 def clean_intro_embed(ctx):
@@ -21,7 +16,7 @@ class Questions:
     def question(ctx, text):
         embed = clean_intro_embed(ctx)
         embed.description += text
-        embed.set_footer(text="Type your answer below", icon_url=exclaim_icon)
+        embed.set_footer(text="Type your answer below", icon_url=CONST.EXCLAIM_ICON)
 
         return embed
 
@@ -35,7 +30,7 @@ class General:
             + f"this command will serve as a questionnaire for your entry to {channel.mention}. "
             f'Please keep your answers "PG-13" and don\'t abuse this command.'
         )
-        embed.set_footer(text="Click the button below to start", icon_url=exclaim_icon)
+        embed.set_footer(text="Click the button below to start", icon_url=CONST.EXCLAIM_ICON)
 
         return embed
 
@@ -53,15 +48,17 @@ class General:
             color=discord.Color.blurple(), description=""
         )  # Corrected color
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+        description = ""
 
         for key, answer in answer_mapping.items():
-            embed.description += f"**{key}:** {answer}\n\n"
+            description += f"**{key}:** {answer}\n\n"
 
+        embed.description = description
         return embed
 
     @staticmethod
     def post_confirmation(ctx, channel):
         embed = clean_intro_embed(ctx)
-        embed.description += f" your introduction has been posted in {channel.mention}!"  # Added space for proper concatenation
+        embed.description = (embed.description or "") + f" your introduction has been posted in {channel.mention}!"  # Added space for proper concatenation
 
         return embed
