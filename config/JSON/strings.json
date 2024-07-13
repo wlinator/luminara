@@ -11,6 +11,11 @@
   "mod_dm_not_sent": "Failed to notify them in DM",
   "mod_ban_dm": "**{0}** you have been banned from `{1}`.\n\n**Reason:** `{2}`",
 
+  "xkcd_title": "Xkcd {0} - {1}",
+  "xkcd_description": "[Explainxkcd]({0}) | [Webpage]({1})",
+  "xkcd_not_found": "failed to fetch this comic.",
+  "xkcd_not_found_author": "Comic Not Found",
+  "xkcd_footer": "Xkcd Service",
 
 
 
@@ -19,10 +24,6 @@
   "error_mod_invoke_error": "❌ | **{0}** I couldn't perform this action, most likely because I don't have the required permissions.",
   "error_bot_missing_permissions": "❌ | **{0}** I can't perform this command because I don't have the required permissions.",
   "error_no_dm": "The user couldn't be notified about this action in DMs. Most likely because they disabled direct messages in privacy settings.",
-
-  "mod_kick": "\uD83D\uDC77 | **{0}** you successfully kicked **{1}**.",
-  "mod_kick_dm": "\uD83D\uDC77 | **{0}** you have been kicked from **{1}**.",
-  "mod_ban": "\uD83D\uDC77 | **{0}** you successfully banned **{1}**.",
   "ping": "\uD83C\uDFD3 | **{0}** I'm online.",
   "restarting": "Restarting Lumi...",
   "restart_error": "Error executing the script: {0}",

@@ -1,12 +1,11 @@
-from discord.ext import commands
-
-from lib.embeds.info import MiscInfo
 from services import xkcd_service
+from lib.embed_builder import EmbedBuilder
+from lib.constants import CONST
 
 _xkcd = xkcd_service.Client()
 
 
-async def print_comic(ctx, latest=False, number: int = None):
+async def print_comic(ctx, latest=False, number: int | None = None):
     try:
         if latest:
             comic = _xkcd.get_latest_comic(raw_comic_image=True)
@@ -15,9 +14,23 @@ async def print_comic(ctx, latest=False, number: int = None):
         else:
             comic = _xkcd.get_random_comic(raw_comic_image=True)
 
-        description = f"[Explainxkcd]({comic.explanation_url}) | [Webpage]({comic.comic_url})"
-        embed = MiscInfo.xkcd(comic.id, comic.title, description, comic.image_url)
-        return await ctx.respond(embed=embed)
+        return await ctx.respond(
+            embed=EmbedBuilder.create_success_embed(
+                ctx,
+                author_text=CONST.STRINGS["xkcd_title"].format(comic.id, comic.title),
+                description=CONST.STRINGS["xkcd_description"].format(comic.explanation_url, comic.comic_url),
+                footer_text=CONST.STRINGS["xkcd_footer"],
+                image_url=comic.image_url,
+                show_name=False,
+            )
+        )
 
     except xkcd_service.HttpError:
-        raise commands.BadArgument("Failed to fetch this comic.")
+        return await ctx.respond(
+            embed=EmbedBuilder.create_error_embed(
+                ctx,
+                author_text=CONST.STRINGS["xkcd_not_found_author"],
+                description=CONST.STRINGS["xkcd_not_found"],
+                footer_text=CONST.STRINGS["xkcd_footer"],
+            )
+        )
