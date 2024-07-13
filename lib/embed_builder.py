@@ -24,7 +24,7 @@ class EmbedBuilder:
             description = f"**{ctx.author.name}** {description}"
 
         if not author_icon_url:
-            author_icon_url = ctx.author.avatar.url
+            author_icon_url = ctx.author.display_avatar.url
         if not footer_text:
             footer_text = "Luminara"
         if not footer_icon_url:
@@ -45,12 +45,12 @@ class EmbedBuilder:
             embed.set_thumbnail(url=thumbnail_url)
 
         return embed
-
     @staticmethod
     def create_error_embed(
         ctx,
         title=None,
         author_text=None,
+        author_icon_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -61,7 +61,7 @@ class EmbedBuilder:
             ctx,
             title=title,
             author_text=author_text,
-            author_icon_url=CONST.CROSS_ICON,
+            author_icon_url=author_icon_url or CONST.CROSS_ICON,
             description=description,
             color=CONST.COLOR_ERROR,
             footer_text=footer_text,
@@ -76,6 +76,7 @@ class EmbedBuilder:
         ctx,
         title=None,
         author_text=None,
+        author_icon_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -86,7 +87,7 @@ class EmbedBuilder:
             ctx,
             title=title,
             author_text=author_text,
-            author_icon_url=CONST.CHECK_ICON,
+            author_icon_url=author_icon_url or CONST.CHECK_ICON,
             description=description,
             color=CONST.COLOR_DEFAULT,
             footer_text=footer_text,
@@ -101,6 +102,7 @@ class EmbedBuilder:
         ctx,
         title=None,
         author_text=None,
+        author_icon_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -111,7 +113,7 @@ class EmbedBuilder:
             ctx,
             title=title,
             author_text=author_text,
-            author_icon_url=CONST.EXCLAIM_ICON,
+            author_icon_url=author_icon_url or CONST.EXCLAIM_ICON,
             description=description,
             color=CONST.COLOR_DEFAULT,
             footer_text=footer_text,
@@ -126,6 +128,7 @@ class EmbedBuilder:
         ctx,
         title=None,
         author_text=None,
+        author_icon_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -136,7 +139,7 @@ class EmbedBuilder:
             ctx,
             title=title,
             author_text=author_text,
-            author_icon_url=CONST.WARNING_ICON,
+            author_icon_url=author_icon_url or CONST.WARNING_ICON,
             description=description,
             color=CONST.COLOR_WARNING,
             footer_text=footer_text,
