@@ -17,6 +17,7 @@ class Constants:
     
     # repository
     REPO_URL = "https://git.wlinator.org/Luminara/Lumi"
+    INVITE_LINK = "https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot"
     
     # KRC
     KRC_GUILD_ID = 719227135151046699
