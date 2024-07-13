@@ -202,21 +202,6 @@ class MiscErrors:
 
         return embed
 
-    @staticmethod
-    def intro_no_guild(ctx, client_side=False):
-        embed = clean_error_embed(ctx)
-
-        if not client_side:
-            embed.description += "you're not in a server that supports introductions."
-        else:
-            embed.description += "I'm not in a server that supports introductions."
-
-        embed.set_footer(
-            text="this will be updated soon, stay tuned", icon_url=CONST.EXCLAIM_ICON 
-        )
-
-        return embed
-
 
 class HelpErrors:
     @staticmethod
@@ -228,42 +213,6 @@ class HelpErrors:
         embed.description += error
         embed.set_footer(
             text=f"See '{formatter.get_prefix(ctx)}help'", icon_url=CONST.EXCLAIM_ICON
-        )
-
-        return embed
-
-
-class IntroErrors:
-    @staticmethod
-    def timeout(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "you ran out of time to answer this question."
-        embed.set_footer(
-            text=f"Please do {formatter.get_prefix(ctx)}{formatter.get_invoked_name(ctx)} again",
-            icon_url=exclaim_icon,
-        )
-
-        return embed
-
-    @staticmethod
-    def too_long(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += (
-            "your answer was too long, please keep it below 200 characters."
-        )
-        embed.set_footer(
-            text=f"Please do {formatter.get_prefix(ctx)}{formatter.get_invoked_name(ctx)} again",
-            icon_url=CONST.EXCLAIM_ICON,
-        )
-
-        return embed
-
-    @staticmethod
-    def intro_no_channel(ctx):
-        embed = clean_error_embed(ctx)
-        embed.description += "the introduction channel is missing."
-        embed.set_footer(
-            text="Please contact a server administrator", icon_url=CONST.EXCLAIM_ICON
         )
 
         return embed

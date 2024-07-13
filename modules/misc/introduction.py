@@ -1,58 +1,73 @@
 import asyncio
-from loguru import logger
 
 import discord
 from discord.ext import bridge
 
-from config.parser import JsonCache
 from lib.interactions.introduction import (
     IntroductionStartButtons,
     IntroductionFinishButtons,
 )
-from lib.embeds.error import MiscErrors, IntroErrors
-from lib.embeds.intro import General, Questions
 from typing import Optional
-
-resources = JsonCache.read_json("resources")
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
 
 
 async def cmd(self, ctx: bridge.Context) -> None:
-    """
-    Introduction command for v2 - heavily optimized.
+    guild: Optional[discord.Guild] = self.client.get_guild(CONST.KRC_GUILD_ID)
+    member = guild.get_member(ctx.author.id) if guild else None
 
-    Args:
-        self (LumiBot): The instance of the LumiBot.
-        ctx (bridge.Context): The context of the command invocation.
-    """
-    # For now, this command is only supported in one guild.
-    # Therefore, we check if the user is in that guild.
-    guild: Optional[discord.Guild] = self.client.get_guild(
-        int(resources["guild_specific"]["guild_id"])
-    )
-
-    if guild is None:
-        await ctx.respond(embed=MiscErrors.intro_no_guild(ctx))
+    if guild is None or member is None:
+        await ctx.respond(
+            embed=EmbedBuilder.create_error_embed(
+                ctx,
+                author_text=CONST.STRINGS["intro_no_guild_author"],
+                description=CONST.STRINGS["intro_no_guild"],
+                footer_text=CONST.STRINGS["intro_service_name"],
+            )
+        )
         return
 
-    # A list of questions and corresponding field names
-    # This won't be hardcoded in the future (db update)
-    question_mapping: dict[str, str] = resources["guild_specific"]["question_mapping"]
+    question_mapping: dict[str, str] = CONST.KRC_QUESTION_MAPPING
+    channel: Optional[discord.abc.GuildChannel] = guild.get_channel(
+        CONST.KRC_INTRO_CHANNEL_ID
+    )
 
-    # channel = await self.client.convert_to_text_channel(
-    #     ctx, int(resources["guild_specific"]["intro_channel_id"])
-    # )
-    channel: Optional[discord.abc.GuildChannel] = guild.get_channel(int(resources["guild_specific"]["intro_channel_id"]))    
-
-    if channel is None or isinstance(channel, discord.ForumChannel) or isinstance(channel, discord.CategoryChannel):
-        await ctx.respond(embed=IntroErrors.intro_no_channel(ctx))
+    if (
+        channel is None
+        or isinstance(channel, discord.ForumChannel)
+        or isinstance(channel, discord.CategoryChannel)
+    ):
+        await ctx.respond(
+            embed=EmbedBuilder.create_error_embed(
+                ctx,
+                author_text=CONST.STRINGS["intro_no_channel_author"],
+                description=CONST.STRINGS["intro_no_channel"],
+                footer_text=CONST.STRINGS["intro_service_name"],
+            )
+        )
         return
 
     view = IntroductionStartButtons(ctx)
-    await ctx.respond(embed=General.start(ctx, channel), view=view)
+    # await ctx.respond(embed=General.start(ctx, channel), view=view)
+    await ctx.respond(
+        embed=EmbedBuilder.create_embed(
+            ctx,
+            author_text=CONST.STRINGS["intro_service_name"],
+            description=CONST.STRINGS["intro_start"].format(channel.mention),
+            footer_text=CONST.STRINGS["intro_start_footer"],
+        ),
+        view=view,
+    )
     await view.wait()
 
     if view.clickedStop:
-        await ctx.send(embed=General.clicked_stop(ctx))
+        await ctx.send(
+            embed=EmbedBuilder.create_embed(
+                ctx,
+                author_text=CONST.STRINGS["intro_stopped_author"],
+                description=CONST.STRINGS["intro_stopped"],
+            )
+        )
         return
 
     elif view.clickedStart:
@@ -65,7 +80,14 @@ async def cmd(self, ctx: bridge.Context) -> None:
         answer_mapping: dict[str, str] = {}
 
         for key, question in question_mapping.items():
-            await ctx.send(embed=Questions.question(ctx, question))
+            await ctx.send(
+                embed=EmbedBuilder.create_embed(
+                    ctx,
+                    author_text=key,
+                    description=question,
+                    footer_text=CONST.STRINGS["intro_question_footer"],
+                )
+            )
 
             try:
                 answer: discord.Message = await self.client.wait_for(
@@ -74,15 +96,39 @@ async def cmd(self, ctx: bridge.Context) -> None:
                 answer_mapping[key] = answer.content.replace("\n", " ")
 
                 if len(answer_mapping[key]) > 200:
-                    await ctx.send(embed=IntroErrors.too_long(ctx))
+                    await ctx.send(
+                        embed=EmbedBuilder.create_error_embed(
+                            ctx,
+                            author_text=CONST.STRINGS["intro_too_long_author"],
+                            description=CONST.STRINGS["intro_too_long"],
+                            footer_text=CONST.STRINGS["intro_service_name"],
+                        )
+                    )
                     return
 
             except asyncio.TimeoutError:
-                await ctx.send(embed=IntroErrors.timeout(ctx))
+                await ctx.send(
+                    embed=EmbedBuilder.create_error_embed(
+                        ctx,
+                        author_text=CONST.STRINGS["intro_timeout_author"],
+                        description=CONST.STRINGS["intro_timeout"],
+                        footer_text=CONST.STRINGS["intro_service_name"],
+                    )
+                )
                 return
 
-        # Generate a preview of the introduction, and send it on confirmation.
-        preview: discord.Embed = General.preview(ctx, answer_mapping)
+        # preview: discord.Embed = General.preview(ctx, answer_mapping)
+        description = ""
+        for key, value in answer_mapping.items():
+            description += CONST.STRINGS["intro_preview_field"].format(key, value)
+
+        preview = EmbedBuilder.create_embed(
+            ctx,
+            author_text=ctx.author.name,
+            author_icon_url=ctx.author.display_avatar.url,
+            description=description,
+            footer_text=CONST.STRINGS["intro_service_name"],
+        )
         view = IntroductionFinishButtons(ctx)
 
         await ctx.send(embed=preview, view=view)
@@ -90,15 +136,24 @@ async def cmd(self, ctx: bridge.Context) -> None:
 
         if view.clickedConfirm:
             await channel.send(
-                embed=preview, content=f"Introduction by {ctx.author.mention}"
+                embed=preview, content=CONST.STRINGS["intro_content"].format(ctx.author.mention)
             )
-            await ctx.send(embed=General.post_confirmation(ctx, channel))
-
-            logger.debug(
-                f"Introduction by {ctx.author.name} was submitted in guild {guild.name} ({guild.id})."
+            await ctx.send(
+                embed=EmbedBuilder.create_embed(
+                    ctx,
+                    description=CONST.STRINGS["intro_post_confirmation"].format(
+                        channel.mention
+                    ),
+                )
             )
             return
 
         else:
-            await ctx.send(embed=General.clicked_stop(ctx))
+            await ctx.send(
+                embed=EmbedBuilder.create_embed(
+                    ctx,
+                    author_text=CONST.STRINGS["intro_stopped_author"],
+                    description=CONST.STRINGS["intro_stopped"],
+                )
+            )
             return

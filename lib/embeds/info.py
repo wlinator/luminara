@@ -48,14 +48,7 @@ class MiscInfo:
         embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon)
 
         return embed
-
-    @staticmethod
-    def invite(ctx):
-        embed = clean_info_embed(ctx)
-        embed.description += "thanks for inviting me to your server!"
-
-        return embed
-
+    
     @staticmethod
     def set_prefix(ctx, prefix):
         embed = clean_info_embed(ctx)

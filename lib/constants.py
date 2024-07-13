@@ -20,9 +20,9 @@ class Constants:
     INVITE_LINK = "https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot"
     
     # KRC
-    KRC_GUILD_ID = 719227135151046699
-    KRC_INTRO_CHANNEL_ID = 973619250507972618
-    KRC_QUESTION_MAPPING = resources["guild_specific"]["question_mapping"]
+    KRC_GUILD_ID: int = 719227135151046699
+    KRC_INTRO_CHANNEL_ID: int = 973619250507972618
+    KRC_QUESTION_MAPPING: dict[str, str] = resources["guild_specific"]["question_mapping"]
     
     # logo
     LUMI_LOGO_TRANSPARENT = art["logo"]["transparent"]
