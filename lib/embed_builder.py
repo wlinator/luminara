@@ -15,6 +15,8 @@ class EmbedBuilder:
         footer_text=None,
         footer_icon_url=None,
         show_name=True,
+        image_url=None,
+        thumbnail_url=None,
     ):
         if not author_text:
             author_text = ctx.author.name
@@ -34,9 +36,13 @@ class EmbedBuilder:
             color=color or CONST.COLOR_DEFAULT,
         )
         embed.set_author(name=author_text, icon_url=author_icon_url)
-
         embed.set_footer(text=footer_text, icon_url=footer_icon_url)
         embed.timestamp = datetime.datetime.now()
+
+        if image_url:
+            embed.set_image(url=image_url)
+        if thumbnail_url:
+            embed.set_thumbnail(url=thumbnail_url)
 
         return embed
 
@@ -48,6 +54,8 @@ class EmbedBuilder:
         description=None,
         footer_text=None,
         show_name=True,
+        image_url=None,
+        thumbnail_url=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -59,6 +67,8 @@ class EmbedBuilder:
             footer_text=footer_text,
             footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
             show_name=show_name,
+            image_url=image_url,
+            thumbnail_url=thumbnail_url,
         )
 
     @staticmethod
@@ -69,6 +79,8 @@ class EmbedBuilder:
         description=None,
         footer_text=None,
         show_name=True,
+        image_url=None,
+        thumbnail_url=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -80,6 +92,8 @@ class EmbedBuilder:
             footer_text=footer_text,
             footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
             show_name=show_name,
+            image_url=image_url,
+            thumbnail_url=thumbnail_url,
         )
 
     @staticmethod
@@ -90,6 +104,8 @@ class EmbedBuilder:
         description=None,
         footer_text=None,
         show_name=True,
+        image_url=None,
+        thumbnail_url=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -101,6 +117,8 @@ class EmbedBuilder:
             footer_text=footer_text,
             footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
             show_name=show_name,
+            image_url=image_url,
+            thumbnail_url=thumbnail_url,
         )
 
     @staticmethod
@@ -111,6 +129,8 @@ class EmbedBuilder:
         description=None,
         footer_text=None,
         show_name=True,
+        image_url=None,
+        thumbnail_url=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -122,4 +142,6 @@ class EmbedBuilder:
             footer_text=footer_text,
             footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
             show_name=show_name,
+            image_url=image_url,
+            thumbnail_url=thumbnail_url,
         )
