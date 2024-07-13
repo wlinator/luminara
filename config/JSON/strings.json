@@ -17,6 +17,8 @@
   "xkcd_not_found_author": "Comic Not Found",
   "xkcd_footer": "Xkcd Service",
 
+  "invite_description": "Thanks for inviting me to your server!",
+  "invite_button_text": "Invite Lumi",
 
 
   "error_hierarchy": "❌ | **{0}** you can't perform this action because the target user is equal or higher than you in the role hierarchy.",
