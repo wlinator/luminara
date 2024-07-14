@@ -1,10 +1,10 @@
-from services import xkcd_service
+from services.xkcd_service import Client, HttpError
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from discord.ext import bridge
 from typing import Optional
 
-_xkcd = xkcd_service.Client()
+_xkcd = Client()
 
 
 async def print_comic(ctx: bridge.Context, latest: bool = False, number: Optional[int] = None) -> None:
@@ -27,7 +27,7 @@ async def print_comic(ctx: bridge.Context, latest: bool = False, number: Optiona
             )
         )
 
-    except xkcd_service.HttpError:
+    except HttpError:
         await ctx.respond(
             embed=EmbedBuilder.create_error_embed(
                 ctx,

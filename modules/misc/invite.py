@@ -1,11 +1,12 @@
-import discord
-from discord.ui import View
+from discord import ButtonStyle
+from discord.ui import View, Button
+from discord.ext import bridge
 
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 
 
-async def cmd(ctx):
+async def cmd(ctx: bridge.BridgeContext) -> None:
     await ctx.respond(
         embed=EmbedBuilder.create_success_embed(
             ctx, description=CONST.STRINGS["invite_description"]
@@ -15,11 +16,11 @@ async def cmd(ctx):
 
 
 class InviteButton(View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(timeout=None)
-        invite_button = discord.ui.Button(
+        invite_button: Button = Button(
             label=CONST.STRINGS["invite_button_text"],
-            style=discord.ButtonStyle.url,
+            style=ButtonStyle.url,
             url=CONST.INVITE_LINK,
         )
         self.add_item(invite_button)
