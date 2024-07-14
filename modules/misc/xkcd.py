@@ -1,11 +1,13 @@
 from services import xkcd_service
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
+from discord.ext import bridge
+from typing import Union
 
 _xkcd = xkcd_service.Client()
 
 
-async def print_comic(ctx, latest=False, number: int | None = None):
+async def print_comic(ctx: bridge.Context, latest: bool = False, number: Union[int, None] = None) -> None:
     try:
         if latest:
             comic = _xkcd.get_latest_comic(raw_comic_image=True)
@@ -14,7 +16,7 @@ async def print_comic(ctx, latest=False, number: int | None = None):
         else:
             comic = _xkcd.get_random_comic(raw_comic_image=True)
 
-        return await ctx.respond(
+        await ctx.respond(
             embed=EmbedBuilder.create_success_embed(
                 ctx,
                 author_text=CONST.STRINGS["xkcd_title"].format(comic.id, comic.title),
@@ -26,7 +28,7 @@ async def print_comic(ctx, latest=False, number: int | None = None):
         )
 
     except xkcd_service.HttpError:
-        return await ctx.respond(
+        await ctx.respond(
             embed=EmbedBuilder.create_error_embed(
                 ctx,
                 author_text=CONST.STRINGS["xkcd_not_found_author"],
