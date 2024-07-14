@@ -60,8 +60,8 @@ async def backup() -> None:
         try:
             await create_db_backup()
             await backup_cleanup()
-            logger.debug("The database was backed up successfully.")
+            logger.debug("Backup successful.")
         except Exception as error:
-            logger.error(f"Database backup failed. {error}")
+            logger.error(f"Backup failed: {error}")
     else:
-        logger.debug("No backup was made, instance not \"MAIN\".")
+        logger.debug("No backup, instance not \"MAIN\".")
