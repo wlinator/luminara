@@ -38,6 +38,14 @@
   "intro_post_confirmation": "your introduction has been posted in {0}!",
   "intro_content": "Introduction by {0}",
 
+  "info_uptime": "**Uptime:** <t:{0}:R>\n",
+  "info_latency": "**Latency:** {0}ms\n",
+  "info_memory": "**Memory:** {0:.2f} MB\n",
+  "info_system": "**System:** {0} ({1})\n",
+  "info_api_version": "**API:** v{0}\n",
+  "info_database_records": "**Database:** {0} records",
+  "info_service_footer": "Info Service",
+
 
   "error_hierarchy": "❌ | **{0}** you can't perform this action because the target user is equal or higher than you in the role hierarchy.",
   "error_missing_permissions": "❌ | **{0}** you are missing permissions to run this command.",
