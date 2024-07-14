@@ -46,7 +46,12 @@
   "info_database_records": "**Database:** {0} records",
   "info_service_footer": "Info Service",
 
+  "ping_author": "I'm online!",
+  "ping_pong": "Pong!",
+  "ping_uptime": "I've been online since <t:{0}:R>.",
+  "ping_footer": "Latency: {0}ms",
 
+  
   "error_hierarchy": "❌ | **{0}** you can't perform this action because the target user is equal or higher than you in the role hierarchy.",
   "error_missing_permissions": "❌ | **{0}** you are missing permissions to run this command.",
   "error_mod_invoke_error": "❌ | **{0}** I couldn't perform this action, most likely because I don't have the required permissions.",
