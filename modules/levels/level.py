@@ -27,4 +27,4 @@ async def rank(ctx: bridge.Context) -> None:
         inline=False,
     )
 
-    await ctx.respond(embed=embed, content=ctx.author.mention)
+    await ctx.respond(embed=embed)
