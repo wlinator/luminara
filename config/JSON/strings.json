@@ -37,6 +37,7 @@
   "intro_preview_field": "**{0}:** {1}\n\n",
   "intro_post_confirmation": "your introduction has been posted in {0}!",
   "intro_content": "Introduction by {0}",
+  "intro_content_footer": "Type .intro in my DMs to start",
 
   "info_uptime": "**Uptime:** <t:{0}:R>\n",
   "info_latency": "**Latency:** {0}ms\n",
