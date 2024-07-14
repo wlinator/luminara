@@ -48,14 +48,7 @@ class MiscInfo:
         embed.set_footer(text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon)
 
         return embed
-
-    @staticmethod
-    def invite(ctx):
-        embed = clean_info_embed(ctx)
-        embed.description += "thanks for inviting me to your server!"
-
-        return embed
-
+    
     @staticmethod
     def set_prefix(ctx, prefix):
         embed = clean_info_embed(ctx)
@@ -69,15 +62,6 @@ class MiscInfo:
         embed.description += f"my prefix is `{prefix}`"
         embed.set_footer(text=f"You can change this with '{formatter.get_prefix(ctx)}setprefix'",
                          icon_url=question_icon)
-
-        return embed
-
-    @staticmethod
-    def xkcd(comic_id, comic_title, comic_description, image_url):
-        embed = discord.Embed(color=discord.Color.blurple())
-        embed.title = f"xkcd {comic_id} - {comic_title}"
-        embed.description = comic_description
-        embed.set_image(url=image_url)
 
         return embed
 

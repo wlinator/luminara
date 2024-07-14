@@ -6,3 +6,4 @@ mariadb==1.1.10
 psutil==5.9.8
 httpx==0.27.0
 loguru==0.7.2
+aider-chat
