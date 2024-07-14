@@ -10,6 +10,7 @@ class EmbedBuilder:
         title=None,
         author_text=None,
         author_icon_url=None,
+        author_url=None,
         description=None,
         color=None,
         footer_text=None,
@@ -35,7 +36,7 @@ class EmbedBuilder:
             description=description,
             color=color or CONST.COLOR_DEFAULT,
         )
-        embed.set_author(name=author_text, icon_url=author_icon_url)
+        embed.set_author(name=author_text, icon_url=author_icon_url, url=author_url)
         embed.set_footer(text=footer_text, icon_url=footer_icon_url)
         embed.timestamp = datetime.datetime.now()
 
@@ -45,12 +46,14 @@ class EmbedBuilder:
             embed.set_thumbnail(url=thumbnail_url)
 
         return embed
+
     @staticmethod
     def create_error_embed(
         ctx,
         title=None,
         author_text=None,
         author_icon_url=None,
+        author_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -62,6 +65,7 @@ class EmbedBuilder:
             title=title,
             author_text=author_text,
             author_icon_url=author_icon_url or CONST.CROSS_ICON,
+            author_url=author_url,
             description=description,
             color=CONST.COLOR_ERROR,
             footer_text=footer_text,
@@ -77,6 +81,7 @@ class EmbedBuilder:
         title=None,
         author_text=None,
         author_icon_url=None,
+        author_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -88,6 +93,7 @@ class EmbedBuilder:
             title=title,
             author_text=author_text,
             author_icon_url=author_icon_url or CONST.CHECK_ICON,
+            author_url=author_url,
             description=description,
             color=CONST.COLOR_DEFAULT,
             footer_text=footer_text,
@@ -103,6 +109,7 @@ class EmbedBuilder:
         title=None,
         author_text=None,
         author_icon_url=None,
+        author_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -114,6 +121,7 @@ class EmbedBuilder:
             title=title,
             author_text=author_text,
             author_icon_url=author_icon_url or CONST.EXCLAIM_ICON,
+            author_url=author_url,
             description=description,
             color=CONST.COLOR_DEFAULT,
             footer_text=footer_text,
@@ -129,6 +137,7 @@ class EmbedBuilder:
         title=None,
         author_text=None,
         author_icon_url=None,
+        author_url=None,
         description=None,
         footer_text=None,
         show_name=True,
@@ -140,6 +149,7 @@ class EmbedBuilder:
             title=title,
             author_text=author_text,
             author_icon_url=author_icon_url or CONST.WARNING_ICON,
+            author_url=author_url,
             description=description,
             color=CONST.COLOR_WARNING,
             footer_text=footer_text,
