@@ -2,6 +2,7 @@ from datetime import datetime
 
 import discord
 
+from lib.embed_builder import EmbedBuilder
 from services.currency_service import Currency
 from services.daily_service import Dailies
 from services.xp_service import XpService
@@ -14,17 +15,18 @@ async def cmd(ctx):
     view = LeaderboardCommandView(ctx, options)
 
     # default leaderboard
-    embed = discord.Embed(
-        color=discord.Color.embed_background(),
+    embed = EmbedBuilder.create_success_embed(
+        ctx=ctx,
+        title="Level Leaderboard",
+        thumbnail_url="https://i.imgur.com/79XfsbS.png",
+        show_name=False,
     )
 
-    icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+    icon = ctx.guild.icon.url if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
     embed.set_author(name="Level Leaderboard", icon_url=icon)
-    embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
 
     rank = 1
-    for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb[:5], start=1):
-
+    for user_id, xp, level, xp_needed_for_next_level in xp_lb[:5]:
         try:
             member = await ctx.guild.fetch_member(user_id)
         except discord.HTTPException:
@@ -33,7 +35,7 @@ async def cmd(ctx):
         embed.add_field(
             name=f"#{rank} - {member.name}",
             value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
-            inline=False
+            inline=False,
         )
 
         rank += 1
@@ -59,21 +61,21 @@ class LeaderboardCommandOptions(discord.ui.Select):
                     label="Levels",
                     description="See the top chatters of this server!",
                     emoji="🆙",
-                    value="xp"
+                    value="xp",
                 ),
                 discord.SelectOption(
                     label="Currency",
                     description="Who is the richest Lumi user?",
                     value="currency",
-                    emoji="💸"
+                    emoji="💸",
                 ),
                 discord.SelectOption(
                     label="Dailies",
                     description="See who has the biggest streak!",
                     value="dailies",
-                    emoji="📅"
-                )
-            ]
+                    emoji="📅",
+                ),
+            ],
         )
 
     async def callback(self, interaction: discord.Interaction):
@@ -100,30 +102,33 @@ class LeaderboardCommandView(discord.ui.View):
 
     async def interaction_check(self, interaction) -> bool:
         if interaction.user != self.ctx.author:
-            await interaction.response.send_message("You can't use this menu, it's someone else's!", ephemeral=True)
+            await interaction.response.send_message(
+                "You can't use this menu, it's someone else's!", ephemeral=True
+            )
             return False
         else:
             return True
 
     async def on_select(self, item, interaction):
-
-        embed = discord.Embed(
-            color=discord.Color.embed_background()
+        embed = EmbedBuilder.create_success_embed(
+            ctx=self.ctx,
+            title="",
+            thumbnail_url="https://i.imgur.com/79XfsbS.png",
+            show_name=False,
         )
 
-        icon = self.ctx.guild.icon if self.ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
+        icon = (
+            self.ctx.guild.icon.url
+            if self.ctx.guild.icon
+            else "https://i.imgur.com/79XfsbS.png"
+        )
 
-        if interaction.data["values"][0] == "xp":
+        if item == "xp":
             xp_lb = XpService.load_leaderboard(self.ctx.guild.id)
             embed.set_author(name="Level Leaderboard", icon_url=icon)
-            embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
 
             rank = 1
-            for i, (user_id, xp, level, xp_needed_for_next_level) in enumerate(xp_lb, start=1):
-
-                if rank == 6:
-                    break
-
+            for user_id, xp, level, xp_needed_for_next_level in xp_lb[:5]:
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
                 except discord.HTTPException:
@@ -132,20 +137,17 @@ class LeaderboardCommandView(discord.ui.View):
                 embed.add_field(
                     name=f"#{rank} - {member.name}",
                     value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
-                    inline=False
+                    inline=False,
                 )
 
                 rank += 1
 
-            await interaction.response.edit_message(embed=embed)
-
-        elif interaction.data["values"][0] == "currency":
+        elif item == "currency":
             cash_lb = Currency.load_leaderboard()
             embed.set_author(name="Currency Leaderboard", icon_url=icon)
             embed.set_thumbnail(url="https://i.imgur.com/wFsgSnr.png")
 
-            for i, (user_id, balance, rank) in enumerate(cash_lb[:5], start=1):
-
+            for user_id, balance, rank in cash_lb[:5]:
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
                 except discord.HTTPException:
@@ -156,18 +158,15 @@ class LeaderboardCommandView(discord.ui.View):
                 embed.add_field(
                     name=f"#{rank} - {name}",
                     value=f"cash: **${Currency.format(balance)}**",
-                    inline=False
+                    inline=False,
                 )
 
-            await interaction.response.edit_message(embed=embed)
-
-        elif interaction.data["values"][0] == "dailies":
+        elif item == "dailies":
             daily_lb = Dailies.load_leaderboard()
             embed.set_author(name="Daily Streak Leaderboard", icon_url=icon)
             embed.set_thumbnail(url="https://i.imgur.com/hSauh7K.png")
 
-            for i, (user_id, streak, claimed_at, rank) in enumerate(daily_lb[:5], start=1):
-
+            for user_id, streak, claimed_at, rank in daily_lb[:5]:
                 try:
                     member = await self.ctx.guild.fetch_member(user_id)
                 except discord.HTTPException:
@@ -175,13 +174,12 @@ class LeaderboardCommandView(discord.ui.View):
 
                 name = member.name if member else user_id
 
-                claimed_at = datetime.fromisoformat(claimed_at)
-                claimed_at = claimed_at.date()
+                claimed_at = datetime.fromisoformat(claimed_at).date()
 
                 embed.add_field(
                     name=f"#{rank} - {name}",
                     value=f"highest streak: **{streak}**\nclaimed on: `{claimed_at}`",
-                    inline=False
+                    inline=False,
                 )
 
-            await interaction.response.edit_message(embed=embed)
+        await interaction.response.edit_message(embed=embed)

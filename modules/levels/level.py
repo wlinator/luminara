@@ -1,11 +1,14 @@
 from discord import Embed
-from discord.ext import commands
+from discord.ext import bridge
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from services.xp_service import XpService
 
 
-async def rank(ctx: commands.Context) -> None:
+async def rank(ctx: bridge.Context) -> None:
+    if not ctx.guild:
+        return
+
     xp_data: XpService = XpService(ctx.author.id, ctx.guild.id)
 
     rank: str = str(xp_data.calculate_rank())
