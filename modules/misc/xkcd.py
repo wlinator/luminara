@@ -2,12 +2,12 @@ from services import xkcd_service
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from discord.ext import bridge
-from typing import Union
+from typing import Optional
 
 _xkcd = xkcd_service.Client()
 
 
-async def print_comic(ctx: bridge.Context, latest: bool = False, number: Union[int, None] = None) -> None:
+async def print_comic(ctx: bridge.Context, latest: bool = False, number: Optional[int] = None) -> None:
     try:
         if latest:
             comic = _xkcd.get_latest_comic(raw_comic_image=True)
