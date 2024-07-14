@@ -10,16 +10,13 @@
   "mod_dm_sent": "notified them in DM",
   "mod_dm_not_sent": "Failed to notify them in DM",
   "mod_ban_dm": "**{0}** you have been banned from `{1}`.\n\n**Reason:** `{2}`",
-
   "xkcd_title": "Xkcd {0} - {1}",
   "xkcd_description": "[Explainxkcd]({0}) | [Webpage]({1})",
   "xkcd_not_found": "failed to fetch this comic.",
   "xkcd_not_found_author": "Comic Not Found",
   "xkcd_footer": "Xkcd Service",
-
   "invite_description": "Thanks for inviting me to your server!",
   "invite_button_text": "Invite Lumi",
-
   "intro_no_guild": "you're not in a server that supports introductions.",
   "intro_no_guild_author": "Server Not Supported",
   "intro_no_channel": "the introduction channel is not set, please contact a moderator.",
@@ -38,7 +35,6 @@
   "intro_post_confirmation": "your introduction has been posted in {0}!",
   "intro_content": "Introduction by {0}",
   "intro_content_footer": "Type .intro in my DMs to start",
-
   "info_uptime": "**Uptime:** <t:{0}:R>\n",
   "info_latency": "**Latency:** {0}ms\n",
   "info_memory": "**Memory:** {0:.2f} MB\n",
@@ -46,16 +42,21 @@
   "info_api_version": "**API:** v{0}\n",
   "info_database_records": "**Database:** {0} records",
   "info_service_footer": "Info Service",
-
   "ping_author": "I'm online!",
   "ping_pong": "Pong!",
   "ping_uptime": "I've been online since <t:{0}:R>.",
   "ping_footer": "Latency: {0}ms",
-
   "xp_progress": "Progress to next level",
   "xp_level": "Level {0}",
   "xp_server_rank": "Server Rank: #{0}",
-
+  "xp_lb_author": "Level Leaderboard",
+  "xp_lb_field_name": "#{0} - {1}",
+  "xp_lb_field_value": "level: **{0}**\nxp: `{1}/{2}`",
+  "xp_lb_currency_author": "Currency Leaderboard",
+  "xp_lb_currency_field_value": "cash: **${0}**",
+  "xp_lb_dailies_author": "Daily Streak Leaderboard",
+  "xp_lb_dailies_field_value": "highest streak: **{0}**\nclaimed on: `{1}`",
+  "xp_lb_cant_use_dropdown": "You can't use this menu, it's someone else's.",
   "error_hierarchy": "❌ | **{0}** you can't perform this action because the target user is equal or higher than you in the role hierarchy.",
   "error_missing_permissions": "❌ | **{0}** you are missing permissions to run this command.",
   "error_mod_invoke_error": "❌ | **{0}** I couldn't perform this action, most likely because I don't have the required permissions.",
