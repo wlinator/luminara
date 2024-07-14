@@ -13,14 +13,16 @@ class CustomReactionsService:
         message_content = message_content.lower()
         query = """
         SELECT * FROM custom_reactions
-        WHERE (guild_id = ? OR is_global = TRUE) AND (
-            (is_full_match = TRUE AND trigger_text = ?) OR
-            (is_full_match = FALSE AND ? LIKE CONCAT('%', trigger_text, '%'))
+        WHERE (guild_id = %s OR is_global = TRUE) AND (
+            (is_full_match = TRUE AND trigger_text = %s) OR
+            (is_full_match = FALSE AND %s LIKE CONCAT('%%', trigger_text, '%%'))
         )
-        ORDER BY guild_id = ? DESC, is_global ASC
+        ORDER BY guild_id = %s DESC, is_global ASC
         LIMIT 1
         """
-        result = database.select_query(query, (guild_id, message_content, message_content, guild_id))
+        result = database.select_query(
+            query, (guild_id, message_content, message_content, guild_id)
+        )
         if result:
             reaction = result[0]  # Get the first result from the list
             return {
@@ -36,16 +38,14 @@ class CustomReactionsService:
                 "usage_count": reaction[9],
                 "created_at": reaction[10],
                 "updated_at": reaction[11],
-                "type": "emoji" if reaction[4] else "text"
+                "type": "emoji" if reaction[4] else "text",
             }
         return None
 
-    async def find_id(
-        self, reaction_id: int
-    ) -> Optional[Dict[str, Any]]:
+    async def find_id(self, reaction_id: int) -> Optional[Dict[str, Any]]:
         query = """
         SELECT * FROM custom_reactions
-        WHERE id = ?
+        WHERE id = %s
         LIMIT 1
         """
         result = database.select_query(query, (reaction_id,))
@@ -64,35 +64,35 @@ class CustomReactionsService:
                 "usage_count": reaction[9],
                 "created_at": reaction[10],
                 "updated_at": reaction[11],
-                "type": "emoji" if reaction[4] else "text"
+                "type": "emoji" if reaction[4] else "text",
             }
         return None
 
-    async def find_all_by_guild(
-        self, guild_id: int
-    ) -> List[Dict[str, Any]]:
+    async def find_all_by_guild(self, guild_id: int) -> List[Dict[str, Any]]:
         query = """
         SELECT * FROM custom_reactions
-        WHERE guild_id = ?
+        WHERE guild_id = %s
         """
         results = database.select_query(query, (guild_id,))
         reactions = []
         for reaction in results:
-            reactions.append({
-                "id": reaction[0],
-                "trigger_text": reaction[1],
-                "response": reaction[2],
-                "emoji_id": reaction[3],
-                "is_emoji": reaction[4],
-                "is_full_match": reaction[5],
-                "is_global": reaction[6],
-                "guild_id": reaction[7],
-                "creator_id": reaction[8],
-                "usage_count": reaction[9],
-                "created_at": reaction[10],
-                "updated_at": reaction[11],
-                "type": "emoji" if reaction[4] else "text"
-            })
+            reactions.append(
+                {
+                    "id": reaction[0],
+                    "trigger_text": reaction[1],
+                    "response": reaction[2],
+                    "emoji_id": reaction[3],
+                    "is_emoji": reaction[4],
+                    "is_full_match": reaction[5],
+                    "is_global": reaction[6],
+                    "guild_id": reaction[7],
+                    "creator_id": reaction[8],
+                    "usage_count": reaction[9],
+                    "created_at": reaction[10],
+                    "updated_at": reaction[11],
+                    "type": "emoji" if reaction[4] else "text",
+                }
+            )
         return reactions
 
     async def create_custom_reaction(
@@ -111,7 +111,7 @@ class CustomReactionsService:
 
         query = """
         INSERT INTO custom_reactions (trigger_text, response, emoji_id, is_emoji, is_full_match, is_global, guild_id, creator_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE trigger_text=trigger_text
         """
         database.execute_query(
@@ -140,13 +140,13 @@ class CustomReactionsService:
     ) -> bool:
         query = """
         UPDATE custom_reactions
-        SET response = COALESCE(?, response),
-            emoji_id = COALESCE(?, emoji_id),
-            is_emoji = COALESCE(?, is_emoji),
-            is_full_match = COALESCE(?, is_full_match),
-            is_global = COALESCE(?, is_global),
-            updated_at = ?
-        WHERE id = ?
+        SET response = COALESCE(%s, response),
+            emoji_id = COALESCE(%s, emoji_id),
+            is_emoji = COALESCE(%s, is_emoji),
+            is_full_match = COALESCE(%s, is_full_match),
+            is_global = COALESCE(%s, is_global),
+            updated_at = %s
+        WHERE id = %s
         """
         database.execute_query(
             query,
@@ -165,7 +165,7 @@ class CustomReactionsService:
     async def delete_custom_reaction(self, reaction_id: int) -> bool:
         query = """
         DELETE FROM custom_reactions
-        WHERE id = ?
+        WHERE id = %s
         """
         database.execute_query(query, (reaction_id,))
         return True
@@ -173,21 +173,19 @@ class CustomReactionsService:
     async def count_custom_reactions(self, guild_id: int) -> int:
         query = """
         SELECT COUNT(*) FROM custom_reactions
-        WHERE guild_id = ?
+        WHERE guild_id = %s
         """
         count = database.select_query_one(query, (guild_id,))
         return count if count else 0
-    
+
     async def increment_reaction_usage(self, reaction_id: int) -> bool:
         query = """
         UPDATE custom_reactions
         SET usage_count = usage_count + 1
-        WHERE id = ?
+        WHERE id = %s
         """
         database.execute_query(
             query,
-            (
-                reaction_id,
-            ),
+            (reaction_id,),
         )
         return True

@@ -1,0 +1,25 @@
+[tool.poetry]
+authors = ["wlinator <dokimakimaki@gmail.com>"]
+description = "A Discord application, can serve as a template for your own bot."
+license = "GNU General Public License v3.0"
+name = "lumi"
+package-mode = false
+readme = "README.md"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+dropbox = "^12.0.2"
+httpx = "^0.27.0"
+loguru = "^0.7.2"
+mysql-connector-python = "^9.0.0"
+pre-commit = "^3.7.1"
+psutil = "^6.0.0"
+py-cord = "2.5.0"
+pyright = "^1.1.371"
+python = "^3.12"
+pytz = "^2024.1"
+ruff = "^0.5.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]

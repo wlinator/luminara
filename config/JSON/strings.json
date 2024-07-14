@@ -37,6 +37,7 @@
   "intro_preview_field": "**{0}:** {1}\n\n",
   "intro_post_confirmation": "your introduction has been posted in {0}!",
   "intro_content": "Introduction by {0}",
+  "intro_content_footer": "Type .intro in my DMs to start",
 
   "info_uptime": "**Uptime:** <t:{0}:R>\n",
   "info_latency": "**Latency:** {0}ms\n",
@@ -51,7 +52,10 @@
   "ping_uptime": "I've been online since <t:{0}:R>.",
   "ping_footer": "Latency: {0}ms",
 
-  
+  "xp_progress": "Progress to next level",
+  "xp_level": "Level {0}",
+  "xp_server_rank": "Server Rank: #{0}",
+
   "error_hierarchy": "❌ | **{0}** you can't perform this action because the target user is equal or higher than you in the role hierarchy.",
   "error_missing_permissions": "❌ | **{0}** you are missing permissions to run this command.",
   "error_mod_invoke_error": "❌ | **{0}** I couldn't perform this action, most likely because I don't have the required permissions.",

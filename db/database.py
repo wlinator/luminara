@@ -1,18 +1,20 @@
 from loguru import logger
 import os
+import mysql.connector
+from mysql.connector import pooling
 
-import mariadb
 
-
-def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
-    pool = mariadb.ConnectionPool(
+def create_connection_pool(name: str, size: int) -> pooling.MySQLConnectionPool:
+    pool = pooling.MySQLConnectionPool(
+        pool_name=name,
+        pool_size=size,
         host="db",
         port=3306,
         database=os.environ.get("MARIADB_DATABASE"),
         user=os.environ.get("MARIADB_USER"),
         password=os.environ.get("MARIADB_PASSWORD"),
-        pool_name=name,
-        pool_size=size
+        charset="utf8mb4",
+        collation="utf8mb4_unicode_ci",
     )
 
     return pool
@@ -20,8 +22,8 @@ def create_connection_pool(name: str, size: int) -> mariadb.ConnectionPool:
 
 try:
     _cnxpool = create_connection_pool("core-pool", 25)
-except mariadb.Error as e:
-    logger.critical(f"Couldn't create the MariaDB connection pool: {e}")
+except mysql.connector.Error as e:
+    logger.critical(f"Couldn't create the MySQL connection pool: {e}")
     raise e
 
 

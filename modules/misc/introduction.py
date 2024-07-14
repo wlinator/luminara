@@ -131,7 +131,7 @@ async def cmd(self, ctx: bridge.Context) -> None:
             author_text=ctx.author.name,
             author_icon_url=ctx.author.display_avatar.url,
             description=description,
-            footer_text=CONST.STRINGS["intro_service_name"],
+            footer_text=CONST.STRINGS["intro_content_footer"],
         )
         view = IntroductionFinishButtons(ctx)
 
