@@ -1,20 +1,26 @@
-import discord
-from discord.ui import View
+from discord import ButtonStyle
+from discord.ui import View, Button
+from discord.ext import bridge
 
-from lib.embeds.info import MiscInfo
+from lib.embed_builder import EmbedBuilder
+from lib.constants import CONST
 
-url = "https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot"
 
-
-async def cmd(ctx):
-    embed = MiscInfo.invite(ctx)
-    view = InviteButton()
-
-    await ctx.respond(embed=embed, view=view)
+async def cmd(ctx: bridge.BridgeContext) -> None:
+    await ctx.respond(
+        embed=EmbedBuilder.create_success_embed(
+            ctx, description=CONST.STRINGS["invite_description"]
+        ),
+        view=InviteButton(),
+    )
 
 
 class InviteButton(View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(timeout=None)
-        invite_button = discord.ui.Button(label="Invite Lumi", style=discord.ButtonStyle.url, url=url)
+        invite_button: Button = Button(
+            label=CONST.STRINGS["invite_button_text"],
+            style=ButtonStyle.url,
+            url=CONST.INVITE_LINK,
+        )
         self.add_item(invite_button)

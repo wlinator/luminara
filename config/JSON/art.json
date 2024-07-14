@@ -4,17 +4,18 @@
     "transparent": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_logo_transparent.png?_=1"
   },
   "icons": {
-    "exclaim": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_exclaim.png?_=3",
-    "question": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_question.png?_=2",
-    "hammer": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_hammer.png?_=1",
-    "cross": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_cross.png?_=2",
+    "boost": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_boost.png",
     "check": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_check.png?_=1",
-    "streak": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak.png?_=2",
-    "streak_bronze": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_bronze.png?_=1",
-    "streak_silver": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_silver.png?_=1",
-    "streak_gold": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_gold.png?_=1",
+    "cross": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_cross.png?_=2",
+    "exclaim": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_exclaim.png?_=3",
+    "hammer": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_hammer.png?_=1",
     "money_bag": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_money_bag.png?_=1",
     "money_coins": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_money_coins.png?_=1",
-    "boost": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_boost.png"
+    "question": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_question.png?_=2",
+    "streak": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak.png?_=2",
+    "streak_bronze": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_bronze.png?_=1",
+    "streak_gold": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_gold.png?_=1",
+    "streak_silver": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_silver.png?_=1",
+    "warning": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_warning.png?_=1"
   }
 }

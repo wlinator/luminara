@@ -19,7 +19,7 @@ class Moderation(commands.Cog):
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
-    async def ban_command(self, ctx, target: discord.User, *, reason: str = None):
+    async def ban_command(self, ctx, target: discord.User, *, reason: str | None = None):
         await ban.ban_user(self, ctx, target, reason)
 
     @bridge.bridge_command(
@@ -32,7 +32,7 @@ class Moderation(commands.Cog):
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
-    async def unban_command(self, ctx, target: discord.User, *, reason: str = None):
+    async def unban_command(self, ctx, target: discord.User, *, reason: str | None = None):
         await ban.unban_user(ctx, target, reason)
 
 

@@ -11,3 +11,4 @@ __pycache__/
 users.yml
 db/data/
 db/migrations/100-dump.sql
+.aider*

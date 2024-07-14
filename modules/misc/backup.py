@@ -2,33 +2,38 @@ from loguru import logger
 import os
 import subprocess
 from datetime import datetime
+from typing import List, Optional
 
 import dropbox
+from dropbox.files import FileMetadata
 
-oauth2_refresh_token = os.environ.get("LUMI_DBX_OAUTH2_REFRESH_TOKEN")
-app_key = os.environ.get("LUMI_DBX_APP_KEY")
-app_secret = os.environ.get("LUMI_DBX_APP_SECRET")
-instance = os.environ.get("LUMI_INSTANCE")
-mariadb_user = os.environ.get("MARIADB_USER")
-mariadb_password = os.environ.get("MARIADB_PASSWORD")
+# Fetch environment variables once and store them in constants
+OAUTH2_REFRESH_TOKEN: Optional[str] = os.environ.get("LUMI_DBX_OAUTH2_REFRESH_TOKEN")
+APP_KEY: Optional[str] = os.environ.get("LUMI_DBX_APP_KEY")
+APP_SECRET: Optional[str] = os.environ.get("LUMI_DBX_APP_SECRET")
+INSTANCE: Optional[str] = os.environ.get("LUMI_INSTANCE")
+MARIADB_USER: Optional[str] = os.environ.get("MARIADB_USER")
+MARIADB_PASSWORD: Optional[str] = os.environ.get("MARIADB_PASSWORD")
 
-if instance.lower() == "main":
+# Initialize Dropbox client if instance is "main"
+_dbx: Optional[dropbox.Dropbox] = None
+if INSTANCE and INSTANCE.lower() == "main":
     _dbx = dropbox.Dropbox(
-        app_key=app_key,
-        app_secret=app_secret,
-        oauth2_refresh_token=oauth2_refresh_token
+        app_key=APP_KEY,
+        app_secret=APP_SECRET,
+        oauth2_refresh_token=OAUTH2_REFRESH_TOKEN
     )
-else:
-    # can be ignored
-    _dbx = None
 
 
-async def create_db_backup():
-    backup_name = datetime.today().strftime('%Y-%m-%d_%H%M')
-    backup_name += f"_lumi.sql"
+async def create_db_backup() -> None:
+    if not _dbx:
+        raise ValueError("Dropbox client is not initialized")
 
-    command = f"mariadb-dump --user={mariadb_user} --password={mariadb_password} " \
-              f"--host=db --single-transaction --all-databases > ./db/migrations/100-dump.sql"
+    backup_name: str = datetime.today().strftime('%Y-%m-%d_%H%M') + "_lumi.sql"
+    command: str = (
+        f"mariadb-dump --user={MARIADB_USER} --password={MARIADB_PASSWORD} "
+        f"--host=db --single-transaction --all-databases > ./db/migrations/100-dump.sql"
+    )
 
     subprocess.check_output(command, shell=True)
 
@@ -36,26 +41,27 @@ async def create_db_backup():
         _dbx.files_upload(f.read(), f"/{backup_name}")
 
 
-async def backup_cleanup():
-    all_backup_files = []
+async def backup_cleanup() -> None:
+    if not _dbx:
+        raise ValueError("Dropbox client is not initialized")
 
-    for entry in _dbx.files_list_folder('').entries:
-        all_backup_files.append(entry.name)
+    result = _dbx.files_list_folder('')
+    all_backup_files: List[str] = [
+        entry.name for entry in result.entries if isinstance(entry, FileMetadata) # type: ignore
+    ]
 
-    for file in sorted(all_backup_files[:-48]):
+    for file in sorted(all_backup_files)[:-48]:
         _dbx.files_delete_v2('/' + file)
 
 
-async def backup():
-    if instance.lower() == "main":
+async def backup() -> None:
+    if INSTANCE and INSTANCE.lower() == "main":
         logger.debug("Backing up the database.")
         try:
             await create_db_backup()
             await backup_cleanup()
-
-            logger.debug("The database was backed up successfully.")
-
+            logger.debug("Backup successful.")
         except Exception as error:
-            logger.error(f"database backup failed. {error}")
+            logger.error(f"Backup failed: {error}")
     else:
-        logger.debug("No backup was made, instance not \"MAIN\".")
+        logger.debug("No backup, instance not \"MAIN\".")
