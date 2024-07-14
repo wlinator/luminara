@@ -48,7 +48,6 @@ async def cmd(self, ctx: bridge.Context) -> None:
         return
 
     view = IntroductionStartButtons(ctx)
-    # await ctx.respond(embed=General.start(ctx, channel), view=view)
     await ctx.respond(
         embed=EmbedBuilder.create_embed(
             ctx,
@@ -62,10 +61,11 @@ async def cmd(self, ctx: bridge.Context) -> None:
 
     if view.clickedStop:
         await ctx.send(
-            embed=EmbedBuilder.create_embed(
+            embed=EmbedBuilder.create_error_embed(
                 ctx,
                 author_text=CONST.STRINGS["intro_stopped_author"],
                 description=CONST.STRINGS["intro_stopped"],
+                footer_text=CONST.STRINGS["intro_service_name"],
             )
         )
         return
@@ -150,10 +150,11 @@ async def cmd(self, ctx: bridge.Context) -> None:
 
         else:
             await ctx.send(
-                embed=EmbedBuilder.create_embed(
+                embed=EmbedBuilder.create_error_embed(
                     ctx,
                     author_text=CONST.STRINGS["intro_stopped_author"],
                     description=CONST.STRINGS["intro_stopped"],
+                    footer_text=CONST.STRINGS["intro_service_name"],
                 )
             )
             return
