@@ -1,21 +1,24 @@
 from discord.ext import commands
 
-import lib.formatter
+from lib import formatter, embed_builder, constants
 
 
 class Help(commands.Cog):
-
-    def __init__(self, client):
+    def __init__(self, client: commands.Bot) -> None:
         self.client = client
 
     @commands.slash_command(
         name="help",
         description="Get Lumi help.",
     )
-    async def help_command(self, ctx):
-        prefix = lib.formatter.get_prefix(ctx)
-        return await ctx.respond(content=f'Please use Lumi\'s prefix to get help. Type `{prefix}help`', ephemeral=True)
+    async def help_command(self, ctx) -> None:
+        prefix = formatter.get_prefix(ctx)
+        embed = embed_builder.EmbedBuilder.create_warning_embed(
+            ctx=ctx,
+            description=constants.CONST.STRINGS["help_use_prefix"].format(prefix),
+        )
+        await ctx.respond(embed=embed, ephemeral=True)
 
 
-def setup(client):
+def setup(client: commands.Bot) -> None:
     client.add_cog(Help(client))
