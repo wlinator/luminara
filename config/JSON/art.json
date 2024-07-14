@@ -17,5 +17,10 @@
     "streak_gold": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_gold.png?_=1",
     "streak_silver": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_streak_silver.png?_=1",
     "warning": "https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_warning.png?_=1"
+  },
+  "juicybblue": {
+    "flowers": "https://i.imgur.com/79XfsbS.png",
+    "teapot": "https://i.imgur.com/wFsgSnr.png",
+    "muffin": "https://i.imgur.com/hSauh7K.png"
   }
 }

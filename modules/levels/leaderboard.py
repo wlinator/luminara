@@ -1,15 +1,17 @@
-from datetime import datetime
-
 import discord
+from discord.ext import bridge
+from datetime import datetime
 
 from lib.embed_builder import EmbedBuilder
 from services.currency_service import Currency
 from services.daily_service import Dailies
 from services.xp_service import XpService
+from lib.constants import CONST
 
 
-async def cmd(ctx):
-    xp_lb = XpService.load_leaderboard(ctx.guild.id)
+async def cmd(ctx: bridge.Context) -> None:
+    if not ctx.guild:
+        return
 
     options = LeaderboardCommandOptions()
     view = LeaderboardCommandView(ctx, options)
@@ -17,30 +19,14 @@ async def cmd(ctx):
     # default leaderboard
     embed = EmbedBuilder.create_success_embed(
         ctx=ctx,
-        title="Level Leaderboard",
-        thumbnail_url="https://i.imgur.com/79XfsbS.png",
+        thumbnail_url=CONST.FLOWERS_ART,
         show_name=False,
     )
 
-    icon = ctx.guild.icon.url if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-    embed.set_author(name="Level Leaderboard", icon_url=icon)
+    icon = ctx.guild.icon.url if ctx.guild.icon else CONST.FLOWERS_ART
+    await view.populate_leaderboard("xp", embed, icon)
 
-    rank = 1
-    for user_id, xp, level, xp_needed_for_next_level in xp_lb[:5]:
-        try:
-            member = await ctx.guild.fetch_member(user_id)
-        except discord.HTTPException:
-            continue  # skip user if not in guild
-
-        embed.add_field(
-            name=f"#{rank} - {member.name}",
-            value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
-            inline=False,
-        )
-
-        rank += 1
-
-    return await ctx.respond(embed=embed, view=view)
+    await ctx.respond(embed=embed, view=view)
 
 
 class LeaderboardCommandOptions(discord.ui.Select):
@@ -51,7 +37,7 @@ class LeaderboardCommandOptions(discord.ui.Select):
     - Daily streak
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             placeholder="Select a leaderboard",
             min_values=1,
@@ -78,8 +64,9 @@ class LeaderboardCommandOptions(discord.ui.Select):
             ],
         )
 
-    async def callback(self, interaction: discord.Interaction):
-        await self.view.on_select(self.values[0], interaction)
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.view:
+            await self.view.on_select(self.values[0], interaction)
 
 
 class LeaderboardCommandView(discord.ui.View):
@@ -88,98 +75,123 @@ class LeaderboardCommandView(discord.ui.View):
     what kind of leaderboard to show.
     """
 
-    def __init__(self, ctx, options: LeaderboardCommandOptions):
+    def __init__(self, ctx: bridge.Context, options: LeaderboardCommandOptions) -> None:
         self.ctx = ctx
         self.options = options
 
         super().__init__(timeout=180)
         self.add_item(self.options)
 
-    async def on_timeout(self):
-        await self.message.edit(view=None)
-        # logs.info(f"[CommandHandler] /leaderboard command timed out - this is normal behavior.")
+    async def on_timeout(self) -> None:
+        if self.message:
+            await self.message.edit(view=None)
         self.stop()
 
-    async def interaction_check(self, interaction) -> bool:
-        if interaction.user != self.ctx.author:
-            await interaction.response.send_message(
-                "You can't use this menu, it's someone else's!", ephemeral=True
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user and interaction.user != self.ctx.author:
+            embed = EmbedBuilder.create_error_embed(
+                ctx=self.ctx,
+                author_text=interaction.user.name,
+                description=CONST.STRINGS["xp_lb_cant_use_dropdown"],
+                show_name=False,
             )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return False
-        else:
-            return True
+        return True
 
-    async def on_select(self, item, interaction):
+    async def on_select(self, item: str, interaction: discord.Interaction) -> None:
+        if not self.ctx.guild:
+            return
+
         embed = EmbedBuilder.create_success_embed(
             ctx=self.ctx,
-            title="",
-            thumbnail_url="https://i.imgur.com/79XfsbS.png",
+            thumbnail_url=CONST.FLOWERS_ART,
             show_name=False,
         )
 
-        icon = (
-            self.ctx.guild.icon.url
-            if self.ctx.guild.icon
-            else "https://i.imgur.com/79XfsbS.png"
-        )
+        icon = self.ctx.guild.icon.url if self.ctx.guild.icon else CONST.FLOWERS_ART
 
-        if item == "xp":
-            xp_lb = XpService.load_leaderboard(self.ctx.guild.id)
-            embed.set_author(name="Level Leaderboard", icon_url=icon)
-
-            rank = 1
-            for user_id, xp, level, xp_needed_for_next_level in xp_lb[:5]:
-                try:
-                    member = await self.ctx.guild.fetch_member(user_id)
-                except discord.HTTPException:
-                    continue  # skip user if not in guild
-
-                embed.add_field(
-                    name=f"#{rank} - {member.name}",
-                    value=f"level: **{level}**\nxp: `{xp}/{xp_needed_for_next_level}`",
-                    inline=False,
-                )
-
-                rank += 1
-
-        elif item == "currency":
-            cash_lb = Currency.load_leaderboard()
-            embed.set_author(name="Currency Leaderboard", icon_url=icon)
-            embed.set_thumbnail(url="https://i.imgur.com/wFsgSnr.png")
-
-            for user_id, balance, rank in cash_lb[:5]:
-                try:
-                    member = await self.ctx.guild.fetch_member(user_id)
-                except discord.HTTPException:
-                    member = None
-
-                name = member.name if member else str(user_id)
-
-                embed.add_field(
-                    name=f"#{rank} - {name}",
-                    value=f"cash: **${Currency.format(balance)}**",
-                    inline=False,
-                )
-
-        elif item == "dailies":
-            daily_lb = Dailies.load_leaderboard()
-            embed.set_author(name="Daily Streak Leaderboard", icon_url=icon)
-            embed.set_thumbnail(url="https://i.imgur.com/hSauh7K.png")
-
-            for user_id, streak, claimed_at, rank in daily_lb[:5]:
-                try:
-                    member = await self.ctx.guild.fetch_member(user_id)
-                except discord.HTTPException:
-                    member = None
-
-                name = member.name if member else user_id
-
-                claimed_at = datetime.fromisoformat(claimed_at).date()
-
-                embed.add_field(
-                    name=f"#{rank} - {name}",
-                    value=f"highest streak: **{streak}**\nclaimed on: `{claimed_at}`",
-                    inline=False,
-                )
+        await self.populate_leaderboard(item, embed, icon)
 
         await interaction.response.edit_message(embed=embed)
+
+    async def populate_leaderboard(self, item: str, embed, icon):
+        leaderboard_methods = {
+            "xp": self._populate_xp_leaderboard,
+            "currency": self._populate_currency_leaderboard,
+            "dailies": self._populate_dailies_leaderboard,
+        }
+        await leaderboard_methods[item](embed, icon)
+
+    async def _populate_xp_leaderboard(self, embed, icon):
+        if not self.ctx.guild:
+            return
+
+        xp_lb = XpService.load_leaderboard(self.ctx.guild.id)
+        embed.set_author(name=CONST.STRINGS["xp_lb_author"], icon_url=icon)
+
+        for rank, (user_id, xp, level, xp_needed_for_next_level) in enumerate(
+            xp_lb[:5], start=1
+        ):
+            try:
+                member = await self.ctx.guild.fetch_member(user_id)
+            except discord.HTTPException:
+                continue  # skip user if not in guild
+
+            embed.add_field(
+                name=CONST.STRINGS["xp_lb_field_name"].format(rank, member.name),
+                value=CONST.STRINGS["xp_lb_field_value"].format(
+                    level, xp, xp_needed_for_next_level
+                ),
+                inline=False,
+            )
+
+    async def _populate_currency_leaderboard(self, embed, icon):
+        if not self.ctx.guild:
+            return
+
+        cash_lb = Currency.load_leaderboard()
+        embed.set_author(name=CONST.STRINGS["xp_lb_currency_author"], icon_url=icon)
+        embed.set_thumbnail(url=CONST.TEAPOT_ART)
+
+        for user_id, balance, rank in cash_lb[:5]:
+            try:
+                member = await self.ctx.guild.fetch_member(user_id)
+            except discord.HTTPException:
+                member = None
+
+            name = member.name if member else str(user_id)
+
+            embed.add_field(
+                name=f"#{rank} - {name}",
+                value=CONST.STRINGS["xp_lb_currency_field_value"].format(
+                    Currency.format(balance)
+                ),
+                inline=False,
+            )
+
+    async def _populate_dailies_leaderboard(self, embed, icon):
+        if not self.ctx.guild:
+            return
+
+        daily_lb = Dailies.load_leaderboard()
+        embed.set_author(name=CONST.STRINGS["xp_lb_dailies_author"], icon_url=icon)
+        embed.set_thumbnail(url=CONST.MUFFIN_ART)
+
+        for user_id, streak, claimed_at, rank in daily_lb[:5]:
+            try:
+                member = await self.ctx.guild.fetch_member(user_id)
+            except discord.HTTPException:
+                member = None
+
+            name = member.name if member else user_id
+
+            claimed_at = datetime.fromisoformat(claimed_at).date()
+
+            embed.add_field(
+                name=f"#{rank} - {name}",
+                value=CONST.STRINGS["xp_lb_dailies_field_value"].format(
+                    streak, claimed_at
+                ),
+                inline=False,
+            )

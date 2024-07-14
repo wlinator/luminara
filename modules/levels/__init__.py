@@ -5,7 +5,7 @@ from modules.levels import level, leaderboard
 
 
 class Levels(commands.Cog):
-    def __init__(self, client):
+    def __init__(self, client: commands.Bot) -> None:
         self.client = client
 
     @bridge.bridge_command(
@@ -18,7 +18,7 @@ class Levels(commands.Cog):
     @commands.guild_only()
     @checks.allowed_in_channel()
     @commands.cooldown(1, 30, commands.BucketType.user)
-    async def level_command(self, ctx):
+    async def level_command(self, ctx) -> None:
         await level.rank(ctx)
 
     @bridge.bridge_command(
@@ -31,9 +31,9 @@ class Levels(commands.Cog):
     @commands.guild_only()
     @checks.allowed_in_channel()
     @commands.cooldown(1, 180, commands.BucketType.user)
-    async def leaderboard_command(self, ctx):
-        return await leaderboard.cmd(ctx)
+    async def leaderboard_command(self, ctx) -> None:
+        await leaderboard.cmd(ctx)
 
 
-def setup(client):
+def setup(client: commands.Bot) -> None:
     client.add_cog(Levels(client))
