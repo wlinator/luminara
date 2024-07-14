@@ -5,10 +5,9 @@ from discord.commands import SlashCommandGroup
 from discord.ext import commands, bridge, tasks
 
 from lib import checks
-from lib.embeds.info import MiscInfo
 from Client import LumiBot
 from modules.config import set_prefix
-from modules.misc import avatar, introduction, invite, backup, info, xkcd
+from modules.misc import avatar, introduction, invite, backup, info, xkcd, ping
 
 
 class Misc(commands.Cog):
@@ -30,7 +29,7 @@ class Misc(commands.Cog):
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
-    async def avatar(self, ctx: bridge.Context, *, user: discord.Member) -> None:
+    async def avatar(self, ctx, user: discord.Member) -> None:
         return await avatar.get_avatar(ctx, user)
 
     @bridge.bridge_command(
@@ -40,8 +39,8 @@ class Misc(commands.Cog):
         help="Simple status check.",
     )
     @checks.allowed_in_channel()
-    async def ping(self, ctx: bridge.Context) -> None:
-        await ctx.respond(embed=MiscInfo.ping(ctx, self.client))
+    async def ping(self, ctx) -> None:
+        await ping.ping(self, ctx)
 
     @bridge.bridge_command(
         name="uptime",
@@ -49,11 +48,8 @@ class Misc(commands.Cog):
         help="See how long Lumi has been online since his last update.",
     )
     @checks.allowed_in_channel()
-    async def uptime(self, ctx: bridge.Context) -> None:
-        unix_timestamp: int = int(round(self.start_time.timestamp()))
-        await ctx.respond(
-            embed=MiscInfo.uptime(ctx, self.client, unix_timestamp)
-        )
+    async def uptime(self, ctx) -> None:
+        await ping.uptime(self, ctx, self.start_time)
 
     @bridge.bridge_command(
         name="invite",
@@ -61,7 +57,7 @@ class Misc(commands.Cog):
         help="Generate a link to invite Lumi to your own server!",
     )
     @checks.allowed_in_channel()
-    async def invite_command(self, ctx: bridge.Context) -> None:
+    async def invite_command(self, ctx) -> None:
         await invite.cmd(ctx)
 
     @bridge.bridge_command(
@@ -72,7 +68,7 @@ class Misc(commands.Cog):
     )
     @commands.guild_only()
     @checks.allowed_in_channel()
-    async def prefix_command(self, ctx: bridge.Context) -> None:
+    async def prefix_command(self, ctx) -> None:
         await set_prefix.get_cmd(ctx)
 
     @bridge.bridge_command(
@@ -82,7 +78,7 @@ class Misc(commands.Cog):
         help="Shows basic Lumi stats.",
     )
     @checks.allowed_in_channel()
-    async def info_command(self, ctx: bridge.Context) -> None:
+    async def info_command(self, ctx) -> None:
         unix_timestamp: int = int(round(self.start_time.timestamp()))
         await info.cmd(self, ctx, unix_timestamp)
 
@@ -95,7 +91,7 @@ class Misc(commands.Cog):
         "can only be done in ONE server and only in Lumi's DMs.",
     )
     @commands.dm_only()
-    async def intro_command(self, ctx: bridge.Context) -> None:
+    async def intro_command(self, ctx) -> None:
         await introduction.cmd(self, ctx)
 
     """
@@ -106,15 +102,15 @@ class Misc(commands.Cog):
     )
 
     @xkcd.command(name="latest", description="Get the latest xkcd comic.")
-    async def xkcd_latest(self, ctx: bridge.Context) -> None:
+    async def xkcd_latest(self, ctx) -> None:
         await xkcd.print_comic(ctx, latest=True)
 
     @xkcd.command(name="random", description="Get a random xkcd comic.")
-    async def xkcd_random(self, ctx: bridge.Context) -> None:
+    async def xkcd_random(self, ctx) -> None:
         await xkcd.print_comic(ctx)
 
     @xkcd.command(name="search", description="Search for a xkcd comic by ID.")
-    async def xkcd_search(self, ctx: bridge.Context, *, id: int) -> None:
+    async def xkcd_search(self, ctx, *, id: int) -> None:
         await xkcd.print_comic(ctx, number=id)
 
 
