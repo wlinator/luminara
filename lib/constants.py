@@ -40,6 +40,11 @@ class Constants:
     STREAK_ICON = art["icons"]["streak"]
     WARNING_ICON = art["icons"]["warning"]
     
+    # art by JuicyBblue
+    FLOWERS_ART = art["juicybblue"]["flowers"]
+    TEAPOT_ART = art["juicybblue"]["teapot"]
+    MUFFIN_ART = art["juicybblue"]["muffin"]
+    
     # birthdays
     BIRTHDAY_MESSAGES = JsonCache.read_json("birthday")["birthday_messages"]
     BIRTHDAY_MONTHS = JsonCache.read_json("birthday")["months"]
