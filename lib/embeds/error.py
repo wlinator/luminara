@@ -143,9 +143,13 @@ class EconErrors:
     def daily_already_claimed(ctx, unix_time):
         embed = clean_error_embed(ctx)
         if embed.description is None:
-            embed.description = f"already claimed. You can claim your reward again <t:{unix_time}:R>."
+            embed.description = (
+                f"already claimed. You can claim your reward again <t:{unix_time}:R>."
+            )
         else:
-            embed.description += f"already claimed. You can claim your reward again <t:{unix_time}:R>."
+            embed.description += (
+                f"already claimed. You can claim your reward again <t:{unix_time}:R>."
+            )
         embed.set_footer(
             text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
             icon_url=CONST.QUESTION_ICON,
@@ -168,10 +172,16 @@ class EconErrors:
     def already_playing(ctx):
         embed = clean_error_embed(ctx)
         if embed.description is None:
-            embed.description = f"you already have a game of {ctx.command.name} running."
+            embed.description = (
+                f"you already have a game of {ctx.command.name} running."
+            )
         else:
-            embed.description += f"you already have a game of {ctx.command.name} running."
-        embed.set_footer(text="Please finish this game first", icon_url=CONST.EXCLAIM_ICON)
+            embed.description += (
+                f"you already have a game of {ctx.command.name} running."
+            )
+        embed.set_footer(
+            text="Please finish this game first", icon_url=CONST.EXCLAIM_ICON
+        )
 
         return embed
 
@@ -186,6 +196,7 @@ class BdayErrors:
             embed.description += "birthdays are disabled in this server."
 
         return embed
+
 
 class MiscErrors:
     @staticmethod
