@@ -14,7 +14,7 @@ class Greet:
     def message(member, template=None):
         embed = discord.Embed(
             color=discord.Color.embed_background(),
-            description=f"_ _\n**Welcome** to **{member.guild.name}**"
+            description=f"_ _\n**Welcome** to **{member.guild.name}**",
         )
 
         if template:
