@@ -8,7 +8,6 @@ art = JsonCache.read_json("art")
 
 
 class LumiHelp(commands.HelpCommand):
-
     def __init__(self, **options):
         super().__init__(**options)
         self.verify_checks = True
@@ -16,22 +15,19 @@ class LumiHelp(commands.HelpCommand):
             "aliases": ["h"],
             "help": "Show a list of commands, or information about a specific command when an argument is passed.",
             "name": "help",
-            "hidden": True
+            "hidden": True,
         }
 
     def get_command_qualified_name(self, command):
-        return '`%s%s`' % (self.context.clean_prefix, command.qualified_name)
+        return "`%s%s`" % (self.context.clean_prefix, command.qualified_name)
 
     async def send_bot_help(self, mapping):
         embed = discord.Embed(color=discord.Color.blurple())
 
         embed.set_author(name="Help Command", icon_url=art["logo"]["transparent"])
-        embed.description = (
-            "Full list of commands: https://wiki.wlinator.org/cmdlist"
-        )
+        embed.description = "Full list of commands: https://wiki.wlinator.org/cmdlist"
 
         for cog, lumi_commands in mapping.items():
-
             filtered = await self.filter_commands(lumi_commands, sort=True)
 
             if command_signatures := [
@@ -40,7 +36,11 @@ class LumiHelp(commands.HelpCommand):
                 # Remove duplicates using set() and convert back to a list
                 unique_command_signatures = list(set(command_signatures))
                 cog_name = getattr(cog, "qualified_name", "Help")
-                embed.add_field(name=cog_name, value=", ".join(sorted(unique_command_signatures)), inline=False)
+                embed.add_field(
+                    name=cog_name,
+                    value=", ".join(sorted(unique_command_signatures)),
+                    inline=False,
+                )
 
         channel = self.get_destination()
         await channel.send(embed=embed)
@@ -49,12 +49,20 @@ class LumiHelp(commands.HelpCommand):
         embed = discord.Embed(
             title=f"{self.context.clean_prefix}{command.qualified_name}",
             color=discord.Color.blurple(),
-            description=command.help
+            description=command.help,
         )
 
-        usage_value = '`%s%s %s`' % (self.context.clean_prefix, command.qualified_name, command.signature)
+        usage_value = "`%s%s %s`" % (
+            self.context.clean_prefix,
+            command.qualified_name,
+            command.signature,
+        )
         for alias in command.aliases:
-            usage_value += '\n`%s%s %s`' % (self.context.clean_prefix, alias, command.signature)
+            usage_value += "\n`%s%s %s`" % (
+                self.context.clean_prefix,
+                alias,
+                command.signature,
+            )
         embed.add_field(name="Usage", value=usage_value, inline=False)
 
         channel = self.get_destination()
@@ -66,13 +74,19 @@ class LumiHelp(commands.HelpCommand):
 
     async def send_group_help(self, group):
         channel = self.get_destination()
-        await channel.send(embed=HelpErrors.error_message(self.context,
-                                                          f"No command called \"{group.qualified_name}\" found."))
+        await channel.send(
+            embed=HelpErrors.error_message(
+                self.context, f'No command called "{group.qualified_name}" found.'
+            )
+        )
 
     async def send_cog_help(self, cog):
         channel = self.get_destination()
-        await channel.send(embed=HelpErrors.error_message(self.context,
-                                                          f"No command called \"{cog.qualified_name}\" found."))
+        await channel.send(
+            embed=HelpErrors.error_message(
+                self.context, f'No command called "{cog.qualified_name}" found.'
+            )
+        )
 
     async def command_callback(self, ctx, *, command=None):
         await self.prepare_help_command(ctx, command)

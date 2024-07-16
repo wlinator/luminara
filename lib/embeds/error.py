@@ -14,16 +14,6 @@ def clean_error_embed(ctx):
 
 class GenericErrors:
     @staticmethod
-    def default_exception(ctx):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = "something went wrong."
-        else:
-            embed.description += "something went wrong."
-
-        return embed
-
-    @staticmethod
     def bad_arg(ctx, error):
         embed = clean_error_embed(ctx)
         if embed.description is None:
@@ -44,55 +34,6 @@ class GenericErrors:
             embed.description = formatter.shorten(str(error), 100)
         else:
             embed.description += formatter.shorten(str(error), 100)
-
-        return embed
-
-    @staticmethod
-    def missing_permissions(ctx):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = "you are missing permissions to run this command."
-        else:
-            embed.description += "you are missing permissions to run this command."
-        embed.set_footer(
-            text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-            icon_url=CONST.QUESTION_ICON,
-        )
-
-        return embed
-
-    @staticmethod
-    def bot_missing_permissions(ctx):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = "I can't perform this command because I don't have the required permissions."
-        else:
-            embed.description += "I can't perform this command because I don't have the required permissions."
-        embed.set_footer(
-            text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-            icon_url=CONST.QUESTION_ICON,
-        )
-
-        return embed
-
-    @staticmethod
-    def command_on_cooldown(ctx, cooldown):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = "you are on cooldown."
-        else:
-            embed.description += "you are on cooldown."
-        embed.set_footer(text=f"Try again in {cooldown}", icon_url=CONST.EXCLAIM_ICON)
-
-        return embed
-
-    @staticmethod
-    def owner_only(ctx):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = "this command requires Lumi ownership permissions."
-        else:
-            embed.description += "this command requires Lumi ownership permissions."
 
         return embed
 
@@ -182,18 +123,6 @@ class EconErrors:
         embed.set_footer(
             text="Please finish this game first", icon_url=CONST.EXCLAIM_ICON
         )
-
-        return embed
-
-
-class BdayErrors:
-    @staticmethod
-    def birthdays_disabled(ctx):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = "birthdays are disabled in this server."
-        else:
-            embed.description += "birthdays are disabled in this server."
 
         return embed
 

@@ -2,62 +2,95 @@ import sys
 import traceback
 from loguru import logger
 
-import discord
 from discord.ext import commands
 from discord.ext.commands import Cog
 
-from lib.embeds.error import GenericErrors, BdayErrors
 from lib.exceptions import LumiExceptions
+from lib.embed_builder import EmbedBuilder
+from lib.constants import CONST
 
 
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        pass
+        return
 
-    elif isinstance(error, commands.CommandOnCooldown):
+    author_text = None
+    description = None
+    footer_text = None
+    ephemeral = False
 
-        seconds = error.retry_after
-        minutes = seconds // 60
-        seconds %= 60
-        cooldown = "{:02d}:{:02d}".format(int(minutes), int(seconds))
+    if isinstance(error, commands.MissingRequiredArgument):
+        author_text = CONST.STRINGS["error_bad_argument_author"]
+        description = CONST.STRINGS["error_bad_argument_description"].format(str(error))
 
-        await ctx.respond(embed=GenericErrors.command_on_cooldown(ctx, cooldown))
-
-    elif isinstance(error, commands.MissingPermissions):
-        await ctx.respond(embed=GenericErrors.missing_permissions(ctx))
+    elif isinstance(error, commands.BadArgument):
+        author_text = CONST.STRINGS["error_bad_argument_author"]
+        description = CONST.STRINGS["error_bad_argument_description"].format(str(error))
 
     elif isinstance(error, commands.BotMissingPermissions):
-        await ctx.respond(embed=GenericErrors.bot_missing_permissions(ctx))
+        author_text = CONST.STRINGS["error_bot_missing_permissions_author"]
+        description = CONST.STRINGS["error_bot_missing_permissions_description"]
 
-    elif isinstance(error, commands.PrivateMessageOnly):
-        await ctx.respond(embed=GenericErrors.private_message_only(ctx))
+    elif isinstance(error, commands.CommandOnCooldown):
+        author_text = CONST.STRINGS["error_command_cooldown_author"]
+        description = CONST.STRINGS["error_command_cooldown_description"].format(
+            int(error.retry_after // 60), int(error.retry_after % 60)
+        )
+        ephemeral = True
+
+    elif isinstance(error, commands.MissingPermissions):
+        author_text = CONST.STRINGS["error_missing_permissions_author"]
+        description = CONST.STRINGS["error_missing_permissions_description"]
 
     elif isinstance(error, commands.NoPrivateMessage):
-        await ctx.respond(embed=GenericErrors.guild_only(ctx))
+        author_text = CONST.STRINGS["error_no_private_message_author"]
+        description = CONST.STRINGS["error_no_private_message_description"]
 
     elif isinstance(error, commands.NotOwner):
-        await ctx.respond(embed=GenericErrors.owner_only(ctx))
+        author_text = CONST.STRINGS["error_not_owner_author"]
+        description = CONST.STRINGS["error_not_owner_description"]
 
-    elif isinstance(error, (commands.MissingRequiredArgument, commands.BadArgument)):
-        return await ctx.respond(embed=GenericErrors.bad_arg(ctx, error))
+    elif isinstance(error, commands.PrivateMessageOnly):
+        author_text = CONST.STRINGS["error_private_message_only_author"]
+        description = CONST.STRINGS["error_private_message_only_description"]
 
-    elif isinstance(error, (discord.CheckFailure, commands.CheckFailure)):
+    elif isinstance(error, LumiExceptions.BirthdaysDisabled):
+        author_text = CONST.STRINGS["error_birthdays_disabled_author"]
+        description = CONST.STRINGS["error_birthdays_disabled_description"]
+        footer_text = CONST.STRINGS["error_birthdays_disabled_footer"]
 
-        """subclasses of this exception"""
-        if isinstance(error, LumiExceptions.NotAllowedInChannel):
-            await ctx.respond(content=f"You can only do that command in {error.command_channel.mention}.",
-                              ephemeral=True)
+    elif isinstance(error, LumiExceptions.LumiException):
+        author_text = CONST.STRINGS["error_lumi_exception_author"]
+        description = CONST.STRINGS["error_lumi_exception_description"].format(
+            str(error)
+        )
 
-        elif isinstance(error, LumiExceptions.BirthdaysDisabled):
-            await ctx.respond(embed=BdayErrors.birthdays_disabled(ctx))
+    elif isinstance(error, LumiExceptions.NotAllowedInChannel):
+        author_text = CONST.STRINGS["error_not_allowed_in_channel_author"]
+        description = CONST.STRINGS["error_not_allowed_in_channel_description"].format(
+            error.command_channel.mention
+        )
+        ephemeral = True
 
     else:
-        await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        logger.error(f"on_command_error: errors.command.{ctx.command.qualified_name} | user: {ctx.author.name}")
+        author_text = CONST.STRINGS["error_unknown_error_author"]
+        description = CONST.STRINGS["error_unknown_error_description"]
+
+    await ctx.respond(
+        embed=EmbedBuilder.create_error_embed(
+            ctx,
+            author_text=author_text,
+            description=description,
+            footer_text=footer_text,
+        ),
+        ephemeral=ephemeral,
+    )
 
 
 async def on_error(event: str, *args, **kwargs) -> None:
-    logger.exception(f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}")
+    logger.exception(
+        f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}"
+    )
     logger.exception(f"on_error EXCEPTION: {sys.exc_info()}")
     traceback.print_exc()
 
@@ -66,40 +99,32 @@ class ErrorListener(Cog):
     def __init__(self, client):
         self.client = client
 
-    @Cog.listener()
-    async def on_command_error(self, ctx, error) -> None:
-
-        # on a prefix command, don't send anything if channel check fails. (to prevent spam in non-bot channels)
-        # current issues with this: await ctx.trigger_typing() is still invoked for 10 seconds.
-        if not isinstance(error, LumiExceptions.NotAllowedInChannel):
-            await on_command_error(ctx, error)
-
-        log_msg = '%s executed .%s' % (ctx.author.name, ctx.command.qualified_name)
+    @staticmethod
+    async def log_command_error(ctx, error, command_type):
+        log_msg = (
+            f"{ctx.author.name} executed {command_type}{ctx.command.qualified_name}"
+        )
 
         if ctx.guild is not None:
             log_msg += f" | guild: {ctx.guild.name} "
         else:
             log_msg += " in DMs"
 
-        # make error shorter than full screen width
         if len(str(error)) > 80:
             error = str(error)[:80] + "..."
         logger.warning(f"{log_msg} | FAILED: {error}")
+
+    @Cog.listener()
+    async def on_command_error(self, ctx, error) -> None:
+        if isinstance(error, LumiExceptions.NotAllowedInChannel):
+            return
+        await on_command_error(ctx, error)
+        await self.log_command_error(ctx, error, ".")
 
     @Cog.listener()
     async def on_application_command_error(self, ctx, error) -> None:
         await on_command_error(ctx, error)
-        log_msg = '%s executed /%s' % (ctx.author.name, ctx.command.qualified_name)
-
-        if ctx.guild is not None:
-            log_msg += f" | guild: {ctx.guild.name} "
-        else:
-            log_msg += " in DMs"
-
-        # make error shorter than full screen width
-        if len(str(error)) > 80:
-            error = str(error)[:80] + "..."
-        logger.warning(f"{log_msg} | FAILED: {error}")
+        await self.log_command_error(ctx, error, "/")
 
     @Cog.listener()
     async def on_error(self, event: str, *args, **kwargs) -> None:
