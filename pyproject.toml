@@ -19,6 +19,7 @@ pyright = "^1.1.371"
 python = "^3.12"
 pytz = "^2024.1"
 ruff = "^0.5.2"
+pyyaml = "^6.0.1"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
