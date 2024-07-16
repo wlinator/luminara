@@ -1,14 +1,10 @@
-import os
+from lib.constants import CONST
 import time
 from typing import Callable, Dict, List, Optional, Tuple
 
 from discord.ext import commands
 
 from db import database
-
-
-xp_gain_per_message: int = int(os.environ.get("LUMI_XP_GAIN_PER_MESSAGE", 1))
-xp_gain_cooldown: int = int(os.environ.get("LUMI_XP_GAIN_COOLDOWN", 8))
 
 
 class XpService:
@@ -29,8 +25,8 @@ class XpService:
         self.xp: int = 0
         self.level: int = 0
         self.cooldown_time: Optional[float] = None
-        self.xp_gain: int = xp_gain_per_message
-        self.new_cooldown: int = xp_gain_cooldown
+        self.xp_gain: int = CONST.XP_GAIN_PER_MESSAGE
+        self.new_cooldown: int = CONST.XP_GAIN_COOLDOWN
 
         self.fetch_or_create_xp()
 
