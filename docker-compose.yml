@@ -1,28 +1,15 @@
 services:
   core:
     build: .
+    container_name: lumi_core
     restart: always
-    environment:
-      LUMI_TOKEN: ${TOKEN}
-      LUMI_INSTANCE: ${INSTANCE}
-      LUMI_OWNER_ID: ${OWNER_ID}
-      LUMI_XP_GAIN_PER_MESSAGE: ${XP_GAIN_PER_MESSAGE}
-      LUMI_XP_GAIN_COOLDOWN: ${XP_GAIN_COOLDOWN}
-      LUMI_DBX_OAUTH2_REFRESH_TOKEN: ${DBX_OAUTH2_REFRESH_TOKEN}
-      LUMI_DBX_APP_KEY: ${DBX_APP_KEY}
-      LUMI_DBX_APP_SECRET: ${DBX_APP_SECRET}
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-    volumes:
-      - debug_log:/usr/src/app/logs
     depends_on:
       db:
         condition: service_healthy
 
   db:
     image: mariadb
+    container_name: lumi_db
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
@@ -40,10 +27,10 @@ services:
 
   adminer:
     image: adminer
+    container_name: lumi_adminer
     restart: always
     ports:
       - 8080:8080
 
 volumes:
   database:
-  debug_log:
