@@ -8,7 +8,6 @@ readme = "README.md"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
-discord-anti-spam = "^1.9.1"
 dropbox = "^12.0.2"
 httpx = "^0.27.0"
 loguru = "^0.7.2"
