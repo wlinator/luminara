@@ -18,10 +18,10 @@ class Constants:
     OWNER_IDS: Optional[Set[int]] = (
         {
             int(id.strip())
-            for id in os.environ.get("OWNER_ID", "").split(",")
+            for id in os.environ.get("OWNER_IDS", "").split(",")
             if id.strip()
         }
-        if os.environ.get("OWNER_ID")
+        if os.environ.get("OWNER_IDS")
         else None
     )
 
