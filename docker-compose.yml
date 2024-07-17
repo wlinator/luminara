@@ -1,7 +1,7 @@
 services:
   core:
     build: .
-    container_name: lumi_core
+    container_name: lumi-core
     restart: always
     depends_on:
       db:
@@ -9,7 +9,7 @@ services:
 
   db:
     image: mariadb
-    container_name: lumi_db
+    container_name: lumi-db
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
@@ -27,7 +27,7 @@ services:
 
   adminer:
     image: adminer
-    container_name: lumi_adminer
+    container_name: lumi-adminer
     restart: always
     ports:
       - 8080:8080
