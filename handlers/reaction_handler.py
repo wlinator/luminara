@@ -38,9 +38,9 @@ class ReactionHandler:
 
                 if processed:
                     await self.reaction_service.increment_reaction_usage(
-                        int(data["id"])
+                        int(data["id"]),
                     )
-    
+
     async def try_respond(self, data) -> bool:
         """
         Tries to respond to the message.
@@ -53,7 +53,7 @@ class ReactionHandler:
             except Exception:
                 pass
         return False
-        
+
     async def try_react(self, data) -> bool:
         """
         Tries to react to the message.
@@ -82,7 +82,7 @@ class ReactionListener(Cog):
         :param message: The message to process.
         """
         if not message.author.bot and not BlacklistUserService.is_user_blacklisted(
-            message.author.id
+            message.author.id,
         ):
             await ReactionHandler(self.client, message).run_checks()
 

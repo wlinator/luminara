@@ -76,16 +76,18 @@ class LumiHelp(commands.HelpCommand):
         channel = self.get_destination()
         await channel.send(
             embed=HelpErrors.error_message(
-                self.context, f'No command called "{group.qualified_name}" found.'
-            )
+                self.context,
+                f'No command called "{group.qualified_name}" found.',
+            ),
         )
 
     async def send_cog_help(self, cog):
         channel = self.get_destination()
         await channel.send(
             embed=HelpErrors.error_message(
-                self.context, f'No command called "{cog.qualified_name}" found.'
-            )
+                self.context,
+                f'No command called "{cog.qualified_name}" found.',
+            ),
         )
 
     async def command_callback(self, ctx, *, command=None):
@@ -112,7 +114,8 @@ class LumiHelp(commands.HelpCommand):
         cmd = bot.all_commands.get(keys[0].removeprefix(self.context.prefix))
         if cmd is None:
             string = await maybe_coro(
-                self.command_not_found, self.remove_mentions(keys[0])
+                self.command_not_found,
+                self.remove_mentions(keys[0]),
             )
             return await self.send_error_message(string)
 
@@ -121,13 +124,17 @@ class LumiHelp(commands.HelpCommand):
                 found = cmd.all_commands.get(key)
             except AttributeError:
                 string = await maybe_coro(
-                    self.subcommand_not_found, cmd, self.remove_mentions(key)
+                    self.subcommand_not_found,
+                    cmd,
+                    self.remove_mentions(key),
                 )
                 return await self.send_error_message(string)
             else:
                 if found is None:
                     string = await maybe_coro(
-                        self.subcommand_not_found, cmd, self.remove_mentions(key)
+                        self.subcommand_not_found,
+                        cmd,
+                        self.remove_mentions(key),
                     )
                     return await self.send_error_message(string)
                 cmd = found

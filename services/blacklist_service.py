@@ -38,4 +38,3 @@ class BlacklistUserService:
                 """
         result: List[Tuple[bool]] = database.select_query(query, (user_id,))
         return any(active for (active,) in result)
-

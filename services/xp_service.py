@@ -52,7 +52,8 @@ class XpService:
 
         try:
             user_xp, user_level, cooldown = database.select_query(
-                query, (self.user_id, self.guild_id)
+                query,
+                (self.user_id, self.guild_id),
             )[0]
         except (IndexError, TypeError):
             user_xp, user_level, cooldown = 0, 0, None
@@ -83,14 +84,16 @@ class XpService:
                 ORDER BY user_level DESC, user_xp DESC
                 """
         data: List[Tuple[int, int, int]] = database.select_query(
-            query, (self.guild_id,)
+            query,
+            (self.guild_id,),
         )
 
         leaderboard: List[Tuple[int, int, int, int]] = [
             (row[0], row[1], row[2], rank) for rank, row in enumerate(data, start=1)
         ]
         return next(
-            (entry[3] for entry in leaderboard if entry[0] == self.user_id), None
+            (entry[3] for entry in leaderboard if entry[0] == self.user_id),
+            None,
         )
 
     @staticmethod
@@ -118,18 +121,20 @@ class XpService:
             user_xp: int = row[1]
             user_level: int = row[2]
             needed_xp_for_next_level: int = XpService.xp_needed_for_next_level(
-                user_level
+                user_level,
             )
 
             leaderboard.append(
-                (row_user_id, user_xp, user_level, needed_xp_for_next_level)
+                (row_user_id, user_xp, user_level, needed_xp_for_next_level),
             )
 
         return leaderboard
 
     @staticmethod
     def generate_progress_bar(
-        current_value: int, target_value: int, bar_length: int = 10
+        current_value: int,
+        target_value: int,
+        bar_length: int = 10,
     ) -> str:
         """
         Generates an XP progress bar based on the current level and XP.
@@ -214,7 +219,8 @@ class XpRewardService:
                 ORDER BY level DESC
                 """
         data: List[Tuple[int, int, bool]] = database.select_query(
-            query, (self.guild_id,)
+            query,
+            (self.guild_id,),
         )
         return {level: (role_id, persistent) for level, role_id, persistent in data}
 
@@ -239,7 +245,8 @@ class XpRewardService:
                 ON DUPLICATE KEY UPDATE role_id = %s, persistent = %s;
                 """
         database.execute_query(
-            query, (self.guild_id, level, role_id, persistent, role_id, persistent)
+            query,
+            (self.guild_id, level, role_id, persistent, role_id, persistent),
         )
         self.rewards[level] = (role_id, persistent)
 

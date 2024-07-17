@@ -34,7 +34,8 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.CommandOnCooldown):
         author_text = CONST.STRINGS["error_command_cooldown_author"]
         description = CONST.STRINGS["error_command_cooldown_description"].format(
-            int(error.retry_after // 60), int(error.retry_after % 60)
+            int(error.retry_after // 60),
+            int(error.retry_after % 60),
         )
         ephemeral = True
 
@@ -62,13 +63,13 @@ async def on_command_error(ctx, error):
     elif isinstance(error, LumiExceptions.LumiException):
         author_text = CONST.STRINGS["error_lumi_exception_author"]
         description = CONST.STRINGS["error_lumi_exception_description"].format(
-            str(error)
+            str(error),
         )
 
     elif isinstance(error, LumiExceptions.NotAllowedInChannel):
         author_text = CONST.STRINGS["error_not_allowed_in_channel_author"]
         description = CONST.STRINGS["error_not_allowed_in_channel_description"].format(
-            error.command_channel.mention
+            error.command_channel.mention,
         )
         ephemeral = True
 
@@ -89,7 +90,7 @@ async def on_command_error(ctx, error):
 
 async def on_error(event: str, *args, **kwargs) -> None:
     logger.exception(
-        f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}"
+        f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}",
     )
     logger.exception(f"on_error EXCEPTION: {sys.exc_info()}")
     traceback.print_exc()

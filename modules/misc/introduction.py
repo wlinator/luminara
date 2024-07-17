@@ -25,17 +25,18 @@ async def cmd(self, ctx: bridge.Context) -> None:
                 author_text=CONST.STRINGS["intro_no_guild_author"],
                 description=CONST.STRINGS["intro_no_guild"],
                 footer_text=CONST.STRINGS["intro_service_name"],
-            )
+            ),
         )
         return
 
     question_mapping: Dict[str, str] = CONST.KRC_QUESTION_MAPPING
     channel: Optional[discord.abc.GuildChannel] = guild.get_channel(
-        CONST.KRC_INTRO_CHANNEL_ID
+        CONST.KRC_INTRO_CHANNEL_ID,
     )
 
     if not channel or isinstance(
-        channel, (discord.ForumChannel, discord.CategoryChannel)
+        channel,
+        (discord.ForumChannel, discord.CategoryChannel),
     ):
         await ctx.respond(
             embed=EmbedBuilder.create_error_embed(
@@ -43,7 +44,7 @@ async def cmd(self, ctx: bridge.Context) -> None:
                 author_text=CONST.STRINGS["intro_no_channel_author"],
                 description=CONST.STRINGS["intro_no_channel"],
                 footer_text=CONST.STRINGS["intro_service_name"],
-            )
+            ),
         )
         return
 
@@ -68,7 +69,7 @@ async def cmd(self, ctx: bridge.Context) -> None:
                 author_text=CONST.STRINGS["intro_stopped_author"],
                 description=CONST.STRINGS["intro_stopped"],
                 footer_text=CONST.STRINGS["intro_service_name"],
-            )
+            ),
         )
         return
 
@@ -76,7 +77,8 @@ async def cmd(self, ctx: bridge.Context) -> None:
 
         def check(message: discord.Message) -> bool:
             return message.author == ctx.author and isinstance(
-                message.channel, discord.DMChannel
+                message.channel,
+                discord.DMChannel,
             )
 
         answer_mapping: Dict[str, str] = {}
@@ -88,12 +90,14 @@ async def cmd(self, ctx: bridge.Context) -> None:
                     author_text=key,
                     description=question,
                     footer_text=CONST.STRINGS["intro_question_footer"],
-                )
+                ),
             )
 
             try:
                 answer: discord.Message = await self.client.wait_for(
-                    "message", check=check, timeout=120
+                    "message",
+                    check=check,
+                    timeout=120,
                 )
                 answer_content: str = answer.content.replace("\n", " ")
 
@@ -104,7 +108,7 @@ async def cmd(self, ctx: bridge.Context) -> None:
                             author_text=CONST.STRINGS["intro_too_long_author"],
                             description=CONST.STRINGS["intro_too_long"],
                             footer_text=CONST.STRINGS["intro_service_name"],
-                        )
+                        ),
                     )
                     return
 
@@ -117,7 +121,7 @@ async def cmd(self, ctx: bridge.Context) -> None:
                         author_text=CONST.STRINGS["intro_timeout_author"],
                         description=CONST.STRINGS["intro_timeout"],
                         footer_text=CONST.STRINGS["intro_service_name"],
-                    )
+                    ),
                 )
                 return
 
@@ -147,9 +151,9 @@ async def cmd(self, ctx: bridge.Context) -> None:
                 embed=EmbedBuilder.create_embed(
                     ctx,
                     description=CONST.STRINGS["intro_post_confirmation"].format(
-                        channel.mention
+                        channel.mention,
                     ),
-                )
+                ),
             )
         else:
             await ctx.send(
@@ -158,5 +162,5 @@ async def cmd(self, ctx: bridge.Context) -> None:
                     author_text=CONST.STRINGS["intro_stopped_author"],
                     description=CONST.STRINGS["intro_stopped"],
                     footer_text=CONST.STRINGS["intro_service_name"],
-                )
+                ),
             )

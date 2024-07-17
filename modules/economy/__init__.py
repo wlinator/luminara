@@ -48,7 +48,9 @@ class Economy(commands.Cog):
         return await daily.cmd(ctx)
 
     @commands.slash_command(
-        name="give", description="Give a server member some cash.", guild_only=True
+        name="give",
+        description="Give a server member some cash.",
+        guild_only=True,
     )
     @commands.guild_only()
     @checks.allowed_in_channel()

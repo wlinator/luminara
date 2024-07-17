@@ -17,7 +17,7 @@ async def add(ctx, month, month_index, day):
         raise commands.BadArgument("the date you entered is invalid.")
 
     date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
-    date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
 
     birthday = Birthday(ctx.author.id, ctx.guild.id)
     birthday.set(date_obj)
@@ -38,7 +38,7 @@ async def upcoming(ctx):
     icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
 
     embed = discord.Embed(
-        color=discord.Color.embed_background()
+        color=discord.Color.embed_background(),
     )
     embed.set_author(name="Upcoming Birthdays!", icon_url=icon)
     embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
@@ -61,7 +61,7 @@ async def upcoming(ctx):
         embed.add_field(
             name=f"{name}",
             value=f"🎂 {formatted_birthday}",
-            inline=False
+            inline=False,
         )
 
         found_birthdays += 1

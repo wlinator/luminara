@@ -18,8 +18,10 @@ async def get_avatar(ctx: bridge.Context, member: Member) -> None:
         The discord context object.
     member : Member
         The member to get the avatar of.
-    """    
-    guild_avatar: Optional[str] = member.guild_avatar.url if member.guild_avatar else None
+    """
+    guild_avatar: Optional[str] = (
+        member.guild_avatar.url if member.guild_avatar else None
+    )
     profile_avatar: Optional[str] = member.avatar.url if member.avatar else None
 
     files: list[File] = [

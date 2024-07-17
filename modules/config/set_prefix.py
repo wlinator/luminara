@@ -7,7 +7,9 @@ async def set_cmd(ctx, prefix):
     if len(prefix) > 25:
         return await ctx.respond(embed=MiscErrors.prefix_too_long(ctx))
 
-    guild_config = GuildConfig(ctx.guild.id)  # generate a guild_config for if it didn't already exist
+    guild_config = GuildConfig(
+        ctx.guild.id,
+    )  # generate a guild_config for if it didn't already exist
     GuildConfig.set_prefix(guild_config.guild_id, prefix)
 
     await ctx.respond(embed=MiscInfo.set_prefix(ctx, prefix))

@@ -11,13 +11,12 @@ async def cmd(self, ctx):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description=description
+        description=description,
     )
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
 
     for item, quantity in inventory_dict.items():
         if item.type == "badge":
-
             if not embed.description:
                 embed.description = "**Badges:** "
 
@@ -26,8 +25,10 @@ async def cmd(self, ctx):
 
         else:
             emote = self.client.get_emoji(item.emote_id)
-            embed.add_field(name=f"{emote} {item.display_name.capitalize()}",
-                            value=f"*— amount: `{quantity}`*",
-                            inline=False)
+            embed.add_field(
+                name=f"{emote} {item.display_name.capitalize()}",
+                value=f"*— amount: `{quantity}`*",
+                inline=False,
+            )
 
     await ctx.respond(embed=embed)

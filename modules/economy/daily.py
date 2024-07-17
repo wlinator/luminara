@@ -17,7 +17,7 @@ async def cmd(ctx) -> None:
             ctx,
             author_text=CONST.STRINGS["daily_already_claimed_author"],
             description=CONST.STRINGS["daily_already_claimed_description"].format(
-                unix_time
+                unix_time,
             ),
             footer_text=CONST.STRINGS["daily_already_claimed_footer"],
         )
@@ -33,7 +33,7 @@ async def cmd(ctx) -> None:
         ctx,
         author_text=CONST.STRINGS["daily_success_claim_author"],
         description=CONST.STRINGS["daily_success_claim_description"].format(
-            Currency.format(ctx_daily.amount)
+            Currency.format(ctx_daily.amount),
         ),
         footer_text=CONST.STRINGS["daily_streak_footer"].format(ctx_daily.streak)
         if ctx_daily.streak > 1

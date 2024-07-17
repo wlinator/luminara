@@ -9,7 +9,8 @@ from lib.constants import CONST
 async def cmd(ctx: bridge.BridgeContext) -> None:
     await ctx.respond(
         embed=EmbedBuilder.create_success_embed(
-            ctx, description=CONST.STRINGS["invite_description"]
+            ctx,
+            description=CONST.STRINGS["invite_description"],
         ),
         view=InviteButton(),
     )

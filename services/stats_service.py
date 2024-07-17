@@ -18,7 +18,14 @@ class BlackJackStats:
         VALUES (%s, %s, %s, %s, %s, %s)
         """
 
-        values = (self.user_id, self.is_won, self.bet, self.payout, self.hand_player, self.hand_dealer)
+        values = (
+            self.user_id,
+            self.is_won,
+            self.bet,
+            self.payout,
+            self.hand_player,
+            self.hand_dealer,
+        )
 
         database.execute_query(query, values)
 
@@ -34,15 +41,20 @@ class BlackJackStats:
                 FROM blackjack
                 WHERE user_id = %s;
                 """
-        (amount_of_games, total_bet,
-         total_payout, winning_amount, losing_amount) = database.select_query(query, (user_id,))[0]
+        (
+            amount_of_games,
+            total_bet,
+            total_payout,
+            winning_amount,
+            losing_amount,
+        ) = database.select_query(query, (user_id,))[0]
 
         return {
             "amount_of_games": amount_of_games,
             "total_bet": total_bet,
             "total_payout": total_payout,
             "winning_amount": winning_amount,
-            "losing_amount": losing_amount
+            "losing_amount": losing_amount,
         }
 
     @staticmethod
@@ -77,7 +89,14 @@ class SlotsStats:
         VALUES (%s, %s, %s, %s, %s, %s)
         """
 
-        values = (self.user_id, self.is_won, self.bet, self.payout, self.spin_type, self.icons)
+        values = (
+            self.user_id,
+            self.is_won,
+            self.bet,
+            self.payout,
+            self.spin_type,
+            self.icons,
+        )
 
         database.execute_query(query, values)
 
@@ -99,9 +118,15 @@ class SlotsStats:
         WHERE user_id = %s
         """
 
-        (amount_of_games, total_bet,
-         total_payout, games_won_pair, games_won_three_of_a_kind,
-         games_won_three_diamonds, games_won_jackpot) = database.select_query(query, (user_id,))[0]
+        (
+            amount_of_games,
+            total_bet,
+            total_payout,
+            games_won_pair,
+            games_won_three_of_a_kind,
+            games_won_three_diamonds,
+            games_won_jackpot,
+        ) = database.select_query(query, (user_id,))[0]
 
         return {
             "amount_of_games": amount_of_games,
@@ -110,5 +135,5 @@ class SlotsStats:
             "games_won_pair": games_won_pair,
             "games_won_three_of_a_kind": games_won_three_of_a_kind,
             "games_won_three_diamonds": games_won_three_diamonds,
-            "games_won_jackpot": games_won_jackpot
+            "games_won_jackpot": games_won_jackpot,
         }

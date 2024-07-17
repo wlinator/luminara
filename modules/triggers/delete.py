@@ -1,11 +1,16 @@
 from discord.ext import bridge
 from services.reactions_service import CustomReactionsService
-from lib.embeds.triggers import create_deletion_embed, create_failure_embed, create_not_found_embed
+from lib.embeds.triggers import (
+    create_deletion_embed,
+    create_failure_embed,
+    create_not_found_embed,
+)
+
 
 async def delete_reaction(ctx: bridge.Context, reaction_id: int) -> None:
     if ctx.guild is None:
         return
-    
+
     reaction_service = CustomReactionsService()
     guild_id: int = ctx.guild.id
 

@@ -14,7 +14,7 @@ from services.currency_service import Currency
 from services.stats_service import BlackJackStats
 
 resources = JsonCache.read_json("resources")
-est = pytz.timezone('US/Eastern')
+est = pytz.timezone("US/Eastern")
 active_blackjack_games = {}
 
 
@@ -48,7 +48,6 @@ async def cmd(ctx, bet: int):
     active_blackjack_games[ctx.author.id] = True
 
     try:
-
         player_hand = []
         dealer_hand = []
         deck = get_new_deck()
@@ -69,11 +68,18 @@ async def cmd(ctx, bet: int):
 
         while status == 0:
             if not playing_embed:
-                await ctx.respond(embed=blackjack_show(ctx, Currency.format_human(bet), player_hand,
-                                                       dealer_hand, player_hand_value,
-                                                       dealer_hand_value),
-                                  view=view,
-                                  content=ctx.author.mention)
+                await ctx.respond(
+                    embed=blackjack_show(
+                        ctx,
+                        Currency.format_human(bet),
+                        player_hand,
+                        dealer_hand,
+                        player_hand_value,
+                        dealer_hand_value,
+                    ),
+                    view=view,
+                    content=ctx.author.mention,
+                )
 
                 playing_embed = True
 
@@ -110,9 +116,14 @@ async def cmd(ctx, bet: int):
 
             # refresh
             view = interaction.BlackJackButtons(ctx)
-            embed = blackjack_show(ctx, Currency.format_human(bet), player_hand,
-                                   dealer_hand, player_hand_value,
-                                   dealer_hand_value)
+            embed = blackjack_show(
+                ctx,
+                Currency.format_human(bet),
+                player_hand,
+                dealer_hand,
+                player_hand_value,
+                dealer_hand_value,
+            )
 
             await ctx.edit(embed=embed, view=view, content=ctx.author.mention)
 
@@ -122,8 +133,14 @@ async def cmd(ctx, bet: int):
         payout = bet * multiplier if not status == 5 else bet * 2
         is_won = False if status == 1 or status == 4 else True
 
-        embed = blackjack_finished(ctx, Currency.format_human(bet), player_hand_value,
-                                   dealer_hand_value, Currency.format_human(payout), status)
+        embed = blackjack_finished(
+            ctx,
+            Currency.format_human(bet),
+            player_hand_value,
+            dealer_hand_value,
+            Currency.format_human(payout),
+            status,
+        )
 
         if playing_embed:
             await ctx.edit(embed=embed, view=None, content=ctx.author.mention)
@@ -143,12 +160,15 @@ async def cmd(ctx, bet: int):
                 bet=bet,
                 payout=0,
                 hand_player=player_hand,
-                hand_dealer=dealer_hand
+                hand_dealer=dealer_hand,
             )
             stats.push()
 
         elif status == 6:
-            await ctx.send(embed=EconErrors.out_of_time(ctx), content=ctx.author.mention)
+            await ctx.send(
+                embed=EconErrors.out_of_time(ctx),
+                content=ctx.author.mention,
+            )
             ctx_currency.take_balance(bet)
             ctx_currency.push()
 
@@ -163,7 +183,7 @@ async def cmd(ctx, bet: int):
                 bet=bet,
                 payout=payout,
                 hand_player=player_hand,
-                hand_dealer=dealer_hand
+                hand_dealer=dealer_hand,
             )
             stats.push()
 
@@ -176,30 +196,45 @@ async def cmd(ctx, bet: int):
         del active_blackjack_games[ctx.author.id]
 
 
-def blackjack_show(ctx, bet, player_hand, dealer_hand, player_hand_value, dealer_hand_value):
+def blackjack_show(
+    ctx,
+    bet,
+    player_hand,
+    dealer_hand,
+    player_hand_value,
+    dealer_hand_value,
+):
     current_time = datetime.now(est).strftime("%I:%M %p")
     thumbnail_url = None
 
     embed = discord.Embed(
         title="BlackJack",
-        color=discord.Color.dark_orange()
+        color=discord.Color.dark_orange(),
     )
 
-    embed.description = f"**You**\n" \
-                        f"Score: {player_hand_value}\n" \
-                        f"*Hand: {' + '.join(player_hand)}*\n\n"
+    embed.description = (
+        f"**You**\n"
+        f"Score: {player_hand_value}\n"
+        f"*Hand: {' + '.join(player_hand)}*\n\n"
+    )
 
     if len(dealer_hand) < 2:
-        embed.description += f"**Dealer**\n" \
-                             f"Score: {dealer_hand_value}\n" \
-                             f"*Hand: {dealer_hand[0]} + ??*"
+        embed.description += (
+            f"**Dealer**\n"
+            f"Score: {dealer_hand_value}\n"
+            f"*Hand: {dealer_hand[0]} + ??*"
+        )
     else:
-        embed.description += f"**Dealer | Score: {dealer_hand_value}**\n" \
-                             f"*Hand: {' + '.join(dealer_hand)}*"
+        embed.description += (
+            f"**Dealer | Score: {dealer_hand_value}**\n"
+            f"*Hand: {' + '.join(dealer_hand)}*"
+        )
 
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Bet ${bet} • deck shuffled • Today at {current_time}",
-                     icon_url="https://i.imgur.com/96jPPXO.png")
+    embed.set_footer(
+        text=f"Bet ${bet} • deck shuffled • Today at {current_time}",
+        icon_url="https://i.imgur.com/96jPPXO.png",
+    )
 
     if thumbnail_url:
         embed.set_thumbnail(url=thumbnail_url)
@@ -212,13 +247,16 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
     thumbnail_url = None
 
     embed = discord.Embed(
-        title="BlackJack"
+        title="BlackJack",
     )
-    embed.description = f"You | Score: {player_hand_value}\n" \
-                        f"Dealer | Score: {dealer_hand_value}"
+    embed.description = (
+        f"You | Score: {player_hand_value}\n" f"Dealer | Score: {dealer_hand_value}"
+    )
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(text=f"Game finished • Today at {current_time}",
-                     icon_url="https://i.imgur.com/96jPPXO.png")
+    embed.set_footer(
+        text=f"Game finished • Today at {current_time}",
+        icon_url="https://i.imgur.com/96jPPXO.png",
+    )
 
     if status == 1:
         name = "Busted.."
@@ -258,9 +296,11 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
     if thumbnail_url:
         embed.set_thumbnail(url=thumbnail_url)
 
-    embed.add_field(name=name,
-                    value=value,
-                    inline=False)
+    embed.add_field(
+        name=name,
+        value=value,
+        inline=False,
+    )
     embed.colour = color
 
     return embed
@@ -295,10 +335,10 @@ def calculate_hand_value(hand):
         if rank.isdigit():
             value += int(rank)
 
-        elif rank in ['J', 'Q', 'K']:
+        elif rank in ["J", "Q", "K"]:
             value += 10
 
-        elif rank == 'A':
+        elif rank == "A":
             value += 11
             has_ace = True
             aces_count += 1

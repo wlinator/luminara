@@ -5,7 +5,6 @@ from modules.moderation import ban
 
 
 class Moderation(commands.Cog):
-
     def __init__(self, client):
         self.client = client
 
@@ -14,12 +13,18 @@ class Moderation(commands.Cog):
         aliases=["b"],
         description="Ban a user from the server.",
         help="Bans a user from the server, you can use ID or mention them.",
-        guild_only=True
+        guild_only=True,
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
-    async def ban_command(self, ctx, target: discord.User, *, reason: str | None = None):
+    async def ban_command(
+        self,
+        ctx,
+        target: discord.User,
+        *,
+        reason: str | None = None,
+    ):
         await ban.ban_user(self, ctx, target, reason)
 
     @bridge.bridge_command(
@@ -27,12 +32,18 @@ class Moderation(commands.Cog):
         aliases=["ub", "pardon"],
         description="Unbans a user from the server.",
         help="Unbans a user from the server, you can use ID or provide their username.",
-        guild_only=True
+        guild_only=True,
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
-    async def unban_command(self, ctx, target: discord.User, *, reason: str | None = None):
+    async def unban_command(
+        self,
+        ctx,
+        target: discord.User,
+        *,
+        reason: str | None = None,
+    ):
         await ban.unban_user(ctx, target, reason)
 
 
