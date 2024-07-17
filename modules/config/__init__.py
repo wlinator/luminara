@@ -163,7 +163,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | Server members can now use Lumi commands in all channels. "
+            description="✅ | Server members can now use Lumi commands in all channels. "
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
@@ -264,7 +264,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | The greeting template was successfully updated."
+            description="✅ | The greeting template was successfully updated."
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.add_field(name="Template", value=text, inline=False)
@@ -328,7 +328,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | The booster template was successfully updated."
+            description="✅ | The booster template was successfully updated."
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.add_field(name="Template", value=text, inline=False)
@@ -363,7 +363,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | The booster image was successfully updated."
+            description="✅ | The booster image was successfully updated."
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.add_field(name="Image", value=image_url if image_url else "Original Image", inline=False)
@@ -406,7 +406,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | Members will receive level announcements in their current channel."
+            description="✅ | Members will receive level announcements in their current channel."
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
@@ -427,7 +427,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | The Lumi XP system was successfully disabled."
+            description="✅ | The Lumi XP system was successfully disabled."
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
@@ -454,7 +454,7 @@ class Config(commands.Cog):
         else:
             guild_config.level_message_type = 1
             guild_config.push()
-            embed.description = f"✅ | The Lumi XP system was successfully enabled."
+            embed.description = "✅ | The Lumi XP system was successfully enabled."
             embed.set_footer(text="Note: see '.help config' for more info.")
             return await ctx.respond(embed=embed)
 
@@ -492,7 +492,7 @@ class Config(commands.Cog):
 
     @level_config.command(
         name="template",
-        description=f"Make a custom leveling template."
+        description="Make a custom leveling template."
     )
     async def config_level_template(self, ctx, *, text: discord.Option(str, max_length=2000)):
         guild_config = GuildConfig(ctx.guild.id)
@@ -503,7 +503,7 @@ class Config(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.orange(),
-            description=f"✅ | The level template was successfully updated."
+            description="✅ | The level template was successfully updated."
         )
         guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
         embed.add_field(name="Template", value=text, inline=False)
