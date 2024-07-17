@@ -13,7 +13,10 @@ class Triggers(commands.Cog):
         self.client = client
 
     trigger = SlashCommandGroup(
-        "trigger", "Manage custom reactions.", guild_only=True, default_member_permissions=discord.Permissions(manage_guild=True)
+        "trigger",
+        "Manage custom reactions.",
+        guild_only=True,
+        default_member_permissions=discord.Permissions(manage_guild=True),
     )
     add = trigger.create_subgroup("add", "Add new custom reactions.")
 
@@ -28,7 +31,7 @@ class Triggers(commands.Cog):
         ctx,
         trigger_text: str,
         response: str,
-        is_full_match: bool
+        is_full_match: bool,
     ):
         await add_reaction(ctx, trigger_text, response, None, False, is_full_match)
 
@@ -43,10 +46,10 @@ class Triggers(commands.Cog):
         ctx,
         trigger_text: str,
         emoji: discord.Emoji,
-        is_full_match: bool
+        is_full_match: bool,
     ):
         await add_reaction(ctx, trigger_text, None, emoji.id, True, is_full_match)
-    
+
     @trigger.command(
         name="delete",
         description="Delete an existing custom reaction.",
@@ -56,10 +59,10 @@ class Triggers(commands.Cog):
     async def delete_reaction_command(
         self,
         ctx,
-        reaction_id: int
+        reaction_id: int,
     ):
         await delete_reaction(ctx, reaction_id)
-    
+
     @trigger.command(
         name="list",
         description="List all custom reactions.",
@@ -68,9 +71,10 @@ class Triggers(commands.Cog):
     @commands.guild_only()
     async def list_reactions_command(
         self,
-        ctx
+        ctx,
     ):
         await list_reactions(ctx)
+
 
 def setup(client: LumiBot):
     client.add_cog(Triggers(client))

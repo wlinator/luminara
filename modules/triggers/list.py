@@ -10,10 +10,11 @@ resources = JsonCache.read_json("art")
 check_icon = resources["icons"]["check"]
 logo = resources["logo"]["transparent"]
 
+
 async def list_reactions(ctx: bridge.Context) -> None:
     if ctx.guild is None:
         return
-    
+
     reaction_service = CustomReactionsService()
     guild_id: int = ctx.guild.id
 
@@ -37,7 +38,7 @@ async def list_reactions(ctx: bridge.Context) -> None:
         embed = discord.Embed(
             title=f"ID: {reaction['id']}",
             description=description,
-            color=0xFF8C00
+            color=0xFF8C00,
         )
         embed.set_author(name="Custom Reactions", icon_url=check_icon)
         embed.set_footer(text="Reaction Service", icon_url=logo)

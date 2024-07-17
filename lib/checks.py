@@ -29,7 +29,8 @@ def allowed_in_channel():
 
         if command_channel_id:
             command_channel = await ctx.bot.get_or_fetch_channel(
-                ctx.guild, command_channel_id
+                ctx.guild,
+                command_channel_id,
             )
 
             if ctx.channel.id != command_channel_id and command_channel:

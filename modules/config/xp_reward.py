@@ -11,7 +11,7 @@ async def show(ctx):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description="Read [the guide](https://wiki.wlinator.org/xprewards) before editing.\n"
+        description="Read [the guide](https://wiki.wlinator.org/xprewards) before editing.\n",
     )
 
     icon = ctx.guild.icon if ctx.guild.icon else art["logo"]["opaque"]
@@ -21,7 +21,9 @@ async def show(ctx):
         role_id, persistent = level_reward.rewards.get(level)
         role = ctx.guild.get_role(role_id)
 
-        embed.description += f"\n**Level {level}** -> {role.mention if role else 'Role not found'}"
+        embed.description += (
+            f"\n**Level {level}** -> {role.mention if role else 'Role not found'}"
+        )
 
         if bool(persistent):
             embed.description += " (persistent)"

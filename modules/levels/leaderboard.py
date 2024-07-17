@@ -131,7 +131,8 @@ class LeaderboardCommandView(discord.ui.View):
         embed.set_author(name=CONST.STRINGS["xp_lb_author"], icon_url=icon)
 
         for rank, (user_id, xp, level, xp_needed_for_next_level) in enumerate(
-            xp_lb[:5], start=1
+            xp_lb[:5],
+            start=1,
         ):
             try:
                 member = await self.ctx.guild.fetch_member(user_id)
@@ -141,7 +142,9 @@ class LeaderboardCommandView(discord.ui.View):
             embed.add_field(
                 name=CONST.STRINGS["xp_lb_field_name"].format(rank, member.name),
                 value=CONST.STRINGS["xp_lb_field_value"].format(
-                    level, xp, xp_needed_for_next_level
+                    level,
+                    xp,
+                    xp_needed_for_next_level,
                 ),
                 inline=False,
             )
@@ -165,7 +168,7 @@ class LeaderboardCommandView(discord.ui.View):
             embed.add_field(
                 name=f"#{rank} - {name}",
                 value=CONST.STRINGS["xp_lb_currency_field_value"].format(
-                    Currency.format(balance)
+                    Currency.format(balance),
                 ),
                 inline=False,
             )
@@ -191,7 +194,8 @@ class LeaderboardCommandView(discord.ui.View):
             embed.add_field(
                 name=f"#{rank} - {name}",
                 value=CONST.STRINGS["xp_lb_dailies_field_value"].format(
-                    streak, claimed_at
+                    streak,
+                    claimed_at,
                 ),
                 inline=False,
             )

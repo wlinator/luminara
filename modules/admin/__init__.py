@@ -18,7 +18,7 @@ class BotAdmin(commands.Cog, name="Bot Admin"):
         name="award",
         description="This command can only be performed by a bot administrator.",
         help="Awards cash to a specific user. This command can only be performed by a bot administrator.",
-        guild_only=True
+        guild_only=True,
     )
     @commands.guild_only()
     @commands.is_owner()
@@ -29,7 +29,7 @@ class BotAdmin(commands.Cog, name="Bot Admin"):
         name="sqlselect",
         aliases=["sqls"],
         description="This command can only be performed by a bot administrator.",
-        help="Perform a SELECT query in the database. This command can only be performed by a bot administrator."
+        help="Perform a SELECT query in the database. This command can only be performed by a bot administrator.",
     )
     @commands.is_owner()
     async def select(self, ctx, *, query: str):
@@ -39,15 +39,15 @@ class BotAdmin(commands.Cog, name="Bot Admin"):
         name="sqlinject",
         aliases=["sqli"],
         description="This command can only be performed by a bot administrator.",
-        help="Change a value in the database. This command can only be performed by a bot administrator."
+        help="Change a value in the database. This command can only be performed by a bot administrator.",
     )
     @commands.is_owner()
     async def inject(self, ctx, *, query: str):
         return await sql.inject_cmd(ctx, query)
-    
+
     @commands.command(
         name="blacklist",
-        help="Add or remove a user from the blacklist. This command can only be performed by a bot administrator."
+        help="Add or remove a user from the blacklist. This command can only be performed by a bot administrator.",
     )
     @commands.is_owner()
     async def blacklist(self, ctx, user: discord.User, *, reason: Optional[str] = None):

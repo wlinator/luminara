@@ -51,7 +51,9 @@ class IntroductionFinishButtons(View):
 
     @discord.ui.button(label="Post it!", style=discord.ButtonStyle.green)
     async def short_button_callback(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+        self,
+        button: discord.ui.Button,
+        interaction: discord.Interaction,
     ) -> None:
         await interaction.response.edit_message(view=None)
         self.clickedConfirm = True
@@ -59,7 +61,9 @@ class IntroductionFinishButtons(View):
 
     @discord.ui.button(label="Stop", style=discord.ButtonStyle.red)
     async def extended_button_callback(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+        self,
+        button: discord.ui.Button,
+        interaction: discord.Interaction,
     ) -> None:
         await interaction.response.edit_message(view=None)
         self.stop()
@@ -67,7 +71,8 @@ class IntroductionFinishButtons(View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.ctx.author:
             await interaction.response.send_message(
-                "You can't use these buttons.", ephemeral=True
+                "You can't use these buttons.",
+                ephemeral=True,
             )
             return False
         else:

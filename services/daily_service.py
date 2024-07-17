@@ -17,7 +17,10 @@ class Dailies:
         self.tz = pytz.timezone("US/Eastern")
         self.time_now: datetime = datetime.now(tz=self.tz)
         self.reset_time: datetime = self.time_now.replace(
-            hour=7, minute=0, second=0, microsecond=0
+            hour=7,
+            minute=0,
+            second=0,
+            microsecond=0,
         )
 
         data: Tuple[Optional[str], int] = Dailies.get_data(user_id)

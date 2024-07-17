@@ -24,10 +24,12 @@ async def ban_user(cog, ctx, target: discord.User, reason):
                     ctx,
                     author_text=CONST.STRINGS["mod_banned_author"],
                     description=CONST.STRINGS["mod_ban_dm"].format(
-                        target.name, ctx.guild.name, reason
+                        target.name,
+                        ctx.guild.name,
+                        reason,
                     ),
                     show_name=False,
-                )
+                ),
             )
             dm_sent = True
 
@@ -36,8 +38,9 @@ async def ban_user(cog, ctx, target: discord.User, reason):
 
         await member.ban(
             reason=CONST.STRINGS["mod_reason"].format(
-                ctx.author.name, formatter.shorten(reason, 200)
-            )
+                ctx.author.name,
+                formatter.shorten(reason, 200),
+            ),
         )
         return await ctx.respond(
             embed=EmbedBuilder.create_success_embed(
@@ -47,7 +50,7 @@ async def ban_user(cog, ctx, target: discord.User, reason):
                 footer_text=CONST.STRINGS["mod_dm_sent"]
                 if dm_sent
                 else CONST.STRINGS["mod_dm_not_sent"],
-            )
+            ),
         )
 
     # not a member in this guild, so ban right away
@@ -55,7 +58,8 @@ async def ban_user(cog, ctx, target: discord.User, reason):
         await ctx.guild.ban(
             target,
             reason=CONST.STRINGS["mod_reason"].format(
-                ctx.author.name, formatter.shorten(reason, 200)
+                ctx.author.name,
+                formatter.shorten(reason, 200),
             ),
         )
         return await ctx.respond(
@@ -63,7 +67,7 @@ async def ban_user(cog, ctx, target: discord.User, reason):
                 ctx,
                 author_text=CONST.STRINGS["mod_banned_author"],
                 description=CONST.STRINGS["mod_banned_user"].format(target.id),
-            )
+            ),
         )
 
 
@@ -75,7 +79,8 @@ async def unban_user(ctx, target: discord.User, reason):
         await ctx.guild.unban(
             target,
             reason=CONST.STRINGS["mod_reason"].format(
-                ctx.author.name, formatter.shorten(reason, 200)
+                ctx.author.name,
+                formatter.shorten(reason, 200),
             ),
         )
         return await ctx.respond(
@@ -83,7 +88,7 @@ async def unban_user(ctx, target: discord.User, reason):
                 ctx,
                 author_text=CONST.STRINGS["mod_unbanned_author"],
                 description=CONST.STRINGS["mod_unbanned"].format(target.id),
-            )
+            ),
         )
 
     except (discord.NotFound, discord.HTTPException):
@@ -92,5 +97,5 @@ async def unban_user(ctx, target: discord.User, reason):
                 ctx,
                 author_text=CONST.STRINGS["mod_not_banned_author"],
                 description=CONST.STRINGS["mod_not_banned"].format(target.id),
-            )
+            ),
         )

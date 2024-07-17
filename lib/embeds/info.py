@@ -12,7 +12,8 @@ streak_icon = resources["icons"]["streak"]
 
 def clean_info_embed(ctx):
     embed = discord.Embed(
-        color=discord.Color.blurple(), description=f"**{ctx.author.name}** "
+        color=discord.Color.blurple(),
+        description=f"**{ctx.author.name}** ",
     )
 
     return embed
@@ -24,7 +25,8 @@ class MiscInfo:
         embed = clean_info_embed(ctx)
         embed.description += "I'm online!"
         embed.set_footer(
-            text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon
+            text=f"Latency: {round(1000 * client.latency)}ms",
+            icon_url=exclaim_icon,
         )
 
         return embed
@@ -34,7 +36,8 @@ class MiscInfo:
         embed = clean_info_embed(ctx)
         embed.description += f"I've been online since <t:{unix_time}:R>"
         embed.set_footer(
-            text=f"Latency: {round(1000 * client.latency)}ms", icon_url=exclaim_icon
+            text=f"Latency: {round(1000 * client.latency)}ms",
+            icon_url=exclaim_icon,
         )
 
         return embed

@@ -11,14 +11,17 @@ async def cmd(self, ctx):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description="Guide: https://wiki.wlinator.org/serverconfig"
+        description="Guide: https://wiki.wlinator.org/serverconfig",
     )
     icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
     embed.set_author(name=f"{ctx.guild.name} config", icon_url=icon)
 
     # birthdays
     if guild_config.birthday_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.birthday_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild,
+            guild_config.birthday_channel_id,
+        )
 
         if channel:
             birthday_config = f"✅ | in {channel.mention}."
@@ -32,7 +35,10 @@ async def cmd(self, ctx):
 
     # commands
     if guild_config.command_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.command_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild,
+            guild_config.command_channel_id,
+        )
 
         if channel:
             commands_config = f"✅ | commands only allowed in {channel.mention}."
@@ -45,13 +51,18 @@ async def cmd(self, ctx):
 
     # greetings
     if guild_config.welcome_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.welcome_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild,
+            guild_config.welcome_channel_id,
+        )
 
         if channel:
             greeting_config = f"✅ | in {channel.mention}"
 
             if guild_config.welcome_message:
-                greeting_config += f" with template:\n```{guild_config.welcome_message}```"
+                greeting_config += (
+                    f" with template:\n```{guild_config.welcome_message}```"
+                )
             else:
                 greeting_config += " without custom template."
 
@@ -64,7 +75,10 @@ async def cmd(self, ctx):
 
     # boosts
     if guild_config.boost_channel_id:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.boost_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild,
+            guild_config.boost_channel_id,
+        )
 
         if channel:
             boost_config = f"✅ | in {channel.mention}"
@@ -73,7 +87,9 @@ async def cmd(self, ctx):
                 if guild_config.boost_image_url:
                     boost_config += f" with custom image and template:\n```{guild_config.boost_message}```"
                 else:
-                    boost_config += f" with custom template:\n```{guild_config.boost_message}```"
+                    boost_config += (
+                        f" with custom template:\n```{guild_config.boost_message}```"
+                    )
             else:
                 if guild_config.boost_image_url:
                     boost_config += " with custom image, but no template."
@@ -98,7 +114,10 @@ async def cmd(self, ctx):
         level_config = "✅ | generic announcements"
 
     if guild_config.level_channel_id and guild_config.level_message_type != 0:
-        channel = await self.client.get_or_fetch_channel(ctx.guild, guild_config.level_channel_id)
+        channel = await self.client.get_or_fetch_channel(
+            ctx.guild,
+            guild_config.level_channel_id,
+        )
 
         if channel:
             level_config += f" in {channel.mention}"

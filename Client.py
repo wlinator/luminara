@@ -46,7 +46,8 @@ class LumiBot(bridge.Bot):
 
     @staticmethod
     async def convert_to_user(
-        ctx: commands.Context | bridge.Context, user_id: int
+        ctx: commands.Context | bridge.Context,
+        user_id: int,
     ) -> Optional[discord.User]:
         """
         Converts a user ID to a User object.
@@ -73,7 +74,8 @@ class LumiBot(bridge.Bot):
 
     @staticmethod
     async def convert_to_emoji(
-        ctx: commands.Context | bridge.Context, emoji: str
+        ctx: commands.Context | bridge.Context,
+        emoji: str,
     ) -> Optional[discord.Emoji]:
         """
         Converts a emoji to an Emoji object.
@@ -98,7 +100,8 @@ class LumiBot(bridge.Bot):
 
     @staticmethod
     async def convert_to_text_channel(
-        ctx: commands.Context | bridge.Context, channel_id: int
+        ctx: commands.Context | bridge.Context,
+        channel_id: int,
     ) -> Optional[discord.TextChannel]:
         """
         Converts a channel ID to a TextChannel object.
@@ -127,7 +130,8 @@ class LumiBot(bridge.Bot):
 
     @staticmethod
     async def convert_to_member(
-        ctx: commands.Context, user_id: int
+        ctx: commands.Context,
+        user_id: int,
     ) -> Optional[discord.Member]:
         """
         Converts a user ID to a Member object.
@@ -155,7 +159,8 @@ class LumiBot(bridge.Bot):
 
     @staticmethod
     async def get_or_fetch_channel(
-        guild: discord.Guild, channel_id: int
+        guild: discord.Guild,
+        channel_id: int,
     ) -> Optional[discord.abc.GuildChannel]:
         """
         Retrieves a channel from the guild's cache or fetches it from the API if not found.
@@ -179,7 +184,8 @@ class LumiBot(bridge.Bot):
 
     @staticmethod
     async def get_or_fetch_member(
-        guild: discord.Guild, user_id: int
+        guild: discord.Guild,
+        user_id: int,
     ) -> Optional[discord.Member]:
         """
         Retrieves a member from the guild's cache or fetches them from the API if not found.

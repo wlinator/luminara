@@ -11,7 +11,7 @@ async def cmd(ctx, user: discord.User, amount: int):
 
     embed = discord.Embed(
         color=discord.Color.green(),
-        description=f"Awarded **${Currency.format(amount)}** to {user.name}."
+        description=f"Awarded **${Currency.format(amount)}** to {user.name}.",
     )
 
     await ctx.respond(embed=embed)

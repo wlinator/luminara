@@ -98,7 +98,9 @@ class Misc(commands.Cog):
     xkcd submodule - slash command only
     """
     xkcd: SlashCommandGroup = SlashCommandGroup(
-        "xkcd", "A web comic of romance, sarcasm, math, and language.", guild_only=False
+        "xkcd",
+        "A web comic of romance, sarcasm, math, and language.",
+        guild_only=False,
     )
 
     @xkcd.command(name="latest", description="Get the latest xkcd comic.")

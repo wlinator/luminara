@@ -11,7 +11,7 @@ async def cmd(ctx):
 
     embed = discord.Embed(
         color=discord.Color.embed_background(),
-        description=f"**Cash**: ${balance}"
+        description=f"**Cash**: ${balance}",
     )
     embed.set_author(name=f"{ctx.author.name}'s wallet", icon_url=ctx.author.avatar.url)
 

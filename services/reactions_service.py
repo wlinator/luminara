@@ -8,7 +8,9 @@ class CustomReactionsService:
         pass
 
     async def find_trigger(
-        self, guild_id: int, message_content: str
+        self,
+        guild_id: int,
+        message_content: str,
     ) -> Optional[Dict[str, Any]]:
         message_content = message_content.lower()
         query = """
@@ -21,7 +23,8 @@ class CustomReactionsService:
         LIMIT 1
         """
         result = database.select_query(
-            query, (guild_id, message_content, message_content, guild_id)
+            query,
+            (guild_id, message_content, message_content, guild_id),
         )
         if result:
             reaction = result[0]  # Get the first result from the list
@@ -91,7 +94,7 @@ class CustomReactionsService:
                     "created_at": reaction[10],
                     "updated_at": reaction[11],
                     "type": "emoji" if reaction[4] else "text",
-                }
+                },
             )
         return reactions
 

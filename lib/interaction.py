@@ -16,7 +16,9 @@ class BlackJackButtons(View):
             await self.message.edit(view=None)
 
     @discord.ui.button(
-        label="hit", style=discord.ButtonStyle.gray, emoji="<:hit:1119262723285467156> "
+        label="hit",
+        style=discord.ButtonStyle.gray,
+        emoji="<:hit:1119262723285467156> ",
     )
     async def hit_button_callback(self, button, interaction):
         self.clickedHit = True
@@ -36,7 +38,8 @@ class BlackJackButtons(View):
     async def interaction_check(self, interaction) -> bool:
         if interaction.user != self.ctx.author:
             await interaction.response.send_message(
-                "You can't use these buttons, they're someone else's!", ephemeral=True
+                "You can't use these buttons, they're someone else's!",
+                ephemeral=True,
             )
             return False
         else:
@@ -68,7 +71,8 @@ class ExchangeConfirmation(View):
     async def interaction_check(self, interaction) -> bool:
         if interaction.user != self.ctx.author:
             await interaction.response.send_message(
-                "You can't use these buttons, they're someone else's!", ephemeral=True
+                "You can't use these buttons, they're someone else's!",
+                ephemeral=True,
             )
             return False
         else:

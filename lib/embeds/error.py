@@ -6,7 +6,8 @@ from lib import formatter
 
 def clean_error_embed(ctx):
     embed = discord.Embed(
-        color=discord.Color.red(), description=f"**{ctx.author.name}** "
+        color=discord.Color.red(),
+        description=f"**{ctx.author.name}** ",
     )
 
     return embed
@@ -73,7 +74,8 @@ class GenericErrors:
         else:
             embed.description += f"you can only do that command in {channel.mention}."
         embed.set_footer(
-            text="This message will delete itself after 5s", icon_url=CONST.EXCLAIM_ICON
+            text="This message will delete itself after 5s",
+            icon_url=CONST.EXCLAIM_ICON,
         )
 
         return embed
@@ -103,7 +105,8 @@ class EconErrors:
                 f"you already have a game of {ctx.command.name} running."
             )
         embed.set_footer(
-            text="Please finish this game first", icon_url=CONST.EXCLAIM_ICON
+            text="Please finish this game first",
+            icon_url=CONST.EXCLAIM_ICON,
         )
 
         return embed
@@ -134,7 +137,8 @@ class HelpErrors:
         embed = clean_error_embed(ctx)
         embed.description += error
         embed.set_footer(
-            text=f"See '{formatter.get_prefix(ctx)}help'", icon_url=CONST.EXCLAIM_ICON
+            text=f"See '{formatter.get_prefix(ctx)}help'",
+            icon_url=CONST.EXCLAIM_ICON,
         )
 
         return embed
