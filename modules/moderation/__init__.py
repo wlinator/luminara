@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands, bridge
+from discord.ext import bridge, commands
 
 from modules.moderation import ban
 

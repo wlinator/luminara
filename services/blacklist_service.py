@@ -1,5 +1,6 @@
+from typing import List, Optional, Tuple
+
 from db import database
-from typing import List, Tuple, Optional
 
 
 class BlacklistUserService:

@@ -1,8 +1,10 @@
-import discord
+import datetime
 from typing import Optional
+
+import discord
+
 from config.parser import JsonCache
 from lib import formatter
-import datetime
 
 resources = JsonCache.read_json("art")
 

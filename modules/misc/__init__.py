@@ -2,12 +2,12 @@ from datetime import datetime
 
 import discord
 from discord.commands import SlashCommandGroup
-from discord.ext import commands, bridge, tasks
+from discord.ext import bridge, commands, tasks
 
-from lib import checks
 from Client import LumiBot
+from lib import checks
 from modules.config import set_prefix
-from modules.misc import avatar, introduction, invite, backup, info, xkcd, ping
+from modules.misc import avatar, backup, info, introduction, invite, ping, xkcd
 
 
 class Misc(commands.Cog):

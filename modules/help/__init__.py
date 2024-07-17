@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-from lib import formatter, embed_builder, constants
+from lib import constants, embed_builder, formatter
 
 
 class Help(commands.Cog):

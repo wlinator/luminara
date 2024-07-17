@@ -1,10 +1,10 @@
-from lib.constants import CONST
 import time
 from typing import Callable, Dict, List, Optional, Tuple
 
 from discord.ext import commands
 
 from db import database
+from lib.constants import CONST
 
 
 class XpService:

@@ -1,6 +1,6 @@
+import discord
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
-import discord
 
 from Client import LumiBot
 from modules.triggers.add import add_reaction
