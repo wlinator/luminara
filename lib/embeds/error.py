@@ -81,24 +81,6 @@ class GenericErrors:
 
 class EconErrors:
     @staticmethod
-    def daily_already_claimed(ctx, unix_time):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = (
-                f"already claimed. You can claim your reward again <t:{unix_time}:R>."
-            )
-        else:
-            embed.description += (
-                f"already claimed. You can claim your reward again <t:{unix_time}:R>."
-            )
-        embed.set_footer(
-            text=f"For more info do '{formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}'",
-            icon_url=CONST.QUESTION_ICON,
-        )
-
-        return embed
-
-    @staticmethod
     def out_of_time(ctx):
         embed = clean_error_embed(ctx)
         if embed.description is None:
