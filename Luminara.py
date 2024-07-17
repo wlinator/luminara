@@ -98,7 +98,7 @@ if __name__ == "__main__":
     load_modules()
 
     if not CONST.TOKEN:
-        logger.error("token is not set in creds.yaml")
+        logger.error("token is not set in .env")
         exit(1)
 
     client.run(CONST.TOKEN)
