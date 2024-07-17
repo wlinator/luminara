@@ -19,7 +19,7 @@ class LumiHelp(commands.HelpCommand):
         }
 
     def get_command_qualified_name(self, command):
-        return "`%s%s`" % (self.context.clean_prefix, command.qualified_name)
+        return "`{}{}`".format(self.context.clean_prefix, command.qualified_name)
 
     async def send_bot_help(self, mapping):
         embed = discord.Embed(color=discord.Color.blurple())
@@ -52,13 +52,13 @@ class LumiHelp(commands.HelpCommand):
             description=command.help,
         )
 
-        usage_value = "`%s%s %s`" % (
+        usage_value = "`{}{} {}`".format(
             self.context.clean_prefix,
             command.qualified_name,
             command.signature,
         )
         for alias in command.aliases:
-            usage_value += "\n`%s%s %s`" % (
+            usage_value += "\n`{}{} {}`".format(
                 self.context.clean_prefix,
                 alias,
                 command.signature,
