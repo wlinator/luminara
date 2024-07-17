@@ -24,6 +24,10 @@ class LumiBot(bridge.Bot):
         logger.info(f"Python version: {platform.python_version()}")
         logger.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
 
+        if self.owner_ids:
+            for owner_id in self.owner_ids:
+                logger.info(f"Added bot admin: {owner_id}")
+
     async def process_commands(self, message: discord.Message):
         """
         Processes commands sent by users.
@@ -39,11 +43,11 @@ class LumiBot(bridge.Bot):
         if ctx.command:
             # await ctx.trigger_typing()
             await self.invoke(ctx)
-    
-        
-            
+
     @staticmethod
-    async def convert_to_user(ctx: commands.Context | bridge.Context, user_id: int) -> Optional[discord.User]: 
+    async def convert_to_user(
+        ctx: commands.Context | bridge.Context, user_id: int
+    ) -> Optional[discord.User]:
         """
         Converts a user ID to a User object.
 
@@ -66,14 +70,16 @@ class LumiBot(bridge.Bot):
             commands.BadArgument,
         ):
             return None
-    
+
     @staticmethod
-    async def convert_to_emoji(ctx: commands.Context | bridge.Context, emoji: str) -> Optional[discord.Emoji]:
+    async def convert_to_emoji(
+        ctx: commands.Context | bridge.Context, emoji: str
+    ) -> Optional[discord.Emoji]:
         """
         Converts a emoji to an Emoji object.
         """
         converter = EmojiConverter()
-        
+
         try:
             if isinstance(ctx, bridge.BridgeApplicationContext):
                 return  # TODO: Implement this
