@@ -17,6 +17,7 @@ psutil = "^6.0.0"
 py-cord = "2.5.0"
 pyright = "^1.1.371"
 python = "^3.12"
+python-dotenv = "^1.0.1"
 pytz = "^2024.1"
 ruff = "^0.5.2"
 
