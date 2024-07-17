@@ -2,8 +2,8 @@ from discord import Message
 from discord.ext.commands import Cog
 from loguru import logger
 
-from services.reactions_service import CustomReactionsService
 from services.blacklist_service import BlacklistUserService
+from services.reactions_service import CustomReactionsService
 
 
 class ReactionHandler:

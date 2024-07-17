@@ -1,11 +1,11 @@
 import os
 import platform
-from loguru import logger
+from typing import Optional
 
 import discord
 from discord.ext import bridge, commands
-from discord.ext.commands import TextChannelConverter, EmojiConverter
-from typing import Optional
+from discord.ext.commands import EmojiConverter, TextChannelConverter
+from loguru import logger
 
 from lib import metadata
 

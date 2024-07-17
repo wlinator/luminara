@@ -6,13 +6,13 @@ from typing import Optional
 
 import discord
 from discord.ext import commands
-from Client import LumiBot
 
+from Client import LumiBot
 from config.parser import JsonCache
 from lib import formatter
-from services.config_service import GuildConfig
-from services.xp_service import XpService, XpRewardService
 from services.blacklist_service import BlacklistUserService
+from services.config_service import GuildConfig
+from services.xp_service import XpRewardService, XpService
 
 _strings = JsonCache.read_json("strings")
 _messages = JsonCache.read_json("levels")

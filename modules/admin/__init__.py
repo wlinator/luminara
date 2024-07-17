@@ -1,8 +1,9 @@
-import discord
-from discord.ext import commands, bridge
-
-from modules.admin import award, sql, blacklist
 from typing import Optional
+
+import discord
+from discord.ext import bridge, commands
+
+from modules.admin import award, blacklist, sql
 
 
 class BotAdmin(commands.Cog, name="Bot Admin"):

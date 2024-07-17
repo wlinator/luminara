@@ -1,9 +1,9 @@
 from io import BytesIO
 from typing import Optional
 
+import httpx
 from discord import File, Member
 from discord.ext import bridge
-import httpx
 
 client: httpx.AsyncClient = httpx.AsyncClient()
 

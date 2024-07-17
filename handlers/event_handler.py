@@ -1,11 +1,10 @@
-from loguru import logger
-
 from discord.ext.commands import Cog
+from loguru import logger
 
 import lib.embeds.boost
 from lib.embeds.greet import Greet
-from services.config_service import GuildConfig
 from services.blacklist_service import BlacklistUserService
+from services.config_service import GuildConfig
 
 
 class EventHandler(Cog):

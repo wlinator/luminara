@@ -1,13 +1,13 @@
-from loguru import logger
 import asyncio
 import random
 
 import discord
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, tasks
+from loguru import logger
 
+from lib import checks, time
 from lib.constants import CONST
-from lib import time, checks
 from modules.birthdays import birthday
 from services.birthday_service import Birthday
 from services.config_service import GuildConfig

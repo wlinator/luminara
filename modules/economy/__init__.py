@@ -1,8 +1,8 @@
 import discord
-from discord.ext import commands, bridge
+from discord.ext import bridge, commands
 
 from lib import checks
-from modules.economy import blackjack, slots, balance, give, daily
+from modules.economy import balance, blackjack, daily, give, slots
 
 
 class Economy(commands.Cog):

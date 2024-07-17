@@ -1,7 +1,7 @@
-from discord.ext import commands, bridge
+from discord.ext import bridge, commands
 
 from lib import checks
-from modules.levels import level, leaderboard
+from modules.levels import leaderboard, level
 
 
 class Levels(commands.Cog):

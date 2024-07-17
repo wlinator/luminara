@@ -1,8 +1,10 @@
-from services.xkcd_service import Client, HttpError
-from lib.embed_builder import EmbedBuilder
-from lib.constants import CONST
-from discord.ext import bridge
 from typing import Optional
+
+from discord.ext import bridge
+
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from services.xkcd_service import Client, HttpError
 
 _xkcd = Client()
 

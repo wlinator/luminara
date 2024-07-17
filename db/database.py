@@ -1,7 +1,8 @@
-from lib.constants import CONST
-from loguru import logger
 import mysql.connector
+from loguru import logger
 from mysql.connector import pooling
+
+from lib.constants import CONST
 
 
 def create_connection_pool(name: str, size: int) -> pooling.MySQLConnectionPool:

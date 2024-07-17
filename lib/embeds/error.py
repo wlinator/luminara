@@ -1,7 +1,7 @@
 import discord
 
-from lib.constants import CONST
 from lib import formatter
+from lib.constants import CONST
 
 
 def clean_error_embed(ctx):

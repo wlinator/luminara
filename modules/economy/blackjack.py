@@ -1,15 +1,14 @@
-from loguru import logger
 import random
 from datetime import datetime
 
 import discord
 import pytz
 from discord.ext import commands
+from loguru import logger
 
 from config.parser import JsonCache
 from lib import interaction
-from lib.embeds.error import EconErrors
-from lib.embeds.error import GenericErrors
+from lib.embeds.error import EconErrors, GenericErrors
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
 

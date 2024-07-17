@@ -1,5 +1,6 @@
 from discord import Embed
 from discord.ext import bridge
+
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from services.xp_service import XpService

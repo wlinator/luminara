@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 import discord
 from discord.ext import bridge
@@ -7,8 +7,8 @@ from discord.ext import bridge
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from lib.interactions.introduction import (
-    IntroductionStartButtons,
     IntroductionFinishButtons,
+    IntroductionStartButtons,
 )
 
 

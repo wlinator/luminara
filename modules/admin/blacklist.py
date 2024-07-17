@@ -1,7 +1,9 @@
-import discord
-from services.blacklist_service import BlacklistUserService
 from typing import Optional
+
+import discord
+
 from config.parser import JsonCache
+from services.blacklist_service import BlacklistUserService
 
 resources = JsonCache.read_json("art")
 exclaim_icon = resources["icons"]["exclaim"]
