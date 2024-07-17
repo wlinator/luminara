@@ -30,4 +30,9 @@ repos:
     hooks:
       - id: clean-dotenv
 
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.16.0
+    hooks:
+      - id: pyupgrade
+
 exclude: ".archive/"
