@@ -47,3 +47,11 @@ def select_query_one(query, values=None):
             cursor.execute(query, values)
             output = cursor.fetchone()
             return output[0] if output else None
+
+
+def execute_query_return_value(query, values=None):
+    with _cnxpool.get_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(query, values)
+            conn.commit()
+            return cursor.fetchone()[0] if cursor.rowcount > 0 else None

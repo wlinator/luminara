@@ -1,5 +1,11 @@
 {
   "bet_limit": "❌ | **{0}** you cannot place any bets above **${1}**.",
+  "case_new_case_author": "New Case",
+  "case_case_field": "Case:",
+  "case_type_field": "Type:",
+  "case_moderator_field": "Moderator:",
+  "case_target_field": "Target:",
+  "case_reason_field": "Reason:",
   "daily_already_claimed_author": "Already Claimed",
   "daily_already_claimed_description": "you can claim your daily reward again <t:{0}:R>.",
   "daily_already_claimed_footer": "Daily reset is at 7 AM EST",
