@@ -55,27 +55,33 @@ async def create_case(
             )
             embed.add_field(
                 name=CONST.STRINGS["case_case_field"],
-                value=f"`{case_number}`",
+                value=CONST.STRINGS["case_case_field_value"].format(case_number),
                 inline=True,
             )
             embed.add_field(
                 name=CONST.STRINGS["case_type_field"],
-                value=f"`{action_type.lower().capitalize()}`",
+                value=CONST.STRINGS["case_type_field_value"].format(
+                    action_type.lower().capitalize(),
+                ),
                 inline=True,
             )
             embed.add_field(
                 name=CONST.STRINGS["case_moderator_field"],
-                value=f"`{ctx.author.name}`",
+                value=CONST.STRINGS["case_moderator_field_value"].format(
+                    ctx.author.name,
+                ),
                 inline=True,
             )
             embed.add_field(
                 name=CONST.STRINGS["case_target_field"],
-                value=f"➡️ `{target.name}`",
+                value=CONST.STRINGS["case_target_field_value"].format(target.name),
                 inline=False,
             )
             embed.add_field(
                 name=CONST.STRINGS["case_reason_field"],
-                value=f"`{reason or CONST.STRINGS['mod_no_reason']}`",
+                value=CONST.STRINGS["case_reason_field_value"].format(
+                    reason or CONST.STRINGS["mod_no_reason"],
+                ),
                 inline=False,
             )
             message = await mod_log_channel.send(embed=embed)
