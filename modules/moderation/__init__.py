@@ -74,6 +74,22 @@ class Moderation(commands.Cog):
     async def cases_command(self, ctx):
         await cases.view_all_cases_in_guild(ctx, ctx.guild.id)
 
+    @bridge.bridge_command(
+        name="modcases",
+        aliases=["moderatorcases", "mc"],
+        description="View all cases by a specific moderator.",
+        help="Lists all moderation cases handled by a specific moderator in the current server.",
+        guild_only=True,
+    )
+    @bridge.has_permissions(view_audit_log=True)
+    @commands.guild_only()
+    async def moderator_cases_command(
+        self,
+        ctx,
+        moderator: discord.User,
+    ):
+        await cases.view_all_cases_by_mod(ctx, ctx.guild.id, moderator)
+
 
 def setup(client):
     client.add_cog(Moderation(client))
