@@ -1,5 +1,5 @@
-from db.database import execute_query, select_query, select_query_one
-from typing import Optional
+from db.database import execute_query, select_query_one, select_query_dict
+from typing import Optional, Dict, Any, List
 
 
 class CaseService:
@@ -61,82 +61,101 @@ class CaseService:
         """
         execute_query(query, (guild_id, case_number))
 
-    def edit_case(self, guild_id, case_number, changes: dict):
-        set_clause = ", ".join([f"{key} = %s" for key in changes.keys()])
-        query = f"""
+    def edit_case_reason(
+        self,
+        guild_id: int,
+        case_number: int,
+        new_reason: Optional[str] = None,
+    ) -> bool:
+        query = """
         UPDATE cases
-        SET {set_clause}, updated_at = CURRENT_TIMESTAMP
+        SET reason = COALESCE(%s, reason),
+            updated_at = CURRENT_TIMESTAMP
         WHERE guild_id = %s AND case_number = %s
         """
-        execute_query(query, (*changes.values(), guild_id, case_number))
+        execute_query(
+            query,
+            (
+                new_reason,
+                guild_id,
+                case_number,
+            ),
+        )
+        return True
 
-    def fetch_case_by_id(self, case_id):
-        query = """
+    def fetch_case_by_id(self, case_id: int) -> Optional[Dict[str, Any]]:
+        query: str = """
         SELECT * FROM cases
         WHERE id = %s
+        LIMIT 1
         """
-        result = select_query_one(query, (case_id,))
-        return dict(result) if result else None
+        result: List[Dict[str, Any]] = select_query_dict(query, (case_id,))
+        return result[0] if result else None
 
-    def fetch_case_by_guild_and_number(self, guild_id, case_number):
-        query = """
+    def fetch_case_by_guild_and_number(
+        self,
+        guild_id: int,
+        case_number: int,
+    ) -> Optional[Dict[str, Any]]:
+        query: str = """
         SELECT * FROM cases
         WHERE guild_id = %s AND case_number = %s
         ORDER BY case_number DESC
         LIMIT 1
         """
-        result = select_query(query, (guild_id, case_number))
-        if result:
-            case = result[0]  # Get the first result from the list
-            return {
-                "id": case[0],
-                "guild_id": case[1],
-                "case_number": case[2],
-                "target_id": case[3],
-                "moderator_id": case[4],
-                "action_type": case[5],
-                "reason": case[6],
-                "duration": case[7],
-                "expires_at": case[8],
-                "modlog_message_id": case[9],
-                "is_closed": case[10],
-                "created_at": case[11],
-                "updated_at": case[12],
-            }
-        return None
+        result: List[Dict[str, Any]] = select_query_dict(query, (guild_id, case_number))
+        return result[0] if result else None
 
-    def fetch_cases_by_guild(self, guild_id):
-        query = """
+    def fetch_cases_by_guild(self, guild_id: int) -> List[Dict[str, Any]]:
+        query: str = """
         SELECT * FROM cases
         WHERE guild_id = %s
         ORDER BY case_number DESC
         """
-        results = select_query(query, (guild_id,))
-        return [dict(row) for row in results]
+        results: List[Dict[str, Any]] = select_query_dict(query, (guild_id,))
+        return results
 
-    def fetch_cases_by_target(self, guild_id, target_id):
-        query = """
+    def fetch_cases_by_target(
+        self,
+        guild_id: int,
+        target_id: int,
+    ) -> List[Dict[str, Any]]:
+        query: str = """
         SELECT * FROM cases
         WHERE guild_id = %s AND target_id = %s
         ORDER BY case_number DESC
         """
-        results = select_query(query, (guild_id, target_id))
-        return [dict(row) for row in results]
+        results: List[Dict[str, Any]] = select_query_dict(query, (guild_id, target_id))
+        return results
 
-    def fetch_cases_by_moderator(self, guild_id, moderator_id):
-        query = """
+    def fetch_cases_by_moderator(
+        self,
+        guild_id: int,
+        moderator_id: int,
+    ) -> List[Dict[str, Any]]:
+        query: str = """
         SELECT * FROM cases
         WHERE guild_id = %s AND moderator_id = %s
         ORDER BY case_number DESC
         """
-        results = select_query(query, (guild_id, moderator_id))
-        return [dict(row) for row in results]
+        results: List[Dict[str, Any]] = select_query_dict(
+            query,
+            (guild_id, moderator_id),
+        )
+        return results
 
-    def fetch_cases_by_action_type(self, guild_id, action_type):
-        query = """
+    def fetch_cases_by_action_type(
+        self,
+        guild_id: int,
+        action_type: str,
+    ) -> List[Dict[str, Any]]:
+        query: str = """
         SELECT * FROM cases
         WHERE guild_id = %s AND action_type = %s
         ORDER BY case_number DESC
         """
-        results = select_query(query, (guild_id, action_type.upper()))
-        return [dict(row) for row in results]
+        results: List[Dict[str, Any]] = select_query_dict(
+            query,
+            (guild_id, action_type.upper()),
+        )
+        return results

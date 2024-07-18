@@ -3,6 +3,7 @@ from services.moderation.case_service import CaseService
 from modules.moderation.utils.case_embed import create_case_embed
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
+from discord.ext import pages
 
 case_service = CaseService()
 
@@ -29,18 +30,18 @@ async def view_case_by_number(ctx, guild_id: int, case_number: int):
     await ctx.respond(embed=embed)
 
 
-# async def view_all_cases_in_guild(ctx, guild_id: int):
-#     cases = case_service.fetch_all_cases_in_guild(guild_id)
+async def view_all_cases_in_guild(ctx, guild_id: int):
+    cases = case_service.fetch_all_cases_in_guild(guild_id)
 
-#     if not cases:
-#         return await ctx.send("No cases found for this guild.")
+    if not cases:
+        return await ctx.send("No cases found for this guild.")
 
-#     pages_list = [
-#         f"Case {case['case_number']}: {case['action_type']} - {case['reason']}"
-#         for case in cases
-#     ]
-#     paginator = pages.Paginator(pages=pages_list, loop_pages=True)
-#     await paginator.send(ctx)
+    pages_list = [
+        f"Case {case['case_number']}: {case['action_type']} - {case['reason']}"
+        for case in cases
+    ]
+    paginator = pages.Paginator(pages=pages_list, loop_pages=True)
+    await paginator.send(ctx)
 
 
 # async def view_all_cases_by_mod(ctx, guild_id: int, mod_id: int):
