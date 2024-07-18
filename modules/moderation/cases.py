@@ -1,3 +1,4 @@
+import discord
 from discord.ext.commands import UserConverter
 from services.moderation.case_service import CaseService
 from modules.moderation.utils.case_embed import (
@@ -37,30 +38,36 @@ async def view_all_cases_in_guild(ctx, guild_id: int):
     cases = case_service.fetch_cases_by_guild(guild_id)
 
     if not cases:
-        return await ctx.send("No cases found for this guild.")
+        return await ctx.respond("This server doesn't have any mod cases yet.")
 
     pages_list = []
     for i in range(0, len(cases), 10):
         chunk = cases[i : i + 10]
-        embed = create_case_list_embed(ctx, chunk, "Case List")
+        embed = create_case_list_embed(ctx, chunk, "All Cases in this Server")
         pages_list.append(embed)
 
     paginator = pages.Paginator(pages=pages_list)
     await paginator.respond(ctx)
 
 
-# async def view_all_cases_by_mod(ctx, guild_id: int, mod_id: int):
-#     cases = case_service.fetch_all_cases_by_mod(guild_id, mod_id)
+async def view_all_cases_by_mod(ctx, guild_id: int, moderator: discord.User):
+    cases = case_service.fetch_cases_by_moderator(guild_id, moderator.id)
 
-#     if not cases:
-#         return await ctx.send("No cases found for this moderator in this guild.")
+    if not cases:
+        return await ctx.respond("This user has not handled any cases in this server.")
 
-#     pages_list = [
-#         f"Case {case['case_number']}: {case['action_type']} - {case['reason']}"
-#         for case in cases
-#     ]
-#     paginator = pages.Paginator(pages=pages_list, loop_pages=True)
-#     await paginator.send(ctx)
+    pages_list = []
+    for i in range(0, len(cases), 10):
+        chunk = cases[i : i + 10]
+        embed = create_case_list_embed(
+            ctx,
+            chunk,
+            f"Cases by Moderator ({moderator.name})",
+        )
+        pages_list.append(embed)
+
+    paginator = pages.Paginator(pages=pages_list)
+    await paginator.respond(ctx)
 
 
 # async def edit_case_reason(ctx, guild_id: int, case_number: int, new_reason: str):
