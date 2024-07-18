@@ -22,10 +22,10 @@ class ModLogService:
         """
         execute_query(query, (guild_id,))
 
-    def fetch_modlog_channel_id(self, guild_id: int) -> Optional[dict]:
+    def fetch_modlog_channel_id(self, guild_id: int) -> Optional[int]:
         query: str = """
-        SELECT * FROM mod_log
+        SELECT channel_id FROM mod_log
         WHERE guild_id = %s AND is_enabled = TRUE
         """
         result = select_query_one(query, (guild_id,))
-        return dict(result) if result else None
+        return result or None
