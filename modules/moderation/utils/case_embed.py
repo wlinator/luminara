@@ -2,6 +2,7 @@ import discord
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from typing import Optional
+import datetime
 
 
 def create_case_embed(
@@ -48,4 +49,34 @@ def create_case_embed(
         ),
         inline=False,
     )
+    return embed
+
+
+def create_case_list_embed(ctx, cases: list, author_text: str) -> discord.Embed:
+    embed = EmbedBuilder.create_success_embed(
+        ctx,
+        author_text=author_text,
+        show_name=False,
+    )
+
+    for case in cases:
+        status_emoji = "✅" if not case.get("is_closed") else "❌"
+        case_number = case.get("case_number", "N/A")
+        if isinstance(case_number, int):
+            if case_number < 1000:
+                case_number = f"{case_number:03d}"
+            else:
+                case_number = f"{case_number}"
+        action_type = case.get("action_type", "Unknown")
+        timestamp = case.get("created_at", "Unknown")
+
+        if isinstance(timestamp, datetime.datetime):
+            formatted_timestamp = f"<t:{int(timestamp.timestamp())}:R>"
+        else:
+            formatted_timestamp = str(timestamp)
+
+        if embed.description is None:
+            embed.description = ""
+        embed.description += f"{status_emoji} `{case_number}` **[{action_type}]** {formatted_timestamp}\n"
+
     return embed

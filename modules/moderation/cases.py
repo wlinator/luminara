@@ -1,6 +1,9 @@
 from discord.ext.commands import UserConverter
 from services.moderation.case_service import CaseService
-from modules.moderation.utils.case_embed import create_case_embed
+from modules.moderation.utils.case_embed import (
+    create_case_embed,
+    create_case_list_embed,
+)
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from discord.ext import pages
@@ -31,17 +34,19 @@ async def view_case_by_number(ctx, guild_id: int, case_number: int):
 
 
 async def view_all_cases_in_guild(ctx, guild_id: int):
-    cases = case_service.fetch_all_cases_in_guild(guild_id)
+    cases = case_service.fetch_cases_by_guild(guild_id)
 
     if not cases:
         return await ctx.send("No cases found for this guild.")
 
-    pages_list = [
-        f"Case {case['case_number']}: {case['action_type']} - {case['reason']}"
-        for case in cases
-    ]
+    pages_list = []
+    for i in range(0, len(cases), 10):
+        chunk = cases[i : i + 10]
+        embed = create_case_list_embed(ctx, chunk, "Case List")
+        pages_list.append(embed)
+
     paginator = pages.Paginator(pages=pages_list, loop_pages=True)
-    await paginator.send(ctx)
+    await paginator.respond(ctx)
 
 
 # async def view_all_cases_by_mod(ctx, guild_id: int, mod_id: int):
