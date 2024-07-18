@@ -30,6 +30,8 @@
   "error_lumi_exception_description": "{0}",
   "error_missing_permissions_author": "Missing Permissions",
   "error_missing_permissions_description": "you lack the required permissions to run this command.",
+  "error_no_case_found_author": "Case Not Found",
+  "error_no_case_found_description": "no case found with that ID.",
   "error_no_private_message_author": "Guild Only",
   "error_no_private_message_description": "this command can only be used in servers.",
   "error_not_allowed_in_channel_author": "Not Allowed In Channel",
