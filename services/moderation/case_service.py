@@ -83,6 +83,15 @@ class CaseService:
         )
         return True
 
+    def edit_case(self, guild_id, case_number, changes: dict):
+        set_clause = ", ".join([f"{key} = %s" for key in changes.keys()])
+        query = f"""
+        UPDATE cases
+        SET {set_clause}, updated_at = CURRENT_TIMESTAMP
+        WHERE guild_id = %s AND case_number = %s
+        """
+        execute_query(query, (*changes.values(), guild_id, case_number))
+
     def fetch_case_by_id(self, case_id: int) -> Optional[Dict[str, Any]]:
         query: str = """
         SELECT * FROM cases
