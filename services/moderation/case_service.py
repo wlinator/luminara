@@ -83,9 +83,27 @@ class CaseService:
         SELECT * FROM cases
         WHERE guild_id = %s AND case_number = %s
         ORDER BY case_number DESC
+        LIMIT 1
         """
-        result = select_query_one(query, (guild_id, case_number))
-        return dict(result) if result else None
+        result = select_query(query, (guild_id, case_number))
+        if result:
+            case = result[0]  # Get the first result from the list
+            return {
+                "id": case[0],
+                "guild_id": case[1],
+                "case_number": case[2],
+                "target_id": case[3],
+                "moderator_id": case[4],
+                "action_type": case[5],
+                "reason": case[6],
+                "duration": case[7],
+                "expires_at": case[8],
+                "modlog_message_id": case[9],
+                "is_closed": case[10],
+                "created_at": case[11],
+                "updated_at": case[12],
+            }
+        return None
 
     def fetch_cases_by_guild(self, guild_id):
         query = """

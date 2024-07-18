@@ -1,7 +1,7 @@
 import discord
 from discord.ext import bridge, commands
 
-from modules.moderation import ban
+from modules.moderation import ban, cases
 
 
 class Moderation(commands.Cog):
@@ -45,6 +45,22 @@ class Moderation(commands.Cog):
         reason: str | None = None,
     ):
         await ban.unban_user(ctx, target, reason)
+
+    @bridge.bridge_command(
+        name="case",
+        aliases=["c"],
+        description="View a case by its number.",
+        help="Views a case by its number in the server.",
+        guild_only=True,
+    )
+    @bridge.has_permissions(view_audit_log=True)
+    @commands.guild_only()
+    async def case_command(
+        self,
+        ctx,
+        case_number: int,
+    ):
+        await cases.view_case_by_number(ctx, ctx.guild.id, case_number)
 
 
 def setup(client):
