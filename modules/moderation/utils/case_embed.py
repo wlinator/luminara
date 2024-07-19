@@ -12,7 +12,7 @@ def create_case_embed(
     case_number: int,
     action_type: str,
     reason: Optional[str],
-    timestamp: Optional[datetime.datetime],
+    timestamp: Optional[datetime.datetime] = None,
 ) -> discord.Embed:
     embed = EmbedBuilder.create_warning_embed(
         ctx,
