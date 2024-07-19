@@ -40,9 +40,9 @@ class Constants:
     EMOTES_GUILD_ID = 1038051105642401812
 
     # color scheme
-    COLOR_DEFAULT = 16747520
-    COLOR_WARNING = 16741888
-    COLOR_ERROR = 16729344
+    COLOR_DEFAULT = 0xFF8C00
+    COLOR_WARNING = 0xFF7600
+    COLOR_ERROR = 0xFF4500
 
     # strings
     STRINGS = JsonCache.read_json("strings")
