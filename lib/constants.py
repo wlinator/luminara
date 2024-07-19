@@ -1,12 +1,7 @@
 import os
 from typing import Optional, Set
 
-from dotenv import load_dotenv
-
 from config.parser import JsonCache
-
-# Load environment variables from .env file
-load_dotenv()
 
 art = JsonCache.read_json("art")
 resources = JsonCache.read_json("resources")
