@@ -5,7 +5,6 @@ import discord
 import psutil
 from discord.ext import bridge
 
-from lib import metadata
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from services.currency_service import Currency
@@ -34,7 +33,7 @@ async def cmd(self, ctx: bridge.Context, unix_timestamp: int) -> None:
         show_name=False,
     )
     embed.set_author(
-        name=f"{metadata.__title__} v{metadata.__version__}",
+        name=f"{CONST.TITLE} v{CONST.VERSION}",
         url=CONST.REPO_URL,
         icon_url=CONST.CHECK_ICON,
     )

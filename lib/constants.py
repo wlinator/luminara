@@ -13,6 +13,12 @@ resources = JsonCache.read_json("resources")
 
 
 class Constants:
+    # metadata
+    TITLE = "Luminara"
+    AUTHOR = "wlinator"
+    LICENSE = "GNU General Public License v3.0"
+    VERSION = "2.6.0"
+
     # bot credentials
     TOKEN: Optional[str] = os.environ.get("TOKEN", None)
     INSTANCE: Optional[str] = os.environ.get("INSTANCE", None)
