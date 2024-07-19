@@ -21,11 +21,11 @@ Additionally, you'll need to create a Discord bot application and obtain a token
 4. Under the bot's username, click "Reset Token" to reveal your bot token.
 5. Copy this token; you'll need it for the `.env` file later.
 
-*Note: Remember to keep your bot token secret and never share it publicly.*
+*Note: remember to keep your bot token secret and never share it publicly.*
 
 #### Running Luminara:
 
-1. Copy the contents from [docker-compose.prod.yml](https://git.wlinator.org/Luminara/Lumi/src/branch/main/docker-compose.prod.yml) to a new file named `docker-compose.yml` in an empty directory.
+1. Copy the contents from [docker-compose.prod.yml](docker-compose.prod.yml) to a new file named `docker-compose.yml` in an empty directory.
 
 2. Copy the `.env.example` file to a new file named `.env` in the same directory.
 
@@ -37,7 +37,7 @@ Additionally, you'll need to create a Discord bot application and obtain a token
    docker compose up -d --build
    ```
 
-This will build and start the Luminara bot in detached mode.
+This will build and start Luminara in detached mode.
 
 ---
 
