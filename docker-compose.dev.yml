@@ -3,6 +3,9 @@ services:
     build: .
     container_name: lumi-core
     restart: always
+    env_file:
+      - path: ./.env
+        required: true
     depends_on:
       db:
         condition: service_healthy
@@ -17,8 +20,7 @@ services:
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
     volumes:
-      - ./db/migrations:/docker-entrypoint-initdb.d/
-      - database:/var/lib/mysql/
+      - ./data:/var/lib/mysql/
     healthcheck:
       test: [ "CMD", "mariadb", "-h", "localhost", "-u", "${MARIADB_USER}", "-p${MARIADB_PASSWORD}", "-e", "SELECT 1" ]
       interval: 5s
@@ -31,6 +33,3 @@ services:
     restart: always
     ports:
       - 8080:8080
-
-volumes:
-  database:
