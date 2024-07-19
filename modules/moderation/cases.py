@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext.commands import UserConverter
 from services.moderation.case_service import CaseService
@@ -9,6 +10,7 @@ from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from discord.ext import pages
 from lib.formatter import format_case_number
+from modules.moderation.utils.case_handler import edit_case_modlog
 
 case_service = CaseService()
 
@@ -100,4 +102,11 @@ async def edit_case_reason(ctx, guild_id: int, case_number: int, new_reason: str
             format_case_number(case_number),
         ),
     )
-    await ctx.respond(embed=embed)
+
+    async def update_tasks():
+        await asyncio.gather(
+            ctx.respond(embed=embed),
+            edit_case_modlog(ctx, guild_id, case_number, new_reason),
+        )
+
+    await update_tasks()
