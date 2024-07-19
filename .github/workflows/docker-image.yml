@@ -4,7 +4,7 @@ name: Create and Publish Docker Image CI
 on:
   push:
     branches: [ "main" ]
-    tags: [ "*.*.*" ]
+    tags: [ "v*.*.*" ]
   pull_request:
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
             wlinator/luminara
             ghcr.io/wlinator/luminara            
           tags: |
-            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
