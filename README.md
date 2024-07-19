@@ -23,7 +23,7 @@ Additionally, you'll need to create a Discord bot application and obtain a token
 
 *Note: remember to keep your bot token secret and never share it publicly.*
 
-#### Running Luminara:
+### Running Luminara:
 
 1. Copy the contents from [docker-compose.prod.yml](docker-compose.prod.yml) to a new file named `docker-compose.yml` in an empty directory.
 
