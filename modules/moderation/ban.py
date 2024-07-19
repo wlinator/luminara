@@ -13,7 +13,7 @@ async def ban_user(cog, ctx, target: discord.User, reason: Optional[str] = None)
     # see if user is in guild
     member = await cog.client.get_or_fetch_member(ctx.guild, target.id)
 
-    output_reason = reason if reason else CONST.STRINGS["mod_no_reason"]
+    output_reason = reason or CONST.STRINGS["mod_no_reason"]
 
     # member -> user is in the guild, check role hierarchy
     if member:
@@ -80,7 +80,7 @@ async def ban_user(cog, ctx, target: discord.User, reason: Optional[str] = None)
 
 
 async def unban_user(ctx, target: discord.User, reason: Optional[str] = None):
-    output_reason = reason if reason else CONST.STRINGS["mod_no_reason"]
+    output_reason = reason or CONST.STRINGS["mod_no_reason"]
 
     try:
         await ctx.guild.unban(
