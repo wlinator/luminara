@@ -40,9 +40,9 @@ class Constants:
     EMOTES_GUILD_ID = 1038051105642401812
 
     # color scheme
-    COLOR_DEFAULT = int(0xFF8C00)
-    COLOR_WARNING = int(0xFF7600)
-    COLOR_ERROR = int(0xFF4500)
+    COLOR_DEFAULT = 0xFF8C00
+    COLOR_WARNING = 0xFF7600
+    COLOR_ERROR = 0xFF4500
 
     # strings
     STRINGS = JsonCache.read_json("strings")
@@ -82,6 +82,9 @@ class Constants:
     # birthdays
     BIRTHDAY_MESSAGES = JsonCache.read_json("birthday")["birthday_messages"]
     BIRTHDAY_MONTHS = JsonCache.read_json("birthday")["months"]
+
+
+CONST = Constants()
 
 
 CONST = Constants()
