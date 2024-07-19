@@ -17,6 +17,8 @@
   "case_mod_no_cases": "this user has not handled any cases in this server.",
   "case_guild_cases_author": "All Cases in this Server",
   "case_mod_cases_author": "Cases by Moderator ({0})",
+  "case_reason_update_author": "Case Reason Updated",
+  "case_reason_update_description": "case `{0}` reason has been updated.",
   "daily_already_claimed_author": "Already Claimed",
   "daily_already_claimed_description": "you can claim your daily reward again <t:{0}:R>.",
   "daily_already_claimed_footer": "Daily reset is at 7 AM EST",

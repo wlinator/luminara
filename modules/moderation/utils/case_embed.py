@@ -1,6 +1,7 @@
 import discord
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
+from lib.formatter import format_case_number
 from typing import Optional
 import datetime
 
@@ -11,16 +12,20 @@ def create_case_embed(
     case_number: int,
     action_type: str,
     reason: Optional[str],
+    timestamp: Optional[datetime.datetime],
 ) -> discord.Embed:
     embed = EmbedBuilder.create_warning_embed(
         ctx,
         author_text=CONST.STRINGS["case_new_case_author"],
         thumbnail_url=target.display_avatar.url,
         show_name=False,
+        timestamp=timestamp,
     )
     embed.add_field(
         name=CONST.STRINGS["case_case_field"],
-        value=CONST.STRINGS["case_case_field_value"].format(case_number),
+        value=CONST.STRINGS["case_case_field_value"].format(
+            format_case_number(case_number),
+        ),
         inline=True,
     )
     embed.add_field(
@@ -62,11 +67,10 @@ def create_case_list_embed(ctx, cases: list, author_text: str) -> discord.Embed:
     for case in cases:
         status_emoji = "✅" if not case.get("is_closed") else "❌"
         case_number = case.get("case_number", "N/A")
+
         if isinstance(case_number, int):
-            if case_number < 1000:
-                case_number = f"{case_number:03d}"
-            else:
-                case_number = f"{case_number}"
+            case_number = format_case_number(case_number)
+
         action_type = case.get("action_type", "Unknown")
         timestamp = case.get("created_at", "Unknown")
 
