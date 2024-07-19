@@ -16,7 +16,4 @@ def seconds_until(hours, minutes):
     if future_exec < now:
         future_exec += datetime.timedelta(days=1)
 
-    # Calculate the time difference in seconds
-    seconds_until_execution = (future_exec - now).total_seconds()
-
-    return seconds_until_execution
+    return (future_exec - now).total_seconds()
