@@ -2,6 +2,7 @@ import mysql.connector
 from loguru import logger
 from mysql.connector import pooling
 import os
+import pathlib
 import re
 
 from lib.constants import CONST
@@ -81,9 +82,9 @@ def run_migrations():
                     continue
 
                 # Read and execute migration file
-                with open(os.path.join(migrations_dir, migration_file)) as f:
-                    migration_sql = f.read()
-
+                migration_sql = pathlib.Path(
+                    os.path.join(migrations_dir, migration_file),
+                ).read_text()
                 try:
                     # Split the migration file into individual statements
                     statements = re.split(r";\s*$", migration_sql, flags=re.MULTILINE)
