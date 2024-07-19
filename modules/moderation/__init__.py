@@ -90,6 +90,24 @@ class Moderation(commands.Cog):
     ):
         await cases.view_all_cases_by_mod(ctx, ctx.guild.id, moderator)
 
+    @bridge.bridge_command(
+        name="editcase",
+        aliases=["uc", "ec"],
+        description="Edit the reason for a case.",
+        help="Updates the reason for a specific case in the server.",
+        guild_only=True,
+    )
+    @bridge.has_permissions(view_audit_log=True)
+    @commands.guild_only()
+    async def edit_case_command(
+        self,
+        ctx,
+        case_number: int,
+        *,
+        new_reason: str,
+    ):
+        await cases.edit_case_reason(ctx, ctx.guild.id, case_number, new_reason)
+
 
 def setup(client):
     client.add_cog(Moderation(client))

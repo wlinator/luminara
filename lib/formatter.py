@@ -46,6 +46,31 @@ def shorten(text: str, width: int = 200) -> str:
     return textwrap.shorten(text, width=width, placeholder="...")
 
 
+def format_case_number(case_number: int) -> str:
+    """
+    Formats a case number as a string with leading zeros if necessary.
+
+    Args:
+        case_number (int): The case number to format.
+
+    Returns:
+        str: The formatted case number as a string.
+            If the case number is less than 1000, it will be padded with leading zeros to three digits.
+            If the case number is 1000 or greater, it will be returned as a regular string.
+
+    Examples:
+        >>> format_case_number(1)
+        '001'
+        >>> format_case_number(42)
+        '042'
+        >>> format_case_number(999)
+        '999'
+        >>> format_case_number(1000)
+        '1000'
+    """
+    return f"{case_number:03d}" if case_number < 1000 else str(case_number)
+
+
 def get_prefix(ctx: commands.Context) -> str:
     """
     Attempts to retrieve the prefix for the given guild context.

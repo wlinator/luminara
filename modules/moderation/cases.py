@@ -8,6 +8,7 @@ from modules.moderation.utils.case_embed import (
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from discord.ext import pages
+from lib.formatter import format_case_number
 
 case_service = CaseService()
 
@@ -30,6 +31,7 @@ async def view_case_by_number(ctx, guild_id: int, case_number: int):
         case["case_number"],
         case["action_type"],
         case["reason"],
+        case["created_at"],
     )
     await ctx.respond(embed=embed)
 
@@ -84,12 +86,18 @@ async def view_all_cases_by_mod(ctx, guild_id: int, moderator: discord.User):
     await paginator.respond(ctx)
 
 
-# async def edit_case_reason(ctx, guild_id: int, case_number: int, new_reason: str):
-#     changes = {"reason": new_reason}
-#     case_service.edit_case(guild_id, case_number, changes)
-#     await ctx.respond(f"Case {case_number} reason updated to: {new_reason}")
+async def edit_case_reason(ctx, guild_id: int, case_number: int, new_reason: str):
+    case_service.edit_case_reason(
+        guild_id,
+        case_number,
+        new_reason,
+    )
 
-
-# async def close_case(ctx, guild_id: int, case_number: int):
-#     case_service.close_case(guild_id, case_number)
-#     await ctx.respond(f"Case {case_number} has been closed.")
+    embed = EmbedBuilder.create_success_embed(
+        ctx,
+        author_text=CONST.STRINGS["case_reason_update_author"],
+        description=CONST.STRINGS["case_reason_update_description"].format(
+            format_case_number(case_number),
+        ),
+    )
+    await ctx.respond(embed=embed)
