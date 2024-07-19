@@ -1,0 +1,28 @@
+services:
+  core:
+    image: ghcr.io/wlinator/luminara:main
+    container_name: lumi-core
+    restart: always
+    env_file:
+      - path: ./.env
+        required: true
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb
+    container_name: lumi-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+    volumes:
+      - ./data:/var/lib/mysql/
+    healthcheck:
+      test: [ "CMD", "mariadb", "-h", "localhost", "-u", "${MARIADB_USER}", "-p${MARIADB_PASSWORD}", "-e", "SELECT 1" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
