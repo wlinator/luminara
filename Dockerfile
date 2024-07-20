@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir poetry && \
 
 COPY . .
 
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 CMD [ "poetry", "run", "python", "./Luminara.py" ]
