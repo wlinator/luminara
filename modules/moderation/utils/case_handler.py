@@ -59,10 +59,7 @@ async def create_case(
 
     logger.info(f"Created case {case_number} for {target.name} in guild {guild_id}")
 
-    # Send the case to the modlog if configured
-    mod_log_channel_id = modlog_service.fetch_modlog_channel_id(guild_id)
-
-    if mod_log_channel_id:
+    if mod_log_channel_id := modlog_service.fetch_modlog_channel_id(guild_id):
         try:
             mod_log_channel = await TextChannelConverter().convert(
                 ctx,
