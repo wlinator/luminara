@@ -65,7 +65,7 @@ def create_case_list_embed(ctx, cases: list, author_text: str) -> discord.Embed:
     )
 
     for case in cases:
-        status_emoji = "✅" if not case.get("is_closed") else "❌"
+        status_emoji = "❌" if case.get("is_closed") else "✅"
         case_number = case.get("case_number", "N/A")
 
         if isinstance(case_number, int):
