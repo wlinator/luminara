@@ -58,6 +58,7 @@ def select_query_dict(query, values=None):
             cursor.execute(query, values)
             return cursor.fetchall()
 
+
 def run_migrations():
     migrations_dir = "db/migrations"
     migration_files = sorted(
