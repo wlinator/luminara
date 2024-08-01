@@ -36,14 +36,13 @@ class BlackJackButtons(View):
         self.stop()
 
     async def interaction_check(self, interaction) -> bool:
-        if interaction.user != self.ctx.author:
-            await interaction.response.send_message(
-                "You can't use these buttons, they're someone else's!",
-                ephemeral=True,
-            )
-            return False
-        else:
+        if interaction.user == self.ctx.author:
             return True
+        await interaction.response.send_message(
+            "You can't use these buttons, they're someone else's!",
+            ephemeral=True,
+        )
+        return False
 
 
 class ExchangeConfirmation(View):
@@ -69,11 +68,10 @@ class ExchangeConfirmation(View):
         self.stop()
 
     async def interaction_check(self, interaction) -> bool:
-        if interaction.user != self.ctx.author:
-            await interaction.response.send_message(
-                "You can't use these buttons, they're someone else's!",
-                ephemeral=True,
-            )
-            return False
-        else:
+        if interaction.user == self.ctx.author:
             return True
+        await interaction.response.send_message(
+            "You can't use these buttons, they're someone else's!",
+            ephemeral=True,
+        )
+        return False

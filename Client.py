@@ -7,7 +7,7 @@ from discord.ext import bridge, commands
 from discord.ext.commands import EmojiConverter, TextChannelConverter
 from loguru import logger
 
-from lib import metadata
+from lib.constants import CONST
 
 
 class LumiBot(bridge.Bot):
@@ -18,7 +18,7 @@ class LumiBot(bridge.Bot):
         Logs various information about the bot and the environment it is running on.
         Note: This function isn't guaranteed to only be called once. The event is called when a RESUME request fails.
         """
-        logger.info(f"{metadata.__title__} v{metadata.__version__}")
+        logger.info(f"{CONST.TITLE} v{CONST.VERSION}")
         logger.info(f"Logged in with ID {self.user.id if self.user else 'Unknown'}")
         logger.info(f"discord.py API version: {discord.__version__}")
         logger.info(f"Python version: {platform.python_version()}")
