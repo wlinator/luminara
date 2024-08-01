@@ -20,6 +20,7 @@ class EmbedBuilder:
         show_name=True,
         image_url=None,
         thumbnail_url=None,
+        timestamp=None,
     ):
         if not author_text:
             author_text = ctx.author.name
@@ -40,7 +41,7 @@ class EmbedBuilder:
         )
         embed.set_author(name=author_text, icon_url=author_icon_url, url=author_url)
         embed.set_footer(text=footer_text, icon_url=footer_icon_url)
-        embed.timestamp = datetime.datetime.now()
+        embed.timestamp = timestamp or datetime.datetime.now()
 
         if image_url:
             embed.set_image(url=image_url)
@@ -61,6 +62,7 @@ class EmbedBuilder:
         show_name=True,
         image_url=None,
         thumbnail_url=None,
+        timestamp=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -75,6 +77,7 @@ class EmbedBuilder:
             show_name=show_name,
             image_url=image_url,
             thumbnail_url=thumbnail_url,
+            timestamp=timestamp,
         )
 
     @staticmethod
@@ -89,6 +92,7 @@ class EmbedBuilder:
         show_name=True,
         image_url=None,
         thumbnail_url=None,
+        timestamp=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -103,6 +107,7 @@ class EmbedBuilder:
             show_name=show_name,
             image_url=image_url,
             thumbnail_url=thumbnail_url,
+            timestamp=timestamp,
         )
 
     @staticmethod
@@ -117,6 +122,7 @@ class EmbedBuilder:
         show_name=True,
         image_url=None,
         thumbnail_url=None,
+        timestamp=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -131,6 +137,7 @@ class EmbedBuilder:
             show_name=show_name,
             image_url=image_url,
             thumbnail_url=thumbnail_url,
+            timestamp=timestamp,
         )
 
     @staticmethod
@@ -145,6 +152,7 @@ class EmbedBuilder:
         show_name=True,
         image_url=None,
         thumbnail_url=None,
+        timestamp=None,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -159,4 +167,5 @@ class EmbedBuilder:
             show_name=show_name,
             image_url=image_url,
             thumbnail_url=thumbnail_url,
+            timestamp=timestamp,
         )
