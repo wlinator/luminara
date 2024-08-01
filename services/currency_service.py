@@ -57,15 +57,7 @@ class Currency:
         query = "SELECT user_id, balance FROM currency ORDER BY balance DESC"
         data = database.select_query(query)
 
-        leaderboard = []
-        rank = 1
-        for row in data:
-            row_user_id = row[0]
-            balance = row[1]
-            leaderboard.append((row_user_id, balance, rank))
-            rank += 1
-
-        return leaderboard
+        return [(row[0], row[1], rank) for rank, row in enumerate(data, start=1)]
 
     @staticmethod
     def format(num):

@@ -10,6 +10,7 @@ import services.config_service
 import services.help_service
 from lib.constants import CONST
 from services.blacklist_service import BlacklistUserService
+from db.database import run_migrations
 
 # Remove the default logger configuration
 logger.remove()
@@ -42,9 +43,7 @@ client = Client.LumiBot(
 
 @client.check
 async def blacklist_check(ctx):
-    if BlacklistUserService.is_user_blacklisted(ctx.author.id):
-        return False
-    return True
+    return not BlacklistUserService.is_user_blacklisted(ctx.author.id)
 
 
 def load_modules():
@@ -86,6 +85,9 @@ if __name__ == "__main__":
     """
 
     logger.info("LUMI IS BOOTING")
+
+    # Run database migrations
+    run_migrations()
 
     # cache all JSON
     [
