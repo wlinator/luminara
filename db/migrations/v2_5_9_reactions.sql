@@ -1,5 +1,5 @@
 -- Create a table to store custom reactions
-CREATE TABLE custom_reactions (
+CREATE TABLE IF NOT EXISTS custom_reactions (
     id SERIAL PRIMARY KEY,  -- Unique identifier for each custom reaction
     trigger_text TEXT NOT NULL,  -- The text that triggers the custom reaction
     response TEXT,  -- The response text for the custom reaction (nullable for emoji reactions)
@@ -16,6 +16,6 @@ CREATE TABLE custom_reactions (
 );
 
 -- Create indexes to speed up lookups
-CREATE INDEX idx_custom_reactions_guild_id ON custom_reactions(guild_id);
-CREATE INDEX idx_custom_reactions_creator_id ON custom_reactions(creator_id);
-CREATE INDEX idx_custom_reactions_trigger_text ON custom_reactions(trigger_text);
+CREATE OR REPLACE INDEX idx_custom_reactions_guild_id ON custom_reactions(guild_id);
+CREATE OR REPLACE INDEX idx_custom_reactions_creator_id ON custom_reactions(creator_id);
+CREATE OR REPLACE INDEX idx_custom_reactions_trigger_text ON custom_reactions(trigger_text);

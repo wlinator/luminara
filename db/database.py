@@ -52,6 +52,13 @@ def select_query_one(query, values=None):
             return output[0] if output else None
 
 
+def select_query_dict(query, values=None):
+    with _cnxpool.get_connection() as conn:
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute(query, values)
+            return cursor.fetchall()
+
+
 def run_migrations():
     migrations_dir = "db/migrations"
     migration_files = sorted(
