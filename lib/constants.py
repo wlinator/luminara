@@ -19,8 +19,8 @@ class Constants:
     INSTANCE: Optional[str] = os.environ.get("INSTANCE", None)
 
     OWNER_IDS: Optional[Set[int]] = (
-        {int(id.strip()) for id in os.environ.get("OWNER_IDS", "").split(",") if id}
-        if os.environ.get("OWNER_IDS")
+        {int(id.strip()) for id in os.environ.get("OWNER_ID", "").split(",") if id}
+        if os.environ.get("OWNER_ID")
         else None
     )
 

@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-CREATE TABLE xp (
+CREATE TABLE IF NOT EXISTS xp (
     user_id BIGINT NOT NULL,
     guild_id BIGINT NOT NULL,
     user_xp INT NOT NULL,
@@ -9,13 +9,13 @@ CREATE TABLE xp (
     PRIMARY KEY (user_id, guild_id)
 );
 
-CREATE TABLE currency (
+CREATE TABLE IF NOT EXISTS currency (
     user_id BIGINT NOT NULL,
     balance BIGINT NOT NULL,
     PRIMARY KEY (user_id)
 );
 
-CREATE TABLE blackjack (
+CREATE TABLE IF NOT EXISTS blackjack (
     id INT AUTO_INCREMENT,
     user_id BIGINT,
     is_won BOOLEAN,
@@ -26,7 +26,7 @@ CREATE TABLE blackjack (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE slots (
+CREATE TABLE IF NOT EXISTS slots (
     id INT AUTO_INCREMENT,
     user_id BIGINT,
     is_won BOOLEAN,
@@ -37,7 +37,7 @@ CREATE TABLE slots (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE dailies (
+CREATE TABLE IF NOT EXISTS dailies (
     id INT AUTO_INCREMENT,
     user_id BIGINT,
     amount BIGINT,
@@ -46,7 +46,7 @@ CREATE TABLE dailies (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE item (
+CREATE TABLE IF NOT EXISTS item (
     id INT AUTO_INCREMENT,
     name TEXT,
     display_name TEXT,
@@ -58,7 +58,7 @@ CREATE TABLE item (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE inventory (
+CREATE TABLE IF NOT EXISTS inventory (
     user_id BIGINT,
     item_id INT,
     quantity INT,
@@ -67,14 +67,14 @@ CREATE TABLE inventory (
     FOREIGN KEY (item_id) REFERENCES item (id)
 );
 
-CREATE TABLE birthdays (
+CREATE TABLE IF NOT EXISTS birthdays (
   user_id BIGINT NOT NULL,
   guild_id BIGINT NOT NULL,
   birthday DATETIME DEFAULT NULL,
   PRIMARY KEY (user_id, guild_id)
 );
 
-CREATE TABLE guild_config (
+CREATE TABLE IF NOT EXISTS guild_config (
     guild_id BIGINT NOT NULL,
     prefix TINYTEXT,
     birthday_channel_id BIGINT, 
@@ -91,7 +91,7 @@ CREATE TABLE guild_config (
     PRIMARY KEY (guild_id)
 );
 
-CREATE TABLE level_rewards (
+CREATE TABLE IF NOT EXISTS level_rewards (
     guild_id BIGINT NOT NULL,
     level INT NOT NULL,
     role_id BIGINT,
@@ -100,7 +100,7 @@ CREATE TABLE level_rewards (
     PRIMARY KEY (guild_id, level)
 );
 
-CREATE TABLE blacklist_user (
+CREATE TABLE IF NOT EXISTS blacklist_user (
     user_id BIGINT NOT NULL,
     reason TEXT,
     timestamp TIMESTAMP NOT NULL DEFAULT NOW(),

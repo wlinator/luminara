@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS cases (
 );
 
 
-CREATE INDEX idx_cases_guild_id ON cases(guild_id);
-CREATE INDEX idx_cases_target_id ON cases(target_id);
-CREATE INDEX idx_cases_moderator_id ON cases(moderator_id);
-CREATE INDEX idx_cases_action_type ON cases(action_type);
+CREATE OR REPLACE INDEX idx_cases_guild_id ON cases(guild_id);
+CREATE OR REPLACE INDEX idx_cases_target_id ON cases(target_id);
+CREATE OR REPLACE INDEX idx_cases_moderator_id ON cases(moderator_id);
+CREATE OR REPLACE INDEX idx_cases_action_type ON cases(action_type);
