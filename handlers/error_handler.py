@@ -109,7 +109,7 @@ class ErrorListener(Cog):
         log_msg += " in DMs" if ctx.guild is None else f" | guild: {ctx.guild.name} "
         # if len(str(error)) > 80:
         #     error = f"{str(error)[:80]}..."
-        logger.exception(f"{log_msg} | FAILED: {error}")
+        logger.warning(f"{log_msg} | FAILED: {error}")
 
     @Cog.listener()
     async def on_command_error(self, ctx, error) -> None:
