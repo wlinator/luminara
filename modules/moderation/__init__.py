@@ -1,7 +1,7 @@
 import discord
 from discord.ext import bridge, commands
 
-from modules.moderation import ban, cases
+from modules.moderation import ban, cases, warn
 
 
 class Moderation(commands.Cog):
@@ -107,6 +107,24 @@ class Moderation(commands.Cog):
         new_reason: str,
     ):
         await cases.edit_case_reason(ctx, ctx.guild.id, case_number, new_reason)
+
+    @bridge.bridge_command(
+        name="warn",
+        aliases=["w"],
+        description="Warn a user.",
+        help="Warns a user in the server.",
+        guild_only=True,
+    )
+    @bridge.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def warn_command(
+        self,
+        ctx,
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ):
+        await warn.warn_user(ctx, target, reason)
 
 
 def setup(client):
