@@ -4,7 +4,7 @@ import discord
 from lib import formatter
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
-from modules.moderation.utils import actionable
+from modules.moderation.utils.actionable import async_actionable
 from modules.moderation.utils.case_handler import create_case
 from typing import Optional
 
@@ -18,7 +18,7 @@ async def ban_user(cog, ctx, target: discord.User, reason: Optional[str] = None)
     # member -> user is in the guild, check role hierarchy
     if member:
         bot_member = await cog.client.get_or_fetch_member(ctx.guild, ctx.bot.user.id)
-        await actionable.actionable(member, ctx.author, bot_member)
+        await async_actionable(member, ctx.author, bot_member)
 
         try:
             await member.send(

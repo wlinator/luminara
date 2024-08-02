@@ -3,7 +3,7 @@ from lib.exceptions.LumiExceptions import LumiException
 from lib.constants import CONST
 
 
-async def actionable(
+async def async_actionable(
     target: discord.Member,
     invoker: discord.Member,
     bot_user: discord.Member,

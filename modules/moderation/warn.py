@@ -5,12 +5,12 @@ import asyncio
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from modules.moderation.utils.case_handler import create_case
-from modules.moderation.utils.actionable import actionable
+from modules.moderation.utils.actionable import async_actionable
 
 
 async def warn_user(ctx, target: discord.Member, reason: Optional[str]):
     bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
-    await actionable(target, ctx.author, bot_member)
+    await async_actionable(target, ctx.author, bot_member)
 
     output_reason = reason or CONST.STRINGS["mod_no_reason"]
 
