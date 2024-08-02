@@ -18,7 +18,7 @@ async def ban_user(cog, ctx, target: discord.User, reason: Optional[str] = None)
     # member -> user is in the guild, check role hierarchy
     if member:
         bot_member = await cog.client.get_or_fetch_member(ctx.guild, ctx.bot.user.id)
-        actionable.actionable(member, ctx.author, bot_member)
+        await actionable.actionable(member, ctx.author, bot_member)
 
         try:
             await member.send(

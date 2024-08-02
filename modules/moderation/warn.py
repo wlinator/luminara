@@ -1,13 +1,17 @@
 import discord
 from typing import Optional
-from discord.ext.commands import UserConverter
+from discord.ext.commands import UserConverter, MemberConverter
 import asyncio
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from modules.moderation.utils.case_handler import create_case
+from modules.moderation.utils.actionable import actionable
 
 
 async def warn_user(ctx, target: discord.Member, reason: Optional[str]):
+    bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
+    await actionable(target, ctx.author, bot_member)
+
     output_reason = reason or CONST.STRINGS["mod_no_reason"]
 
     dm_task = target.send(
