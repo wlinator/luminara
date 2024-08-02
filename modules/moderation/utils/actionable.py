@@ -1,10 +1,9 @@
 import discord
-from discord.ext.commands import BadArgument
+from lib.exceptions.LumiExceptions import LumiException
+from lib.constants import CONST
 
-from lib.exceptions import LumiExceptions
 
-
-def actionable(
+async def async_actionable(
     target: discord.Member,
     invoker: discord.Member,
     bot_user: discord.Member,
@@ -21,10 +20,10 @@ def actionable(
         True if the client's highest role AND the invoker's highest role are higher than the target.
     """
     if target == invoker:
-        raise BadArgument("you can't ban yourself.")
+        raise LumiException(CONST.STRINGS["error_actionable_self"])
 
     if target.top_role >= invoker.top_role and invoker != invoker.guild.owner:
-        raise LumiExceptions.UserHierarchy
+        raise LumiException(CONST.STRINGS["error_actionable_hierarchy_user"])
 
-    elif target.top_role >= bot_user.top_role:
-        raise LumiExceptions.BotHierarchy
+    if target.top_role >= bot_user.top_role:
+        raise LumiException(CONST.STRINGS["error_actionable_hierarchy_bot"])

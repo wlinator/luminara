@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 
 
@@ -27,11 +26,3 @@ class LumiException(commands.CommandError):
     def __init__(self, message="An error occurred."):
         self.message = message
         super().__init__(message)
-
-
-class UserHierarchy(discord.DiscordException):
-    pass
-
-
-class BotHierarchy(discord.DiscordException):
-    pass

@@ -12,7 +12,7 @@ class Constants:
     TITLE = "Luminara"
     AUTHOR = "wlinator"
     LICENSE = "GNU General Public License v3.0"
-    VERSION = "2.8.1"
+    VERSION = "2.8.2"  # "Moderation: Warns" update
 
     # bot credentials
     TOKEN: Optional[str] = os.environ.get("TOKEN", None)
