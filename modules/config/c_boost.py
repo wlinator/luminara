@@ -72,7 +72,7 @@ async def set_boost_image(ctx, image_url: str | None):
         guild_config.boost_image_url = None
         guild_config.push()
         image_url = None
-    elif not image_url.endswith((".jpg", ".png")):
+    elif not image_url.endswith(CONST.ALLOWED_IMAGE_EXTENSIONS):
         raise LumiException(CONST.STRINGS["error_boost_image_url_invalid"])
     elif not image_url.startswith(("http://", "https://")):
         raise LumiException(CONST.STRINGS["error_image_url_invalid"])

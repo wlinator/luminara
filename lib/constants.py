@@ -38,6 +38,7 @@ class Constants:
 
     # config
     CONFIG_GUIDE_URL = "https://wiki.wlinator.org/serverconfig"
+    ALLOWED_IMAGE_EXTENSIONS = (".jpg", ".png")
 
     # emotes
     EMOTES_GUILD_ID = 1038051105642401812
