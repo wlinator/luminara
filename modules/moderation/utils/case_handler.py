@@ -65,7 +65,15 @@ async def create_case(
                 ctx,
                 str(mod_log_channel_id),
             )
-            embed = create_case_embed(ctx, target, case_number, action_type, reason)
+            embed: discord.Embed = create_case_embed(
+                ctx=ctx,
+                target=target,
+                case_number=case_number,
+                action_type=action_type,
+                reason=reason,
+                timestamp=None,
+                duration=duration,
+            )
             message = await mod_log_channel.send(embed=embed)
 
             # Update the case with the modlog_message_id
@@ -118,13 +126,14 @@ async def edit_case_modlog(
         message = await mod_log_channel.fetch_message(modlog_message_id)
         target = await UserConverter().convert(ctx, str(case["target_id"]))
 
-        updated_embed = create_case_embed(
-            ctx,
-            target,
-            case_number,
-            case["action_type"],
-            new_reason,
-            case["created_at"],
+        updated_embed: discord.Embed = create_case_embed(
+            ctx=ctx,
+            target=target,
+            case_number=case_number,
+            action_type=case["action_type"],
+            reason=new_reason,
+            timestamp=case["created_at"],
+            duration=case["duration"] or None,
         )
 
         await message.edit(embed=updated_embed)

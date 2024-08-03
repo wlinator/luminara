@@ -27,13 +27,14 @@ async def view_case_by_number(ctx, guild_id: int, case_number: int):
         return await ctx.respond(embed=embed)
 
     target = await UserConverter().convert(ctx, str(case["target_id"]))
-    embed = create_case_embed(
-        ctx,
-        target,
-        case["case_number"],
-        case["action_type"],
-        case["reason"],
-        case["created_at"],
+    embed: discord.Embed = create_case_embed(
+        ctx=ctx,
+        target=target,
+        case_number=case["case_number"],
+        action_type=case["action_type"],
+        reason=case["reason"],
+        timestamp=case["created_at"],
+        duration=case["duration"] or None,
     )
     await ctx.respond(embed=embed)
 
