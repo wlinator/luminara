@@ -90,7 +90,7 @@ async def untimeout_user(ctx, target: discord.Member, reason: Optional[str] = No
 
         target_user = await UserConverter().convert(ctx, str(target.id))
         create_case_task = create_case(ctx, target_user, "UNTIMEOUT", reason)
-        await asyncio.gather(respond_task, create_case_task)
+        await asyncio.gather(respond_task, create_case_task, return_exceptions=True)
 
     except discord.HTTPException:
         return await ctx.respond(
