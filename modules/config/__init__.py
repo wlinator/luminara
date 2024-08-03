@@ -6,8 +6,7 @@ from config.parser import JsonCache
 from lib import formatter
 from lib.embeds.boost import Boost
 from lib.embeds.error import GenericErrors
-from lib.embeds.greet import Greet
-from modules.config import c_show, c_birthday, set_prefix, xp_reward
+from modules.config import c_show, c_birthday, c_greet, set_prefix, xp_reward
 from services.config_service import GuildConfig
 
 strings = JsonCache.read_json("strings")
@@ -110,84 +109,21 @@ class Config(commands.Cog):
     async def config_birthdays_disable(self, ctx):
         await c_birthday.disable_birthday_module(ctx)
 
-    @welcome_config.command(
-        name="channel",
-        description="Set the greeting announcements channel.",
-    )
+    @welcome_config.command(name="channel")
     async def config_welcome_channel(self, ctx, *, channel: discord.TextChannel):
-        guild_config = GuildConfig(ctx.guild.id)
-        guild_config.welcome_channel_id = channel.id
-        guild_config.push()
+        await c_greet.set_welcome_channel(ctx, channel)
 
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-            description=f"✅ | New members will receive a welcome message in {channel.mention}.",
-        )
-        guild_icon = (
-            ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        )
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-
-        return await ctx.respond(embed=embed)
-
-    @welcome_config.command(
-        name="disable",
-        description="Disable greetings in this server.",
-    )
+    @welcome_config.command(name="disable")
     async def config_welcome_disable(self, ctx):
-        guild_config = GuildConfig(ctx.guild.id)
+        await c_greet.disable_welcome_module(ctx)
 
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-        )
-        guild_icon = (
-            ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        )
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-
-        if not guild_config.welcome_channel_id:
-            embed.description = "👍 | The greeting module was already disabled."
-            return await ctx.respond(embed=embed)
-
-        else:
-            guild_config.welcome_channel_id = None
-            guild_config.welcome_message = None
-            guild_config.push()
-            embed.description = "✅ | The greeting module was successfully disabled."
-            return await ctx.respond(embed=embed)
-
-    @welcome_config.command(
-        name="template",
-        description="Make a custom greeting template.",
-    )
+    @welcome_config.command(name="template")
     async def config_welcome_template(
         self,
         ctx,
-        *,
         text: discord.Option(str, max_length=2000),
     ):
-        guild_config = GuildConfig(ctx.guild.id)
-        guild_config.welcome_message = text
-        guild_config.push()
-
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-            description="✅ | The greeting template was successfully updated.",
-        )
-        guild_icon = (
-            ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        )
-        embed.add_field(name="Template", value=text, inline=False)
-        embed.add_field(
-            name="Example",
-            value="An example will be sent in a separate message.",
-            inline=False,
-        )
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-        await ctx.respond(embed=embed)
-
-        embed = Greet.message(ctx.author, text)
-        return await ctx.send(embed=embed, content=ctx.author.mention)
+        await c_greet.set_welcome_template(ctx, text)
 
     @boost_config.command(
         name="channel",
