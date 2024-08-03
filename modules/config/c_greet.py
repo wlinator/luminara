@@ -50,7 +50,7 @@ async def set_welcome_template(ctx, text: str):
         ctx=ctx,
         author_text=CONST.STRINGS["config_author"],
         description=CONST.STRINGS["config_welcome_template_updated"],
-        footer_text=CONST.STRINGS["config_welcome_template_updated_footer"],
+        footer_text=CONST.STRINGS["config_example_next_footer"],
     )
     embed.add_field(
         name=CONST.STRINGS["config_welcome_template_field"],
