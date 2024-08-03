@@ -97,6 +97,15 @@
   "mod_warned_author": "User Warned",
   "mod_warn_dm": "**{0}** you have been warned in `{1}`.\n\n**Reason:** `{2}`",
   "mod_warned_user": "user `{0}` has been warned.",
+  "mod_timed_out_author": "User Timed Out",
+  "mod_timeout_dm": "**{0}** you have been timed out in `{1}` for `{2}`.\n\n**Reason:** `{3}`",
+  "mod_timed_out_user": "user `{0}` has been timed out.",
+  "mod_untimed_out_author": "User Timeout Removed",
+  "mod_untimed_out": "timeout has been removed for user `{0}`.",
+  "mod_not_timed_out_author": "User Not Timed Out",
+  "mod_not_timed_out": "user `{0}` is not timed out.",
+  "error_invalid_duration_author": "Invalid Duration",
+  "error_invalid_duration_description": "Please provide a valid duration between 1 minute and 30 days.",
   "ping_author": "I'm online!",
   "ping_footer": "Latency: {0}ms",
   "ping_pong": "Pong!",
@@ -118,5 +127,6 @@
   "xp_lb_field_value": "level: **{0}**\nxp: `{1}/{2}`",
   "xp_level": "Level {0}",
   "xp_progress": "Progress to next level",
-  "xp_server_rank": "Server Rank: #{0}"
+  "xp_server_rank": "Server Rank: #{0}",
+  "error_invalid_duration": "Invalid duration: {0}"
 }
