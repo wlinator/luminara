@@ -1,7 +1,7 @@
 import discord
 from discord.ext import bridge, commands
 
-from modules.moderation import ban, cases, warn
+from modules.moderation import ban, cases, warn, timeout
 
 
 class Moderation(commands.Cog):
@@ -125,6 +125,43 @@ class Moderation(commands.Cog):
         reason: str | None = None,
     ):
         await warn.warn_user(ctx, target, reason)
+
+    @bridge.bridge_command(
+        name="timeout",
+        aliases=["t", "to"],
+        description="Timeout a user.",
+        help="Timeouts a user in the server for a specified duration.",
+        guild_only=True,
+    )
+    @bridge.has_permissions(moderate_members=True)
+    @commands.guild_only()
+    async def timeout_command(
+        self,
+        ctx,
+        target: discord.Member,
+        duration: str,
+        *,
+        reason: str | None = None,
+    ):
+        await timeout.timeout_user(self, ctx, target, duration, reason)
+
+    @bridge.bridge_command(
+        name="untimeout",
+        aliases=["removetimeout", "rto", "uto"],
+        description="Remove timeout from a user.",
+        help="Removes the timeout from a user in the server.",
+        guild_only=True,
+    )
+    @bridge.has_permissions(moderate_members=True)
+    @commands.guild_only()
+    async def untimeout_command(
+        self,
+        ctx,
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ):
+        await timeout.untimeout_user(ctx, target, reason)
 
 
 def setup(client):

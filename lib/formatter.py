@@ -2,6 +2,9 @@ import textwrap
 
 import discord
 from discord.ext import commands
+from pytimeparse import parse
+from lib.exceptions.LumiExceptions import LumiException
+from lib.constants import CONST
 
 from services.config_service import GuildConfig
 
@@ -101,3 +104,35 @@ def get_invoked_name(ctx: commands.Context) -> str | None:
         return ctx.invoked_with
     except (discord.ApplicationCommandInvokeError, AttributeError):
         return ctx.command.name if ctx.command else None
+
+
+def format_duration_to_seconds(duration: str) -> int:
+    """
+    Formats a duration in seconds to a human-readable string.
+    """
+    parsed_duration = parse(duration)
+
+    if isinstance(parsed_duration, int):
+        return parsed_duration
+    else:
+        raise LumiException(CONST.STRINGS["error_invalid_duration"].format(duration))
+
+
+def format_seconds_to_duration_string(seconds: int) -> str:
+    """
+    Formats a duration in seconds to a human-readable string.
+    Returns seconds if shorter than a minute.
+    """
+    if seconds < 60:
+        return f"{seconds}s"
+
+    days = seconds // 86400
+    hours = (seconds % 86400) // 3600
+    minutes = (seconds % 3600) // 60
+
+    if days > 0:
+        return f"{days}d{hours}h" if hours > 0 else f"{days}d"
+    elif hours > 0:
+        return f"{hours}h{minutes}m" if minutes > 0 else f"{hours}h"
+    else:
+        return f"{minutes}m"
