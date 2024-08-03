@@ -4,6 +4,7 @@ from lib.constants import CONST
 from lib.formatter import format_case_number
 from typing import Optional
 import datetime
+from lib.formatter import format_seconds_to_duration_string
 
 
 def create_case_embed(
@@ -13,6 +14,7 @@ def create_case_embed(
     action_type: str,
     reason: Optional[str],
     timestamp: Optional[datetime.datetime] = None,
+    duration: Optional[int] = None,
 ) -> discord.Embed:
     embed = EmbedBuilder.create_warning_embed(
         ctx,
@@ -28,13 +30,25 @@ def create_case_embed(
         ),
         inline=True,
     )
-    embed.add_field(
-        name=CONST.STRINGS["case_type_field"],
-        value=CONST.STRINGS["case_type_field_value"].format(
-            action_type.lower().capitalize(),
-        ),
-        inline=True,
-    )
+
+    if not duration:
+        embed.add_field(
+            name=CONST.STRINGS["case_type_field"],
+            value=CONST.STRINGS["case_type_field_value"].format(
+                action_type.lower().capitalize(),
+            ),
+            inline=True,
+        )
+    else:
+        embed.add_field(
+            name=CONST.STRINGS["case_type_field"],
+            value=CONST.STRINGS["case_type_field_value_with_duration"].format(
+                action_type.lower().capitalize(),
+                format_seconds_to_duration_string(duration),
+            ),
+            inline=True,
+        )
+
     embed.add_field(
         name=CONST.STRINGS["case_moderator_field"],
         value=CONST.STRINGS["case_moderator_field_value"].format(
