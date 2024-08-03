@@ -96,22 +96,22 @@ class Config(commands.Cog):
         guild_only=True,
         default_member_permissions=discord.Permissions(manage_guild=True),
     )
-    birthday_config = config.create_subgroup(name="birthdays")
-    welcome_config = config.create_subgroup(name="greetings")
-    boost_config = config.create_subgroup(name="boosts")
-    level_config = config.create_subgroup(name="levels")
 
     @config.command(name="show")
     async def config_command(self, ctx):
         await c_show.cmd(ctx)
 
-    @birthday_config.command(name="channel")
+    birthday_config = config.create_subgroup(name="birthdays")
+
+    @config.command(name="birthdays")
     async def config_birthdays_channel(self, ctx, channel: discord.TextChannel):
         await c_birthday.set_birthday_channel(ctx, channel)
 
     @birthday_config.command(name="disable")
     async def config_birthdays_disable(self, ctx):
         await c_birthday.disable_birthday_module(ctx)
+
+    welcome_config = config.create_subgroup(name="greetings")
 
     @welcome_config.command(name="channel")
     async def config_welcome_channel(self, ctx, channel: discord.TextChannel):
@@ -125,6 +125,8 @@ class Config(commands.Cog):
     @discord.commands.option(name="text", type=str, max_length=2000)
     async def config_welcome_template(self, ctx, text):
         await c_greet.set_welcome_template(ctx, text)
+
+    boost_config = config.create_subgroup(name="boosts")
 
     @boost_config.command(name="channel")
     async def config_boosts_channel(self, ctx, channel: discord.TextChannel):
@@ -143,6 +145,8 @@ class Config(commands.Cog):
     @discord.commands.option(name="url", type=str, max_length=2000)
     async def config_boosts_image(self, ctx, url):
         await c_boost.set_boost_image(ctx, url)
+
+    level_config = config.create_subgroup(name="levels")
 
     @level_config.command(name="channel")
     async def config_level_channel(self, ctx, channel: discord.TextChannel):
