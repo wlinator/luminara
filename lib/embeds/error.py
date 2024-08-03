@@ -5,12 +5,10 @@ from lib.constants import CONST
 
 
 def clean_error_embed(ctx):
-    embed = discord.Embed(
+    return discord.Embed(
         color=discord.Color.red(),
         description=f"**{ctx.author.name}** ",
     )
-
-    return embed
 
 
 class GenericErrors:
@@ -25,16 +23,6 @@ class GenericErrors:
             text=f"For more info do {formatter.get_prefix(ctx)}help {formatter.get_invoked_name(ctx)}",
             icon_url=CONST.QUESTION_ICON,
         )
-
-        return embed
-
-    @staticmethod
-    def bad_url(ctx, error="the image URL must end with `.jpg` or `.png`."):
-        embed = clean_error_embed(ctx)
-        if embed.description is None:
-            embed.description = formatter.shorten(str(error), 100)
-        else:
-            embed.description += formatter.shorten(str(error), 100)
 
         return embed
 

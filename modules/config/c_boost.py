@@ -2,8 +2,8 @@ import discord
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from services.config_service import GuildConfig
+from lib.exceptions.LumiExceptions import LumiException
 from lib.embeds.boost import Boost
-from lib.embeds.error import GenericErrors
 
 
 async def set_boost_channel(ctx, channel: discord.TextChannel):
@@ -73,9 +73,9 @@ async def set_boost_image(ctx, image_url: str | None):
         guild_config.push()
         image_url = None
     elif not image_url.endswith((".jpg", ".png")):
-        return await ctx.respond(embed=GenericErrors.bad_url(ctx))
+        raise LumiException(CONST.STRINGS["error_boost_image_url_invalid"])
     elif not image_url.startswith(("http://", "https://")):
-        return await ctx.respond(embed=GenericErrors.bad_url(ctx, "invalid URL."))
+        raise LumiException(CONST.STRINGS["error_image_url_invalid"])
     else:
         guild_config.boost_image_url = image_url
         guild_config.push()
