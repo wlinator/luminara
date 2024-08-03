@@ -7,7 +7,7 @@ from lib import formatter
 from lib.embeds.boost import Boost
 from lib.embeds.error import GenericErrors
 from lib.embeds.greet import Greet
-from modules.config import show, set_prefix, xp_reward
+from modules.config import c_show, c_birthday, set_prefix, xp_reward
 from services.config_service import GuildConfig
 
 strings = JsonCache.read_json("strings")
@@ -78,8 +78,6 @@ class Config(commands.Cog):
     Only members with "manage guild" permissions can access commands in this group.
     
     - Birthdays
-    - Commands
-    - Intros
     - Welcome
     - Boosts
     - Levels
@@ -96,103 +94,21 @@ class Config(commands.Cog):
         default_member_permissions=discord.Permissions(manage_guild=True),
     )
     birthday_config = config.create_subgroup(name="birthdays")
-    command_config = config.create_subgroup(name="commands")
-    intro_config = config.create_subgroup(name="intros")
     welcome_config = config.create_subgroup(name="greetings")
     boost_config = config.create_subgroup(name="boosts")
     level_config = config.create_subgroup(name="levels")
 
     @config.command(name="show")
     async def config_command(self, ctx):
-        await show.cmd(ctx)
+        await c_show.cmd(ctx)
 
-    @birthday_config.command(
-        name="channel",
-        description="Set the birthday announcements channel.",
-    )
+    @birthday_config.command(name="channel")
     async def config_birthdays_channel(self, ctx, *, channel: discord.TextChannel):
-        guild_config = GuildConfig(ctx.guild.id)
-        guild_config.birthday_channel_id = channel.id
-        guild_config.push()
+        await c_birthday.set_birthday_channel(ctx, channel)
 
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-            description=f"✅ | Birthday announcements will be sent in {channel.mention}.",
-        )
-        guild_icon = (
-            ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        )
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-
-        return await ctx.respond(embed=embed)
-
-    @birthday_config.command(
-        name="disable",
-        description="Disable the birthday module.",
-    )
+    @birthday_config.command(name="disable")
     async def config_birthdays_disable(self, ctx):
-        guild_config = GuildConfig(ctx.guild.id)
-
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-        )
-        guild_icon = (
-            ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        )
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-
-        if not guild_config.birthday_channel_id:
-            embed.description = "👍 | The birthday module was already disabled."
-            return await ctx.respond(embed=embed)
-
-        else:
-            guild_config.birthday_channel_id = None
-            guild_config.push()
-            embed.description = "✅ | The birthday module was successfully disabled."
-            return await ctx.respond(embed=embed)
-
-    @command_config.command(
-        name="channel",
-        description="Configure where members can use Lumi commands.",
-    )
-    async def config_commands_channel(self, ctx, *, channel: discord.TextChannel):
-        guild_config = GuildConfig(ctx.guild.id)
-        guild_config.command_channel_id = channel.id
-        guild_config.push()
-
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-            description=f"✅ | Commands can now only be used in {channel.mention}.",
-        )
-        guild_icon = (
-            ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        )
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-        embed.set_footer(
-            text="Note: mod & config commands are still available everywhere.",
-        )
-
-        return await ctx.respond(embed=embed)
-
-    @command_config.command(
-        name="everywhere",
-        description="Allow members to do commands in all channels.",
-    )
-    async def config_commands_everywhere(self, ctx):
-        guild_config = GuildConfig(ctx.guild.id)
-        guild_config.command_channel_id = None
-        guild_config.push()
-
-        embed = discord.Embed(
-            color=discord.Color.orange(),
-            description="✅ | Server members can now use Lumi commands in all channels. ",
-        )
-        guild_icon = (
-            ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-        )
-        embed.set_author(name="Server Configuration", icon_url=guild_icon)
-
-        return await ctx.respond(embed=embed)
+        await c_birthday.disable_birthday_module(ctx)
 
     @welcome_config.command(
         name="channel",
