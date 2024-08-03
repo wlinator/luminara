@@ -9,6 +9,7 @@ from modules.config import (
     c_greet,
     c_boost,
     c_level,
+    c_moderation,
     set_prefix,
     xp_reward,
 )
@@ -78,7 +79,7 @@ class Config(commands.Cog):
     CONFIG GROUPS
     The 'config' group consists of many different configuration types, each being guild-specific and guild-only.
     All commands in this group are exclusively available as slash-commands.
-    Only members with "manage guild" permissions can access commands in this group.
+    Only administrators can access commands in this group.
     
     - Birthdays
     - Welcome
@@ -93,7 +94,7 @@ class Config(commands.Cog):
         "config",
         "server config commands.",
         guild_only=True,
-        default_member_permissions=discord.Permissions(manage_guild=True),
+        default_member_permissions=discord.Permissions(administrator=True),
     )
 
     @config.command(name="show")
@@ -102,7 +103,7 @@ class Config(commands.Cog):
 
     birthday_config = config.create_subgroup(name="birthdays")
 
-    @config.command(name="birthdays")
+    @config.command(name="channel")
     async def config_birthdays_channel(self, ctx, channel: discord.TextChannel):
         await c_birthday.set_birthday_channel(ctx, channel)
 
@@ -171,6 +172,12 @@ class Config(commands.Cog):
     @level_config.command(name="template")
     async def config_level_template(self, ctx, text: str):
         await c_level.set_level_template(ctx, text)
+
+    modlog = config.create_subgroup(name="moderation")
+
+    @modlog.command(name="log")
+    async def config_moderation_log_channel(self, ctx, channel: discord.TextChannel):
+        await c_moderation.set_mod_log_channel(ctx, channel)
 
 
 def setup(client):
