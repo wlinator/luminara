@@ -1,16 +1,15 @@
 import discord
+from config.parser import JsonCache
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands
-
-from config.parser import JsonCache
 from modules.config import (
-    c_prefix,
-    c_show,
     c_birthday,
-    c_greet,
     c_boost,
+    c_greet,
     c_level,
     c_moderation,
+    c_prefix,
+    c_show,
     xp_reward,
 )
 
