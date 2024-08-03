@@ -85,7 +85,6 @@ class Config(commands.Cog):
     - Boosts
     - Levels
     - Modlog channel
-    - XP rewards
     - Permissions preset (coming soon)
     
     Running '/config show' will show a list of all available configuration types.

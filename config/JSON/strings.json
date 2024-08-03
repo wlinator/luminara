@@ -176,5 +176,7 @@
   "xp_lb_field_value": "level: **{0}**\nxp: `{1}/{2}`",
   "xp_level": "Level {0}",
   "xp_progress": "Progress to next level",
-  "xp_server_rank": "Server Rank: #{0}"
+  "xp_server_rank": "Server Rank: #{0}",
+  "error_image_url_invalid": "invalid image URL.",
+  "error_boost_image_url_invalid": "the image URL must end with `.jpg` or `.png`."
 }
