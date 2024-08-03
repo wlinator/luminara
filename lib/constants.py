@@ -12,7 +12,7 @@ class Constants:
     TITLE = "Luminara"
     AUTHOR = "wlinator"
     LICENSE = "GNU General Public License v3.0"
-    VERSION = "2.8.3"  # "Moderation: Timeouts" update
+    VERSION = "2.8.4"  # "Moderation: Config" update
 
     # bot credentials
     TOKEN: Optional[str] = os.environ.get("TOKEN", None)
@@ -35,6 +35,10 @@ class Constants:
     MARIADB_PASSWORD: Optional[str] = os.environ.get("MARIADB_PASSWORD", None)
     MARIADB_ROOT_PASSWORD: Optional[str] = os.environ.get("MARIADB_ROOT_PASSWORD", None)
     MARIADB_DATABASE: Optional[str] = os.environ.get("MARIADB_DATABASE", None)
+
+    # config
+    CONFIG_GUIDE_URL = "https://wiki.wlinator.org/serverconfig"
+    ALLOWED_IMAGE_EXTENSIONS = (".jpg", ".png")
 
     # emotes
     EMOTES_GUILD_ID = 1038051105642401812

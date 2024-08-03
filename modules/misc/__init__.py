@@ -6,7 +6,7 @@ from discord.ext import bridge, commands, tasks
 
 from Client import LumiBot
 from lib import checks
-from modules.config import set_prefix
+from modules.config import c_prefix
 from modules.misc import avatar, backup, info, introduction, invite, ping, xkcd
 
 
@@ -69,7 +69,7 @@ class Misc(commands.Cog):
     @commands.guild_only()
     @checks.allowed_in_channel()
     async def prefix_command(self, ctx) -> None:
-        await set_prefix.get_cmd(ctx)
+        await c_prefix.get_prefix(ctx)
 
     @bridge.bridge_command(
         name="info",
