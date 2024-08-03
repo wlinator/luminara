@@ -7,7 +7,7 @@ from lib import formatter
 from lib.embeds.boost import Boost
 from lib.embeds.error import GenericErrors
 from lib.embeds.greet import Greet
-from modules.config import config, set_prefix, xp_reward
+from modules.config import show, set_prefix, xp_reward
 from services.config_service import GuildConfig
 
 strings = JsonCache.read_json("strings")
@@ -16,19 +16,6 @@ strings = JsonCache.read_json("strings")
 class Config(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    @bridge.bridge_command(
-        name="configuration",
-        aliases=["config"],
-        description="Show your server configuration.",
-        help="Shows information about how Lumi is configured in your server. "
-        "[Read the guide](https://wiki.wlinator.org/serverconfig).",
-        guild_only=True,
-    )
-    @commands.guild_only()
-    @commands.has_permissions(manage_channels=True)
-    async def config_command(self, ctx):
-        await config.cmd(self, ctx)
 
     @bridge.bridge_command(
         name="setprefix",
@@ -85,13 +72,28 @@ class Config(commands.Cog):
         await xp_reward.remove_reward(ctx, level)
 
     """
-    The guild config code is a mess.
+    CONFIG GROUPS
+    The 'config' group consists of many different configuration types, each being guild-specific and guild-only.
+    All commands in this group are exclusively available as slash-commands.
+    Only members with "manage guild" permissions can access commands in this group.
+    
+    - Birthdays
+    - Commands
+    - Intros
+    - Welcome
+    - Boosts
+    - Levels
+    - Modlog channel
+    - XP rewards
+    - Permissions preset (coming soon)
+    
+    Running '/config show' will show a list of all available configuration types.
     """
     config = SlashCommandGroup(
         "config",
         "server config commands.",
         guild_only=True,
-        default_member_permissions=discord.Permissions(manage_channels=True),
+        default_member_permissions=discord.Permissions(manage_guild=True),
     )
     birthday_config = config.create_subgroup(name="birthdays")
     command_config = config.create_subgroup(name="commands")
@@ -99,6 +101,10 @@ class Config(commands.Cog):
     welcome_config = config.create_subgroup(name="greetings")
     boost_config = config.create_subgroup(name="boosts")
     level_config = config.create_subgroup(name="levels")
+
+    @config.command(name="show")
+    async def config_command(self, ctx):
+        await show.cmd(ctx)
 
     @birthday_config.command(
         name="channel",
@@ -187,47 +193,6 @@ class Config(commands.Cog):
         embed.set_author(name="Server Configuration", icon_url=guild_icon)
 
         return await ctx.respond(embed=embed)
-
-    # @intro_config.command(
-    #     name="channel",
-    #     description="Set the introductions channel."
-    # )
-    # async def config_intros_channel(self, ctx, *, channel: discord.TextChannel):
-    #     guild_config = GuildConfig(ctx.guild.id)
-    #     guild_config.intro_channel_id = channel.id
-    #     guild_config.push()
-    #
-    #     embed = discord.Embed(
-    #         color=discord.Color.orange(),
-    #         description=f"✅ | New introductions will be sent in {channel.mention}."
-    #     )
-    #     guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-    #     embed.set_author(name="Server Configuration", icon_url=guild_icon)
-    #
-    #     return await ctx.respond(embed=embed)
-    #
-    # @intro_config.command(
-    #     name="disable",
-    #     introduction="Disable the introductions module."
-    # )
-    # async def config_intros_disable(self, ctx):
-    #     guild_config = GuildConfig(ctx.guild.id)
-    #
-    #     embed = discord.Embed(
-    #         color=discord.Color.orange(),
-    #     )
-    #     guild_icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
-    #     embed.set_author(name="Server Configuration", icon_url=guild_icon)
-    #
-    #     if not guild_config.intro_channel_id:
-    #         embed.description = "👍 | The introductions module was already disabled."
-    #         return await ctx.respond(embed=embed)
-    #
-    #     else:
-    #         guild_config.intro_channel_id = None
-    #         guild_config.push()
-    #         embed.description = "✅ | The introductions module was successfully disabled."
-    #         return await ctx.respond(embed=embed)
 
     @welcome_config.command(
         name="channel",

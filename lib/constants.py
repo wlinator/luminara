@@ -36,6 +36,9 @@ class Constants:
     MARIADB_ROOT_PASSWORD: Optional[str] = os.environ.get("MARIADB_ROOT_PASSWORD", None)
     MARIADB_DATABASE: Optional[str] = os.environ.get("MARIADB_DATABASE", None)
 
+    # config
+    CONFIG_GUIDE_URL = "https://wiki.wlinator.org/serverconfig"
+
     # emotes
     EMOTES_GUILD_ID = 1038051105642401812
 
