@@ -4,13 +4,13 @@ from discord.ext import bridge, commands
 
 from config.parser import JsonCache
 from modules.config import (
+    c_prefix,
     c_show,
     c_birthday,
     c_greet,
     c_boost,
     c_level,
     c_moderation,
-    set_prefix,
     xp_reward,
 )
 
@@ -20,18 +20,6 @@ strings = JsonCache.read_json("strings")
 class Config(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    @bridge.bridge_command(
-        name="setprefix",
-        aliases=["sp"],
-        description="Set Lumi's prefix.",
-        help="Set the prefix for Lumi in this server. The maximum length of a prefix is 25.",
-        guild_only=True,
-    )
-    @commands.guild_only()
-    @commands.has_permissions(manage_channels=True)
-    async def prefix_set_command(self, ctx, *, prefix: str):
-        await set_prefix.set_cmd(ctx, prefix)
 
     @bridge.bridge_command(
         name="xprewards",
@@ -85,6 +73,7 @@ class Config(commands.Cog):
     - Welcome
     - Boosts
     - Levels
+    - Prefix
     - Modlog channel
     - Permissions preset (coming soon)
     
@@ -172,6 +161,12 @@ class Config(commands.Cog):
     @level_config.command(name="template")
     async def config_level_template(self, ctx, text: str):
         await c_level.set_level_template(ctx, text)
+
+    prefix_config = config.create_subgroup(name="prefix")
+
+    @prefix_config.command(name="set")
+    async def config_prefix_set(self, ctx, prefix: str):
+        await c_prefix.set_prefix(ctx, prefix)
 
     modlog = config.create_subgroup(name="moderation")
 
