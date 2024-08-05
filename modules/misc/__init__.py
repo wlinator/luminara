@@ -5,7 +5,6 @@ from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands, tasks
 
 from Client import LumiBot
-from lib import checks
 from modules.config import c_prefix
 from modules.misc import avatar, backup, info, introduction, invite, ping, xkcd
 
@@ -28,7 +27,6 @@ class Misc(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def avatar(self, ctx, user: discord.Member) -> None:
         return await avatar.get_avatar(ctx, user)
 
@@ -38,7 +36,6 @@ class Misc(commands.Cog):
         description="Simple status check.",
         help="Simple status check.",
     )
-    @checks.allowed_in_channel()
     async def ping(self, ctx) -> None:
         await ping.ping(self, ctx)
 
@@ -47,7 +44,6 @@ class Misc(commands.Cog):
         description="See Lumi's uptime since the last update.",
         help="See how long Lumi has been online since his last update.",
     )
-    @checks.allowed_in_channel()
     async def uptime(self, ctx) -> None:
         await ping.uptime(self, ctx, self.start_time)
 
@@ -56,7 +52,6 @@ class Misc(commands.Cog):
         description="Generate an invite link.",
         help="Generate a link to invite Lumi to your own server!",
     )
-    @checks.allowed_in_channel()
     async def invite_command(self, ctx) -> None:
         await invite.cmd(ctx)
 
@@ -67,7 +62,6 @@ class Misc(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def prefix_command(self, ctx) -> None:
         await c_prefix.get_prefix(ctx)
 
@@ -77,7 +71,6 @@ class Misc(commands.Cog):
         description="Shows basic Lumi stats.",
         help="Shows basic Lumi stats.",
     )
-    @checks.allowed_in_channel()
     async def info_command(self, ctx) -> None:
         unix_timestamp: int = int(round(self.start_time.timestamp()))
         await info.cmd(self, ctx, unix_timestamp)
