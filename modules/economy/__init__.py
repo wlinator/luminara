@@ -1,7 +1,5 @@
 import discord
 from discord.ext import bridge, commands
-
-from lib import checks
 from modules.economy import balance, blackjack, daily, give, slots
 
 
@@ -18,7 +16,6 @@ class Economy(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def balance_command(self, ctx):
         return await balance.cmd(ctx)
@@ -31,7 +28,6 @@ class Economy(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def blackjack_command(self, ctx, *, bet: int):
         return await blackjack.cmd(ctx, bet)
 
@@ -43,7 +39,6 @@ class Economy(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def daily_command(self, ctx):
         return await daily.cmd(ctx)
 
@@ -53,7 +48,6 @@ class Economy(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def give_command(self, ctx, *, user: discord.Member, amount: int):
         return await give.cmd(ctx, user, amount)
 
@@ -62,7 +56,6 @@ class Economy(commands.Cog):
         help="Give a server member some cash. You can use ID or mention them.",
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     async def give_command_prefixed(self, ctx, user: discord.User, *, amount: int):
         try:
             member = await ctx.guild.fetch_member(user.id)
@@ -79,7 +72,6 @@ class Economy(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slots_command(self, ctx, *, bet: int):
         return await slots.cmd(self, ctx, bet)

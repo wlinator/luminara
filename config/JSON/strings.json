@@ -109,8 +109,6 @@
   "error_no_case_found_description": "no case found with that ID.",
   "error_no_private_message_author": "Guild Only",
   "error_no_private_message_description": "this command can only be used in servers.",
-  "error_not_allowed_in_channel_author": "Not Allowed In Channel",
-  "error_not_allowed_in_channel_description": "you can only use that command in {0}.",
   "error_not_owner_author": "Owner Only",
   "error_not_owner_description": "this command requires Lumi ownership permissions.",
   "error_private_message_only_author": "Private Message Only",
@@ -168,6 +166,9 @@
   "mod_warn_dm": "**{0}** you have been warned in `{1}`.\n\n**Reason:** `{2}`",
   "mod_warned_author": "User Warned",
   "mod_warned_user": "user `{0}` has been warned.",
+  "mod_kicked_author": "User Kicked",
+  "mod_kicked_user": "user `{0}` has been kicked.",
+  "mod_kick_dm": "**{0}** you have been kicked from `{1}`.\n\n**Reason:** `{2}`",
   "ping_author": "I'm online!",
   "ping_footer": "Latency: {0}ms",
   "ping_pong": "Pong!",
@@ -189,5 +190,6 @@
   "xp_lb_field_value": "level: **{0}**\nxp: `{1}/{2}`",
   "xp_level": "Level {0}",
   "xp_progress": "Progress to next level",
-  "xp_server_rank": "Server Rank: #{0}"
+  "xp_server_rank": "Server Rank: #{0}",
+  "error_command_not_found": "No command called \"{0}\" found."
 }

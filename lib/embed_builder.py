@@ -21,14 +21,18 @@ class EmbedBuilder:
         image_url=None,
         thumbnail_url=None,
         timestamp=None,
+        hide_author=False,
+        hide_author_icon=False,
     ):
-        if not author_text:
-            author_text = ctx.author.name
-        elif show_name:
-            description = f"**{ctx.author.name}** {description}"
+        if not hide_author:
+            if not author_text:
+                author_text = ctx.author.name
+            elif show_name:
+                description = f"**{ctx.author.name}** {description}"
 
-        if not author_icon_url:
-            author_icon_url = ctx.author.display_avatar.url
+            if not hide_author_icon and not author_icon_url:
+                author_icon_url = ctx.author.display_avatar.url
+
         if not footer_text:
             footer_text = "Luminara"
         if not footer_icon_url:
@@ -39,7 +43,12 @@ class EmbedBuilder:
             description=description,
             color=color or CONST.COLOR_DEFAULT,
         )
-        embed.set_author(name=author_text, icon_url=author_icon_url, url=author_url)
+        if not hide_author:
+            embed.set_author(
+                name=author_text,
+                icon_url=None if hide_author_icon else author_icon_url,
+                url=author_url,
+            )
         embed.set_footer(text=footer_text, icon_url=footer_icon_url)
         embed.timestamp = timestamp or datetime.datetime.now()
 
@@ -63,6 +72,8 @@ class EmbedBuilder:
         image_url=None,
         thumbnail_url=None,
         timestamp=None,
+        hide_author=False,
+        hide_author_icon=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -78,6 +89,8 @@ class EmbedBuilder:
             image_url=image_url,
             thumbnail_url=thumbnail_url,
             timestamp=timestamp,
+            hide_author=hide_author,
+            hide_author_icon=hide_author_icon,
         )
 
     @staticmethod
@@ -93,6 +106,8 @@ class EmbedBuilder:
         image_url=None,
         thumbnail_url=None,
         timestamp=None,
+        hide_author=False,
+        hide_author_icon=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -108,6 +123,8 @@ class EmbedBuilder:
             image_url=image_url,
             thumbnail_url=thumbnail_url,
             timestamp=timestamp,
+            hide_author=hide_author,
+            hide_author_icon=hide_author_icon,
         )
 
     @staticmethod
@@ -123,6 +140,8 @@ class EmbedBuilder:
         image_url=None,
         thumbnail_url=None,
         timestamp=None,
+        hide_author=False,
+        hide_author_icon=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -138,6 +157,8 @@ class EmbedBuilder:
             image_url=image_url,
             thumbnail_url=thumbnail_url,
             timestamp=timestamp,
+            hide_author=hide_author,
+            hide_author_icon=hide_author_icon,
         )
 
     @staticmethod
@@ -153,6 +174,8 @@ class EmbedBuilder:
         image_url=None,
         thumbnail_url=None,
         timestamp=None,
+        hide_author=False,
+        hide_author_icon=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -168,4 +191,6 @@ class EmbedBuilder:
             image_url=image_url,
             thumbnail_url=thumbnail_url,
             timestamp=timestamp,
+            hide_author=hide_author,
+            hide_author_icon=hide_author_icon,
         )

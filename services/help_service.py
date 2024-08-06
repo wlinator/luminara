@@ -1,10 +1,9 @@
 import discord
 from discord.ext import commands
 
-from config.parser import JsonCache
-from lib.embeds.error import HelpErrors
-
-art = JsonCache.read_json("art")
+from lib.embed_builder import EmbedBuilder
+from lib.constants import CONST
+from lib.exceptions.LumiExceptions import LumiException
 
 
 class LumiHelp(commands.HelpCommand):
@@ -22,10 +21,11 @@ class LumiHelp(commands.HelpCommand):
         return "`{}{}`".format(self.context.clean_prefix, command.qualified_name)
 
     async def send_bot_help(self, mapping):
-        embed = discord.Embed(color=discord.Color.blurple())
-
-        embed.set_author(name="Help Command", icon_url=art["logo"]["transparent"])
-        embed.description = "Full list of commands: https://wiki.wlinator.org/cmdlist"
+        embed = EmbedBuilder.create_info_embed(
+            ctx=self.context,
+            author_text="Help Command",
+            show_name=False,
+        )
 
         for cog, lumi_commands in mapping.items():
             filtered = await self.filter_commands(lumi_commands, sort=True)
@@ -46,10 +46,11 @@ class LumiHelp(commands.HelpCommand):
         await channel.send(embed=embed)
 
     async def send_command_help(self, command):
-        embed = discord.Embed(
-            title=f"{self.context.clean_prefix}{command.qualified_name}",
-            color=discord.Color.blurple(),
+        embed = EmbedBuilder.create_success_embed(
+            ctx=self.context,
+            author_text=f"{self.context.clean_prefix}{command.qualified_name}",
             description=command.help,
+            show_name=False,
         )
 
         usage_value = "`{}{} {}`".format(
@@ -69,25 +70,16 @@ class LumiHelp(commands.HelpCommand):
         await channel.send(embed=embed)
 
     async def send_error_message(self, error):
-        channel = self.get_destination()
-        await channel.send(embed=HelpErrors.error_message(self.context, error))
+        raise LumiException(error)
 
     async def send_group_help(self, group):
-        channel = self.get_destination()
-        await channel.send(
-            embed=HelpErrors.error_message(
-                self.context,
-                f'No command called "{group.qualified_name}" found.',
-            ),
+        raise LumiException(
+            CONST.STRINGS["error_command_not_found"].format(group.qualified_name),
         )
 
     async def send_cog_help(self, cog):
-        channel = self.get_destination()
-        await channel.send(
-            embed=HelpErrors.error_message(
-                self.context,
-                f'No command called "{cog.qualified_name}" found.',
-            ),
+        raise LumiException(
+            CONST.STRINGS["error_command_not_found"].format(cog.qualified_name),
         )
 
     async def command_callback(self, ctx, *, command=None):
@@ -103,7 +95,7 @@ class LumiHelp(commands.HelpCommand):
         if cog is not None:
             return await self.send_cog_help(cog)
 
-        maybe_coro = discord.utils.maybe_coroutine
+        maybe_coro = discord.utils.maybe_coroutine  # type: ignore
 
         # If it's not a cog then it's a command.
         # Since we want to have detailed errors when someone
