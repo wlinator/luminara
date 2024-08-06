@@ -37,7 +37,6 @@ class Constants:
     MARIADB_DATABASE: Optional[str] = os.environ.get("MARIADB_DATABASE", None)
 
     # config
-    CONFIG_GUIDE_URL = "https://wiki.wlinator.org/serverconfig"
     ALLOWED_IMAGE_EXTENSIONS = (".jpg", ".png")
 
     # emotes

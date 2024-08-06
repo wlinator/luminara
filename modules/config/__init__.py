@@ -24,7 +24,6 @@ class Config(commands.Cog):
         name="xprewards",
         aliases=["xpr"],
         description="Show your server's XP rewards list.",
-        help="Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True",
     )
     @commands.guild_only()
@@ -36,7 +35,6 @@ class Config(commands.Cog):
         name="addxpreward",
         aliases=["axpr"],
         description="Add a Lumi XP reward.",
-        help="Add a Lumi XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True",
     )
     @commands.guild_only()
@@ -54,7 +52,6 @@ class Config(commands.Cog):
         name="removexpreward",
         aliases=["rxpr"],
         description="Remove a Lumi XP reward.",
-        help="Remove a Lumi XP reward. Read [the guide](https://wiki.wlinator.org/xprewards) before editing.",
         guild_only="True",
     )
     @commands.guild_only()
