@@ -1,7 +1,7 @@
 import discord
 from discord.ext import bridge, commands
 
-from modules.moderation import ban, cases, warn, timeout
+from modules.moderation import ban, cases, warn, timeout, kick
 
 
 class Moderation(commands.Cog):
@@ -162,6 +162,25 @@ class Moderation(commands.Cog):
         reason: str | None = None,
     ):
         await timeout.untimeout_user(ctx, target, reason)
+
+    @bridge.bridge_command(
+        name="kick",
+        aliases=["k"],
+        description="Kick a user from the server.",
+        help="Kicks a user from the server.",
+        guild_only=True,
+    )
+    @bridge.has_permissions(kick_members=True)
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def kick_command(
+        self,
+        ctx,
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ):
+        await kick.kick_user(self, ctx, target, reason)
 
 
 def setup(client):
