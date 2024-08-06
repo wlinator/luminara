@@ -66,13 +66,6 @@ async def on_command_error(ctx, error):
             str(error),
         )
 
-    elif isinstance(error, LumiExceptions.NotAllowedInChannel):
-        author_text = CONST.STRINGS["error_not_allowed_in_channel_author"]
-        description = CONST.STRINGS["error_not_allowed_in_channel_description"].format(
-            error.command_channel.mention,
-        )
-        ephemeral = True
-
     else:
         author_text = CONST.STRINGS["error_unknown_error_author"]
         description = CONST.STRINGS["error_unknown_error_description"]
@@ -111,8 +104,6 @@ class ErrorListener(Cog):
 
     @Cog.listener()
     async def on_command_error(self, ctx, error) -> None:
-        if isinstance(error, LumiExceptions.NotAllowedInChannel):
-            return
         await on_command_error(ctx, error)
         await self.log_command_error(ctx, error, ".")
 

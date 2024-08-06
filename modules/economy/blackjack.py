@@ -8,7 +8,7 @@ from loguru import logger
 
 from config.parser import JsonCache
 from lib import interaction
-from lib.embeds.error import EconErrors, GenericErrors
+from lib.embeds.error import EconErrors
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
 
@@ -187,7 +187,7 @@ async def cmd(ctx, bet: int):
             stats.push()
 
     except Exception as e:
-        await ctx.respond(embed=GenericErrors.default_exception(ctx))
+        # await ctx.respond(embed=GenericErrors.default_exception(ctx))
         logger.error("Something went wrong in the blackjack command: ", e)
 
     finally:

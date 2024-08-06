@@ -1,6 +1,5 @@
 from discord.ext import bridge, commands
 
-from lib import checks
 from modules.levels import leaderboard, level
 
 
@@ -16,7 +15,6 @@ class Levels(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def level_command(self, ctx) -> None:
         await level.rank(ctx)
@@ -29,7 +27,6 @@ class Levels(commands.Cog):
         guild_only=True,
     )
     @commands.guild_only()
-    @checks.allowed_in_channel()
     @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard_command(self, ctx) -> None:
         await leaderboard.cmd(ctx)
