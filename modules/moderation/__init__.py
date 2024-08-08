@@ -134,6 +134,7 @@ class Moderation(commands.Cog):
         guild_only=True,
     )
     @bridge.has_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
     @commands.guild_only()
     async def timeout_command(
         self,
@@ -153,6 +154,7 @@ class Moderation(commands.Cog):
         guild_only=True,
     )
     @bridge.has_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
     @commands.guild_only()
     async def untimeout_command(
         self,
