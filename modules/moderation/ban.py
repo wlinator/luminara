@@ -43,6 +43,7 @@ async def ban_user(cog, ctx, target: discord.User, reason: Optional[str] = None)
                 ctx.author.name,
                 formatter.shorten(output_reason, 200),
             ),
+            delete_message_seconds=86400,
         )
 
         respond_task = ctx.respond(
