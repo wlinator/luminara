@@ -1,7 +1,7 @@
 import discord
 from discord.ext import bridge, commands
 
-from modules.moderation import ban, cases, warn, timeout, kick
+from modules.moderation import ban, cases, warn, timeout, kick, softban
 
 
 class Moderation(commands.Cog):
@@ -181,6 +181,25 @@ class Moderation(commands.Cog):
         reason: str | None = None,
     ):
         await kick.kick_user(self, ctx, target, reason)
+
+    @bridge.bridge_command(
+        name="softban",
+        aliases=["sb"],
+        description="Softban a user from the server.",
+        help="Softbans a user from the server (ban and immediately unban to delete messages).",
+        guild_only=True,
+    )
+    @bridge.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.guild_only()
+    async def softban_command(
+        self,
+        ctx,
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ):
+        await softban.softban_user(ctx, target, reason)
 
 
 def setup(client):
