@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import discord
-from discord import guild_only
+from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands, tasks
 
@@ -36,6 +36,10 @@ class Misc(commands.Cog):
         aliases=["p", "status"],
         description="Simple status check.",
         help="Simple status check.",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def ping(self, ctx) -> None:
         await ping.ping(self, ctx)
@@ -44,6 +48,10 @@ class Misc(commands.Cog):
         name="uptime",
         description="See Lumi's uptime since the last update.",
         help="See how long Lumi has been online since his last update.",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def uptime(self, ctx) -> None:
         await ping.uptime(self, ctx, self.start_time)
@@ -52,6 +60,10 @@ class Misc(commands.Cog):
         name="invite",
         description="Generate an invite link.",
         help="Generate a link to invite Lumi to your own server!",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def invite_command(self, ctx) -> None:
         await invite.cmd(ctx)
@@ -60,9 +72,11 @@ class Misc(commands.Cog):
         name="prefix",
         description="See the server's current prefix.",
         help="See the server's current prefix.",
-        contexts={discord.InteractionContextType.guild},
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
-    @guild_only()
     async def prefix_command(self, ctx) -> None:
         await c_prefix.get_prefix(ctx)
 
@@ -71,6 +85,10 @@ class Misc(commands.Cog):
         aliases=["stats"],
         description="Shows basic Lumi stats.",
         help="Shows basic Lumi stats.",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def info_command(self, ctx) -> None:
         unix_timestamp: int = int(round(self.start_time.timestamp()))

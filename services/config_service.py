@@ -121,6 +121,16 @@ class GuildConfig:
         return prefix or "."
 
     @staticmethod
+    def get_prefix_from_guild_id(guild_id):
+        query = """
+                SELECT prefix
+                FROM guild_config
+                WHERE guild_id = %s
+                """
+
+        return database.select_query_one(query, (guild_id,)) or "."
+
+    @staticmethod
     def set_prefix(guild_id, prefix):
         """
         Sets the prefix for a given guild.
