@@ -2,6 +2,7 @@ import os
 import sys
 
 import discord
+from discord.ext import commands
 from loguru import logger
 
 import Client
@@ -26,10 +27,8 @@ logger.add(sys.stdout, format=log_format, colorize=True, level="DEBUG")
 
 
 async def get_prefix(bot, message):
-    try:
-        return services.config_service.GuildConfig.get_prefix(message.guild.id)
-    except AttributeError:
-        return "."
+    extras = services.config_service.GuildConfig.get_prefix(message.guild.id)
+    return commands.when_mentioned_or(*extras)(bot, message)
 
 
 client = Client.LumiBot(

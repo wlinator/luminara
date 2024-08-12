@@ -6,6 +6,7 @@ from typing import Optional
 
 import discord
 from discord.ext import commands
+from discord.ext.commands import TextChannelConverter
 
 from Client import LumiBot
 from config.parser import JsonCache
@@ -140,10 +141,10 @@ class XPHandler:
         if guild_config.level_channel_id and message.guild:
             context = await self.client.get_context(message)
 
-            with contextlib.suppress(discord.HTTPException):
-                return await self.client.convert_to_text_channel(
+            with contextlib.suppress(commands.BadArgument, commands.CommandError):
+                return await TextChannelConverter().convert(
                     context,
-                    guild_config.level_channel_id,
+                    str(guild_config.level_channel_id),
                 )
         return None
 
