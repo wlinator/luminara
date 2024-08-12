@@ -12,7 +12,7 @@ class Constants:
     TITLE = "Luminara"
     AUTHOR = "wlinator"
     LICENSE = "GNU General Public License v3.0"
-    VERSION = "2.8.6"  # "Moderation: Softban" update
+    VERSION = "2.8.7"  # "Refactor: Pycord 2.6" update
 
     # bot credentials
     TOKEN: Optional[str] = os.environ.get("TOKEN", None)
