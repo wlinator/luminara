@@ -1,3 +1,4 @@
+import contextlib
 from discord import Message
 from discord.ext.commands import Cog
 from loguru import logger
@@ -45,28 +46,21 @@ class ReactionHandler:
         """
         Tries to respond to the message.
         """
-        response = data.get("response")
-        if response:
-            try:
+        if response := data.get("response"):
+            with contextlib.suppress(Exception):
                 await self.message.reply(response)
                 return True
-            except Exception:
-                pass
         return False
 
     async def try_react(self, data) -> bool:
         """
         Tries to react to the message.
         """
-        emoji_id = data.get("emoji_id")
-        if emoji_id:
-            try:
-                emoji = self.client.get_emoji(emoji_id)
-                if emoji:
+        if emoji_id := data.get("emoji_id"):
+            with contextlib.suppress(Exception):
+                if emoji := self.client.get_emoji(emoji_id):
                     await self.message.add_reaction(emoji)
                     return True
-            except Exception:
-                pass
         return False
 
 

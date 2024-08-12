@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import discord
+from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands, tasks
 
@@ -24,9 +25,9 @@ class Misc(commands.Cog):
         aliases=["av"],
         description="Get a user's avatar.",
         help="Get a user's avatar.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     async def avatar(self, ctx, user: discord.Member) -> None:
         return await avatar.get_avatar(ctx, user)
 
@@ -35,6 +36,10 @@ class Misc(commands.Cog):
         aliases=["p", "status"],
         description="Simple status check.",
         help="Simple status check.",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def ping(self, ctx) -> None:
         await ping.ping(self, ctx)
@@ -43,6 +48,10 @@ class Misc(commands.Cog):
         name="uptime",
         description="See Lumi's uptime since the last update.",
         help="See how long Lumi has been online since his last update.",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def uptime(self, ctx) -> None:
         await ping.uptime(self, ctx, self.start_time)
@@ -51,6 +60,10 @@ class Misc(commands.Cog):
         name="invite",
         description="Generate an invite link.",
         help="Generate a link to invite Lumi to your own server!",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def invite_command(self, ctx) -> None:
         await invite.cmd(ctx)
@@ -59,9 +72,11 @@ class Misc(commands.Cog):
         name="prefix",
         description="See the server's current prefix.",
         help="See the server's current prefix.",
-        guild_only=True,
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
-    @commands.guild_only()
     async def prefix_command(self, ctx) -> None:
         await c_prefix.get_prefix(ctx)
 
@@ -70,6 +85,10 @@ class Misc(commands.Cog):
         aliases=["stats"],
         description="Shows basic Lumi stats.",
         help="Shows basic Lumi stats.",
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
     async def info_command(self, ctx) -> None:
         unix_timestamp: int = int(round(self.start_time.timestamp()))
@@ -78,10 +97,10 @@ class Misc(commands.Cog):
     @bridge.bridge_command(
         name="introduction",
         aliases=["intro", "introduce"],
-        guild_only=False,
         description="This command can only be used in DMs.",
         help="Introduce yourself. For now this command "
         "can only be done in ONE server and only in Lumi's DMs.",
+        contexts={discord.InteractionContextType.bot_dm},
     )
     @commands.dm_only()
     async def intro_command(self, ctx) -> None:
@@ -93,7 +112,10 @@ class Misc(commands.Cog):
     xkcd: SlashCommandGroup = SlashCommandGroup(
         "xkcd",
         "A web comic of romance, sarcasm, math, and language.",
-        guild_only=False,
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
 
     @xkcd.command(name="latest", description="Get the latest xkcd comic.")
