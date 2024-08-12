@@ -24,29 +24,21 @@ class Birthdays(commands.Cog):
     birthday = SlashCommandGroup(
         name="birthday",
         description="Birthday commands.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
 
     @birthday.command(name="set", description="Set your birthday in this server.")
     @checks.birthdays_enabled()
-    async def set_birthday(
-        self,
-        ctx,
-        month: discord.Option(choices=CONST.BIRTHDAY_MONTHS),
-        day: int,
-    ):
+    @discord.commands.option(name="month", choices=CONST.BIRTHDAY_MONTHS)
+    async def set_birthday(self, ctx, month, day: int):
         index = CONST.BIRTHDAY_MONTHS.index(month) + 1
         await birthday.add(ctx, month, index, day)
 
     @birthday.command(name="delete", description="Delete your birthday in this server.")
-    @commands.guild_only()
     async def delete_birthday(self, ctx):
         await birthday.delete(ctx)
 
-    @birthday.command(
-        name="upcoming",
-        description="Shows the upcoming birthdays in this server.",
-    )
+    @birthday.command(name="upcoming", description="Shows the upcoming birthdays.")
     @checks.birthdays_enabled()
     async def upcoming_birthdays(self, ctx):
         await birthday.upcoming(ctx)
