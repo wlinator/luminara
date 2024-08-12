@@ -1,4 +1,5 @@
 import discord
+from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
 
@@ -15,8 +16,8 @@ class Triggers(commands.Cog):
     trigger = SlashCommandGroup(
         "trigger",
         "Manage custom reactions.",
-        guild_only=True,
         default_member_permissions=discord.Permissions(manage_guild=True),
+        contexts={discord.InteractionContextType.guild},
     )
     add = trigger.create_subgroup("add", "Add new custom reactions.")
 
@@ -25,7 +26,7 @@ class Triggers(commands.Cog):
         description="Add a new custom text reaction.",
         help="Add a new custom text reaction to the database.",
     )
-    @commands.guild_only()
+    @guild_only()
     async def add_text_reaction_command(
         self,
         ctx,
@@ -40,7 +41,7 @@ class Triggers(commands.Cog):
         description="Add a new custom emoji reaction.",
         help="Add a new custom emoji reaction to the database.",
     )
-    @commands.guild_only()
+    @guild_only()
     async def add_emoji_reaction_command(
         self,
         ctx,
@@ -55,7 +56,7 @@ class Triggers(commands.Cog):
         description="Delete an existing custom reaction.",
         help="Delete an existing custom reaction from the database.",
     )
-    @commands.guild_only()
+    @guild_only()
     async def delete_reaction_command(
         self,
         ctx,
@@ -68,7 +69,7 @@ class Triggers(commands.Cog):
         description="List all custom reactions.",
         help="List all custom reactions for the current guild.",
     )
-    @commands.guild_only()
+    @guild_only()
     async def list_reactions_command(
         self,
         ctx,

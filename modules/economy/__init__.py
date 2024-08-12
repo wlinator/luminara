@@ -1,4 +1,5 @@
 import discord
+from discord.ext.commands import guild_only
 from discord.ext import bridge, commands
 from modules.economy import balance, blackjack, daily, give, slots
 
@@ -13,9 +14,9 @@ class Economy(commands.Cog):
         description="Shows your current Lumi balance.",
         help="Shows your current Lumi balance. The economy system is global, meaning your balance will be synced in "
         "all servers.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def balance_command(self, ctx):
         return await balance.cmd(ctx)
@@ -25,9 +26,9 @@ class Economy(commands.Cog):
         aliases=["bj"],
         description="Start a game of blackjack.",
         help="Start a game of blackjack.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     async def blackjack_command(self, ctx, *, bet: int):
         return await blackjack.cmd(ctx, bet)
 
@@ -36,18 +37,17 @@ class Economy(commands.Cog):
         aliases=["timely"],
         description="Claim your daily reward.",
         help="Claim your daily reward! Reset is at 7 AM EST.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     async def daily_command(self, ctx):
         return await daily.cmd(ctx)
 
     @commands.slash_command(
         name="give",
         description="Give a server member some cash.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
     async def give_command(self, ctx, *, user: discord.Member, amount: int):
         return await give.cmd(ctx, user, amount)
 
@@ -55,12 +55,14 @@ class Economy(commands.Cog):
         name="give",
         help="Give a server member some cash. You can use ID or mention them.",
     )
-    @commands.guild_only()
+    @guild_only()
     async def give_command_prefixed(self, ctx, user: discord.User, *, amount: int):
         try:
             member = await ctx.guild.fetch_member(user.id)
-        except discord.HTTPException:
-            raise commands.BadArgument("I couldn't find that user in this server.")
+        except discord.HTTPException as e:
+            raise commands.BadArgument(
+                "I couldn't find that user in this server.",
+            ) from e
 
         return await give.cmd(ctx, member, amount)
 
@@ -69,9 +71,9 @@ class Economy(commands.Cog):
         aliases=["slot"],
         description="Start a slots game.",
         help="Spin the slots for a chance to win the jackpot!",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slots_command(self, ctx, *, bet: int):
         return await slots.cmd(self, ctx, bet)
