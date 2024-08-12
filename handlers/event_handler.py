@@ -66,7 +66,7 @@ class EventHandler(Cog):
 
     @Cog.listener()
     async def on_command_completion(self, ctx) -> None:
-        log_msg = "{} executed .{}".format(ctx.author.name, ctx.command.qualified_name)
+        log_msg = f"{ctx.author.name} executed .{ctx.command.qualified_name}"
 
         if ctx.guild is not None:
             logger.debug(f"{log_msg} | guild: {ctx.guild.name} ")
@@ -75,7 +75,7 @@ class EventHandler(Cog):
 
     @Cog.listener()
     async def on_application_command_completion(self, ctx) -> None:
-        log_msg = "{} executed /{}".format(ctx.author.name, ctx.command.qualified_name)
+        log_msg = f"{ctx.author.name} executed /{ctx.command.qualified_name}"
 
         if ctx.guild is not None:
             logger.debug(f"{log_msg} | guild: {ctx.guild.name} ")
