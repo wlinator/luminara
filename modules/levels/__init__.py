@@ -1,3 +1,5 @@
+import discord
+from discord import guild_only
 from discord.ext import bridge, commands
 
 from modules.levels import leaderboard, level
@@ -12,9 +14,9 @@ class Levels(commands.Cog):
         aliases=["rank", "xp"],
         description="Displays your level and server rank.",
         help="Displays your level and server rank.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def level_command(self, ctx) -> None:
         await level.rank(ctx)
@@ -24,9 +26,9 @@ class Levels(commands.Cog):
         aliases=["lb", "xplb"],
         description="See the Lumi leaderboards.",
         help="Shows three different leaderboards: levels, currency and daily streaks.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard_command(self, ctx) -> None:
         await leaderboard.cmd(ctx)

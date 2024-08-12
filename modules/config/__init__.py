@@ -1,4 +1,5 @@
 import discord
+from discord import guild_only
 from config.parser import JsonCache
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands
@@ -24,9 +25,9 @@ class Config(commands.Cog):
         name="xprewards",
         aliases=["xpr"],
         description="Show your server's XP rewards list.",
-        guild_only="True",
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_show(self, ctx):
         await xp_reward.show(ctx)
@@ -35,9 +36,9 @@ class Config(commands.Cog):
         name="addxpreward",
         aliases=["axpr"],
         description="Add a Lumi XP reward.",
-        guild_only="True",
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_add(
         self,
@@ -52,9 +53,9 @@ class Config(commands.Cog):
         name="removexpreward",
         aliases=["rxpr"],
         description="Remove a Lumi XP reward.",
-        guild_only="True",
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_remove(self, ctx, level: int):
         await xp_reward.remove_reward(ctx, level)
@@ -78,7 +79,7 @@ class Config(commands.Cog):
     config = SlashCommandGroup(
         "config",
         "server config commands.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
         default_member_permissions=discord.Permissions(administrator=True),
     )
 

@@ -31,36 +31,39 @@ class GuildConfig:
                         """
 
         try:
-            (
-                birthday_channel_id,
-                command_channel_id,
-                intro_channel_id,
-                welcome_channel_id,
-                welcome_message,
-                boost_channel_id,
-                boost_message,
-                boost_image_url,
-                level_channel_id,
-                level_message,
-                level_message_type,
-            ) = database.select_query(query, (self.guild_id,))[0]
-
-            self.birthday_channel_id = birthday_channel_id
-            self.command_channel_id = command_channel_id
-            self.intro_channel_id = intro_channel_id
-            self.welcome_channel_id = welcome_channel_id
-            self.welcome_message = welcome_message
-            self.boost_channel_id = boost_channel_id
-            self.boost_message = boost_message
-            self.boost_image_url = boost_image_url
-            self.level_channel_id = level_channel_id
-            self.level_message = level_message
-            self.level_message_type = level_message_type
-
+            self._extracted_from_fetch_or_create_config_14(query)
         except (IndexError, TypeError):
             # No record found for the specified guild_id
             query = "INSERT INTO guild_config (guild_id) VALUES (%s)"
             database.execute_query(query, (self.guild_id,))
+
+    # TODO Rename this here and in `fetch_or_create_config`
+    def _extracted_from_fetch_or_create_config_14(self, query):
+        (
+            birthday_channel_id,
+            command_channel_id,
+            intro_channel_id,
+            welcome_channel_id,
+            welcome_message,
+            boost_channel_id,
+            boost_message,
+            boost_image_url,
+            level_channel_id,
+            level_message,
+            level_message_type,
+        ) = database.select_query(query, (self.guild_id,))[0]
+
+        self.birthday_channel_id = birthday_channel_id
+        self.command_channel_id = command_channel_id
+        self.intro_channel_id = intro_channel_id
+        self.welcome_channel_id = welcome_channel_id
+        self.welcome_message = welcome_message
+        self.boost_channel_id = boost_channel_id
+        self.boost_message = boost_message
+        self.boost_image_url = boost_image_url
+        self.level_channel_id = level_channel_id
+        self.level_message = level_message
+        self.level_message_type = level_message_type
 
     def push(self):
         query = """
@@ -99,7 +102,7 @@ class GuildConfig:
         )
 
     @staticmethod
-    def get_prefix(guild_id):
+    def get_prefix(message):
         """
         Gets the prefix from a given guild.
         This function is done as static method to make the prefix fetch process faster.
@@ -110,7 +113,10 @@ class GuildConfig:
                 WHERE guild_id = %s
                 """
 
-        prefix = database.select_query_one(query, (guild_id,))
+        prefix = database.select_query_one(
+            query,
+            (message.guild.id if message.guild else None,),
+        )
 
         return prefix or "."
 

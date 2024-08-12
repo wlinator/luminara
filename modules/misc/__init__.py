@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import discord
+from discord import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands, tasks
 
@@ -24,9 +25,9 @@ class Misc(commands.Cog):
         aliases=["av"],
         description="Get a user's avatar.",
         help="Get a user's avatar.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     async def avatar(self, ctx, user: discord.Member) -> None:
         return await avatar.get_avatar(ctx, user)
 
@@ -59,9 +60,9 @@ class Misc(commands.Cog):
         name="prefix",
         description="See the server's current prefix.",
         help="See the server's current prefix.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
-    @commands.guild_only()
+    @guild_only()
     async def prefix_command(self, ctx) -> None:
         await c_prefix.get_prefix(ctx)
 
@@ -78,10 +79,10 @@ class Misc(commands.Cog):
     @bridge.bridge_command(
         name="introduction",
         aliases=["intro", "introduce"],
-        guild_only=False,
         description="This command can only be used in DMs.",
         help="Introduce yourself. For now this command "
         "can only be done in ONE server and only in Lumi's DMs.",
+        contexts={discord.InteractionContextType.bot_dm},
     )
     @commands.dm_only()
     async def intro_command(self, ctx) -> None:
@@ -93,7 +94,10 @@ class Misc(commands.Cog):
     xkcd: SlashCommandGroup = SlashCommandGroup(
         "xkcd",
         "A web comic of romance, sarcasm, math, and language.",
-        guild_only=False,
+        contexts={
+            discord.InteractionContextType.guild,
+            discord.InteractionContextType.bot_dm,
+        },
     )
 
     @xkcd.command(name="latest", description="Get the latest xkcd comic.")

@@ -27,7 +27,7 @@ logger.add(sys.stdout, format=log_format, colorize=True, level="DEBUG")
 
 
 async def get_prefix(bot, message):
-    extras = services.config_service.GuildConfig.get_prefix(message.guild.id)
+    extras = services.config_service.GuildConfig.get_prefix(message)
     return commands.when_mentioned_or(*extras)(bot, message)
 
 

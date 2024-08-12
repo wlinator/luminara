@@ -1,4 +1,5 @@
 import discord
+from discord import guild_only
 from discord.ext import bridge, commands
 
 from modules.moderation import ban, cases, warn, timeout, kick, softban
@@ -13,11 +14,11 @@ class Moderation(commands.Cog):
         aliases=["b"],
         description="Ban a user from the server.",
         help="Bans a user from the server, you can use ID or mention them.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
-    @commands.guild_only()
+    @guild_only()
     async def ban_command(
         self,
         ctx,
@@ -32,11 +33,11 @@ class Moderation(commands.Cog):
         aliases=["ub", "pardon"],
         description="Unbans a user from the server.",
         help="Unbans a user from the server, you can use ID or provide their username.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
-    @commands.guild_only()
+    @guild_only()
     async def unban_command(
         self,
         ctx,
@@ -51,10 +52,10 @@ class Moderation(commands.Cog):
         aliases=["c"],
         description="View a case by its number.",
         help="Views a case by its number in the server.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(view_audit_log=True)
-    @commands.guild_only()
+    @guild_only()
     async def case_command(
         self,
         ctx,
@@ -67,10 +68,10 @@ class Moderation(commands.Cog):
         aliases=["caselist"],
         description="View all cases in the server.",
         help="Lists all moderation cases for the current server.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(view_audit_log=True)
-    @commands.guild_only()
+    @guild_only()
     async def cases_command(self, ctx):
         await cases.view_all_cases_in_guild(ctx, ctx.guild.id)
 
@@ -79,10 +80,10 @@ class Moderation(commands.Cog):
         aliases=["moderatorcases", "mc"],
         description="View all cases by a specific moderator.",
         help="Lists all moderation cases handled by a specific moderator in the current server.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(view_audit_log=True)
-    @commands.guild_only()
+    @guild_only()
     async def moderator_cases_command(
         self,
         ctx,
@@ -95,10 +96,10 @@ class Moderation(commands.Cog):
         aliases=["uc", "ec"],
         description="Edit the reason for a case.",
         help="Updates the reason for a specific case in the server.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(view_audit_log=True)
-    @commands.guild_only()
+    @guild_only()
     async def edit_case_command(
         self,
         ctx,
@@ -113,10 +114,10 @@ class Moderation(commands.Cog):
         aliases=["w"],
         description="Warn a user.",
         help="Warns a user in the server.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(kick_members=True)
-    @commands.guild_only()
+    @guild_only()
     async def warn_command(
         self,
         ctx,
@@ -131,11 +132,11 @@ class Moderation(commands.Cog):
         aliases=["t", "to"],
         description="Timeout a user.",
         help="Timeouts a user in the server for a specified duration.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(moderate_members=True)
     @commands.bot_has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @guild_only()
     async def timeout_command(
         self,
         ctx,
@@ -151,11 +152,11 @@ class Moderation(commands.Cog):
         aliases=["removetimeout", "rto", "uto"],
         description="Remove timeout from a user.",
         help="Removes the timeout from a user in the server.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(moderate_members=True)
     @commands.bot_has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @guild_only()
     async def untimeout_command(
         self,
         ctx,
@@ -170,11 +171,11 @@ class Moderation(commands.Cog):
         aliases=["k"],
         description="Kick a user from the server.",
         help="Kicks a user from the server.",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(kick_members=True)
     @commands.bot_has_permissions(kick_members=True)
-    @commands.guild_only()
+    @guild_only()
     async def kick_command(
         self,
         ctx,
@@ -189,11 +190,11 @@ class Moderation(commands.Cog):
         aliases=["sb"],
         description="Softban a user from the server.",
         help="Softbans a user from the server (ban and immediately unban to delete messages).",
-        guild_only=True,
+        contexts={discord.InteractionContextType.guild},
     )
     @bridge.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
-    @commands.guild_only()
+    @guild_only()
     async def softban_command(
         self,
         ctx,
