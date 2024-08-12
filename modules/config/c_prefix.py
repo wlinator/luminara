@@ -26,7 +26,7 @@ async def set_prefix(ctx, prefix):
 
 
 async def get_prefix(ctx):
-    prefix = GuildConfig.get_prefix(ctx.guild.id)
+    prefix = GuildConfig.get_prefix_from_guild_id(ctx.guild.id) if ctx.guild else "."
     embed = EmbedBuilder().create_info_embed(
         ctx=ctx,
         author_text=CONST.STRINGS["config_author"],

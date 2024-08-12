@@ -1,5 +1,5 @@
 import discord
-from discord import guild_only
+from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
 

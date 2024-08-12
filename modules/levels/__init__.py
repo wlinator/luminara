@@ -1,5 +1,5 @@
 import discord
-from discord import guild_only
+from discord.ext.commands import guild_only
 from discord.ext import bridge, commands
 
 from modules.levels import leaderboard, level
