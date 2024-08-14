@@ -1,6 +1,7 @@
 import discord
 from lib.embed_builder import EmbedBuilder
 from lib.exceptions.LumiExceptions import LumiException
+from lib.constants import CONST
 
 
 async def sync_commands(client, ctx):
@@ -8,9 +9,11 @@ async def sync_commands(client, ctx):
         await client.sync_commands()
         embed = EmbedBuilder.create_success_embed(
             ctx,
-            author_text="Sync Successful",
-            description="command tree synced successfully.",
+            author_text=CONST.STRINGS["admin_sync_title"],
+            description=CONST.STRINGS["admin_sync_description"],
         )
         await ctx.send(embed=embed)
     except discord.HTTPException as e:
-        raise LumiException(f"An error occurred while syncing: {e}") from e
+        raise LumiException(
+            CONST.STRINGS["admin_sync_error_description"].format(e),
+        ) from e
