@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from db import database
@@ -23,11 +23,10 @@ class CustomReactionsService:
         ORDER BY guild_id = %s DESC, is_global ASC
         LIMIT 1
         """
-        result = database.select_query(
+        if result := database.select_query(
             query,
             (guild_id, message_content, message_content, guild_id),
-        )
-        if result:
+        ):
             reaction = result[0]  # Get the first result from the list
             return {
                 "id": reaction[0],
@@ -52,8 +51,7 @@ class CustomReactionsService:
         WHERE id = %s
         LIMIT 1
         """
-        result = database.select_query(query, (reaction_id,))
-        if result:
+        if result := database.select_query(query, (reaction_id,)):
             reaction = result[0]  # Get the first result from the list
             return {
                 "id": reaction[0],
@@ -78,26 +76,24 @@ class CustomReactionsService:
         WHERE guild_id = %s
         """
         results = database.select_query(query, (guild_id,))
-        reactions = []
-        for reaction in results:
-            reactions.append(
-                {
-                    "id": reaction[0],
-                    "trigger_text": reaction[1],
-                    "response": reaction[2],
-                    "emoji_id": reaction[3],
-                    "is_emoji": reaction[4],
-                    "is_full_match": reaction[5],
-                    "is_global": reaction[6],
-                    "guild_id": reaction[7],
-                    "creator_id": reaction[8],
-                    "usage_count": reaction[9],
-                    "created_at": reaction[10],
-                    "updated_at": reaction[11],
-                    "type": "emoji" if reaction[4] else "text",
-                },
-            )
-        return reactions
+        return [
+            {
+                "id": reaction[0],
+                "trigger_text": reaction[1],
+                "response": reaction[2],
+                "emoji_id": reaction[3],
+                "is_emoji": reaction[4],
+                "is_full_match": reaction[5],
+                "is_global": reaction[6],
+                "guild_id": reaction[7],
+                "creator_id": reaction[8],
+                "usage_count": reaction[9],
+                "created_at": reaction[10],
+                "updated_at": reaction[11],
+                "type": "emoji" if reaction[4] else "text",
+            }
+            for reaction in results
+        ]
 
     async def create_custom_reaction(
         self,
@@ -160,7 +156,7 @@ class CustomReactionsService:
                 is_emoji,
                 is_full_match,
                 is_global,
-                datetime.utcnow(),
+                datetime.now(timezone.utc),
                 reaction_id,
             ),
         )
