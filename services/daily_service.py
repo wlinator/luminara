@@ -2,12 +2,9 @@ from datetime import datetime, timedelta
 from typing import List, Optional, Tuple
 
 import pytz
-
-from config.parser import JsonCache
 from db import database
+from lib.constants import CONST
 from services.currency_service import Currency
-
-resources = JsonCache.read_json("resources")
 
 
 class Dailies:
@@ -35,8 +32,7 @@ class Dailies:
 
     def refresh(self) -> None:
         if self.amount == 0:
-            self.amount = resources["daily_reward"]
-
+            self.amount = CONST.DAILY_REWARD
         query: str = """
         INSERT INTO dailies (user_id, amount, claimed_at, streak)
         VALUES (%s, %s, %s, %s)
@@ -57,14 +53,10 @@ class Dailies:
         if self.claimed_at is None:
             return True
 
-        else:
-            if self.time_now < self.reset_time:
-                self.reset_time -= timedelta(days=1)
+        if self.time_now < self.reset_time:
+            self.reset_time -= timedelta(days=1)
 
-            if self.claimed_at < self.reset_time <= self.time_now:
-                return True
-
-        return False
+        return self.claimed_at < self.reset_time <= self.time_now
 
     def streak_check(self) -> bool:
         """
@@ -118,13 +110,7 @@ class Dailies:
 
         data: List[Tuple[int, int, str]] = database.select_query(query)
 
-        leaderboard: List[Tuple[int, int, str, int]] = []
-        rank: int = 1
-        for row in data:
-            row_user_id: int = row[0]
-            streak: int = row[1]
-            claimed_at: str = row[2]
-            leaderboard.append((row_user_id, streak, claimed_at, rank))
-            rank += 1
-
+        leaderboard: List[Tuple[int, int, str, int]] = [
+            (row[0], row[1], row[2], rank) for rank, row in enumerate(data, start=1)
+        ]
         return leaderboard

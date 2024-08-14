@@ -3,16 +3,18 @@ from typing import Optional, Set
 
 from config.parser import JsonCache
 
-art = JsonCache.read_json("art")
-resources = JsonCache.read_json("resources")
-
 
 class Constants:
+    # JSON raw
+    ART = JsonCache.read_json("art")
+    RESOURCES = JsonCache.read_json("resources")
+    LEVEL_MESSAGES = JsonCache.read_json("levels")
+
     # metadata
     TITLE = "Luminara"
     AUTHOR = "wlinator"
     LICENSE = "GNU General Public License v3.0"
-    VERSION = "2.8.9"  # "Fix Mod Issues" update
+    VERSION = "2.8.10"  # "Refactor JSON Handling" update
 
     # bot credentials
     TOKEN: Optional[str] = os.environ.get("TOKEN", None)
@@ -57,35 +59,40 @@ class Constants:
     # KRC
     KRC_GUILD_ID: int = 719227135151046699
     KRC_INTRO_CHANNEL_ID: int = 973619250507972618
-    KRC_QUESTION_MAPPING: dict[str, str] = resources["guild_specific"][
+    KRC_QUESTION_MAPPING: dict[str, str] = RESOURCES["guild_specific"][
         "question_mapping"
     ]
 
     # logo
-    LUMI_LOGO_TRANSPARENT = art["logo"]["transparent"]
-    LUMI_LOGO_OPAQUE = art["logo"]["opaque"]
+    LUMI_LOGO_TRANSPARENT = ART["logo"]["transparent"]
+    LUMI_LOGO_OPAQUE = ART["logo"]["opaque"]
 
     # icons art
-    BOOST_ICON = art["icons"]["boost"]
-    CHECK_ICON = art["icons"]["check"]
-    CROSS_ICON = art["icons"]["cross"]
-    EXCLAIM_ICON = art["icons"]["exclaim"]
-    HAMMER_ICON = art["icons"]["hammer"]
-    MONEY_BAG_ICON = art["icons"]["money_bag"]
-    MONEY_COINS_ICON = art["icons"]["money_coins"]
-    QUESTION_ICON = art["icons"]["question"]
-    STREAK_ICON = art["icons"]["streak"]
-    WARNING_ICON = art["icons"]["warning"]
+    BOOST_ICON = ART["icons"]["boost"]
+    CHECK_ICON = ART["icons"]["check"]
+    CROSS_ICON = ART["icons"]["cross"]
+    EXCLAIM_ICON = ART["icons"]["exclaim"]
+    HAMMER_ICON = ART["icons"]["hammer"]
+    MONEY_BAG_ICON = ART["icons"]["money_bag"]
+    MONEY_COINS_ICON = ART["icons"]["money_coins"]
+    QUESTION_ICON = ART["icons"]["question"]
+    STREAK_ICON = ART["icons"]["streak"]
+    WARNING_ICON = ART["icons"]["warning"]
 
     # art by JuicyBblue
-    FLOWERS_ART = art["juicybblue"]["flowers"]
-    TEAPOT_ART = art["juicybblue"]["teapot"]
-    MUFFIN_ART = art["juicybblue"]["muffin"]
+    FLOWERS_ART = ART["juicybblue"]["flowers"]
+    TEAPOT_ART = ART["juicybblue"]["teapot"]
+    MUFFIN_ART = ART["juicybblue"]["muffin"]
 
     # birthdays
     BIRTHDAY_MESSAGES = JsonCache.read_json("birthday")["birthday_messages"]
     BIRTHDAY_MONTHS = JsonCache.read_json("birthday")["months"]
     BIRTHDAY_GIF_URL = "https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif"
+
+    # economy
+    DAILY_REWARD = RESOURCES["daily_reward"]
+    SLOTS = RESOURCES["slots"]
+    BLACKJACK = RESOURCES["blackjack"]
 
 
 CONST = Constants()

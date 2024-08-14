@@ -1,6 +1,5 @@
 import discord
 from discord.ext.commands import guild_only
-from config.parser import JsonCache
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands
 from modules.config import (
@@ -13,8 +12,6 @@ from modules.config import (
     c_show,
     xp_reward,
 )
-
-strings = JsonCache.read_json("strings")
 
 
 class Config(commands.Cog):
