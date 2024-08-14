@@ -57,8 +57,7 @@ class Inventory:
 
     def get_item_quantity(self, item: item_service.Item):
         query = "SELECT COALESCE(quantity, 0) FROM inventory WHERE user_id = %s AND item_id = %s"
-        result = database.select_query_one(query, (self.user_id, item.id))
-        return result
+        return database.select_query_one(query, (self.user_id, item.id))
 
     def get_sell_data(self):
         query = """
@@ -70,13 +69,8 @@ class Inventory:
                 """
 
         try:
-            item_names = []
             results = database.select_query(query, (self.user_id,))
-
-            for item in results:
-                item_names.append(item[0])
-
-            return item_names
+            return [item[0] for item in results]
 
         except Exception as e:
             logger.error(e)

@@ -26,17 +26,14 @@ class Item:
         WHERE id = %s
         """
 
-        data = database.select_query(query, (self.id,))[0]
-        return data
+        return database.select_query(query, (self.id,))[0]
 
     def get_quantity(self, author_id):
         query = """
                 SELECT COALESCE((SELECT quantity FROM inventory WHERE user_id = %s AND item_id = %s), 0) AS quantity
                 """
 
-        quantity = database.select_query_one(query, (author_id, self.id))
-
-        return quantity
+        return database.select_query_one(query, (author_id, self.id))
 
     def get_item_worth(self):
         query = """
@@ -52,13 +49,8 @@ class Item:
         query = "SELECT display_name FROM item"
 
         try:
-            item_names = []
             items = database.select_query(query)
-
-            for item in items:
-                item_names.append(item[0])
-
-            return item_names
+            return [item[0] for item in items]
 
         except sqlite3.Error:
             logger.error(sqlite3.Error)
