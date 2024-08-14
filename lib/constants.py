@@ -85,9 +85,7 @@ class Constants:
     # birthdays
     BIRTHDAY_MESSAGES = JsonCache.read_json("birthday")["birthday_messages"]
     BIRTHDAY_MONTHS = JsonCache.read_json("birthday")["months"]
-
-
-CONST = Constants()
+    BIRTHDAY_GIF_URL = "https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif"
 
 
 CONST = Constants()

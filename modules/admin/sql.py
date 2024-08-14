@@ -1,4 +1,7 @@
-import sqlite3
+import mysql.connector
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.formatter import shorten
 
 from db import database
 
@@ -9,21 +12,49 @@ async def select_cmd(ctx, query: str):
 
     try:
         results = database.select_query(f"SELECT {query}")
-    except sqlite3.Error as error:
-        results = error
+        embed = EmbedBuilder.create_success_embed(
+            ctx,
+            author_text=CONST.STRINGS["admin_sql_select_title"],
+            description=CONST.STRINGS["admin_sql_select_description"].format(
+                shorten(query, 200),
+                shorten(str(results), 200),
+            ),
+            show_name=False,
+        )
+    except mysql.connector.Error as error:
+        embed = EmbedBuilder.create_error_embed(
+            ctx,
+            author_text=CONST.STRINGS["admin_sql_select_error_title"],
+            description=CONST.STRINGS["admin_sql_select_error_description"].format(
+                shorten(query, 200),
+                shorten(str(error), 200),
+            ),
+            show_name=False,
+        )
 
-    return await ctx.respond(
-        content=f"```SELECT {query}```\n```{results}```",
-        ephemeral=True,
-    )
+    return await ctx.respond(embed=embed, ephemeral=True)
 
 
 async def inject_cmd(ctx, query: str):
     try:
         database.execute_query(query)
-        await ctx.respond(content=f"That worked!\n```{query}```", ephemeral=True)
-    except sqlite3.Error as error:
-        await ctx.respond(
-            content=f"Query:\n```{query}```\nError message:\n```{error}```",
-            ephemeral=True,
+        embed = EmbedBuilder.create_success_embed(
+            ctx,
+            author_text=CONST.STRINGS["admin_sql_inject_title"],
+            description=CONST.STRINGS["admin_sql_inject_description"].format(
+                shorten(query, 200),
+            ),
+            show_name=False,
         )
+    except mysql.connector.Error as error:
+        embed = EmbedBuilder.create_error_embed(
+            ctx,
+            author_text=CONST.STRINGS["admin_sql_inject_error_title"],
+            description=CONST.STRINGS["admin_sql_inject_error_description"].format(
+                shorten(query, 200),
+                shorten(str(error), 200),
+            ),
+            show_name=False,
+        )
+
+    await ctx.respond(embed=embed, ephemeral=True)

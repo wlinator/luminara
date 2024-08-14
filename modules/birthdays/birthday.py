@@ -4,7 +4,8 @@ import datetime
 import discord
 from discord.ext import commands
 
-from lib.embeds.info import BdayInfo
+from lib.embed_builder import EmbedBuilder
+from lib.constants import CONST
 from services.birthday_service import Birthday
 
 
@@ -13,59 +14,75 @@ async def add(ctx, month, month_index, day):
     leap_year = 2020
     max_days = calendar.monthrange(leap_year, month_index)[1]
 
-    if not (1 <= day <= max_days):
-        raise commands.BadArgument("the date you entered is invalid.")
+    if not 1 <= day <= max_days:
+        raise commands.BadArgument(CONST.STRINGS["birthday_add_invalid_date"])
 
-    date_str = f"{leap_year}-{month_index:02d}-{day:02d}"
-    date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    date_obj = datetime.datetime(leap_year, month_index, day)
 
     birthday = Birthday(ctx.author.id, ctx.guild.id)
     birthday.set(date_obj)
 
-    await ctx.respond(embed=BdayInfo.set_month(ctx, month, day))
+    embed = EmbedBuilder.create_success_embed(
+        ctx,
+        author_text=CONST.STRINGS["birthday_add_success_author"],
+        description=CONST.STRINGS["birthday_add_success_description"].format(
+            month,
+            day,
+        ),
+        show_name=True,
+    )
+    await ctx.respond(embed=embed)
 
 
 async def delete(ctx):
     """Delete a user's birthday in a specific server."""
-    birthday = Birthday(ctx.author.id, ctx.guild.id)
-    birthday.delete()
-    await ctx.respond(embed=BdayInfo.delete(ctx))
+    Birthday(ctx.author.id, ctx.guild.id).delete()
+
+    embed = EmbedBuilder.create_success_embed(
+        ctx,
+        author_text=CONST.STRINGS["birthday_delete_success_author"],
+        description=CONST.STRINGS["birthday_delete_success_description"],
+        show_name=True,
+    )
+    await ctx.respond(embed=embed)
 
 
 async def upcoming(ctx):
     """Get the upcoming birthdays for a specific server."""
     upcoming_birthdays = Birthday.get_upcoming_birthdays(ctx.guild.id)
-    icon = ctx.guild.icon if ctx.guild.icon else "https://i.imgur.com/79XfsbS.png"
 
-    embed = discord.Embed(
-        color=discord.Color.embed_background(),
+    if not upcoming_birthdays:
+        embed = EmbedBuilder.create_warning_embed(
+            ctx,
+            author_text=CONST.STRINGS["birthday_upcoming_no_birthdays_author"],
+            description=CONST.STRINGS["birthday_upcoming_no_birthdays"],
+            show_name=True,
+        )
+        await ctx.respond(embed=embed)
+        return
+
+    embed = EmbedBuilder.create_success_embed(
+        ctx,
+        author_text=CONST.STRINGS["birthday_upcoming_author"],
+        description="",
+        show_name=False,
     )
-    embed.set_author(name="Upcoming Birthdays!", icon_url=icon)
-    embed.set_thumbnail(url="https://i.imgur.com/79XfsbS.png")
+    embed.set_thumbnail(url=CONST.LUMI_LOGO_TRANSPARENT)
 
-    found_birthdays = 0
-    for user_id, birthday in upcoming_birthdays:
+    birthday_lines = []
+    for user_id, birthday in upcoming_birthdays[:10]:
         try:
             member = await ctx.guild.fetch_member(user_id)
-            name = member.name
-        except discord.HTTPException:
-            continue  # skip user if not in guild
-
-        try:
             birthday_date = datetime.datetime.strptime(birthday, "%m-%d")
             formatted_birthday = birthday_date.strftime("%B %-d")
-        except ValueError:
-            # leap year error
-            formatted_birthday = "February 29"
+            birthday_lines.append(
+                CONST.STRINGS["birthday_upcoming_description_line"].format(
+                    member.name,
+                    formatted_birthday,
+                ),
+            )
+        except (discord.HTTPException, ValueError):
+            continue
 
-        embed.add_field(
-            name=f"{name}",
-            value=f"🎂 {formatted_birthday}",
-            inline=False,
-        )
-
-        found_birthdays += 1
-        if found_birthdays >= 5:
-            break
-
+    embed.description = "\n".join(birthday_lines)
     await ctx.respond(embed=embed)
