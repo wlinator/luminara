@@ -7,17 +7,18 @@ from lib.embed_builder import EmbedBuilder
 from modules.moderation.utils.actionable import async_actionable
 from modules.moderation.utils.case_handler import create_case
 from typing import Optional
+from discord.ext.commands import MemberConverter
 
 
 async def ban_user(cog, ctx, target: discord.User, reason: Optional[str] = None):
     # see if user is in guild
-    member = await cog.client.get_or_fetch_member(ctx.guild, target.id)
+    member = await MemberConverter().convert(ctx, str(target.id))
 
     output_reason = reason or CONST.STRINGS["mod_no_reason"]
 
     # member -> user is in the guild, check role hierarchy
     if member:
-        bot_member = await cog.client.get_or_fetch_member(ctx.guild, ctx.bot.user.id)
+        bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
         await async_actionable(member, ctx.author, bot_member)
 
         try:
