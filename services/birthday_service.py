@@ -38,9 +38,7 @@ class Birthday:
         tz = pytz.timezone("US/Eastern")
         today = datetime.datetime.now(tz).strftime("%m-%d")
 
-        birthdays = database.select_query(query, (today,))
-
-        return birthdays
+        return database.select_query(query, (today,))
 
     @staticmethod
     def get_upcoming_birthdays(guild_id):
@@ -53,10 +51,4 @@ class Birthday:
 
         data = database.select_query(query, (guild_id,))
 
-        upcoming = []
-        for row in data:
-            user_id = row[0]
-            birthday = row[1]
-            upcoming.append((user_id, birthday))
-
-        return upcoming
+        return [(row[0], row[1]) for row in data]
