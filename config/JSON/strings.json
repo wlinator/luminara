@@ -1,4 +1,6 @@
 {
+  "lumi_exception_generic": "An error occurred.",
+  "lumi_exception_blacklisted": "User is blacklisted",
   "admin_award_description": "awarded **${0}** to {1}.",
   "admin_award_title": "Awarded Currency",
   "admin_blacklist_author": "User Blacklisted",

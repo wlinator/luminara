@@ -11,6 +11,7 @@ import services.config_service
 import services.help_service
 from lib.constants import CONST
 from services.blacklist_service import BlacklistUserService
+from lib.exceptions.LumiExceptions import Blacklisted
 from db.database import run_migrations
 
 # Remove the default logger configuration
@@ -42,7 +43,9 @@ client = Client.LumiBot(
 
 @client.check
 async def blacklist_check(ctx):
-    return not BlacklistUserService.is_user_blacklisted(ctx.author.id)
+    if BlacklistUserService.is_user_blacklisted(ctx.author.id):
+        raise Blacklisted
+    return True
 
 
 def load_modules():
