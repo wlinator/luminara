@@ -11,7 +11,7 @@ from lib.exceptions import LumiExceptions
 
 
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
+    if isinstance(error, (commands.CommandNotFound, LumiExceptions.Blacklisted)):
         return
 
     author_text = None
