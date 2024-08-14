@@ -58,10 +58,10 @@ async def add_reaction(
             is_emoji,
             is_full_match,
         )
-        await ctx.respond(embed=embed)
     else:
         embed = create_failure_embed(trigger_text, is_emoji)
-        await ctx.respond(embed=embed)
+
+    await ctx.respond(embed=embed)
 
 
 async def check_reaction_limit(

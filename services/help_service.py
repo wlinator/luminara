@@ -18,10 +18,10 @@ class LumiHelp(commands.HelpCommand):
         }
 
     def get_command_qualified_name(self, command):
-        return "`{}{}`".format(self.context.clean_prefix, command.qualified_name)
+        return f"`{self.context.clean_prefix}{command.qualified_name}`"
 
     async def send_bot_help(self, mapping):
-        embed = EmbedBuilder.create_info_embed(
+        embed = EmbedBuilder.create_success_embed(
             ctx=self.context,
             author_text="Help Command",
             show_name=False,
@@ -53,17 +53,11 @@ class LumiHelp(commands.HelpCommand):
             show_name=False,
         )
 
-        usage_value = "`{}{} {}`".format(
-            self.context.clean_prefix,
-            command.qualified_name,
-            command.signature,
+        usage_value = (
+            f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}`"
         )
         for alias in command.aliases:
-            usage_value += "\n`{}{} {}`".format(
-                self.context.clean_prefix,
-                alias,
-                command.signature,
-            )
+            usage_value += f"\n`{self.context.clean_prefix}{alias} {command.signature}`"
         embed.add_field(name="Usage", value=usage_value, inline=False)
 
         channel = self.get_destination()

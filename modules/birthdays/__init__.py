@@ -1,16 +1,12 @@
-import asyncio
-import random
+import datetime
+import pytz
 
 import discord
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, tasks
-from loguru import logger
-
-from lib import checks, time
+from lib import checks
 from lib.constants import CONST
-from modules.birthdays import birthday
-from services.birthday_service import Birthday
-from services.config_service import GuildConfig
+from modules.birthdays import birthday, daily_check
 
 
 class Birthdays(commands.Cog):
@@ -18,9 +14,6 @@ class Birthdays(commands.Cog):
         self.client = client
         self.daily_birthday_check.start()
 
-    """
-    birthday module - slash command only
-    """
     birthday = SlashCommandGroup(
         name="birthday",
         description="Birthday commands.",
@@ -43,47 +36,9 @@ class Birthdays(commands.Cog):
     async def upcoming_birthdays(self, ctx):
         await birthday.upcoming(ctx)
 
-    @tasks.loop(hours=23, minutes=55)
+    @tasks.loop(time=datetime.time(hour=12, minute=0, tzinfo=pytz.UTC))  # 12 PM UTC
     async def daily_birthday_check(self):
-        wait_time = time.seconds_until(7, 0)
-        logger.debug(
-            f"Waiting until 7 AM Eastern for the daily birthday check: {round(wait_time)}s left.",
-        )
-        await asyncio.sleep(wait_time)
-
-        embed = discord.Embed(color=discord.Color.embed_background())
-        embed.set_image(url="https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif")
-
-        for user_id, guild_id in Birthday.get_birthdays_today():
-            try:
-                guild = await self.client.fetch_guild(guild_id)
-                member = await guild.fetch_member(user_id)
-                guild_config = GuildConfig(guild.id)
-
-                if not guild_config.birthday_channel_id:
-                    logger.debug(
-                        f"Birthday announcements in guild with ID {guild.id} skipped: no birthday channel.",
-                    )
-                    return
-
-                message = random.choice(CONST.BIRTHDAY_MESSAGES)
-                embed.description = message.format(member.name)
-                channel = await self.client.get_or_fetch_channel(
-                    guild,
-                    guild_config.birthday_channel_id,
-                )
-                await channel.send(embed=embed, content=member.mention)
-                logger.debug(
-                    f"Birthday announcement Success! user/guild/chan ID: {member.id}/{guild.id}/{channel.id}",
-                )
-
-            except Exception as e:
-                logger.warning(
-                    f"Birthday announcement skipped processing user/guild {user_id}/{guild_id} | {e}",
-                )
-
-            # wait one second to avoid rate limits
-            await asyncio.sleep(1)
+        await daily_check.daily_birthday_check(self.client)
 
 
 def setup(client):

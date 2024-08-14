@@ -1,4 +1,5 @@
 from discord.ext import commands
+from lib.constants import CONST
 
 
 class BirthdaysDisabled(commands.CheckFailure):
@@ -14,6 +15,16 @@ class LumiException(commands.CommandError):
     A generic exception to raise for quick error handling.
     """
 
-    def __init__(self, message="An error occurred."):
+    def __init__(self, message=CONST.STRINGS["lumi_exception_generic"]):
+        self.message = message
+        super().__init__(message)
+
+
+class Blacklisted(commands.CommandError):
+    """
+    Raised when a user is blacklisted.
+    """
+
+    def __init__(self, message=CONST.STRINGS["lumi_exception_blacklisted"]):
         self.message = message
         super().__init__(message)
