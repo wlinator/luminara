@@ -7,11 +7,11 @@ from lib.embed_builder import EmbedBuilder
 from modules.moderation.utils.actionable import async_actionable
 from modules.moderation.utils.case_handler import create_case
 from typing import Optional
-from discord.ext.commands import UserConverter
+from discord.ext.commands import UserConverter, MemberConverter
 
 
 async def kick_user(cog, ctx, target: discord.Member, reason: Optional[str] = None):
-    bot_member = await cog.client.get_or_fetch_member(ctx.guild, ctx.bot.user.id)
+    bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
     await async_actionable(target, ctx.author, bot_member)
 
     output_reason = reason or CONST.STRINGS["mod_no_reason"]
