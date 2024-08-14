@@ -89,7 +89,7 @@ class Config(commands.Cog):
 
     birthday_config = config.create_subgroup(name="birthdays")
 
-    @config.command(name="channel")
+    @birthday_config.command(name="channel")
     async def config_birthdays_channel(self, ctx, channel: discord.TextChannel):
         await c_birthday.set_birthday_channel(ctx, channel)
 
