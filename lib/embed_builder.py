@@ -23,6 +23,7 @@ class EmbedBuilder:
         timestamp=None,
         hide_author=False,
         hide_author_icon=False,
+        hide_timestamp=False,
     ):
         if not hide_author:
             if not author_text:
@@ -50,7 +51,8 @@ class EmbedBuilder:
                 url=author_url,
             )
         embed.set_footer(text=footer_text, icon_url=footer_icon_url)
-        embed.timestamp = timestamp or datetime.datetime.now()
+        if not hide_timestamp:
+            embed.timestamp = timestamp or datetime.datetime.now()
 
         if image_url:
             embed.set_image(url=image_url)
@@ -74,6 +76,7 @@ class EmbedBuilder:
         timestamp=None,
         hide_author=False,
         hide_author_icon=False,
+        hide_timestamp=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -91,6 +94,7 @@ class EmbedBuilder:
             timestamp=timestamp,
             hide_author=hide_author,
             hide_author_icon=hide_author_icon,
+            hide_timestamp=hide_timestamp,
         )
 
     @staticmethod
@@ -108,6 +112,7 @@ class EmbedBuilder:
         timestamp=None,
         hide_author=False,
         hide_author_icon=False,
+        hide_timestamp=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -125,6 +130,7 @@ class EmbedBuilder:
             timestamp=timestamp,
             hide_author=hide_author,
             hide_author_icon=hide_author_icon,
+            hide_timestamp=hide_timestamp,
         )
 
     @staticmethod
@@ -142,6 +148,7 @@ class EmbedBuilder:
         timestamp=None,
         hide_author=False,
         hide_author_icon=False,
+        hide_timestamp=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -159,6 +166,7 @@ class EmbedBuilder:
             timestamp=timestamp,
             hide_author=hide_author,
             hide_author_icon=hide_author_icon,
+            hide_timestamp=hide_timestamp,
         )
 
     @staticmethod
@@ -176,6 +184,7 @@ class EmbedBuilder:
         timestamp=None,
         hide_author=False,
         hide_author_icon=False,
+        hide_timestamp=False,
     ):
         return EmbedBuilder.create_embed(
             ctx,
@@ -193,4 +202,5 @@ class EmbedBuilder:
             timestamp=timestamp,
             hide_author=hide_author,
             hide_author_icon=hide_author_icon,
+            hide_timestamp=hide_timestamp,
         )
