@@ -7,11 +7,11 @@ import discord
 import pytz
 from discord.ext import commands
 
-from config.parser import JsonCache
 from services.currency_service import Currency
 from services.stats_service import SlotsStats
 
-resources = JsonCache.read_json("resources")
+from lib.constants import CONST
+
 est = pytz.timezone("US/Eastern")
 
 
@@ -36,12 +36,8 @@ async def cmd(self, ctx, bet):
     results = [random.randint(0, 6) for _ in range(3)]
     calculated_results = calculate_slots_results(bet, results)
 
-    (type, payout, multiplier) = calculated_results
-    is_won = True
-
-    if type == "lost":
-        is_won = False
-
+    (result_type, payout, multiplier) = calculated_results
+    is_won = result_type != "lost"
     # only get the emojis once
     emojis = get_emotes(self.client)
 
@@ -60,7 +56,7 @@ async def cmd(self, ctx, bet):
     # output final result
     finished_output = slots_finished(
         ctx,
-        type,
+        result_type,
         Currency.format_human(bet),
         Currency.format_human(payout),
         results,
@@ -80,7 +76,7 @@ async def cmd(self, ctx, bet):
         is_won=is_won,
         bet=bet,
         payout=payout,
-        spin_type=type,
+        spin_type=result_type,
         icons=results,
     )
 
@@ -89,45 +85,38 @@ async def cmd(self, ctx, bet):
 
 
 def get_emotes(client):
-    decoration = resources["slots"]["emotes"]
-    emojis = {name: client.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
-    return emojis
+    decoration = CONST.SLOTS["emotes"]
+    return {name: client.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
 
 
 def calculate_slots_results(bet, results):
-    type = None
+    result_type = None
     multiplier = None
-    rewards = resources["slots"]["reward_multipliers"]
+    rewards = CONST.SLOTS["reward_multipliers"]
 
     # count occurrences of each item in the list
     counts = Counter(results)
 
     # no icons match
     if len(counts) == 3:
-        type = "lost"
+        result_type = "lost"
         multiplier = 0
 
-    # pairs
     elif len(counts) == 2:
-        type = "pair"
-        multiplier = rewards[type]
+        result_type = "pair"
+        multiplier = rewards[result_type]
 
-    # 3 of a kind
     elif len(counts) == 1:
         if results[0] == 5:
-            type = "three_diamonds"
-            multiplier = rewards[type]
-
+            result_type = "three_diamonds"
         elif results[0] == 6:
-            type = "jackpot"
-            multiplier = rewards[type]
-
+            result_type = "jackpot"
         else:
-            type = "three_of_a_kind"
-            multiplier = rewards[type]
+            result_type = "three_of_a_kind"
+        multiplier = rewards[result_type]
 
     payout = bet * multiplier
-    return type, int(payout), multiplier
+    return result_type, int(payout), multiplier
 
 
 def slots_spinning(ctx, spinning_icons_amount, bet, results, emojis):
