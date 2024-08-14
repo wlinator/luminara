@@ -87,7 +87,7 @@ class Moderation(commands.Cog):
     async def moderator_cases_command(
         self,
         ctx,
-        moderator: discord.User,
+        moderator: discord.Member,
     ):
         await cases.view_all_cases_by_mod(ctx, ctx.guild.id, moderator)
 

@@ -64,7 +64,7 @@ async def view_all_cases_in_guild(ctx, guild_id: int):
     await paginator.respond(ctx)
 
 
-async def view_all_cases_by_mod(ctx, guild_id: int, moderator: discord.User):
+async def view_all_cases_by_mod(ctx, guild_id: int, moderator: discord.Member):
     cases = case_service.fetch_cases_by_moderator(guild_id, moderator.id)
 
     if not cases:
