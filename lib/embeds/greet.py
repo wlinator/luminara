@@ -1,12 +1,5 @@
 import discord
-
-from config.parser import JsonCache
 from lib import formatter
-
-resources = JsonCache.read_json("art")
-
-question_icon = resources["icons"]["question"]
-exclaim_icon = resources["icons"]["exclaim"]
 
 
 class Greet:
@@ -16,10 +9,11 @@ class Greet:
             color=discord.Color.embed_background(),
             description=f"_ _\n**Welcome** to **{member.guild.name}**",
         )
-
         if template:
-            embed.description += "↓↓↓\n" + formatter.template(template, member.name)
+            embed.description = (
+                f"{embed.description}\n↓↓↓\n{formatter.template(template, member.name)}"
+            )
 
-        embed.set_thumbnail(url=member.display_avatar)
+        embed.set_thumbnail(url=member.display_avatar.url)
 
         return embed

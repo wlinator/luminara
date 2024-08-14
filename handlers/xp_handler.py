@@ -9,14 +9,11 @@ from discord.ext import commands
 from discord.ext.commands import TextChannelConverter
 
 from Client import LumiBot
-from config.parser import JsonCache
 from lib import formatter
+from lib.constants import CONST
 from services.blacklist_service import BlacklistUserService
 from services.config_service import GuildConfig
 from services.xp_service import XpRewardService, XpService
-
-_strings = JsonCache.read_json("strings")
-_messages = JsonCache.read_json("levels")
 
 
 class XPHandler:
@@ -199,7 +196,7 @@ class XPHandler:
         Returns:
             str: The generic level up message.
         """
-        return _strings["level_up"].format(author.name, level)
+        return CONST.STRINGS["level_up"].format(author.name, level)
 
     @staticmethod
     def messages_whimsical(level: int, author: discord.Member) -> str:
@@ -214,7 +211,7 @@ class XPHandler:
             str: The whimsical level up message.
         """
         level_range: Optional[str] = None
-        for key in _messages.keys():
+        for key in CONST.LEVEL_MESSAGES.keys():
             start, end = map(int, key.split("-"))
             if start <= level <= end:
                 level_range = key
@@ -224,9 +221,9 @@ class XPHandler:
             # Generic fallback
             return XPHandler.level_message_generic(level, author)
 
-        message_list = _messages[level_range]
+        message_list = CONST.LEVEL_MESSAGES[level_range]
         random_message = random.choice(message_list)
-        start_string = _strings["level_up_prefix"].format(author.name)
+        start_string = CONST.STRINGS["level_up_prefix"].format(author.name)
         return start_string + random_message.format(level)
 
 

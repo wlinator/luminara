@@ -1,17 +1,9 @@
 import datetime
 from typing import Optional
+from lib.constants import CONST
 
 import discord
-
-from config.parser import JsonCache
 from lib import formatter
-
-resources = JsonCache.read_json("art")
-
-check_icon = resources["icons"]["check"]
-cross_icon = resources["icons"]["cross"]
-exclaim_icon = resources["icons"]["exclaim"]
-logo = resources["logo"]["transparent"]
 
 
 def create_embed(
@@ -25,8 +17,8 @@ def create_embed(
         description=description,
     )
     embed.set_author(name=title, icon_url=icon_url)
-    embed.set_footer(text="Reaction Service", icon_url=logo)
-    embed.timestamp = datetime.datetime.utcnow()
+    embed.set_footer(text="Reaction Service", icon_url=CONST.LUMI_LOGO_TRANSPARENT)
+    embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
     return embed
 
 
@@ -47,7 +39,12 @@ def create_creation_embed(
         f"{f'**Emoji ID:** `{str(emoji_id)}`' if is_emoji else f'**Response:** `{response}`'}\n"
         f"**Full Match:** `{is_full_match}`"
     )
-    return create_embed("Custom Reaction Created", description, 0xFF8C00, check_icon)
+    return create_embed(
+        "Custom Reaction Created",
+        description,
+        0xFF8C00,
+        CONST.CHECK_ICON,
+    )
 
 
 def create_failure_embed(
@@ -71,7 +68,7 @@ def create_failure_embed(
         "Custom Reaction Creation Failed",
         description,
         0xFF4500,
-        cross_icon,
+        CONST.CROSS_ICON,
     )
 
 
@@ -81,14 +78,24 @@ def create_deletion_embed(trigger_text: str, is_emoji: bool) -> discord.Embed:
     description = f"**Trigger Text:** `{trigger_text}`\n"
     description += "Custom reaction has been successfully deleted."
 
-    return create_embed("Custom Reaction Deleted", description, 0xFF8C00, check_icon)
+    return create_embed(
+        "Custom Reaction Deleted",
+        description,
+        0xFF8C00,
+        CONST.CHECK_ICON,
+    )
 
 
 def create_not_found_embed(reaction_id: int) -> discord.Embed:
     description = f"**Reaction ID:** `{reaction_id}`\n"
     description += "No custom reaction found with the provided ID."
 
-    return create_embed("Custom Reaction Not Found", description, 0xFF4500, cross_icon)
+    return create_embed(
+        "Custom Reaction Not Found",
+        description,
+        0xFF4500,
+        CONST.CROSS_ICON,
+    )
 
 
 def create_no_triggers_embed() -> discord.Embed:
@@ -107,5 +114,5 @@ def create_no_triggers_embed() -> discord.Embed:
         "No Custom Reactions Found",
         description,
         0xFF8C00,
-        exclaim_icon,
+        CONST.EXCLAIM_ICON,
     )
