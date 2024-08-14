@@ -88,6 +88,3 @@ class Constants:
 
 
 CONST = Constants()
-
-
-CONST = Constants()
