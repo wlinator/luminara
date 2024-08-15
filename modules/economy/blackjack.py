@@ -8,9 +8,10 @@ from loguru import logger
 
 from config.parser import JsonCache
 from lib import interaction
-from lib.embeds.error import EconErrors
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
+from lib.exceptions.LumiExceptions import LumiException
+from lib.constants import CONST
 
 resources = JsonCache.read_json("resources")
 est = pytz.timezone("US/Eastern")
@@ -31,8 +32,7 @@ async def cmd(ctx, bet: int):
 
     # check if the player already has an active blackjack going
     if ctx.author.id in active_blackjack_games:
-        await ctx.respond(embed=EconErrors.already_playing(ctx))
-        return
+        raise LumiException(CONST.STRINGS["error_already_playing_blackjack"])
 
     # Currency handler
     ctx_currency = Currency(ctx.author.id)
@@ -47,14 +47,11 @@ async def cmd(ctx, bet: int):
     active_blackjack_games[ctx.author.id] = True
 
     try:
-        player_hand = []
         dealer_hand = []
         deck = get_new_deck()
         multiplier = float(resources["blackjack"]["reward_multiplier"])
 
-        # deal initial cards (player draws two & dealer one)
-        player_hand.append(deal_card(deck))
-        player_hand.append(deal_card(deck))
+        player_hand = [deal_card(deck), deal_card(deck)]
         dealer_hand.append(deal_card(deck))
 
         # calculate initial hands
@@ -102,13 +99,8 @@ async def cmd(ctx, bet: int):
                     dealer_hand.append(deal_card(deck))
                     dealer_hand_value = calculate_hand_value(dealer_hand)
 
-                if dealer_hand_value > 21:
-                    status = 3
-                    break
-                else:
-                    status = 4
-                    break
-
+                status = 3 if dealer_hand_value > 21 else 4
+                break
             else:
                 status = 6
                 break
@@ -129,8 +121,8 @@ async def cmd(ctx, bet: int):
         """
         At this point the game has concluded, generate a final output & backend
         """
-        payout = bet * multiplier if not status == 5 else bet * 2
-        is_won = False if status == 1 or status == 4 else True
+        payout = bet * multiplier if status != 5 else bet * 2
+        is_won = status not in [1, 4]
 
         embed = blackjack_finished(
             ctx,
@@ -164,12 +156,9 @@ async def cmd(ctx, bet: int):
             stats.push()
 
         elif status == 6:
-            await ctx.send(
-                embed=EconErrors.out_of_time(ctx),
-                content=ctx.author.mention,
-            )
             ctx_currency.take_balance(bet)
             ctx_currency.push()
+            raise LumiException(CONST.STRINGS["error_out_of_time_economy"])
 
         else:
             ctx_currency.add_balance(payout)
@@ -204,8 +193,6 @@ def blackjack_show(
     dealer_hand_value,
 ):
     current_time = datetime.now(est).strftime("%I:%M %p")
-    thumbnail_url = None
-
     embed = discord.Embed(
         title="BlackJack",
         color=discord.Color.dark_orange(),
@@ -235,7 +222,7 @@ def blackjack_show(
         icon_url="https://i.imgur.com/96jPPXO.png",
     )
 
-    if thumbnail_url:
+    if thumbnail_url := None:
         embed.set_thumbnail(url=thumbnail_url)
 
     return embed
