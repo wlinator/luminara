@@ -6,14 +6,12 @@ import pytz
 from discord.ext import commands
 from loguru import logger
 
-from config.parser import JsonCache
 from lib import interaction
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
 from lib.exceptions.LumiExceptions import LumiException
 from lib.constants import CONST
 
-resources = JsonCache.read_json("resources")
 est = pytz.timezone("US/Eastern")
 active_blackjack_games = {}
 
@@ -47,13 +45,11 @@ async def cmd(ctx, bet: int):
     active_blackjack_games[ctx.author.id] = True
 
     try:
-        dealer_hand = []
         deck = get_new_deck()
-        multiplier = float(resources["blackjack"]["reward_multiplier"])
+        multiplier = float(CONST.BLACKJACK["reward_multiplier"])
 
         player_hand = [deal_card(deck), deal_card(deck)]
-        dealer_hand.append(deal_card(deck))
-
+        dealer_hand = [deal_card(deck)]
         # calculate initial hands
         player_hand_value = calculate_hand_value(player_hand)
         dealer_hand_value = calculate_hand_value(dealer_hand)
@@ -293,8 +289,8 @@ def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, s
 
 
 def get_new_deck():
-    suits = resources["blackjack"]["deck_suits"]
-    ranks = resources["blackjack"]["deck_ranks"]
+    suits = CONST.BLACKJACK["deck_suits"]
+    ranks = CONST.BLACKJACK["deck_ranks"]
     deck = []
     for suit in suits:
         for rank in ranks:

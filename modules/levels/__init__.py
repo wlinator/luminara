@@ -17,7 +17,6 @@ class Levels(commands.Cog):
         contexts={discord.InteractionContextType.guild},
     )
     @guild_only()
-    @commands.cooldown(1, 30, commands.BucketType.user)
     async def level_command(self, ctx) -> None:
         await level.rank(ctx)
 
@@ -29,7 +28,6 @@ class Levels(commands.Cog):
         contexts={discord.InteractionContextType.guild},
     )
     @guild_only()
-    @commands.cooldown(1, 180, commands.BucketType.user)
     async def leaderboard_command(self, ctx) -> None:
         await leaderboard.cmd(ctx)
 
