@@ -69,11 +69,10 @@ class IntroductionFinishButtons(View):
         self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.ctx.author:
-            await interaction.response.send_message(
-                "You can't use these buttons.",
-                ephemeral=True,
-            )
-            return False
-        else:
+        if interaction.user == self.ctx.author:
             return True
+        await interaction.response.send_message(
+            "You can't use these buttons.",
+            ephemeral=True,
+        )
+        return False
