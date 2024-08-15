@@ -1,4 +1,6 @@
 {
+  "greet_default_description": "_ _\n**Welcome** to **{0}**",
+  "greet_template_description": "↓↓↓\n{0}",
   "boost_default_title": "New Booster",
   "boost_default_description": "Thanks for boosting, **{0}**!!",
   "lumi_exception_generic": "An error occurred.",

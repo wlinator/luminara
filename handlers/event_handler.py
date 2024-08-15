@@ -1,8 +1,7 @@
 from discord.ext.commands import Cog
 from loguru import logger
 
-from modules.config import c_boost
-from lib.embeds.greet import Greet
+from modules.config import c_boost, c_greet
 from services.blacklist_service import BlacklistUserService
 from services.config_service import GuildConfig
 
@@ -21,7 +20,7 @@ class EventHandler(Cog):
         if not config.welcome_channel_id:
             return
 
-        embed = Greet.message(member, config.welcome_message)
+        embed = c_greet.create_greet_embed(member, config.welcome_message)
 
         try:
             await member.guild.get_channel(config.welcome_channel_id).send(
