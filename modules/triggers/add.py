@@ -1,9 +1,11 @@
 from typing import Optional
 
 from discord.ext import bridge
-
-from lib.embeds.triggers import create_creation_embed, create_failure_embed
 from services.reactions_service import CustomReactionsService
+from lib.exceptions.LumiExceptions import LumiException
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib import formatter
 
 
 async def add_reaction(
@@ -22,20 +24,15 @@ async def add_reaction(
     creator_id: int = ctx.author.id
 
     if not await check_reaction_limit(
-        ctx,
         reaction_service,
         guild_id,
-        trigger_text,
-        is_emoji,
     ):
         return
 
     if not await check_existing_trigger(
-        ctx,
         reaction_service,
         guild_id,
         trigger_text,
-        is_emoji,
     ):
         return
 
@@ -47,51 +44,63 @@ async def add_reaction(
         emoji_id=emoji_id,
         is_emoji=is_emoji,
         is_full_match=is_full_match,
-        is_global=False,  # only bot admins can create global custom reactions
+        is_global=False,
     )
 
-    if success:
-        embed = create_creation_embed(
-            trigger_text,
-            response,
+    if not success:
+        raise LumiException(CONST.STRINGS["triggers_not_added"])
+
+    trigger_text = formatter.shorten(trigger_text, 50)
+
+    if response:
+        response = formatter.shorten(response, 50)
+
+    embed = EmbedBuilder.create_success_embed(
+        ctx,
+        author_text=CONST.STRINGS["triggers_add_author"],
+        description="",
+        footer_text=CONST.STRINGS["triggers_reaction_service_footer"],
+        show_name=False,
+    )
+
+    embed.description += CONST.STRINGS["triggers_add_description"].format(
+        trigger_text,
+        CONST.STRINGS["triggers_type_emoji"]
+        if is_emoji
+        else CONST.STRINGS["triggers_type_text"],
+        is_full_match,
+    )
+
+    if is_emoji:
+        embed.description += CONST.STRINGS["triggers_add_emoji_details"].format(
             emoji_id,
-            is_emoji,
-            is_full_match,
         )
     else:
-        embed = create_failure_embed(trigger_text, is_emoji)
+        embed.description += CONST.STRINGS["triggers_add_text_details"].format(response)
 
     await ctx.respond(embed=embed)
 
 
 async def check_reaction_limit(
-    ctx: bridge.Context,
     reaction_service: CustomReactionsService,
     guild_id: int,
-    trigger_text: str,
-    is_emoji: bool,
 ) -> bool:
-    if await reaction_service.count_custom_reactions(guild_id) >= 100:
-        embed = create_failure_embed(trigger_text, is_emoji, limit_reached=True)
-        await ctx.respond(embed=embed)
-        return False
+    limit_reached = await reaction_service.count_custom_reactions(guild_id) >= 100
+
+    if limit_reached:
+        raise LumiException(CONST.STRINGS["trigger_limit_reached"])
+
     return True
 
 
 async def check_existing_trigger(
-    ctx: bridge.Context,
     reaction_service: CustomReactionsService,
     guild_id: int,
     trigger_text: str,
-    is_emoji: bool,
 ) -> bool:
     existing_trigger = await reaction_service.find_trigger(guild_id, trigger_text)
+
     if existing_trigger:
-        embed = create_failure_embed(
-            trigger_text,
-            is_emoji,
-            trigger_already_exists=True,
-        )
-        await ctx.respond(embed=embed)
-        return False
+        raise LumiException(CONST.STRINGS["trigger_already_exists"])
+
     return True
