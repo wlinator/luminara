@@ -10,7 +10,7 @@ from lib.exceptions.LumiExceptions import LumiException
 from services.config_service import GuildConfig
 
 
-async def set_welcome_channel(ctx, channel: discord.TextChannel) -> discord.Message:
+async def set_welcome_channel(ctx, channel: discord.TextChannel) -> None:
     if not ctx.guild:
         raise LumiException()
 
@@ -24,10 +24,10 @@ async def set_welcome_channel(ctx, channel: discord.TextChannel) -> discord.Mess
         description=CONST.STRINGS["config_welcome_channel_set"].format(channel.mention),
     )
 
-    return await ctx.respond(embed=embed)
+    await ctx.respond(embed=embed)
 
 
-async def disable_welcome_module(ctx) -> discord.Message:
+async def disable_welcome_module(ctx) -> None:
     guild_config: GuildConfig = GuildConfig(ctx.guild.id)
 
     if not guild_config.welcome_channel_id:
@@ -46,10 +46,10 @@ async def disable_welcome_module(ctx) -> discord.Message:
             description=CONST.STRINGS["config_welcome_module_disabled"],
         )
 
-    return await ctx.respond(embed=embed)
+    await ctx.respond(embed=embed)
 
 
-async def set_welcome_template(ctx, text: str) -> discord.Message:
+async def set_welcome_template(ctx, text: str) -> None:
     if not ctx.guild:
         raise LumiException()
 
@@ -73,7 +73,7 @@ async def set_welcome_template(ctx, text: str) -> discord.Message:
 
     greet_member: discord.Member = await MemberConverter().convert(ctx, str(ctx.author))
     example_embed: discord.Embed = create_greet_embed(greet_member, text)
-    return await ctx.send(embed=example_embed, content=ctx.author.mention)
+    await ctx.send(embed=example_embed, content=ctx.author.mention)
 
 
 def create_greet_embed(
