@@ -75,22 +75,6 @@ def create_failure_embed(
     )
 
 
-def create_deletion_embed(trigger_text: str, is_emoji: bool) -> discord.Embed:
-    trigger_text = formatter.shorten(trigger_text, 50)
-
-    description = f"**Trigger Text:** `{trigger_text}`\n"
-    description += "Custom reaction has been successfully deleted."
-
-    return create_embed("Custom Reaction Deleted", description, 0xFF8C00, check_icon)
-
-
-def create_not_found_embed(reaction_id: int) -> discord.Embed:
-    description = f"**Reaction ID:** `{reaction_id}`\n"
-    description += "No custom reaction found with the provided ID."
-
-    return create_embed("Custom Reaction Not Found", description, 0xFF4500, cross_icon)
-
-
 def create_no_triggers_embed() -> discord.Embed:
     description = (
         "There are no custom reactions set up yet.\n\n"

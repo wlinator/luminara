@@ -1,4 +1,9 @@
 {
+  "triggers_delete_not_found_author": "Custom Reaction Not Found",
+  "triggers_not_found": "no custom reaction found with the provided ID.",
+  "triggers_not_deleted": "something went wrong while trying to delete this trigger.",
+  "triggers_delete_author": "Custom Reaction Deleted",
+  "triggers_delete_description": "custom reaction has been successfully deleted.",
   "triggers_list_trigger_text": "**Trigger Text:** `{0}`",
   "triggers_list_reaction_type": "**Reaction Type:** {0}",
   "triggers_list_emoji_id": "**Emoji ID:** `{0}`",
