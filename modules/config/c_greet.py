@@ -2,7 +2,7 @@ import discord
 from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from services.config_service import GuildConfig
-from lib.embeds.greet import Greet
+import lib.formatter
 
 
 async def set_welcome_channel(ctx, channel: discord.TextChannel):
@@ -60,5 +60,22 @@ async def set_welcome_template(ctx, text: str):
 
     await ctx.respond(embed=embed)
 
-    example_embed = Greet.message(ctx.author, text)
+    example_embed = create_greet_embed(ctx.author, text)
     return await ctx.send(embed=example_embed, content=ctx.author.mention)
+
+
+async def create_greet_embed(member: discord.Member, template: str | None = None):
+    embed = discord.Embed(
+        color=discord.Color.embed_background(),
+        description=CONST.STRINGS["greet_default_description"].format(
+            member.guild.name,
+        ),
+    )
+    if template and embed.description is not None:
+        embed.description += CONST.STRINGS["greet_template_description"].format(
+            lib.formatter.template(template, member.name),
+        )
+
+    embed.set_thumbnail(url=member.display_avatar)
+
+    return embed
