@@ -1,51 +1,60 @@
-import datetime
-
-import discord
 from discord.ext import bridge, pages
-
-from config.parser import JsonCache
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
 from lib.embeds.triggers import create_no_triggers_embed
 from services.reactions_service import CustomReactionsService
+from typing import Any, Dict, List
 
-resources = JsonCache.read_json("art")
-
-check_icon = resources["icons"]["check"]
-logo = resources["logo"]["transparent"]
+import discord
 
 
 async def list_reactions(ctx: bridge.Context) -> None:
     if ctx.guild is None:
         return
 
-    reaction_service = CustomReactionsService()
+    reaction_service: CustomReactionsService = CustomReactionsService()
     guild_id: int = ctx.guild.id
 
-    # Fetch all reactions for the guild
-    reactions = await reaction_service.find_all_by_guild(guild_id)
+    reactions: List[Dict[str, Any]] = await reaction_service.find_all_by_guild(guild_id)
     if not reactions:
-        embed = create_no_triggers_embed()
+        embed: discord.Embed = create_no_triggers_embed()
         await ctx.respond(embed=embed)
         return
 
-    # Create pages for pagination
     pages_list = []
     for reaction in reactions:
-        description = (
-            f"**Trigger Text:** `{reaction['trigger_text']}`\n"
-            f"**Reaction Type:** {'Emoji' if reaction['is_emoji'] else 'Text'}\n"
-            f"{'**Emoji ID:** `{}`'.format(str(reaction['emoji_id'])) if reaction['is_emoji'] else '**Response:** `{}`'.format(reaction['response'])}\n"
-            f"**Full Match:** `{'True' if reaction['is_full_match'] else 'False'}`\n"
-            f"**Usage Count:** `{reaction['usage_count']}`"
+        embed = EmbedBuilder.create_success_embed(
+            ctx,
+            title=CONST.STRINGS["triggers_list_custom_reaction_id"].format(
+                reaction["id"],
+            ),
+            author_text=CONST.STRINGS["triggers_list_custom_reactions_title"],
+            footer_text=CONST.STRINGS["triggers_reaction_service_footer"],
+            show_name=False,
         )
-        embed = discord.Embed(
-            title=f"ID: {reaction['id']}",
-            description=description,
-            color=0xFF8C00,
+
+        embed.description = "\n".join(
+            [
+                CONST.STRINGS["triggers_list_trigger_text"].format(
+                    reaction["trigger_text"],
+                ),
+                CONST.STRINGS["triggers_list_reaction_type"].format(
+                    "Emoji" if reaction["is_emoji"] else "Text",
+                ),
+                CONST.STRINGS["triggers_list_emoji_id"].format(reaction["emoji_id"])
+                if reaction["is_emoji"]
+                else CONST.STRINGS["triggers_list_response"].format(
+                    reaction["response"],
+                ),
+                CONST.STRINGS["triggers_list_full_match"].format(
+                    reaction["is_full_match"],
+                ),
+                CONST.STRINGS["triggers_list_usage_count"].format(
+                    reaction["usage_count"],
+                ),
+            ],
         )
-        embed.set_author(name="Custom Reactions", icon_url=check_icon)
-        embed.set_footer(text="Reaction Service", icon_url=logo)
-        embed.timestamp = datetime.datetime.utcnow()
         pages_list.append(embed)
 
-    paginator = pages.Paginator(pages=pages_list, timeout=180.0)
+    paginator: pages.Paginator = pages.Paginator(pages=pages_list, timeout=180.0)
     await paginator.respond(ctx, ephemeral=False)
