@@ -1,4 +1,13 @@
 {
+  "triggers_list_trigger_text": "**Trigger Text:** `{0}`",
+  "triggers_list_reaction_type": "**Reaction Type:** {0}",
+  "triggers_list_emoji_id": "**Emoji ID:** `{0}`",
+  "triggers_list_response": "**Response:** `{0}`",
+  "triggers_list_full_match": "**Full Match:** `{0}`",
+  "triggers_list_usage_count": "**Usage Count:** `{0}`",
+  "triggers_list_custom_reaction_id": "**ID:** {0}",
+  "triggers_list_custom_reactions_title": "Custom Reactions",
+  "triggers_reaction_service_footer": "Reaction Service",
   "greet_default_description": "_ _\n**Welcome** to **{0}**",
   "greet_template_description": "↓↓↓\n{0}",
   "boost_default_title": "New Booster",

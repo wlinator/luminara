@@ -26,7 +26,7 @@ def create_embed(
     )
     embed.set_author(name=title, icon_url=icon_url)
     embed.set_footer(text="Reaction Service", icon_url=logo)
-    embed.timestamp = datetime.datetime.utcnow()
+    embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
     return embed
 
 
@@ -44,7 +44,7 @@ def create_creation_embed(
     description = (
         f"**Trigger Text:** `{trigger_text}`\n"
         f"**Reaction Type:** {'Emoji' if is_emoji else 'Text'}\n"
-        f"{f'**Emoji ID:** `{str(emoji_id)}`' if is_emoji else f'**Response:** `{response}`'}\n"
+        f"{f'**Emoji ID:** `{emoji_id}`' if is_emoji else f'**Response:** `{response}`'}\n"
         f"**Full Match:** `{is_full_match}`"
     )
     return create_embed("Custom Reaction Created", description, 0xFF8C00, check_icon)
