@@ -1,7 +1,7 @@
 from discord.ext.commands import Cog
 from loguru import logger
 
-import lib.embeds.boost
+from modules.config import c_boost
 from lib.embeds.greet import Greet
 from services.blacklist_service import BlacklistUserService
 from services.config_service import GuildConfig
@@ -48,7 +48,7 @@ class EventHandler(Cog):
         if not config.boost_channel_id:
             return
 
-        embed = lib.embeds.boost.Boost.message(
+        embed = c_boost.create_boost_embed(
             member,
             config.boost_message,
             config.boost_image_url,
