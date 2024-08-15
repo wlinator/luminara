@@ -3,7 +3,7 @@ from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
 from services.config_service import GuildConfig
 from lib.exceptions.LumiExceptions import LumiException
-from lib.embeds.boost import Boost
+import lib.formatter
 
 
 async def set_boost_channel(ctx, channel: discord.TextChannel):
@@ -61,7 +61,7 @@ async def set_boost_template(ctx, text: str):
 
     await ctx.respond(embed=embed)
 
-    example_embed = Boost.message(ctx.author, text, guild_config.boost_image_url)
+    example_embed = create_boost_embed(ctx.author, text, guild_config.boost_image_url)
     return await ctx.send(embed=example_embed, content=ctx.author.mention)
 
 
@@ -94,5 +94,31 @@ async def set_boost_image(ctx, image_url: str | None):
 
     await ctx.respond(embed=embed)
 
-    example_embed = Boost.message(ctx.author, guild_config.boost_message, image_url)
+    example_embed = create_boost_embed(
+        ctx.author,
+        guild_config.boost_message,
+        image_url,
+    )
     return await ctx.send(embed=example_embed, content=ctx.author.mention)
+
+
+async def create_boost_embed(
+    member: discord.Member,
+    template: str | None = None,
+    image_url: str | None = None,
+):
+    embed = discord.Embed(
+        color=discord.Color.nitro_pink(),
+        title=CONST.STRINGS["boost_default_title"],
+        description=CONST.STRINGS["boost_default_description"].format(member.name),
+    )
+
+    if template:
+        embed.description = lib.formatter.template(template, member.name)
+
+    embed.set_author(name=member.name, icon_url=member.display_avatar)
+    embed.set_image(url=image_url or CONST.BOOST_ICON)
+    embed.set_footer(
+        text=f"Total server boosts: {member.guild.premium_subscription_count}",
+        icon_url=CONST.EXCLAIM_ICON,
+    )
