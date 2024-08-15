@@ -10,7 +10,6 @@ from services.birthday_service import Birthday
 
 
 async def add(ctx, month, month_index, day):
-    """Set a user's birthday in a specific guild."""
     leap_year = 2020
     max_days = calendar.monthrange(leap_year, month_index)[1]
 
@@ -35,7 +34,6 @@ async def add(ctx, month, month_index, day):
 
 
 async def delete(ctx):
-    """Delete a user's birthday in a specific server."""
     Birthday(ctx.author.id, ctx.guild.id).delete()
 
     embed = EmbedBuilder.create_success_embed(
@@ -48,7 +46,6 @@ async def delete(ctx):
 
 
 async def upcoming(ctx):
-    """Get the upcoming birthdays for a specific server."""
     upcoming_birthdays = Birthday.get_upcoming_birthdays(ctx.guild.id)
 
     if not upcoming_birthdays:

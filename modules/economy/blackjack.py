@@ -7,9 +7,9 @@ from discord.ext import commands
 from loguru import logger
 
 from lib import interaction
-from lib.embeds.error import EconErrors
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
+from lib.exceptions.LumiExceptions import LumiException
 from lib.constants import CONST
 
 est = pytz.timezone("US/Eastern")
@@ -25,13 +25,11 @@ async def cmd(ctx, bet: int):
     3 = dealer busted
     4 = dealer won
     5 = player won with 21 (blackjack)
-    6 = timed out
     """
 
     # check if the player already has an active blackjack going
     if ctx.author.id in active_blackjack_games:
-        await ctx.respond(embed=EconErrors.already_playing(ctx))
-        return
+        raise LumiException(CONST.STRINGS["error_already_playing_blackjack"])
 
     # Currency handler
     ctx_currency = Currency(ctx.author.id)
@@ -99,8 +97,10 @@ async def cmd(ctx, bet: int):
                 status = 3 if dealer_hand_value > 21 else 4
                 break
             else:
-                status = 6
-                break
+                # timed out
+                ctx_currency.take_balance(bet)
+                ctx_currency.push()
+                raise LumiException(CONST.STRINGS["error_out_of_time_economy"])
 
             # refresh
             view = interaction.BlackJackButtons(ctx)
@@ -118,7 +118,8 @@ async def cmd(ctx, bet: int):
         """
         At this point the game has concluded, generate a final output & backend
         """
-        payout = bet * 2 if status == 5 else bet * multiplier
+
+        payout = bet * multiplier if status != 5 else bet * 2
         is_won = status not in [1, 4]
 
         embed = blackjack_finished(
@@ -150,15 +151,6 @@ async def cmd(ctx, bet: int):
                 hand_player=player_hand,
                 hand_dealer=dealer_hand,
             )
-            stats.push()
-
-        elif status == 6:
-            await ctx.send(
-                embed=EconErrors.out_of_time(ctx),
-                content=ctx.author.mention,
-            )
-            ctx_currency.take_balance(bet)
-            ctx_currency.push()
 
         else:
             ctx_currency.add_balance(payout)
@@ -173,7 +165,8 @@ async def cmd(ctx, bet: int):
                 hand_player=player_hand,
                 hand_dealer=dealer_hand,
             )
-            stats.push()
+
+        stats.push()
 
     except Exception as e:
         # await ctx.respond(embed=GenericErrors.default_exception(ctx))
