@@ -1,9 +1,7 @@
 import discord
 
-from config.parser import JsonCache
 from services.xp_service import XpRewardService
-
-art = JsonCache.read_json("art")
+from lib.constants import CONST
 
 
 async def show(ctx):
@@ -14,18 +12,20 @@ async def show(ctx):
         description="",
     )
 
-    icon = ctx.guild.icon if ctx.guild.icon else art["logo"]["opaque"]
+    icon = ctx.guild.icon or CONST.LUMI_LOGO_OPAQUE
     embed.set_author(name="Level Rewards", icon_url=icon)
-
     for level in sorted(level_reward.rewards.keys()):
-        role_id, persistent = level_reward.rewards.get(level)
+        role_id, persistent = level_reward.rewards[level]
         role = ctx.guild.get_role(role_id)
+
+        if embed.description is None:
+            embed.description = ""
 
         embed.description += (
             f"\n**Level {level}** -> {role.mention if role else 'Role not found'}"
         )
 
-        if bool(persistent):
+        if persistent:
             embed.description += " (persistent)"
 
     await ctx.respond(embed=embed)
