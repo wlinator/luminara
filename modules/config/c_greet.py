@@ -1,16 +1,24 @@
+from typing import Optional
+
 import discord
-from lib.embed_builder import EmbedBuilder
+from discord.ext.commands import MemberConverter
+
+from lib import formatter
 from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.exceptions.LumiExceptions import LumiException
 from services.config_service import GuildConfig
-import lib.formatter
 
 
-async def set_welcome_channel(ctx, channel: discord.TextChannel):
-    guild_config = GuildConfig(ctx.guild.id)
+async def set_welcome_channel(ctx, channel: discord.TextChannel) -> discord.Message:
+    if not ctx.guild:
+        raise LumiException()
+
+    guild_config: GuildConfig = GuildConfig(ctx.guild.id)
     guild_config.welcome_channel_id = channel.id
     guild_config.push()
 
-    embed = EmbedBuilder().create_success_embed(
+    embed: discord.Embed = EmbedBuilder().create_success_embed(
         ctx=ctx,
         author_text=CONST.STRINGS["config_author"],
         description=CONST.STRINGS["config_welcome_channel_set"].format(channel.mention),
@@ -19,11 +27,11 @@ async def set_welcome_channel(ctx, channel: discord.TextChannel):
     return await ctx.respond(embed=embed)
 
 
-async def disable_welcome_module(ctx):
-    guild_config = GuildConfig(ctx.guild.id)
+async def disable_welcome_module(ctx) -> discord.Message:
+    guild_config: GuildConfig = GuildConfig(ctx.guild.id)
 
     if not guild_config.welcome_channel_id:
-        embed = EmbedBuilder().create_warning_embed(
+        embed: discord.Embed = EmbedBuilder().create_warning_embed(
             ctx=ctx,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_welcome_module_already_disabled"],
@@ -32,7 +40,7 @@ async def disable_welcome_module(ctx):
         guild_config.welcome_channel_id = None
         guild_config.welcome_message = None
         guild_config.push()
-        embed = EmbedBuilder().create_success_embed(
+        embed: discord.Embed = EmbedBuilder().create_success_embed(
             ctx=ctx,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_welcome_module_disabled"],
@@ -41,12 +49,15 @@ async def disable_welcome_module(ctx):
     return await ctx.respond(embed=embed)
 
 
-async def set_welcome_template(ctx, text: str):
-    guild_config = GuildConfig(ctx.guild.id)
+async def set_welcome_template(ctx, text: str) -> discord.Message:
+    if not ctx.guild:
+        raise LumiException()
+
+    guild_config: GuildConfig = GuildConfig(ctx.guild.id)
     guild_config.welcome_message = text
     guild_config.push()
 
-    embed = EmbedBuilder().create_success_embed(
+    embed: discord.Embed = EmbedBuilder().create_success_embed(
         ctx=ctx,
         author_text=CONST.STRINGS["config_author"],
         description=CONST.STRINGS["config_welcome_template_updated"],
@@ -60,12 +71,16 @@ async def set_welcome_template(ctx, text: str):
 
     await ctx.respond(embed=embed)
 
-    example_embed = create_greet_embed(ctx.author, text)
+    greet_member: discord.Member = await MemberConverter().convert(ctx, str(ctx.author))
+    example_embed: discord.Embed = create_greet_embed(greet_member, text)
     return await ctx.send(embed=example_embed, content=ctx.author.mention)
 
 
-async def create_greet_embed(member: discord.Member, template: str | None = None):
-    embed = discord.Embed(
+def create_greet_embed(
+    member: discord.Member,
+    template: Optional[str] = None,
+) -> discord.Embed:
+    embed: discord.Embed = discord.Embed(
         color=discord.Color.embed_background(),
         description=CONST.STRINGS["greet_default_description"].format(
             member.guild.name,
@@ -73,9 +88,9 @@ async def create_greet_embed(member: discord.Member, template: str | None = None
     )
     if template and embed.description is not None:
         embed.description += CONST.STRINGS["greet_template_description"].format(
-            lib.formatter.template(template, member.name),
+            formatter.template(template, member.name),
         )
 
-    embed.set_thumbnail(url=member.display_avatar)
+    embed.set_thumbnail(url=member.display_avatar.url)
 
     return embed
