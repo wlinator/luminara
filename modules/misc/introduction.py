@@ -97,7 +97,7 @@ async def cmd(self, ctx: bridge.Context) -> None:
                 answer: discord.Message = await self.client.wait_for(
                     "message",
                     check=check,
-                    timeout=120,
+                    timeout=300,
                 )
                 answer_content: str = answer.content.replace("\n", " ")
 
