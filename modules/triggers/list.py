@@ -1,11 +1,12 @@
+from typing import Any, Dict, List
+
+import discord
 from discord.ext import bridge, pages
+
+from lib import formatter
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from services.reactions_service import CustomReactionsService
-from typing import Any, Dict, List
-from lib import formatter
-
-import discord
 
 
 async def list_reactions(ctx: bridge.Context) -> None:

@@ -1,4 +1,5 @@
 import discord
+
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from services.currency_service import Currency

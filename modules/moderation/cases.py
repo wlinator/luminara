@@ -1,16 +1,18 @@
 import asyncio
+
 import discord
+from discord.ext import pages
 from discord.ext.commands import UserConverter
-from services.moderation.case_service import CaseService
+
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.formatter import format_case_number
 from modules.moderation.utils.case_embed import (
     create_case_embed,
     create_case_list_embed,
 )
-from lib.embed_builder import EmbedBuilder
-from lib.constants import CONST
-from discord.ext import pages
-from lib.formatter import format_case_number
 from modules.moderation.utils.case_handler import edit_case_modlog
+from services.moderation.case_service import CaseService
 
 case_service = CaseService()
 

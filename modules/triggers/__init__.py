@@ -1,7 +1,7 @@
 import discord
-from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
+from discord.ext.commands import guild_only
 
 from Client import LumiBot
 from modules.triggers.add import add_reaction

@@ -1,7 +1,8 @@
 import discord
-from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands
+from discord.ext.commands import guild_only
+
 from modules.config import (
     c_birthday,
     c_boost,

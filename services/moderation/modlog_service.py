@@ -1,5 +1,6 @@
-from db.database import execute_query, select_query_one
 from typing import Optional
+
+from db.database import execute_query, select_query_one
 
 
 class ModLogService:
