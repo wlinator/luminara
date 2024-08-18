@@ -1,9 +1,10 @@
 from typing import Optional
 
 import discord
+
 from lib.constants import CONST
-from services.blacklist_service import BlacklistUserService
 from lib.embed_builder import EmbedBuilder
+from services.blacklist_service import BlacklistUserService
 
 
 async def blacklist_user(

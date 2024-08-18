@@ -1,11 +1,12 @@
 from typing import Optional
 
 from discord.ext import bridge
-from services.reactions_service import CustomReactionsService
-from lib.exceptions.LumiExceptions import LumiException
+
+from lib import formatter
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
-from lib import formatter
+from lib.exceptions.LumiExceptions import LumiException
+from services.reactions_service import CustomReactionsService
 
 
 async def add_reaction(

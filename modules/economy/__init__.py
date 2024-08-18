@@ -1,6 +1,7 @@
 import discord
-from discord.ext.commands import guild_only
 from discord.ext import bridge, commands
+from discord.ext.commands import guild_only
+
 from modules.economy import balance, blackjack, daily, give, slots
 
 

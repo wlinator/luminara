@@ -3,9 +3,9 @@ import textwrap
 import discord
 from discord.ext import commands
 from pytimeparse import parse
-from lib.exceptions.LumiExceptions import LumiException
-from lib.constants import CONST
 
+from lib.constants import CONST
+from lib.exceptions.LumiExceptions import LumiException
 from services.config_service import GuildConfig
 
 

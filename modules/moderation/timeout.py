@@ -1,15 +1,16 @@
 import asyncio
-import discord
 import datetime
+from typing import Optional
+
+import discord
+from discord.ext.commands import UserConverter, MemberConverter
 
 from lib import formatter
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
+from lib.formatter import format_duration_to_seconds, format_seconds_to_duration_string
 from modules.moderation.utils.actionable import async_actionable
 from modules.moderation.utils.case_handler import create_case
-from typing import Optional
-from discord.ext.commands import UserConverter, MemberConverter
-from lib.formatter import format_duration_to_seconds, format_seconds_to_duration_string
 
 
 async def timeout_user(

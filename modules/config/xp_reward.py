@@ -1,7 +1,7 @@
 import discord
 
-from services.xp_service import XpRewardService
 from lib.constants import CONST
+from services.xp_service import XpRewardService
 
 
 async def show(ctx):

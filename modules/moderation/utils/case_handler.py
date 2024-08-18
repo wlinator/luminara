@@ -1,10 +1,12 @@
+from typing import Optional
+
 import discord
+from discord.ext.commands import TextChannelConverter, UserConverter
 from loguru import logger
+
+from modules.moderation.utils.case_embed import create_case_embed
 from services.moderation.case_service import CaseService
 from services.moderation.modlog_service import ModLogService
-from modules.moderation.utils.case_embed import create_case_embed
-from typing import Optional
-from discord.ext.commands import TextChannelConverter, UserConverter
 
 case_service = CaseService()
 modlog_service = ModLogService()

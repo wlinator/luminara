@@ -1,5 +1,6 @@
-from db.database import execute_query, select_query_one, select_query_dict
 from typing import Optional, Dict, Any, List
+
+from db.database import execute_query, select_query_one, select_query_dict
 
 
 class CaseService:

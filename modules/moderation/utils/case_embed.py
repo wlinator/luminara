@@ -1,9 +1,11 @@
-import discord
-from lib.embed_builder import EmbedBuilder
-from lib.constants import CONST
-from lib.formatter import format_case_number
-from typing import Optional
 import datetime
+from typing import Optional
+
+import discord
+
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.formatter import format_case_number
 from lib.formatter import format_seconds_to_duration_string
 
 
