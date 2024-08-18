@@ -1,8 +1,10 @@
-import discord
 from typing import List, Tuple, Optional
+
+import discord
 from discord import Guild
-from lib.embed_builder import EmbedBuilder
+
 from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
 from services.config_service import GuildConfig
 from services.moderation.modlog_service import ModLogService
 

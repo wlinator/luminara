@@ -1,7 +1,7 @@
 import discord
-from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
+from discord.ext.commands import guild_only
 
 from Client import LumiBot
 from modules.triggers.add import add_reaction
@@ -28,11 +28,11 @@ class Triggers(commands.Cog):
     )
     @guild_only()
     async def add_text_reaction_command(
-        self,
-        ctx,
-        trigger_text: str,
-        response: str,
-        is_full_match: bool,
+            self,
+            ctx,
+            trigger_text: str,
+            response: str,
+            is_full_match: bool,
     ):
         await add_reaction(ctx, trigger_text, response, None, False, is_full_match)
 
@@ -43,11 +43,11 @@ class Triggers(commands.Cog):
     )
     @guild_only()
     async def add_emoji_reaction_command(
-        self,
-        ctx,
-        trigger_text: str,
-        emoji: discord.Emoji,
-        is_full_match: bool,
+            self,
+            ctx,
+            trigger_text: str,
+            emoji: discord.Emoji,
+            is_full_match: bool,
     ):
         await add_reaction(ctx, trigger_text, None, emoji.id, True, is_full_match)
 
@@ -58,9 +58,9 @@ class Triggers(commands.Cog):
     )
     @guild_only()
     async def delete_reaction_command(
-        self,
-        ctx,
-        reaction_id: int,
+            self,
+            ctx,
+            reaction_id: int,
     ):
         await delete_reaction(ctx, reaction_id)
 
@@ -71,8 +71,8 @@ class Triggers(commands.Cog):
     )
     @guild_only()
     async def list_reactions_command(
-        self,
-        ctx,
+            self,
+            ctx,
     ):
         await list_reactions(ctx)
 

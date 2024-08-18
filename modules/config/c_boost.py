@@ -1,9 +1,10 @@
 import discord
-from lib.embed_builder import EmbedBuilder
-from lib.constants import CONST
-from services.config_service import GuildConfig
-from lib.exceptions.LumiExceptions import LumiException
+
 import lib.formatter
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.exceptions.LumiExceptions import LumiException
+from services.config_service import GuildConfig
 
 
 async def set_boost_channel(ctx, channel: discord.TextChannel):
@@ -103,9 +104,9 @@ async def set_boost_image(ctx, image_url: str | None):
 
 
 async def create_boost_embed(
-    member: discord.Member,
-    template: str | None = None,
-    image_url: str | None = None,
+        member: discord.Member,
+        template: str | None = None,
+        image_url: str | None = None,
 ):
     embed = discord.Embed(
         color=discord.Color.nitro_pink(),

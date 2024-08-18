@@ -132,8 +132,8 @@ class LeaderboardCommandView(discord.ui.View):
         embed.set_author(name=CONST.STRINGS["xp_lb_author"], icon_url=icon)
 
         for rank, (user_id, xp, level, xp_needed_for_next_level) in enumerate(
-            xp_lb[:5],
-            start=1,
+                xp_lb[:5],
+                start=1,
         ):
             try:
                 member = await self.ctx.guild.fetch_member(user_id)

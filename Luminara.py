@@ -9,10 +9,10 @@ import Client
 import config.parser
 import services.config_service
 import services.help_service
-from lib.constants import CONST
-from services.blacklist_service import BlacklistUserService
-from lib.exceptions.LumiExceptions import Blacklisted
 from db.database import run_migrations
+from lib.constants import CONST
+from lib.exceptions.LumiExceptions import Blacklisted
+from services.blacklist_service import BlacklistUserService
 
 # Remove the default logger configuration
 logger.remove()

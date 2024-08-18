@@ -1,11 +1,13 @@
-import discord
-from typing import Optional
-from discord.ext.commands import UserConverter, MemberConverter
 import asyncio
-from lib.embed_builder import EmbedBuilder
+from typing import Optional
+
+import discord
+from discord.ext.commands import UserConverter, MemberConverter
+
 from lib.constants import CONST
-from modules.moderation.utils.case_handler import create_case
+from lib.embed_builder import EmbedBuilder
 from modules.moderation.utils.actionable import async_actionable
+from modules.moderation.utils.case_handler import create_case
 
 
 async def warn_user(ctx, target: discord.Member, reason: Optional[str]):

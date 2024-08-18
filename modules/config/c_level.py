@@ -1,8 +1,9 @@
 import discord
-from lib.embed_builder import EmbedBuilder
-from lib.constants import CONST
-from services.config_service import GuildConfig
+
 from lib import formatter
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from services.config_service import GuildConfig
 
 
 async def set_level_channel(ctx, channel: discord.TextChannel):

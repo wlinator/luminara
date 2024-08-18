@@ -132,9 +132,9 @@ class XpService:
 
     @staticmethod
     def generate_progress_bar(
-        current_value: int,
-        target_value: int,
-        bar_length: int = 10,
+            current_value: int,
+            target_value: int,
+            bar_length: int = 10,
     ) -> str:
         """
         Generates an XP progress bar based on the current level and XP.

@@ -1,5 +1,6 @@
-from db.database import execute_query, select_query_one, select_query_dict
 from typing import Optional, Dict, Any, List
+
+from db.database import execute_query, select_query_one, select_query_dict
 
 
 class CaseService:
@@ -7,15 +8,15 @@ class CaseService:
         pass
 
     def create_case(
-        self,
-        guild_id: int,
-        target_id: int,
-        moderator_id: int,
-        action_type: str,
-        reason: Optional[str] = None,
-        duration: Optional[int] = None,
-        expires_at: Optional[str] = None,
-        modlog_message_id: Optional[int] = None,
+            self,
+            guild_id: int,
+            target_id: int,
+            moderator_id: int,
+            action_type: str,
+            reason: Optional[str] = None,
+            duration: Optional[int] = None,
+            expires_at: Optional[str] = None,
+            modlog_message_id: Optional[int] = None,
     ) -> int:
         # Get the next case number for the guild
         query: str = """
@@ -62,10 +63,10 @@ class CaseService:
         execute_query(query, (guild_id, case_number))
 
     def edit_case_reason(
-        self,
-        guild_id: int,
-        case_number: int,
-        new_reason: Optional[str] = None,
+            self,
+            guild_id: int,
+            case_number: int,
+            new_reason: Optional[str] = None,
     ) -> bool:
         query = """
         UPDATE cases
@@ -102,9 +103,9 @@ class CaseService:
         return result[0] if result else None
 
     def fetch_case_by_guild_and_number(
-        self,
-        guild_id: int,
-        case_number: int,
+            self,
+            guild_id: int,
+            case_number: int,
     ) -> Optional[Dict[str, Any]]:
         query: str = """
         SELECT * FROM cases
@@ -125,9 +126,9 @@ class CaseService:
         return results
 
     def fetch_cases_by_target(
-        self,
-        guild_id: int,
-        target_id: int,
+            self,
+            guild_id: int,
+            target_id: int,
     ) -> List[Dict[str, Any]]:
         query: str = """
         SELECT * FROM cases
@@ -138,9 +139,9 @@ class CaseService:
         return results
 
     def fetch_cases_by_moderator(
-        self,
-        guild_id: int,
-        moderator_id: int,
+            self,
+            guild_id: int,
+            moderator_id: int,
     ) -> List[Dict[str, Any]]:
         query: str = """
         SELECT * FROM cases
@@ -154,9 +155,9 @@ class CaseService:
         return results
 
     def fetch_cases_by_action_type(
-        self,
-        guild_id: int,
-        action_type: str,
+            self,
+            guild_id: int,
+            action_type: str,
     ) -> List[Dict[str, Any]]:
         query: str = """
         SELECT * FROM cases
