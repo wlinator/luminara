@@ -14,7 +14,7 @@ class Economy(commands.Cog):
         aliases=["bal", "$"],
         description="Shows your current Lumi balance.",
         help="Shows your current Lumi balance. The economy system is global, meaning your balance will be synced in "
-        "all servers.",
+             "all servers.",
         contexts={discord.InteractionContextType.guild},
     )
     @guild_only()

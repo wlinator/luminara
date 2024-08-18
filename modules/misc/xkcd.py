@@ -10,9 +10,9 @@ _xkcd = Client()
 
 
 async def print_comic(
-    ctx: bridge.Context,
-    latest: bool = False,
-    number: Optional[int] = None,
+        ctx: bridge.Context,
+        latest: bool = False,
+        number: Optional[int] = None,
 ) -> None:
     try:
         if latest:

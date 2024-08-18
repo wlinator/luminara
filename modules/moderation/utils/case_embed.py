@@ -10,13 +10,13 @@ from lib.formatter import format_seconds_to_duration_string
 
 
 def create_case_embed(
-    ctx,
-    target: discord.User,
-    case_number: int,
-    action_type: str,
-    reason: Optional[str],
-    timestamp: Optional[datetime.datetime] = None,
-    duration: Optional[int] = None,
+        ctx,
+        target: discord.User,
+        case_number: int,
+        action_type: str,
+        reason: Optional[str],
+        timestamp: Optional[datetime.datetime] = None,
+        duration: Optional[int] = None,
 ) -> discord.Embed:
     embed = EmbedBuilder.create_warning_embed(
         ctx,

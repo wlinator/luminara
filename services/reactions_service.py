@@ -9,9 +9,9 @@ class CustomReactionsService:
         pass
 
     async def find_trigger(
-        self,
-        guild_id: int,
-        message_content: str,
+            self,
+            guild_id: int,
+            message_content: str,
     ) -> Optional[Dict[str, Any]]:
         message_content = message_content.lower()
         query = """
@@ -24,8 +24,8 @@ class CustomReactionsService:
         LIMIT 1
         """
         if result := database.select_query(
-            query,
-            (guild_id, message_content, message_content, guild_id),
+                query,
+                (guild_id, message_content, message_content, guild_id),
         ):
             reaction = result[0]  # Get the first result from the list
             return {
@@ -96,15 +96,15 @@ class CustomReactionsService:
         ]
 
     async def create_custom_reaction(
-        self,
-        guild_id: int,
-        creator_id: int,
-        trigger_text: str,
-        response: Optional[str] = None,
-        emoji_id: Optional[int] = None,
-        is_emoji: bool = False,
-        is_full_match: bool = False,
-        is_global: bool = True,
+            self,
+            guild_id: int,
+            creator_id: int,
+            trigger_text: str,
+            response: Optional[str] = None,
+            emoji_id: Optional[int] = None,
+            is_emoji: bool = False,
+            is_full_match: bool = False,
+            is_global: bool = True,
     ) -> bool:
         if await self.count_custom_reactions(guild_id) >= 100:
             return False
@@ -130,13 +130,13 @@ class CustomReactionsService:
         return True
 
     async def edit_custom_reaction(
-        self,
-        reaction_id: int,
-        new_response: Optional[str] = None,
-        new_emoji_id: Optional[int] = None,
-        is_emoji: Optional[bool] = None,
-        is_full_match: Optional[bool] = None,
-        is_global: Optional[bool] = None,
+            self,
+            reaction_id: int,
+            new_response: Optional[str] = None,
+            new_emoji_id: Optional[int] = None,
+            is_emoji: Optional[bool] = None,
+            is_full_match: Optional[bool] = None,
+            is_global: Optional[bool] = None,
     ) -> bool:
         query = """
         UPDATE custom_reactions

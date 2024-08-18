@@ -2,14 +2,15 @@
 
 ![Lumi art](https://git.wlinator.org/assets/img/logo.png)
 
-
 ## Self-Hosting
 
-Self-hosting refers to running Luminara on your own server or computer, rather than using the publicly hosted version. This approach offers the ability to manage your own instance of the bot and give it a custom name and avatar.
+Self-hosting refers to running Luminara on your own server or computer, rather than using the publicly hosted version.
+This approach offers the ability to manage your own instance of the bot and give it a custom name and avatar.
 
 ### Requirements
 
 Before you begin, make sure you have the following installed on your system:
+
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
@@ -25,7 +26,8 @@ Additionally, you'll need to create a Discord bot application and obtain a token
 
 ### Running Luminara:
 
-1. Copy the contents from [`docker-compose.prod.yml`](docker-compose.prod.yml) to a new file named `docker-compose.yml` in an empty directory.
+1. Copy the contents from [`docker-compose.prod.yml`](docker-compose.prod.yml) to a new file named `docker-compose.yml`
+   in an empty directory.
 
 2. Copy the contents from [`.env.example`](.env.example) to a new file named `.env` in the same directory.
 
