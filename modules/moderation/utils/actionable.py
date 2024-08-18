@@ -5,9 +5,9 @@ from lib.exceptions.LumiExceptions import LumiException
 
 
 async def async_actionable(
-    target: discord.Member,
-    invoker: discord.Member,
-    bot_user: discord.Member,
+        target: discord.Member,
+        invoker: discord.Member,
+        bot_user: discord.Member,
 ) -> None:
     """
     Checks if the invoker and client have a higher role than the target user.

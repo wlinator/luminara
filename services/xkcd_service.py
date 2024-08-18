@@ -30,11 +30,11 @@ class Comic:
     """
 
     def __init__(
-        self,
-        xkcd_dict: dict[str, Any],
-        raw_image: bytes | None = None,
-        comic_url: str | None = None,
-        explanation_url: str | None = None,
+            self,
+            xkcd_dict: dict[str, Any],
+            raw_image: bytes | None = None,
+            comic_url: str | None = None,
+            explanation_url: str | None = None,
     ) -> None:
         self.id: int | None = xkcd_dict.get("num")
         self.date: datetime.date | None = self._determine_date(xkcd_dict)
@@ -104,9 +104,9 @@ class Comic:
 
 class Client:
     def __init__(
-        self,
-        api_url: str = "https://xkcd.com",
-        explanation_wiki_url: str = "https://www.explainxkcd.com/wiki/index.php/",
+            self,
+            api_url: str = "https://xkcd.com",
+            explanation_wiki_url: str = "https://www.explainxkcd.com/wiki/index.php/",
     ) -> None:
         self._api_url = api_url
         self._explanation_wiki_url = explanation_wiki_url

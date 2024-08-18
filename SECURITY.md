@@ -5,9 +5,9 @@
 Versions currently being supported with security updates.
 
 | Version | Supported          |
-| ------- | ------------------ |
-| 2.x   | :white_check_mark: |
-| 1.x   | :x:                |
+|---------|--------------------|
+| 2.x     | :white_check_mark: |
+| 1.x     | :x:                |
 | < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
