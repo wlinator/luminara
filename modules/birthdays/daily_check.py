@@ -1,10 +1,12 @@
 import asyncio
 import random
+
 from loguru import logger
+
 from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
 from services.birthday_service import Birthday
 from services.config_service import GuildConfig
-from lib.embed_builder import EmbedBuilder
 
 
 async def daily_birthday_check(client):

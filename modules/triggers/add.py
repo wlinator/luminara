@@ -1,20 +1,21 @@
 from typing import Optional
 
 from discord.ext import bridge
-from services.reactions_service import CustomReactionsService
-from lib.exceptions.LumiExceptions import LumiException
+
+from lib import formatter
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
-from lib import formatter
+from lib.exceptions.LumiExceptions import LumiException
+from services.reactions_service import CustomReactionsService
 
 
 async def add_reaction(
-    ctx: bridge.Context,
-    trigger_text: str,
-    response: Optional[str],
-    emoji_id: Optional[int],
-    is_emoji: bool,
-    is_full_match: bool,
+        ctx: bridge.Context,
+        trigger_text: str,
+        response: Optional[str],
+        emoji_id: Optional[int],
+        is_emoji: bool,
+        is_full_match: bool,
 ) -> None:
     if ctx.guild is None:
         return
@@ -24,15 +25,15 @@ async def add_reaction(
     creator_id: int = ctx.author.id
 
     if not await check_reaction_limit(
-        reaction_service,
-        guild_id,
+            reaction_service,
+            guild_id,
     ):
         return
 
     if not await check_existing_trigger(
-        reaction_service,
-        guild_id,
-        trigger_text,
+            reaction_service,
+            guild_id,
+            trigger_text,
     ):
         return
 
@@ -82,8 +83,8 @@ async def add_reaction(
 
 
 async def check_reaction_limit(
-    reaction_service: CustomReactionsService,
-    guild_id: int,
+        reaction_service: CustomReactionsService,
+        guild_id: int,
 ) -> bool:
     limit_reached = await reaction_service.count_custom_reactions(guild_id) >= 100
 
@@ -94,9 +95,9 @@ async def check_reaction_limit(
 
 
 async def check_existing_trigger(
-    reaction_service: CustomReactionsService,
-    guild_id: int,
-    trigger_text: str,
+        reaction_service: CustomReactionsService,
+        guild_id: int,
+        trigger_text: str,
 ) -> bool:
     existing_trigger = await reaction_service.find_trigger(guild_id, trigger_text)
 

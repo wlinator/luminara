@@ -1,9 +1,9 @@
 from datetime import datetime
 
 import discord
-from discord.ext.commands import guild_only
 from discord.commands import SlashCommandGroup
 from discord.ext import bridge, commands, tasks
+from discord.ext.commands import guild_only
 
 from Client import LumiBot
 from modules.config import c_prefix
@@ -99,7 +99,7 @@ class Misc(commands.Cog):
         aliases=["intro", "introduce"],
         description="This command can only be used in DMs.",
         help="Introduce yourself. For now this command "
-        "can only be done in ONE server and only in Lumi's DMs.",
+             "can only be done in ONE server and only in Lumi's DMs.",
         contexts={discord.InteractionContextType.bot_dm},
     )
     @commands.dm_only()

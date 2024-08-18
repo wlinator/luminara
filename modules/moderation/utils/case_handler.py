@@ -1,22 +1,24 @@
+from typing import Optional
+
 import discord
+from discord.ext.commands import TextChannelConverter, UserConverter
 from loguru import logger
+
+from modules.moderation.utils.case_embed import create_case_embed
 from services.moderation.case_service import CaseService
 from services.moderation.modlog_service import ModLogService
-from modules.moderation.utils.case_embed import create_case_embed
-from typing import Optional
-from discord.ext.commands import TextChannelConverter, UserConverter
 
 case_service = CaseService()
 modlog_service = ModLogService()
 
 
 async def create_case(
-    ctx,
-    target: discord.User,
-    action_type: str,
-    reason: Optional[str] = None,
-    duration: Optional[int] = None,
-    expires_at: Optional[str] = None,
+        ctx,
+        target: discord.User,
+        action_type: str,
+        reason: Optional[str] = None,
+        duration: Optional[int] = None,
+        expires_at: Optional[str] = None,
 ):
     """
     Creates a new moderation case and logs it to the modlog channel if configured.
@@ -88,10 +90,10 @@ async def create_case(
 
 
 async def edit_case_modlog(
-    ctx,
-    guild_id: int,
-    case_number: int,
-    new_reason: str,
+        ctx,
+        guild_id: int,
+        case_number: int,
+        new_reason: str,
 ) -> bool:
     """
     Edits the reason for an existing case and updates the modlog message if it exists.

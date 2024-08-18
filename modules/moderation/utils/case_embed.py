@@ -1,20 +1,22 @@
-import discord
-from lib.embed_builder import EmbedBuilder
-from lib.constants import CONST
-from lib.formatter import format_case_number
-from typing import Optional
 import datetime
+from typing import Optional
+
+import discord
+
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.formatter import format_case_number
 from lib.formatter import format_seconds_to_duration_string
 
 
 def create_case_embed(
-    ctx,
-    target: discord.User,
-    case_number: int,
-    action_type: str,
-    reason: Optional[str],
-    timestamp: Optional[datetime.datetime] = None,
-    duration: Optional[int] = None,
+        ctx,
+        target: discord.User,
+        case_number: int,
+        action_type: str,
+        reason: Optional[str],
+        timestamp: Optional[datetime.datetime] = None,
+        duration: Optional[int] = None,
 ) -> discord.Embed:
     embed = EmbedBuilder.create_warning_embed(
         ctx,

@@ -1,13 +1,14 @@
 import asyncio
+from typing import Optional
+
 import discord
+from discord.ext.commands import UserConverter, MemberConverter
 
 from lib import formatter
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from modules.moderation.utils.actionable import async_actionable
 from modules.moderation.utils.case_handler import create_case
-from typing import Optional
-from discord.ext.commands import UserConverter, MemberConverter
 
 
 async def kick_user(cog, ctx, target: discord.Member, reason: Optional[str] = None):

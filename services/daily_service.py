@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import List, Optional, Tuple
 
 import pytz
+
 from db import database
 from lib.constants import CONST
 from services.currency_service import Currency
@@ -68,14 +69,14 @@ class Dailies:
         """
 
         check_1: bool = (
-            self.claimed_at.date() == (self.time_now - timedelta(days=1)).date()
+                self.claimed_at.date() == (self.time_now - timedelta(days=1)).date()
         )
         check_2: bool = (
-            self.claimed_at.date() == (self.time_now - timedelta(days=2)).date()
+                self.claimed_at.date() == (self.time_now - timedelta(days=2)).date()
         )
         check_3: bool = (
-            self.claimed_at.date() == self.time_now.date()
-            and self.claimed_at < self.reset_time
+                self.claimed_at.date() == self.time_now.date()
+                and self.claimed_at < self.reset_time
         )
 
         return check_1 or check_2 or check_3

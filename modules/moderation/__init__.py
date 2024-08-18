@@ -20,11 +20,11 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(ban_members=True)
     @guild_only()
     async def ban_command(
-        self,
-        ctx,
-        target: discord.User,
-        *,
-        reason: str | None = None,
+            self,
+            ctx,
+            target: discord.User,
+            *,
+            reason: str | None = None,
     ):
         await ban.ban_user(self, ctx, target, reason)
 
@@ -75,11 +75,11 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(kick_members=True)
     @guild_only()
     async def kick_command(
-        self,
-        ctx,
-        target: discord.Member,
-        *,
-        reason: str | None = None,
+            self,
+            ctx,
+            target: discord.Member,
+            *,
+            reason: str | None = None,
     ):
         await kick.kick_user(self, ctx, target, reason)
 
@@ -106,11 +106,11 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(ban_members=True)
     @guild_only()
     async def softban_command(
-        self,
-        ctx,
-        target: discord.Member,
-        *,
-        reason: str | None = None,
+            self,
+            ctx,
+            target: discord.Member,
+            *,
+            reason: str | None = None,
     ):
         await softban.softban_user(ctx, target, reason)
 
@@ -125,12 +125,12 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(moderate_members=True)
     @guild_only()
     async def timeout_command(
-        self,
-        ctx,
-        target: discord.Member,
-        duration: str,
-        *,
-        reason: str | None = None,
+            self,
+            ctx,
+            target: discord.Member,
+            duration: str,
+            *,
+            reason: str | None = None,
     ):
         await timeout.timeout_user(self, ctx, target, duration, reason)
 
@@ -145,11 +145,11 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(ban_members=True)
     @guild_only()
     async def unban_command(
-        self,
-        ctx,
-        target: discord.User,
-        *,
-        reason: str | None = None,
+            self,
+            ctx,
+            target: discord.User,
+            *,
+            reason: str | None = None,
     ):
         await ban.unban_user(ctx, target, reason)
 
@@ -164,11 +164,11 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(moderate_members=True)
     @guild_only()
     async def untimeout_command(
-        self,
-        ctx,
-        target: discord.Member,
-        *,
-        reason: str | None = None,
+            self,
+            ctx,
+            target: discord.Member,
+            *,
+            reason: str | None = None,
     ):
         await timeout.untimeout_user(ctx, target, reason)
 
@@ -182,11 +182,11 @@ class Moderation(commands.Cog):
     @bridge.has_permissions(kick_members=True)
     @guild_only()
     async def warn_command(
-        self,
-        ctx,
-        target: discord.Member,
-        *,
-        reason: str | None = None,
+            self,
+            ctx,
+            target: discord.Member,
+            *,
+            reason: str | None = None,
     ):
         await warn.warn_user(ctx, target, reason)
 

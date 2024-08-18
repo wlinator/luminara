@@ -1,16 +1,18 @@
 import asyncio
+
 import discord
+from discord.ext import pages
 from discord.ext.commands import UserConverter
-from services.moderation.case_service import CaseService
+
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.formatter import format_case_number
 from modules.moderation.utils.case_embed import (
     create_case_embed,
     create_case_list_embed,
 )
-from lib.embed_builder import EmbedBuilder
-from lib.constants import CONST
-from discord.ext import pages
-from lib.formatter import format_case_number
 from modules.moderation.utils.case_handler import edit_case_modlog
+from services.moderation.case_service import CaseService
 
 case_service = CaseService()
 
@@ -52,7 +54,7 @@ async def view_all_cases_in_guild(ctx, guild_id: int):
 
     pages_list = []
     for i in range(0, len(cases), 10):
-        chunk = cases[i : i + 10]
+        chunk = cases[i: i + 10]
         embed = create_case_list_embed(
             ctx,
             chunk,
@@ -77,7 +79,7 @@ async def view_all_cases_by_mod(ctx, guild_id: int, moderator: discord.Member):
 
     pages_list = []
     for i in range(0, len(cases), 10):
-        chunk = cases[i : i + 10]
+        chunk = cases[i: i + 10]
         embed = create_case_list_embed(
             ctx,
             chunk,

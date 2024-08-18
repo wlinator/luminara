@@ -1,8 +1,9 @@
 import discord
-from lib.embed_builder import EmbedBuilder
+
 from lib.constants import CONST
-from services.moderation.modlog_service import ModLogService
+from lib.embed_builder import EmbedBuilder
 from lib.exceptions.LumiExceptions import LumiException
+from services.moderation.modlog_service import ModLogService
 
 
 async def set_mod_log_channel(ctx, channel: discord.TextChannel):

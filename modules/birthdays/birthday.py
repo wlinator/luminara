@@ -4,8 +4,8 @@ import datetime
 import discord
 from discord.ext import commands
 
-from lib.embed_builder import EmbedBuilder
 from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
 from services.birthday_service import Birthday
 
 

@@ -1,9 +1,9 @@
 import mysql.connector
+
+from db import database
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder
 from lib.formatter import shorten
-
-from db import database
 
 
 async def select_cmd(ctx, query: str):

@@ -1,7 +1,9 @@
 import asyncio
-import discord
 from typing import Optional
+
+import discord
 from discord.ext.commands import MemberConverter, UserConverter
+
 from lib import formatter
 from lib.constants import CONST
 from lib.embed_builder import EmbedBuilder

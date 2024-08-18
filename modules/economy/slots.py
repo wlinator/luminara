@@ -7,10 +7,9 @@ import discord
 import pytz
 from discord.ext import commands
 
+from lib.constants import CONST
 from services.currency_service import Currency
 from services.stats_service import SlotsStats
-
-from lib.constants import CONST
 
 est = pytz.timezone("US/Eastern")
 
