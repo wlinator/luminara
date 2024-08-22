@@ -22,5 +22,9 @@
     "flowers": "https://i.imgur.com/79XfsbS.png",
     "teapot": "https://i.imgur.com/wFsgSnr.png",
     "muffin": "https://i.imgur.com/hSauh7K.png"
+  },
+  "other": {
+    "cloud": "https://i.imgur.com/rc68c43.png",
+    "trophy": "https://i.imgur.com/dvIIr2G.png"
   }
 }
