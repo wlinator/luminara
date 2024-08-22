@@ -14,7 +14,7 @@ class Constants:
     TITLE = "Luminara"
     AUTHOR = "wlinator"
     LICENSE = "GNU General Public License v3.0"
-    VERSION = "2.8.11"  # "Embed Refactor" update
+    VERSION = "2.8.12"  # "Refactor Blackjack" update
 
     # bot credentials
     TOKEN: Optional[str] = os.environ.get("TOKEN", None)
