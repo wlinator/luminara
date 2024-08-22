@@ -58,14 +58,7 @@ class Economy(commands.Cog):
     )
     @guild_only()
     async def give_command_prefixed(self, ctx, user: discord.User, *, amount: int):
-        try:
-            member = await ctx.guild.fetch_member(user.id)
-        except discord.HTTPException as e:
-            raise commands.BadArgument(
-                "I couldn't find that user in this server.",
-            ) from e
-
-        return await give.cmd(ctx, member, amount)
+        return await give.cmd(ctx, user, amount)
 
     @bridge.bridge_command(
         name="slots",
