@@ -178,12 +178,12 @@ async def cmd(ctx, bet: int):
 
 
 def blackjack_show(
-        ctx,
-        bet,
-        player_hand,
-        dealer_hand,
-        player_hand_value,
-        dealer_hand_value,
+    ctx,
+    bet,
+    player_hand,
+    dealer_hand,
+    player_hand_value,
+    dealer_hand_value,
 ):
     current_time = datetime.now(est).strftime("%I:%M %p")
     embed = discord.Embed(
