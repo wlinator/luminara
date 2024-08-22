@@ -1,332 +1,279 @@
 import random
-from datetime import datetime
+from typing import List, Tuple
 
 import discord
 import pytz
 from discord.ext import commands
-from loguru import logger
 
 from lib import interaction
 from lib.constants import CONST
 from lib.exceptions.LumiExceptions import LumiException
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
+from lib.embed_builder import EmbedBuilder
 
-est = pytz.timezone("US/Eastern")
-active_blackjack_games = {}
+EST = pytz.timezone("US/Eastern")
+ACTIVE_BLACKJACK_GAMES: dict[int, bool] = {}
+
+Card = str
+Hand = List[Card]
 
 
-async def cmd(ctx, bet: int):
-    """
-    status states:
-    0 = game start
-    1 = player busted
-    2 = player won with 21 (after hit)
-    3 = dealer busted
-    4 = dealer won
-    5 = player won with 21 (blackjack)
-    """
-
-    # check if the player already has an active blackjack going
-    if ctx.author.id in active_blackjack_games:
+async def cmd(ctx: commands.Context, bet: int) -> None:
+    if ctx.author.id in ACTIVE_BLACKJACK_GAMES:
         raise LumiException(CONST.STRINGS["error_already_playing_blackjack"])
 
-    # Currency handler
-    ctx_currency = Currency(ctx.author.id)
+    currency = Currency(ctx.author.id)
+    if bet > currency.balance:
+        raise LumiException(CONST.STRINGS["error_not_enough_cash"])
+    if bet <= 0:
+        raise LumiException(CONST.STRINGS["error_invalid_bet"])
 
-    # check if the user has enough cash
-    player_balance = ctx_currency.balance
-    if bet > player_balance:
-        raise commands.BadArgument("you don't have enough cash.")
-    elif bet <= 0:
-        raise commands.BadArgument("the bet you entered is invalid.")
-
-    active_blackjack_games[ctx.author.id] = True
+    ACTIVE_BLACKJACK_GAMES[ctx.author.id] = True
 
     try:
-        deck = get_new_deck()
-        multiplier = float(CONST.BLACKJACK["reward_multiplier"])
-
-        player_hand = [deal_card(deck), deal_card(deck)]
-        dealer_hand = [deal_card(deck)]
-        # calculate initial hands
-        player_hand_value = calculate_hand_value(player_hand)
-        dealer_hand_value = calculate_hand_value(dealer_hand)
-
-        status = 0 if player_hand_value != 21 else 5
-        view = interaction.BlackJackButtons(ctx)
-        playing_embed = False
-
-        while status == 0:
-            if not playing_embed:
-                await ctx.respond(
-                    embed=blackjack_show(
-                        ctx,
-                        Currency.format_human(bet),
-                        player_hand,
-                        dealer_hand,
-                        player_hand_value,
-                        dealer_hand_value,
-                    ),
-                    view=view,
-                    content=ctx.author.mention,
-                )
-
-                playing_embed = True
-
-            await view.wait()
-
-            if view.clickedHit:
-                # player draws a card & value is calculated
-                player_hand.append(deal_card(deck))
-                player_hand_value = calculate_hand_value(player_hand)
-
-                if player_hand_value > 21:
-                    status = 1
-                    break
-                elif player_hand_value == 21:
-                    status = 2
-                    break
-
-            elif view.clickedStand:
-                # player stands, dealer draws cards until he wins OR busts
-                while dealer_hand_value <= player_hand_value:
-                    dealer_hand.append(deal_card(deck))
-                    dealer_hand_value = calculate_hand_value(dealer_hand)
-
-                status = 3 if dealer_hand_value > 21 else 4
-                break
-            else:
-                # timed out
-                ctx_currency.take_balance(bet)
-                ctx_currency.push()
-                raise LumiException(CONST.STRINGS["error_out_of_time_economy"])
-
-            # refresh
-            view = interaction.BlackJackButtons(ctx)
-            embed = blackjack_show(
-                ctx,
-                Currency.format_human(bet),
-                player_hand,
-                dealer_hand,
-                player_hand_value,
-                dealer_hand_value,
-            )
-
-            await ctx.edit(embed=embed, view=view, content=ctx.author.mention)
-
-        """
-        At this point the game has concluded, generate a final output & backend
-        """
-
-        payout = bet * multiplier if status != 5 else bet * 2
-        is_won = status not in [1, 4]
-
-        embed = blackjack_finished(
-            ctx,
-            Currency.format_human(bet),
-            player_hand_value,
-            dealer_hand_value,
-            Currency.format_human(payout),
-            status,
-        )
-
-        if playing_embed:
-            await ctx.edit(embed=embed, view=None, content=ctx.author.mention)
-        else:
-            await ctx.respond(embed=embed, view=None, content=ctx.author.mention)
-
-        # change balance
-        # if status == 1 or status == 4:
-        if not is_won:
-            ctx_currency.take_balance(bet)
-            ctx_currency.push()
-
-            # push stats (low priority)
-            stats = BlackJackStats(
-                user_id=ctx.author.id,
-                is_won=False,
-                bet=bet,
-                payout=0,
-                hand_player=player_hand,
-                hand_dealer=dealer_hand,
-            )
-
-        else:
-            ctx_currency.add_balance(payout)
-            ctx_currency.push()
-
-            # push stats (low priority)
-            stats = BlackJackStats(
-                user_id=ctx.author.id,
-                is_won=True,
-                bet=bet,
-                payout=payout,
-                hand_player=player_hand,
-                hand_dealer=dealer_hand,
-            )
-
-        stats.push()
-
+        await play_blackjack(ctx, currency, bet)
     except Exception as e:
-        # await ctx.respond(embed=GenericErrors.default_exception(ctx))
-        logger.error("Something went wrong in the blackjack command: ", e)
-
+        raise LumiException(CONST.STRINGS["error_blackjack_game_error"]) from e
     finally:
-        # remove player from active games list
-        del active_blackjack_games[ctx.author.id]
+        del ACTIVE_BLACKJACK_GAMES[ctx.author.id]
 
 
-def blackjack_show(
-    ctx,
-    bet,
-    player_hand,
-    dealer_hand,
-    player_hand_value,
-    dealer_hand_value,
-):
-    current_time = datetime.now(est).strftime("%I:%M %p")
-    embed = discord.Embed(
-        title="BlackJack",
-        color=discord.Color.dark_orange(),
-    )
+async def play_blackjack(ctx: commands.Context, currency: Currency, bet: int) -> None:
+    deck = get_new_deck()
+    player_hand, dealer_hand = initial_deal(deck)
+    multiplier = float(CONST.BLACKJACK["reward_multiplier"])
 
-    embed.description = (
-        f"**You**\n"
-        f"Score: {player_hand_value}\n"
-        f"*Hand: {' + '.join(player_hand)}*\n\n"
-    )
+    player_value = calculate_hand_value(player_hand)
+    status = 5 if player_value == 21 else 0
+    view = interaction.BlackJackButtons(ctx)
+    playing_embed = False
 
-    if len(dealer_hand) < 2:
-        embed.description += (
-            f"**Dealer**\n"
-            f"Score: {dealer_hand_value}\n"
-            f"*Hand: {dealer_hand[0]} + ??*"
+    while status == 0:
+        dealer_value = calculate_hand_value(dealer_hand)
+
+        embed = create_game_embed(
+            ctx,
+            bet,
+            player_hand,
+            dealer_hand,
+            player_value,
+            dealer_value,
         )
+        if not playing_embed:
+            await ctx.respond(embed=embed, view=view, content=ctx.author.mention)
+            playing_embed = True
+        else:
+            await ctx.edit(embed=embed, view=view)
+
+        await view.wait()
+
+        if view.clickedHit:
+            player_hand.append(deal_card(deck))
+            player_value = calculate_hand_value(player_hand)
+            if player_value > 21:
+                status = 1
+                break
+            elif player_value == 21:
+                status = 2
+                break
+        elif view.clickedStand:
+            status = dealer_play(deck, dealer_hand, player_value)
+            break
+        else:
+            currency.take_balance(bet)
+            currency.push()
+            raise LumiException(CONST.STRINGS["error_out_of_time_economy"])
+
+        view = interaction.BlackJackButtons(ctx)
+
+    await handle_game_end(
+        ctx,
+        currency,
+        bet,
+        player_hand,
+        dealer_hand,
+        status,
+        multiplier,
+        playing_embed,
+    )
+
+
+def initial_deal(deck: List[Card]) -> Tuple[Hand, Hand]:
+    return [deal_card(deck) for _ in range(2)], [deal_card(deck)]
+
+
+def dealer_play(deck: List[Card], dealer_hand: Hand, player_value: int) -> int:
+    while calculate_hand_value(dealer_hand) <= player_value:
+        dealer_hand.append(deal_card(deck))
+    return 3 if calculate_hand_value(dealer_hand) > 21 else 4
+
+
+async def handle_game_end(
+    ctx: commands.Context,
+    currency: Currency,
+    bet: int,
+    player_hand: Hand,
+    dealer_hand: Hand,
+    status: int,
+    multiplier: float,
+    playing_embed: bool,
+) -> None:
+    player_value = calculate_hand_value(player_hand)
+    dealer_value = calculate_hand_value(dealer_hand)
+    payout = bet * (2 if status == 5 else multiplier)
+    is_won = status not in [1, 4]
+
+    embed = create_end_game_embed(ctx, bet, player_value, dealer_value, payout, status)
+
+    if playing_embed:
+        await ctx.edit(embed=embed, view=None)
     else:
-        embed.description += (
-            f"**Dealer | Score: {dealer_hand_value}**\n"
-            f"*Hand: {' + '.join(dealer_hand)}*"
-        )
+        await ctx.respond(embed=embed, view=None, content=ctx.author.mention)
 
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(
-        text=f"Bet ${bet} • deck shuffled • Today at {current_time}",
-        icon_url="https://i.imgur.com/96jPPXO.png",
+    currency.add_balance(payout) if is_won else currency.take_balance(bet)
+    currency.push()
+
+    BlackJackStats(
+        user_id=ctx.author.id,
+        is_won=is_won,
+        bet=bet,
+        payout=payout if is_won else 0,
+        hand_player=player_hand,
+        hand_dealer=dealer_hand,
+    ).push()
+
+
+def create_game_embed(
+    ctx: commands.Context,
+    bet: int,
+    player_hand: Hand,
+    dealer_hand: Hand,
+    player_value: int,
+    dealer_value: int,
+) -> discord.Embed:
+    player_hand_str = " + ".join(player_hand)
+    dealer_hand_str = f"{dealer_hand[0]} + " + (
+        CONST.STRINGS["blackjack_dealer_hidden"]
+        if len(dealer_hand) < 2
+        else " + ".join(dealer_hand[1:])
     )
 
-    if thumbnail_url := None:
-        embed.set_thumbnail(url=thumbnail_url)
-
-    return embed
-
-
-def blackjack_finished(ctx, bet, player_hand_value, dealer_hand_value, payout, status):
-    current_time = datetime.now(est).strftime("%I:%M %p")
-    thumbnail_url = None
-
-    embed = discord.Embed(
-        title="BlackJack",
-    )
-    embed.description = (
-        f"You | Score: {player_hand_value}\n" f"Dealer | Score: {dealer_hand_value}"
-    )
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(
-        text=f"Game finished • Today at {current_time}",
-        icon_url="https://i.imgur.com/96jPPXO.png",
+    description = (
+        f"{CONST.STRINGS['blackjack_player_hand'].format(player_value, player_hand_str)}\n\n"
+        f"{CONST.STRINGS['blackjack_dealer_hand'].format(dealer_value, dealer_hand_str)}"
     )
 
-    if status == 1:
-        name = "Busted.."
-        value = f"You lost **${bet}**."
-        thumbnail_url = "https://i.imgur.com/rc68c43.png"
-        color = discord.Color.red()
+    footer_text = (
+        f"{CONST.STRINGS['blackjack_bet'].format(Currency.format_human(bet))} • "
+        f"{CONST.STRINGS['blackjack_deck_shuffled']}"
+    )
 
-    elif status == 2:
-        name = "You won with a score of 21!"
-        value = f"You won **${payout}**."
-        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
-        color = discord.Color.green()
+    return EmbedBuilder.create_embed(
+        ctx,
+        title=CONST.STRINGS["blackjack_title"],
+        color=discord.Colour.embed_background(),
+        description=description,
+        footer_text=footer_text,
+        footer_icon_url=CONST.MUFFIN_ART,
+        show_name=False,
+        hide_timestamp=True,
+    )
 
-    elif status == 3:
-        name = "The dealer busted. You won!"
-        value = f"You won **${payout}**."
-        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
-        color = discord.Color.green()
 
-    elif status == 4:
-        name = "You lost.."
-        value = f"You lost **${bet}**."
-        thumbnail_url = "https://i.imgur.com/rc68c43.png"
-        color = discord.Color.red()
+def create_end_game_embed(
+    ctx: commands.Context,
+    bet: int,
+    player_value: int,
+    dealer_value: int,
+    payout: int,
+    status: int,
+) -> discord.Embed:
+    embed = EmbedBuilder.create_embed(
+        ctx,
+        title=CONST.STRINGS["blackjack_title"],
+        color=discord.Colour.embed_background(),
+        description=CONST.STRINGS["blackjack_description"].format(
+            player_value,
+            dealer_value,
+        ),
+        footer_text=CONST.STRINGS["blackjack_footer"],
+        footer_icon_url=CONST.MUFFIN_ART,
+        show_name=False,
+    )
 
-    elif status == 5:
-        name = "You won with a natural hand!"
-        value = f"You won **${payout}**."
-        thumbnail_url = "https://i.imgur.com/dvIIr2G.png"
-        color = discord.Color.green()
+    result = {
+        1: (
+            CONST.STRINGS["blackjack_busted"],
+            CONST.STRINGS["blackjack_lost"].format(Currency.format_human(bet)),
+            discord.Color.red(),
+            CONST.CLOUD_ART,
+        ),
+        2: (
+            CONST.STRINGS["blackjack_won_21"],
+            CONST.STRINGS["blackjack_won_payout"].format(Currency.format_human(payout)),
+            discord.Color.green(),
+            CONST.TROPHY_ART,
+        ),
+        3: (
+            CONST.STRINGS["blackjack_dealer_busted"],
+            CONST.STRINGS["blackjack_won_payout"].format(Currency.format_human(payout)),
+            discord.Color.green(),
+            CONST.TROPHY_ART,
+        ),
+        4: (
+            CONST.STRINGS["blackjack_lost_generic"],
+            CONST.STRINGS["blackjack_lost"].format(Currency.format_human(bet)),
+            discord.Color.red(),
+            CONST.CLOUD_ART,
+        ),
+        5: (
+            CONST.STRINGS["blackjack_won_natural"],
+            CONST.STRINGS["blackjack_won_payout"].format(Currency.format_human(payout)),
+            discord.Color.green(),
+            CONST.TROPHY_ART,
+        ),
+    }.get(
+        status,
+        (
+            CONST.STRINGS["blackjack_error"],
+            CONST.STRINGS["blackjack_error_description"],
+            discord.Color.red(),
+            None,
+        ),
+    )
 
-    else:
-        name = "I.. don't know if you won?"
-        value = "This is an error, please report it."
-        color = discord.Color.red()
-
+    name, value, color, thumbnail_url = result
+    embed.add_field(name=name, value=value, inline=False)
+    embed.colour = color
     if thumbnail_url:
         embed.set_thumbnail(url=thumbnail_url)
 
-    embed.add_field(
-        name=name,
-        value=value,
-        inline=False,
-    )
-    embed.colour = color
-
     return embed
 
 
-def get_new_deck():
-    suits = CONST.BLACKJACK["deck_suits"]
-    ranks = CONST.BLACKJACK["deck_ranks"]
-    deck = []
-    for suit in suits:
-        for rank in ranks:
-            deck.append(rank + suit)
+def get_new_deck() -> List[Card]:
+    deck = [
+        rank + suit
+        for suit in CONST.BLACKJACK["deck_suits"]
+        for rank in CONST.BLACKJACK["deck_ranks"]
+    ]
     random.shuffle(deck)
     return deck
 
 
-def deal_card(deck):
+def deal_card(deck: List[Card]) -> Card:
     return deck.pop()
 
 
-def calculate_hand_value(hand):
-    value = 0
-    has_ace = False
-    aces_count = 0
-
-    for card in hand:
-        if card is None:
-            continue
-
-        rank = card[:-1]
-
-        if rank.isdigit():
-            value += int(rank)
-
-        elif rank in ["J", "Q", "K"]:
-            value += 10
-
-        elif rank == "A":
-            value += 11
-            has_ace = True
-            aces_count += 1
-
-    """
-    An Ace will have a value of 11 unless that would give a player 
-    or the dealer a score in excess of 21; in which case, it has a value of 1
-    """
-    if value > 21 and has_ace:
-        value -= 10 * aces_count
-
+def calculate_hand_value(hand: Hand) -> int:
+    value = sum(
+        10 if rank in "JQK" else 11 if rank == "A" else int(rank)
+        for card in hand
+        for rank in card[:-1]
+    )
+    aces = sum(card[0] == "A" for card in hand)
+    while value > 21 and aces:
+        value -= 10
+        aces -= 1
     return value

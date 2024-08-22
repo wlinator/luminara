@@ -84,6 +84,10 @@ class Constants:
     TEAPOT_ART = ART["juicybblue"]["teapot"]
     MUFFIN_ART = ART["juicybblue"]["muffin"]
 
+    # other art
+    CLOUD_ART = ART["other"]["cloud"]
+    TROPHY_ART = ART["other"]["trophy"]
+
     # birthdays
     BIRTHDAY_MESSAGES = JsonCache.read_json("birthday")["birthday_messages"]
     BIRTHDAY_MONTHS = JsonCache.read_json("birthday")["months"]
