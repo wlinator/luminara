@@ -281,5 +281,8 @@
   "xp_lb_field_value": "level: **{0}**\nxp: `{1}/{2}`",
   "xp_level": "Level {0}",
   "xp_progress": "Progress to next level",
-  "xp_server_rank": "Server Rank: #{0}"
+  "xp_server_rank": "Server Rank: #{0}",
+  "balance_cash": "**Cash**: ${0}",
+  "balance_author": "{0}'s wallet",
+  "balance_footer": "Check out /daily"
 }
