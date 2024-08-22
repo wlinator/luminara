@@ -284,5 +284,10 @@
   "xp_server_rank": "Server Rank: #{0}",
   "balance_cash": "**Cash**: ${0}",
   "balance_author": "{0}'s wallet",
-  "balance_footer": "Check out /daily"
+  "balance_footer": "check out /daily",
+  "give_error_self": "you can't give money to yourself.",
+  "give_error_bot": "you can't give money to a bot.",
+  "give_error_invalid_amount": "invalid amount.",
+  "give_error_insufficient_funds": "you don't have enough cash.",
+  "give_success": "**{0}** gave **${1}** to {2}."
 }

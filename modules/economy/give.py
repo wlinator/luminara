@@ -2,24 +2,24 @@ import discord
 from discord.ext import commands
 
 from services.currency_service import Currency
+from lib.constants import CONST
+from lib.embed_builder import EmbedBuilder
+from lib.exceptions.LumiExceptions import LumiException
 
 
-async def cmd(ctx, user, amount):
+async def cmd(ctx: commands.Context, user: discord.User, amount: int) -> None:
     if ctx.author.id == user.id:
-        raise commands.BadArgument("you can't give money to yourself.")
-    elif user.bot:
-        raise commands.BadArgument("you can't give money to a bot.")
-    elif amount <= 0:
-        raise commands.BadArgument("invalid amount.")
+        raise LumiException(CONST.STRINGS["give_error_self"])
+    if user.bot:
+        raise LumiException(CONST.STRINGS["give_error_bot"])
+    if amount <= 0:
+        raise LumiException(CONST.STRINGS["give_error_invalid_amount"])
 
-    # Currency handler
     ctx_currency = Currency(ctx.author.id)
     target_currency = Currency(user.id)
 
-    author_balance = ctx_currency.balance
-
-    if author_balance < amount or author_balance <= 0:
-        raise commands.BadArgument("you don't have enough cash.")
+    if ctx_currency.balance < amount:
+        raise LumiException(CONST.STRINGS["give_error_insufficient_funds"])
 
     target_currency.add_balance(amount)
     ctx_currency.take_balance(amount)
@@ -27,9 +27,13 @@ async def cmd(ctx, user, amount):
     ctx_currency.push()
     target_currency.push()
 
-    embed = discord.Embed(
-        color=discord.Color.green(),
-        description=f"**{ctx.author.name}** gave **${Currency.format(amount)}** to {user.name}.",
+    embed = EmbedBuilder.create_success_embed(
+        ctx,
+        description=CONST.STRINGS["give_success"].format(
+            ctx.author.name,
+            Currency.format(amount),
+            user.name,
+        ),
     )
 
     await ctx.respond(embed=embed)
