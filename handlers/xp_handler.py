@@ -103,9 +103,9 @@ class XPHandler:
 
             if role := self.guild.get_role(role_id):
                 with contextlib.suppress(
-                        discord.Forbidden,
-                        discord.NotFound,
-                        discord.HTTPException,
+                    discord.Forbidden,
+                    discord.NotFound,
+                    discord.HTTPException,
                 ):
                     if isinstance(self.author, discord.Member):
                         await self.author.add_roles(role, reason=reason)
@@ -114,16 +114,16 @@ class XPHandler:
             if replace and isinstance(self.author, discord.Member):
                 if role := self.guild.get_role(previous or role_id):
                     with contextlib.suppress(
-                            discord.Forbidden,
-                            discord.NotFound,
-                            discord.HTTPException,
+                        discord.Forbidden,
+                        discord.NotFound,
+                        discord.HTTPException,
                     ):
                         await self.author.remove_roles(role, reason=reason)
 
     async def get_level_channel(
-            self,
-            message: discord.Message,
-            guild_config: GuildConfig,
+        self,
+        message: discord.Message,
+        guild_config: GuildConfig,
     ) -> Optional[discord.TextChannel]:
         """
         Retrieves the level up notification channel for the guild.
@@ -147,9 +147,9 @@ class XPHandler:
 
     @staticmethod
     async def get_level_message(
-            guild_config: GuildConfig,
-            level_config: XpService,
-            author: discord.Member,
+        guild_config: GuildConfig,
+        level_config: XpService,
+        author: discord.Member,
     ) -> Optional[str]:
         """
         Retrieves the level up message for the user.

@@ -14,11 +14,11 @@ from modules.moderation.utils.case_handler import create_case
 
 
 async def timeout_user(
-        cog,
-        ctx,
-        target: discord.Member,
-        duration: str,
-        reason: Optional[str] = None,
+    cog,
+    ctx,
+    target: discord.Member,
+    duration: str,
+    reason: Optional[str] = None,
 ):
     bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
     await async_actionable(target, ctx.author, bot_member)

@@ -77,8 +77,8 @@ async def set_welcome_template(ctx, text: str) -> None:
 
 
 def create_greet_embed(
-        member: discord.Member,
-        template: Optional[str] = None,
+    member: discord.Member,
+    template: Optional[str] = None,
 ) -> discord.Embed:
     embed: discord.Embed = discord.Embed(
         color=discord.Color.embed_background(),

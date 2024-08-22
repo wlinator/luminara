@@ -104,9 +104,9 @@ async def set_boost_image(ctx, image_url: str | None):
 
 
 async def create_boost_embed(
-        member: discord.Member,
-        template: str | None = None,
-        image_url: str | None = None,
+    member: discord.Member,
+    template: str | None = None,
+    image_url: str | None = None,
 ):
     embed = discord.Embed(
         color=discord.Color.nitro_pink(),

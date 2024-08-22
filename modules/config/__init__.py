@@ -39,11 +39,11 @@ class Config(commands.Cog):
     @guild_only()
     @commands.has_permissions(manage_roles=True)
     async def xp_reward_command_add(
-            self,
-            ctx,
-            level: int,
-            role: discord.Role,
-            persistent: bool = False,
+        self,
+        ctx,
+        level: int,
+        role: discord.Role,
+        persistent: bool = False,
     ):
         await xp_reward.add_reward(ctx, level, role.id, persistent)
 

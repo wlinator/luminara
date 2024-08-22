@@ -35,8 +35,8 @@ async def cmd(self, ctx: bridge.Context) -> None:
     )
 
     if not channel or isinstance(
-            channel,
-            (discord.ForumChannel, discord.CategoryChannel),
+        channel,
+        (discord.ForumChannel, discord.CategoryChannel),
     ):
         await ctx.respond(
             embed=EmbedBuilder.create_error_embed(

@@ -77,7 +77,7 @@ class ReactionListener(Cog):
         :param message: The message to process.
         """
         if not message.author.bot and not BlacklistUserService.is_user_blacklisted(
-                message.author.id,
+            message.author.id,
         ):
             await ReactionHandler(self.client, message).run_checks()
 

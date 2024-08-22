@@ -54,7 +54,7 @@ async def view_all_cases_in_guild(ctx, guild_id: int):
 
     pages_list = []
     for i in range(0, len(cases), 10):
-        chunk = cases[i: i + 10]
+        chunk = cases[i : i + 10]
         embed = create_case_list_embed(
             ctx,
             chunk,
@@ -79,7 +79,7 @@ async def view_all_cases_by_mod(ctx, guild_id: int, moderator: discord.Member):
 
     pages_list = []
     for i in range(0, len(cases), 10):
-        chunk = cases[i: i + 10]
+        chunk = cases[i : i + 10]
         embed = create_case_list_embed(
             ctx,
             chunk,

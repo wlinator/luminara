@@ -13,12 +13,12 @@ modlog_service = ModLogService()
 
 
 async def create_case(
-        ctx,
-        target: discord.User,
-        action_type: str,
-        reason: Optional[str] = None,
-        duration: Optional[int] = None,
-        expires_at: Optional[str] = None,
+    ctx,
+    target: discord.User,
+    action_type: str,
+    reason: Optional[str] = None,
+    duration: Optional[int] = None,
+    expires_at: Optional[str] = None,
 ):
     """
     Creates a new moderation case and logs it to the modlog channel if configured.
@@ -90,10 +90,10 @@ async def create_case(
 
 
 async def edit_case_modlog(
-        ctx,
-        guild_id: int,
-        case_number: int,
-        new_reason: str,
+    ctx,
+    guild_id: int,
+    case_number: int,
+    new_reason: str,
 ) -> bool:
     """
     Edits the reason for an existing case and updates the modlog message if it exists.

@@ -30,7 +30,7 @@ class ReactionHandler:
         content = message.content.lower()
 
         if (
-                content.startswith("Lumi ") or content.startswith("Lumi, ")
+            content.startswith("Lumi ") or content.startswith("Lumi, ")
         ) and content.endswith("?"):
             response = random.choice(self.eightball)
             await message.reply(content=response)

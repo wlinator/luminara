@@ -23,6 +23,7 @@ expand the bot's functionality. Please follow these guidelines when contributing
       poetry install
       poetry shell
       poetry pre-commit install
+      poetry run pre-commit run --all-files
       ```
 
 ## Making Changes
