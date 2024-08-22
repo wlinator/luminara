@@ -1,5 +1,4 @@
 import random
-from datetime import datetime
 from typing import List, Tuple
 
 import discord
@@ -12,6 +11,7 @@ from lib.constants import CONST
 from lib.exceptions.LumiExceptions import LumiException
 from services.currency_service import Currency
 from services.stats_service import BlackJackStats
+from lib.embed_builder import EmbedBuilder
 
 EST = pytz.timezone("US/Eastern")
 ACTIVE_BLACKJACK_GAMES: dict[int, bool] = {}
@@ -21,17 +21,6 @@ Hand = List[Card]
 
 
 async def cmd(ctx: commands.Context, bet: int) -> None:
-    """
-    Handle the blackjack command.
-
-    Args:
-        ctx (commands.Context): The command context.
-        bet (int): The amount of currency to bet.
-
-    Raises:
-        LumiException: If the player is already in a game.
-        commands.BadArgument: If the bet is invalid or insufficient funds.
-    """
     if ctx.author.id in ACTIVE_BLACKJACK_GAMES:
         raise LumiException(CONST.STRINGS["error_already_playing_blackjack"])
 
@@ -236,10 +225,10 @@ def create_game_embed(
     Returns:
         discord.Embed: The game state embed.
     """
-    current_time = datetime.now(EST).strftime("%I:%M %p")
-    embed = discord.Embed(
+    return EmbedBuilder.create_embed(
+        ctx,
         title="BlackJack",
-        color=discord.Color.dark_orange(),
+        color=discord.Colour.embed_background(),
         description=(
             f"**You**\n"
             f"Score: {player_value}\n"
@@ -248,13 +237,11 @@ def create_game_embed(
             f"Score: {dealer_value}\n"
             f"*Hand: {dealer_hand[0]} + {'??' if len(dealer_hand) < 2 else ' + '.join(dealer_hand[1:])}*"
         ),
+        footer_text=f"Bet ${Currency.format_human(bet)} • deck shuffled",
+        footer_icon_url="https://i.imgur.com/96jPPXO.png",
+        show_name=False,
+        hide_timestamp=True,
     )
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(
-        text=f"Bet ${Currency.format_human(bet)} • deck shuffled • Today at {current_time}",
-        icon_url="https://i.imgur.com/96jPPXO.png",
-    )
-    return embed
 
 
 def create_end_game_embed(
@@ -279,15 +266,14 @@ def create_end_game_embed(
     Returns:
         discord.Embed: The end game embed.
     """
-    current_time = datetime.now(EST).strftime("%I:%M %p")
-    embed = discord.Embed(
+    embed = EmbedBuilder.create_embed(
+        ctx,
         title="BlackJack",
+        color=discord.Colour.embed_background(),
         description=f"You | Score: {player_value}\nDealer | Score: {dealer_value}",
-    )
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    embed.set_footer(
-        text=f"Game finished • Today at {current_time}",
-        icon_url="https://i.imgur.com/96jPPXO.png",
+        footer_text="Game finished",
+        footer_icon_url="https://i.imgur.com/96jPPXO.png",
+        show_name=False,
     )
 
     result = {
