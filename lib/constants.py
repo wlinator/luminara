@@ -49,7 +49,7 @@ class Constants:
     AUTHOR: str = _settings["info"]["author"]
     LICENSE: str = _settings["info"]["license"]
     VERSION: str = _settings["info"]["version"]
-    REPOSITORY_URL: str = _settings["info"]["repository_url"]
+    REPO_URL: str = _settings["info"]["repository_url"]
 
     # images
     ALLOWED_IMAGE_EXTENSIONS: List[str] = _settings["images"][
