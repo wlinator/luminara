@@ -7,6 +7,8 @@
 Self-hosting refers to running Luminara on your own server or computer, rather than using the publicly hosted version.
 This approach offers the ability to manage your own instance of the bot and give it a custom name and avatar.
 
+**Note:** From `v2.9.0` and onward, Lumi now utilizes a [settings.yaml](settings/settings.yaml) file to manage configuration settings. This allows you to customize your bot's behavior without needing to modify the source code itself.
+
 ### Requirements
 
 Before you begin, make sure you have the following installed on your system:
