@@ -6,7 +6,6 @@ from discord.ext import commands
 from loguru import logger
 
 import Client
-import config.parser
 import services.config_service
 import services.help_service
 from db.database import run_migrations
@@ -90,13 +89,6 @@ if __name__ == "__main__":
 
     # Run database migrations
     run_migrations()
-
-    # cache all JSON
-    [
-        config.parser.JsonCache.read_json(file[:-5])
-        for file in os.listdir("config/JSON")
-        if file.endswith(".json")
-    ]
 
     # load command and listener cogs
     load_modules()

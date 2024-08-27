@@ -49,6 +49,8 @@
   "blackjack_won_21": "You won with a score of 21!",
   "blackjack_won_natural": "You won with a natural hand!",
   "blackjack_won_payout": "You won **${0}**.",
+  "blackjack_hit": "hit",
+  "blackjack_stand": "stand",
   "boost_default_description": "Thanks for boosting, **{0}**!!",
   "boost_default_title": "New Booster",
   "case_case_field": "Case:",
@@ -289,5 +291,6 @@
   "give_error_bot": "you can't give money to a bot.",
   "give_error_invalid_amount": "invalid amount.",
   "give_error_insufficient_funds": "you don't have enough cash.",
-  "give_success": "**{0}** gave **${1}** to {2}."
+  "give_success": "**{0}** gave **${1}** to {2}.",
+  "error_cant_use_buttons": "You can't use these buttons, they're someone else's!"
 }

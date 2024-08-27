@@ -15,23 +15,14 @@ est = pytz.timezone("US/Eastern")
 
 
 async def cmd(self, ctx, bet):
-    # Currency handler
     ctx_currency = Currency(ctx.author.id)
 
-    # check if the user has enough cash
     player_balance = ctx_currency.balance
     if bet > player_balance:
         raise commands.BadArgument("you don't have enough cash.")
     elif bet <= 0:
         raise commands.BadArgument("the bet you entered is invalid.")
 
-    # # check if the bet exceeds the bet limit
-    # bet_limit = int(resources["bet_limit"])
-    # if abs(bet) > bet_limit:
-    #     message = strings["bet_limit"].format(ctx.author.name, Currency.format_human(bet_limit))
-    #     return await ctx.respond(content=message)
-
-    # calculate the results before the command is shown
     results = [random.randint(0, 6) for _ in range(3)]
     calculated_results = calculate_slots_results(bet, results)
 
@@ -84,14 +75,14 @@ async def cmd(self, ctx, bet):
 
 
 def get_emotes(client):
-    decoration = CONST.SLOTS["emotes"]
-    return {name: client.get_emoji(emoji_id) for name, emoji_id in decoration.items()}
+    emotes = CONST.EMOTE_IDS
+    return {name: client.get_emoji(emoji_id) for name, emoji_id in emotes.items()}
 
 
 def calculate_slots_results(bet, results):
     result_type = None
     multiplier = None
-    rewards = CONST.SLOTS["reward_multipliers"]
+    rewards = CONST.SLOTS_MULTIPLIERS
 
     # count occurrences of each item in the list
     counts = Counter(results)

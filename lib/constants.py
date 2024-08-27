@@ -1,102 +1,120 @@
 import os
-from typing import Optional, Set
+from typing import Optional, Set, List, Dict
+import yaml
+import json
+from functools import lru_cache
 
-from config.parser import JsonCache
+
+class _parser:
+    """Internal parser class. Not intended for direct use outside this module."""
+
+    @lru_cache(maxsize=1024)
+    def read_yaml(self, path):
+        return self._read_file(f"settings/{path}.yaml", yaml.safe_load)
+
+    @lru_cache(maxsize=1024)
+    def read_json(self, path):
+        return self._read_file(f"settings/{path}.json", json.load)
+
+    def _read_file(self, file_path, load_func):
+        with open(file_path) as file:
+            return load_func(file)
 
 
 class Constants:
-    # JSON raw
-    ART = JsonCache.read_json("art")
-    RESOURCES = JsonCache.read_json("resources")
-    LEVEL_MESSAGES = JsonCache.read_json("levels")
+    _p = _parser()
+    _settings = _p.read_yaml("settings")
 
-    # metadata
-    TITLE = "Luminara"
-    AUTHOR = "wlinator"
-    LICENSE = "GNU General Public License v3.0"
-    VERSION = "2.8.12"  # "Refactor Blackjack" update
-
-    # bot credentials
-    TOKEN: Optional[str] = os.environ.get("TOKEN", None)
-    INSTANCE: Optional[str] = os.environ.get("INSTANCE", None)
+    # bot credentials (.env file)
+    TOKEN: Optional[str] = os.environ.get("TOKEN")
+    INSTANCE: Optional[str] = os.environ.get("INSTANCE")
+    XP_GAIN_PER_MESSAGE: int = int(os.environ.get("XP_GAIN_PER_MESSAGE", 1))
+    XP_GAIN_COOLDOWN: int = int(os.environ.get("XP_GAIN_COOLDOWN", 8))
+    DBX_TOKEN: Optional[str] = os.environ.get("DBX_OAUTH2_REFRESH_TOKEN")
+    DBX_APP_KEY: Optional[str] = os.environ.get("DBX_APP_KEY")
+    DBX_APP_SECRET: Optional[str] = os.environ.get("DBX_APP_SECRET")
+    MARIADB_USER: Optional[str] = os.environ.get("MARIADB_USER")
+    MARIADB_PASSWORD: Optional[str] = os.environ.get("MARIADB_PASSWORD")
+    MARIADB_ROOT_PASSWORD: Optional[str] = os.environ.get("MARIADB_ROOT_PASSWORD")
+    MARIADB_DATABASE: Optional[str] = os.environ.get("MARIADB_DATABASE")
 
     OWNER_IDS: Optional[Set[int]] = (
         {int(id.strip()) for id in os.environ.get("OWNER_IDS", "").split(",") if id}
-        if os.environ.get("OWNER_IDS")
+        if "OWNER_IDS" in os.environ
         else None
     )
 
-    XP_GAIN_PER_MESSAGE: int = int(os.environ.get("XP_GAIN_PER_MESSAGE", 1))
-    XP_GAIN_COOLDOWN: int = int(os.environ.get("XP_GAIN_COOLDOWN", 8))
+    # metadata
+    TITLE: str = _settings["info"]["title"]
+    AUTHOR: str = _settings["info"]["author"]
+    LICENSE: str = _settings["info"]["license"]
+    VERSION: str = _settings["info"]["version"]
+    REPO_URL: str = _settings["info"]["repository_url"]
 
-    DBX_TOKEN: Optional[str] = os.environ.get("DBX_OAUTH2_REFRESH_TOKEN", None)
-    DBX_APP_KEY: Optional[str] = os.environ.get("DBX_APP_KEY", None)
-    DBX_APP_SECRET: Optional[str] = os.environ.get("DBX_APP_SECRET", None)
-
-    MARIADB_USER: Optional[str] = os.environ.get("MARIADB_USER", None)
-    MARIADB_PASSWORD: Optional[str] = os.environ.get("MARIADB_PASSWORD", None)
-    MARIADB_ROOT_PASSWORD: Optional[str] = os.environ.get("MARIADB_ROOT_PASSWORD", None)
-    MARIADB_DATABASE: Optional[str] = os.environ.get("MARIADB_DATABASE", None)
-
-    # config
-    ALLOWED_IMAGE_EXTENSIONS = (".jpg", ".png")
-
-    # emotes
-    EMOTES_GUILD_ID = 1038051105642401812
-
-    # color scheme
-    COLOR_DEFAULT = 0xFF8C00
-    COLOR_WARNING = 0xFF7600
-    COLOR_ERROR = 0xFF4500
-
-    # strings
-    STRINGS = JsonCache.read_json("strings")
-
-    # repository
-    REPO_URL = "https://git.wlinator.org/Luminara/Lumi"
-    INVITE_LINK = "https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot"
-
-    # KRC
-    KRC_GUILD_ID: int = 719227135151046699
-    KRC_INTRO_CHANNEL_ID: int = 973619250507972618
-    KRC_QUESTION_MAPPING: dict[str, str] = RESOURCES["guild_specific"][
-        "question_mapping"
+    # images
+    ALLOWED_IMAGE_EXTENSIONS: List[str] = _settings["images"][
+        "allowed_image_extensions"
     ]
+    BIRTHDAY_GIF_URL: str = _settings["images"]["birthday_gif_url"]
 
-    # logo
-    LUMI_LOGO_TRANSPARENT = ART["logo"]["transparent"]
-    LUMI_LOGO_OPAQUE = ART["logo"]["opaque"]
-
-    # icons art
-    BOOST_ICON = ART["icons"]["boost"]
-    CHECK_ICON = ART["icons"]["check"]
-    CROSS_ICON = ART["icons"]["cross"]
-    EXCLAIM_ICON = ART["icons"]["exclaim"]
-    HAMMER_ICON = ART["icons"]["hammer"]
-    MONEY_BAG_ICON = ART["icons"]["money_bag"]
-    MONEY_COINS_ICON = ART["icons"]["money_coins"]
-    QUESTION_ICON = ART["icons"]["question"]
-    STREAK_ICON = ART["icons"]["streak"]
-    WARNING_ICON = ART["icons"]["warning"]
-
-    # art by JuicyBblue
-    FLOWERS_ART = ART["juicybblue"]["flowers"]
-    TEAPOT_ART = ART["juicybblue"]["teapot"]
-    MUFFIN_ART = ART["juicybblue"]["muffin"]
-
-    # other art
-    CLOUD_ART = ART["other"]["cloud"]
-    TROPHY_ART = ART["other"]["trophy"]
-
-    # birthdays
-    BIRTHDAY_MESSAGES = JsonCache.read_json("birthday")["birthday_messages"]
-    BIRTHDAY_MONTHS = JsonCache.read_json("birthday")["months"]
-    BIRTHDAY_GIF_URL = "https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif"
+    # colors
+    COLOR_DEFAULT: int = _settings["colors"]["color_default"]
+    COLOR_WARNING: int = _settings["colors"]["color_warning"]
+    COLOR_ERROR: int = _settings["colors"]["color_error"]
 
     # economy
-    DAILY_REWARD = RESOURCES["daily_reward"]
-    SLOTS = RESOURCES["slots"]
-    BLACKJACK = RESOURCES["blackjack"]
+    DAILY_REWARD: int = _settings["economy"]["daily_reward"]
+    BLACKJACK_MULTIPLIER: float = _settings["economy"]["blackjack_multiplier"]
+    BLACKJACK_HIT_EMOJI: str = _settings["economy"]["blackjack_hit_emoji"]
+    BLACKJACK_STAND_EMOJI: str = _settings["economy"]["blackjack_stand_emoji"]
+    SLOTS_MULTIPLIERS: Dict[str, float] = _settings["economy"]["slots_multipliers"]
+
+    # art from git repository
+    _fetch_url: str = _settings["art"]["fetch_url"]
+
+    LUMI_LOGO_OPAQUE: str = _fetch_url + _settings["art"]["logo"]["opaque"]
+    LUMI_LOGO_TRANSPARENT: str = _fetch_url + _settings["art"]["logo"]["transparent"]
+    BOOST_ICON: str = _fetch_url + _settings["art"]["icons"]["boost"]
+    CHECK_ICON: str = _fetch_url + _settings["art"]["icons"]["check"]
+    CROSS_ICON: str = _fetch_url + _settings["art"]["icons"]["cross"]
+    EXCLAIM_ICON: str = _fetch_url + _settings["art"]["icons"]["exclaim"]
+    HAMMER_ICON: str = _fetch_url + _settings["art"]["icons"]["hammer"]
+    MONEY_BAG_ICON: str = _fetch_url + _settings["art"]["icons"]["money_bag"]
+    MONEY_COINS_ICON: str = _fetch_url + _settings["art"]["icons"]["money_coins"]
+    QUESTION_ICON: str = _fetch_url + _settings["art"]["icons"]["question"]
+    STREAK_ICON: str = _fetch_url + _settings["art"]["icons"]["streak"]
+    STREAK_BRONZE_ICON: str = _fetch_url + _settings["art"]["icons"]["streak_bronze"]
+    STREAK_GOLD_ICON: str = _fetch_url + _settings["art"]["icons"]["streak_gold"]
+    STREAK_SILVER_ICON: str = _fetch_url + _settings["art"]["icons"]["streak_silver"]
+    WARNING_ICON: str = _fetch_url + _settings["art"]["icons"]["warning"]
+
+    # art from imgur
+    FLOWERS_ART: str = _settings["art"]["juicybblue"]["flowers"]
+    TEAPOT_ART: str = _settings["art"]["juicybblue"]["teapot"]
+    MUFFIN_ART: str = _settings["art"]["juicybblue"]["muffin"]
+    CLOUD_ART: str = _settings["art"]["other"]["cloud"]
+    TROPHY_ART: str = _settings["art"]["other"]["trophy"]
+
+    # emotes
+    EMOTES_SERVER_ID: int = _settings["emotes"]["guild_id"]
+    EMOTE_IDS: Dict[str, int] = _settings["emotes"]["emote_ids"]
+
+    # introductions (currently only usable in ONE guild)
+    INTRODUCTIONS_GUILD_ID: int = _settings["introductions"]["intro_guild_id"]
+    INTRODUCTIONS_CHANNEL_ID: int = _settings["introductions"]["intro_channel_id"]
+    INTRODUCTIONS_QUESTION_MAPPING: Dict[str, str] = _settings["introductions"][
+        "intro_question_mapping"
+    ]
+
+    # Response strings
+    # TODO: Implement switching between languages
+    STRINGS = _p.read_json("responses/strings.en-US")
+    LEVEL_MESSAGES = _p.read_json("responses/levels.en-US")
+
+    # birthday messages
+    _bday = _p.read_json("responses/bdays.en-US")
+    BIRTHDAY_MESSAGES = _bday["birthday_messages"]
+    BIRTHDAY_MONTHS = _bday["months"]
 
 
 CONST = Constants()
