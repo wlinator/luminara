@@ -1,0 +1,101 @@
+---
+info:
+  title: Luminara
+  author: wlinator
+  license: GNU General Public License v3.0
+  version: "2.8.12" # "Refactor Blackjack" update
+  repository_url: https://git.wlinator.org/Luminara/Lumi
+
+images:
+  allowed_image_extensions:
+    - .jpg
+    - .png
+
+colors:
+  color_default: 0xFF8C00
+  color_warning: 0xFF7600
+  color_error: 0xFF4500
+
+economy:
+  daily_reward: 500
+  blackjack_multiplier: 1.4
+  slots_multipliers:
+    pair: 1.5
+    three_of_a_kind: 4
+    three_diamonds: 6
+    jackpot: 15
+
+art:
+  fetch_url: https://git.wlinator.org/Luminara/Art/raw/branch/main/
+  logo:
+    opaque: lumi_logo.png
+    transparent: lumi_logo_transparent.png
+  icons:
+    boost: lumi_boost.png
+    check: lumi_check.png
+    cross: lumi_cross.png
+    exclaim: lumi_exclaim.png
+    hammer: lumi_hammer.png
+    money_bag: lumi_money_bag.png
+    money_coins: lumi_money_coins.png
+    question: lumi_question.png
+    streak: lumi_streak.png
+    streak_bronze: lumi_streak_bronze.png
+    streak_gold: lumi_streak_gold.png
+    streak_silver: lumi_streak_silver.png
+    warning: lumi_warning.png
+  juicybblue:
+    flowers: juicybblue_flowers.png
+    teapot: juicybblue_teapot.png
+    muffin: juicybblue_muffin.png
+  other:
+    cloud: https://i.imgur.com/rc68c43.png
+    trophy: https://i.imgur.com/dvIIr2G.png
+
+emotes:
+  emotes_guild_id: 1038051105642401812
+  hit: "<:hit:1119262723285467156>"
+  stand: "<:stand:1118923298298929154>"
+  slots_animated_id: 1119262805309259800
+  slots_0_id: 1119262803816095900
+  slots_1_id: 1119262801261760600
+  slots_2_id: 1119262800049615000
+  slots_3_id: 1119262796497039500
+  slots_4_id: 1119262794676715600
+  slots_5_id: 1119262792386621600
+  slots_6_id: 1119262791061229700
+  S_Wide: 1119286730302955600
+  L_Wide: 1119286763802857500
+  O_Wide: 1119286787169329200
+  T_Wide: 1119286804634406900
+  CBorderBLeft: 1119286973572595700
+  CBorderBRight: 1119286918459445400
+  CBorderTLeft: 1119287006464331800
+  CBorderTRight: 1119286865284051100
+  HBorderB: 1119286936155213800
+  HBorderT: 1119287027662344300
+  VBorder: 1119286889854279700
+  WSmall: 1119288536282173400
+  ISmall: 1119288552673517600
+  NSmall: 1119288579382857900
+  LCentered: 1119287296127156400
+  OCentered: 1119287563245584400
+  SCentered: 1119287327588634600
+  ECentered: 1119287343833166000
+  Blank: 1119287267001905300
+  lost: 1119288454212243600
+
+introductions: # Currently only usable in ONE guild.
+  intro_guild_id: 719227135151046700
+  intro_channel_id: 973619250507972600
+  intro_question_mapping:
+    Nickname: How would you like to be identified in the server?
+    Age: How old are you?
+    Region: Where do you live?
+    Languages: Which languages do you speak?
+    Pronouns: What are your preferred pronouns?
+    Sexuality: What's your sexuality?
+    Relationship status: What's your current relationship status?
+    Likes & interests: Likes & interests
+    Dislikes: Dislikes
+    EXTRAS: "EXTRAS: job status, zodiac sign, hobbies, etc. Tell us about yourself!"
