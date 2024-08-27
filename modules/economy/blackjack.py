@@ -1,11 +1,12 @@
 import random
 from typing import List, Tuple
+from loguru import logger
 
 import discord
+from discord.ui import View
 import pytz
 from discord.ext import commands
 
-from lib import interaction
 from lib.constants import CONST
 from lib.exceptions.LumiExceptions import LumiException
 from services.currency_service import Currency
@@ -34,6 +35,7 @@ async def cmd(ctx: commands.Context, bet: int) -> None:
     try:
         await play_blackjack(ctx, currency, bet)
     except Exception as e:
+        logger.exception(f"Error in blackjack game: {e}")
         raise LumiException(CONST.STRINGS["error_blackjack_game_error"]) from e
     finally:
         del ACTIVE_BLACKJACK_GAMES[ctx.author.id]
@@ -42,11 +44,11 @@ async def cmd(ctx: commands.Context, bet: int) -> None:
 async def play_blackjack(ctx: commands.Context, currency: Currency, bet: int) -> None:
     deck = get_new_deck()
     player_hand, dealer_hand = initial_deal(deck)
-    multiplier = float(CONST.BLACKJACK["reward_multiplier"])
+    multiplier = CONST.BLACKJACK_MULTIPLIER
 
     player_value = calculate_hand_value(player_hand)
     status = 5 if player_value == 21 else 0
-    view = interaction.BlackJackButtons(ctx)
+    view = BlackJackButtons(ctx)
     playing_embed = False
 
     while status == 0:
@@ -85,7 +87,7 @@ async def play_blackjack(ctx: commands.Context, currency: Currency, bet: int) ->
             currency.push()
             raise LumiException(CONST.STRINGS["error_out_of_time_economy"])
 
-        view = interaction.BlackJackButtons(ctx)
+        view = BlackJackButtons(ctx)
 
     await handle_game_end(
         ctx,
@@ -255,8 +257,8 @@ def create_end_game_embed(
 def get_new_deck() -> List[Card]:
     deck = [
         rank + suit
-        for suit in CONST.BLACKJACK["deck_suits"]
-        for rank in CONST.BLACKJACK["deck_ranks"]
+        for suit in ["♠", "♡", "♢", "♣"]
+        for rank in ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
     ]
     random.shuffle(deck)
     return deck
@@ -277,3 +279,46 @@ def calculate_hand_value(hand: Hand) -> int:
         value -= 10
         aces -= 1
     return value
+
+
+class BlackJackButtons(View):
+    def __init__(self, ctx):
+        super().__init__(timeout=180)
+        self.ctx = ctx
+        self.clickedHit = False
+        self.clickedStand = False
+        self.clickedDoubleDown = False
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+            await self.message.edit(view=None)
+
+    @discord.ui.button(
+        label=CONST.STRINGS["blackjack_hit"],
+        style=discord.ButtonStyle.gray,
+        emoji=CONST.BLACKJACK_HIT_EMOJI,
+    )
+    async def hit_button_callback(self, button, interaction):
+        self.clickedHit = True
+        await interaction.response.defer()
+        self.stop()
+
+    @discord.ui.button(
+        label=CONST.STRINGS["blackjack_stand"],
+        style=discord.ButtonStyle.gray,
+        emoji=CONST.BLACKJACK_STAND_EMOJI,
+    )
+    async def stand_button_callback(self, button, interaction):
+        self.clickedStand = True
+        await interaction.response.defer()
+        self.stop()
+
+    async def interaction_check(self, interaction) -> bool:
+        if interaction.user == self.ctx.author:
+            return True
+        await interaction.response.send_message(
+            CONST.STRINGS["error_cant_use_buttons"],
+            ephemeral=True,
+        )
+        return False

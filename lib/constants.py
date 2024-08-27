@@ -2,25 +2,21 @@ import os
 from typing import Optional, Set, List, Dict
 import yaml
 import json
+from functools import lru_cache
 
 
 class _parser:
-    _yaml_cache = {}
-    _json_cache = {}
-
+    @lru_cache(maxsize=1048576)  # Approximately 1MB
     def read_yaml(self, path):
-        if path not in _parser._cache:
-            with open(f"settings/{path}.yaml") as file:
-                _parser._cache[path] = yaml.safe_load(file)
+        return self._read_file(f"settings/{path}.yaml", yaml.safe_load)
 
-        return _parser._yaml_cache[path]
-
+    @lru_cache(maxsize=1048576)  # Approximately 1MB
     def read_json(self, path):
-        if path not in _parser._cache:
-            with open(f"settings/responses/{path}.json") as file:
-                _parser._cache[path] = json.load(file)
+        return self._read_file(f"settings/{path}.json", json.load)
 
-        return _parser._json_cache[path]
+    def _read_file(self, file_path, load_func):
+        with open(file_path) as file:
+            return load_func(file)
 
 
 class Constants:
@@ -67,33 +63,35 @@ class Constants:
     # economy
     DAILY_REWARD: int = _settings["economy"]["daily_reward"]
     BLACKJACK_MULTIPLIER: float = _settings["economy"]["blackjack_multiplier"]
+    BLACKJACK_HIT_EMOJI: str = _settings["economy"]["blackjack_hit_emoji"]
+    BLACKJACK_STAND_EMOJI: str = _settings["economy"]["blackjack_stand_emoji"]
     SLOTS_MULTIPLIERS: Dict[str, float] = _settings["economy"]["slots_multipliers"]
 
     # art from git repository
-    _fetch_url: str = _settings["fetch_url"]
+    _fetch_url: str = _settings["art"]["fetch_url"]
 
-    LOGO_OPAQUE: str = _fetch_url + _settings["logo"]["opaque"]
-    LOGO_TRANSPARENT: str = _fetch_url + _settings["logo"]["transparent"]
-    ICONS_BOOST: str = _fetch_url + _settings["icons"]["boost"]
-    ICONS_CHECK: str = _fetch_url + _settings["icons"]["check"]
-    ICONS_CROSS: str = _fetch_url + _settings["icons"]["cross"]
-    ICONS_EXCLAIM: str = _fetch_url + _settings["icons"]["exclaim"]
-    ICONS_HAMMER: str = _fetch_url + _settings["icons"]["hammer"]
-    ICONS_MONEY_BAG: str = _fetch_url + _settings["icons"]["money_bag"]
-    ICONS_MONEY_COINS: str = _fetch_url + _settings["icons"]["money_coins"]
-    ICONS_QUESTION: str = _fetch_url + _settings["icons"]["question"]
-    ICONS_STREAK: str = _fetch_url + _settings["icons"]["streak"]
-    ICONS_STREAK_BRONZE: str = _fetch_url + _settings["icons"]["streak_bronze"]
-    ICONS_STREAK_GOLD: str = _fetch_url + _settings["icons"]["streak_gold"]
-    ICONS_STREAK_SILVER: str = _fetch_url + _settings["icons"]["streak_silver"]
-    ICONS_WARNING: str = _fetch_url + _settings["icons"]["warning"]
-    JUICYBBLUE_FLOWERS: str = _fetch_url + _settings["juicybblue"]["flowers"]
-    JUICYBBLUE_TEAPOT: str = _fetch_url + _settings["juicybblue"]["teapot"]
-    JUICYBBLUE_MUFFIN: str = _fetch_url + _settings["juicybblue"]["muffin"]
+    LUMI_LOGO_OPAQUE: str = _fetch_url + _settings["art"]["logo"]["opaque"]
+    LUMI_LOGO_TRANSPARENT: str = _fetch_url + _settings["art"]["logo"]["transparent"]
+    BOOST_ICON: str = _fetch_url + _settings["art"]["icons"]["boost"]
+    CHECK_ICON: str = _fetch_url + _settings["art"]["icons"]["check"]
+    CROSS_ICON: str = _fetch_url + _settings["art"]["icons"]["cross"]
+    EXCLAIM_ICON: str = _fetch_url + _settings["art"]["icons"]["exclaim"]
+    HAMMER_ICON: str = _fetch_url + _settings["art"]["icons"]["hammer"]
+    MONEY_BAG_ICON: str = _fetch_url + _settings["art"]["icons"]["money_bag"]
+    MONEY_COINS_ICON: str = _fetch_url + _settings["art"]["icons"]["money_coins"]
+    QUESTION_ICON: str = _fetch_url + _settings["art"]["icons"]["question"]
+    STREAK_ICON: str = _fetch_url + _settings["art"]["icons"]["streak"]
+    STREAK_BRONZE_ICON: str = _fetch_url + _settings["art"]["icons"]["streak_bronze"]
+    STREAK_GOLD_ICON: str = _fetch_url + _settings["art"]["icons"]["streak_gold"]
+    STREAK_SILVER_ICON: str = _fetch_url + _settings["art"]["icons"]["streak_silver"]
+    WARNING_ICON: str = _fetch_url + _settings["art"]["icons"]["warning"]
 
     # art from imgur
-    IMGUR_CLOUD: str = _settings["other"]["cloud"]
-    IMGUR_TROPHY: str = _settings["other"]["trophy"]
+    FLOWERS_ART: str = _settings["art"]["juicybblue"]["flowers"]
+    TEAPOT_ART: str = _settings["art"]["juicybblue"]["teapot"]
+    MUFFIN_ART: str = _settings["art"]["juicybblue"]["muffin"]
+    CLOUD_ART: str = _settings["art"]["other"]["cloud"]
+    TROPHY_ART: str = _settings["art"]["other"]["trophy"]
 
     # emotes
     EMOTES_SERVER_ID: int = _settings["emotes"]["guild_id"]
@@ -108,11 +106,11 @@ class Constants:
 
     # Response strings
     # TODO: Implement switching between languages
-    STRINGS = _parser().read_json("responses/strings.en-US")
-    LEVEL_MESSAGES = _parser().read_json("responses/levels.en-US")
+    STRINGS = _p.read_json("responses/strings.en-US")
+    LEVEL_MESSAGES = _p.read_json("responses/levels.en-US")
 
     # birthday messages
-    _bday = _parser().read_json("responses/bdays.en-US")
+    _bday = _p.read_json("responses/bdays.en-US")
     BIRTHDAY_MESSAGES = _bday["birthday_messages"]
     BIRTHDAY_MONTHS = _bday["months"]
 

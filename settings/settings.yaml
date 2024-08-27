@@ -20,6 +20,8 @@ colors:
 economy:
   daily_reward: 500
   blackjack_multiplier: 1.4
+  blackjack_hit_emoji: <:hit:1119262723285467156>
+  blackjack_stand_emoji: <:stand:1118923298298929154>
   slots_multipliers:
     pair: 1.5
     three_of_a_kind: 4
@@ -46,9 +48,9 @@ art:
     streak_silver: lumi_streak_silver.png
     warning: lumi_warning.png
   juicybblue:
-    flowers: juicybblue_flowers.png
-    teapot: juicybblue_teapot.png
-    muffin: juicybblue_muffin.png
+    flowers: https://i.imgur.com/79XfsbS.png
+    teapot: https://i.imgur.com/wFsgSnr.png
+    muffin: https://i.imgur.com/hSauh7K.png
   other:
     cloud: https://i.imgur.com/rc68c43.png
     trophy: https://i.imgur.com/dvIIr2G.png
