@@ -6,11 +6,11 @@ from functools import lru_cache
 
 
 class _parser:
-    @lru_cache(maxsize=1048576)  # Approximately 1MB
+    @lru_cache(maxsize=1024)
     def read_yaml(self, path):
         return self._read_file(f"settings/{path}.yaml", yaml.safe_load)
 
-    @lru_cache(maxsize=1048576)  # Approximately 1MB
+    @lru_cache(maxsize=1024)
     def read_json(self, path):
         return self._read_file(f"settings/{path}.json", json.load)
 
