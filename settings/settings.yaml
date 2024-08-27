@@ -3,7 +3,7 @@ info:
   title: Luminara
   author: wlinator
   license: GNU General Public License v3.0
-  version: "2.8.12" # "Refactor Blackjack" update
+  version: "2.9.0" # "Settings & Customizability" update
   repository_url: https://git.wlinator.org/Luminara/Lumi
 
 images:
