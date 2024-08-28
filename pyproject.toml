@@ -1,0 +1,27 @@
+[tool.poetry]
+authors = ["wlinator <git@wlinator.org>"]
+description = "A Discord application, can serve as a template for your own bot."
+license = "GNU General Public License v3.0"
+name = "luminara"
+package-mode = false
+readme = "README.md"
+version = "3"
+
+[tool.poetry.dependencies]
+discord-py = "^2.4.0"
+httpx = "^0.27.2"
+loguru = "^0.7.2"
+mysql-connector-python = "^9.0.0"
+pre-commit = "^3.8.0"
+pyright = "^1.1.377"
+python = "^3.12"
+pyyaml = "^6.0.2"
+ruff = "^0.6.2"
+typing-extensions = "^4.12.2"
+aiofiles = "^24.1.0"
+aiocache = "^0.12.2"
+aioconsole = "^0.7.1"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
