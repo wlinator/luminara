@@ -1,40 +1,3 @@
-info:
-  title: Luminara
-  author: wlinator
-  license: GNU General Public License v3.0
-  version: "3.0.0-alpha"
-  repository_url: https://git.wlinator.org/Luminara/Lumi
-  invite_url: https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot
-
-logs:
-  level: DEBUG
-  format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
-
-cogs:
-  ignore: # add cogs to ignore here
-
-images:
-  allowed_image_extensions:
-    - .jpg
-    - .png
-  birthday_gif_url: https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif
-
-colors:
-  color_default: 0xFF8C00
-  color_warning: 0xFF7600
-  color_error: 0xFF4500
-
-economy:
-  daily_reward: 500
-  blackjack_multiplier: 1.4
-  blackjack_hit_emoji: <:hit:1119262723285467156>
-  blackjack_stand_emoji: <:stand:1118923298298929154>
-  slots_multipliers:
-    pair: 1.5
-    three_of_a_kind: 4
-    three_diamonds: 6
-    jackpot: 15
-
 art:
   fetch_url: https://git.wlinator.org/Luminara/Art/raw/branch/main/
   logo:
@@ -62,6 +25,25 @@ art:
   other:
     cloud: https://i.imgur.com/rc68c43.png
     trophy: https://i.imgur.com/dvIIr2G.png
+
+cogs:
+  ignore: # add cogs to ignore here
+
+colors:
+  color_default: 0xFF8C00
+  color_warning: 0xFF7600
+  color_error: 0xFF4500
+
+economy:
+  daily_reward: 500
+  blackjack_multiplier: 1.4
+  blackjack_hit_emoji: <:hit:1119262723285467156>
+  blackjack_stand_emoji: <:stand:1118923298298929154>
+  slots_multipliers:
+    pair: 1.5
+    three_of_a_kind: 4
+    three_diamonds: 6
+    jackpot: 15
 
 emotes:
   guild_id: 1038051105642401812
@@ -95,6 +77,20 @@ emotes:
     Blank: 1119287267001905283
     lost: 1119288454212243607
 
+images:
+  allowed_image_extensions:
+    - .jpg
+    - .png
+  birthday_gif_url: https://media1.tenor.com/m/NXvU9jbBUGMAAAAC/fireworks.gif
+
+info:
+  title: Luminara
+  author: wlinator
+  license: GNU General Public License v3.0
+  version: "3.0.0-alpha"
+  repository_url: https://git.wlinator.org/Luminara/Lumi
+  invite_url: https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot
+
 introductions:
   intro_guild_id: 719227135151046700
   intro_channel_id: 973619250507972600
@@ -109,3 +105,7 @@ introductions:
     Likes & interests: likes & interests
     Dislikes: dislikes
     EXTRAS: "EXTRAS: job status, zodiac sign, hobbies, etc. Tell us about yourself!"
+
+logs:
+  level: DEBUG
+  format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
