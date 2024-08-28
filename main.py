@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from loguru import logger
 from lib.const import CONST
-from client import Luminara
+from lib.client import Luminara
 
 logger.remove()
 logger.add(sys.stdout, format=CONST.LOG_FORMAT, colorize=True, level=CONST.LOG_LEVEL)

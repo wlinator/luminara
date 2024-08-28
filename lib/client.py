@@ -1,7 +1,7 @@
 from discord.ext import commands
 from loguru import logger
 import asyncio
-from loader import CogLoader
+from lib.loader import CogLoader
 from db.database import run_migrations
 
 
