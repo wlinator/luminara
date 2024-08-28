@@ -14,7 +14,7 @@ art:
     money_coins: lumi_money_coins.png
     question: lumi_question.png
     streak: lumi_streak.png
-    streak_bronze: lumi_streak_bronze.png
+    streak_bronze: lumi_streak_bronze.png\
     streak_gold: lumi_streak_gold.png
     streak_silver: lumi_streak_silver.png
     warning: lumi_warning.png
