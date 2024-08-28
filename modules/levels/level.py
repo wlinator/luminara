@@ -1,0 +1,46 @@
+from discord.ext import commands
+from discord import Embed
+from lib.const import CONST
+from ui.embeds import builder
+from services.xp_service import XpService
+
+
+class Level(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
+    @commands.hybrid_command(
+        name="level",
+        aliases=["rank", "lvl", "xp"],
+        usage="level",
+    )
+    async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
+        if not ctx.guild:
+            return
+
+        xp_data: XpService = XpService(ctx.author.id, ctx.guild.id)
+
+        rank: str = str(xp_data.calculate_rank())
+        needed_xp_for_next_level: int = XpService.xp_needed_for_next_level(
+            xp_data.level,
+        )
+
+        embed: Embed = builder.create_embed(
+            theme="success",
+            user_name=ctx.author.name,
+            title=CONST.STRINGS["xp_level"].format(xp_data.level),
+            footer_text=CONST.STRINGS["xp_server_rank"].format(rank or "NaN"),
+            thumbnail_url=ctx.author.display_avatar.url,
+            hide_name_in_description=True,
+        )
+        embed.add_field(
+            name=CONST.STRINGS["xp_progress"],
+            value=XpService.generate_progress_bar(xp_data.xp, needed_xp_for_next_level),
+            inline=False,
+        )
+
+        await ctx.send(embed=embed)
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Level(bot))

@@ -13,9 +13,12 @@ class CogLoader(commands.Cog):
     async def is_cog(self, path: Path) -> bool:
         cog_name: str = path.stem
 
+        if cog_name in self.cog_ignore_list:
+            logger.debug(f"Ignoring cog: {cog_name} because it is in the ignore list")
+            return False
+
         return (
             path.suffix == ".py"
-            and cog_name not in self.cog_ignore_list
             and not path.name.startswith("_")
             and await aiofiles.os.path.isfile(path)
         )
@@ -30,7 +33,7 @@ class CogLoader(commands.Cog):
                         logger.exception(f"Error loading cog from {item}: {e}")
 
             elif await self.is_cog(path):
-                relative_path: Path = path.relative_to(Path(__file__).parent)
+                relative_path: Path = path.relative_to(Path(__file__).parent.parent)
                 module: str = (
                     str(relative_path).replace("/", ".").replace("\\", ".")[:-3]
                 )
@@ -45,7 +48,7 @@ class CogLoader(commands.Cog):
             logger.exception(f"Error loading cogs from {path}: {e}")
 
     async def load_cog_from_dir(self, dir_name: str) -> None:
-        path: Path = Path(__file__).parent / dir_name
+        path: Path = Path(__file__).parent.parent / dir_name
         await self.load_cogs(path)
 
     @classmethod
