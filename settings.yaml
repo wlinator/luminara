@@ -2,7 +2,7 @@ info:
   title: Luminara
   author: wlinator
   license: GNU General Public License v3.0
-  version: "2.9.0" # "Settings & Customizability" update
+  version: "v3.0.1"
   repository_url: https://git.wlinator.org/Luminara/Lumi
   invite_url: https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot
 

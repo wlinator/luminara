@@ -1,6 +1,8 @@
 from discord.ext import commands
 import discord
 from typing import Optional
+from ui.embeds import builder
+from lib.const import CONST
 
 
 class Sync(commands.Cog):
@@ -25,7 +27,14 @@ class Sync(commands.Cog):
 
         self.bot.tree.copy_global_to(guild=guild)
         await self.bot.tree.sync(guild=guild)
-        await ctx.send("Application command tree synced.")
+
+        embed = builder.create_success_embed(
+            ctx,
+            author_text=CONST.STRINGS["sync_author"],
+            description=CONST.STRINGS["sync_description"],
+        )
+
+        await ctx.send(embed=embed)
 
 
 async def setup(bot: commands.Bot) -> None:

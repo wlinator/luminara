@@ -239,7 +239,7 @@
     "mod_warned_user": "user `{0}` has been warned.",
     "ping_author": "I'm online!",
     "ping_footer": "Latency: {0}ms",
-    "ping_pong": "Pong!",
+    "ping_pong": "pong!",
     "ping_uptime": "I've been online since <t:{0}:R>.",
     "stats_blackjack": "🃏 | You've played **{0}** games of BlackJack, betting a total of **${1}**. You won **{2}** of those games with a total payout of **${3}**.",
     "stats_slots": "🎰 | You've played **{0}** games of Slots, betting a total of **${1}**. Your total payout was **${2}**.",
@@ -292,5 +292,7 @@
     "give_error_invalid_amount": "invalid amount.",
     "give_error_insufficient_funds": "you don't have enough cash.",
     "give_success": "**{0}** gave **${1}** to {2}.",
-    "error_cant_use_buttons": "You can't use these buttons, they're someone else's!"
+    "error_cant_use_buttons": "You can't use these buttons, they're someone else's!",
+    "sync_author": "Synced Commands",
+    "sync_description": "the application command tree has been synced."
 }
