@@ -1,4 +1,6 @@
 from discord.ext import commands
+from lib.const import CONST
+from ui.embeds import builder
 
 
 class Ping(commands.Cog):
@@ -10,7 +12,16 @@ class Ping(commands.Cog):
         usage="ping",
     )
     async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
-        await ctx.send(f"Pong! Latency: {self.bot.latency * 1000:.2f}ms")
+        embed = builder.create_success_embed(
+            ctx,
+            author_text=CONST.STRINGS["ping_author"],
+            description=CONST.STRINGS["ping_pong"],
+            footer_text=CONST.STRINGS["ping_footer"].format(
+                round(1000 * self.bot.latency),
+            ),
+        )
+
+        await ctx.send(embed=embed)
 
 
 async def setup(bot: commands.Bot) -> None:
