@@ -74,8 +74,9 @@ async def handle_error(
         description = CONST.STRINGS["error_unknown_error_description"]
 
     await ctx.send(
-        embed=builder.create_error_embed(
-            ctx,
+        embed=builder.create_embed(
+            theme="error",
+            user_name=ctx.author.name,
             author_text=author_text,
             description=description,
             footer_text=footer_text,

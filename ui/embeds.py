@@ -1,6 +1,6 @@
-import datetime
+from datetime import datetime
+from typing import Optional, Literal
 
-from discord.ext import commands
 import discord
 
 from lib.const import CONST
@@ -9,199 +9,60 @@ from lib.const import CONST
 class builder:
     @staticmethod
     def create_embed(
-        ctx: commands.Context[commands.Bot],
-        title=None,
-        author_text=None,
-        author_icon_url=None,
-        author_url=None,
-        description=None,
-        color=None,
-        footer_text=None,
-        footer_icon_url=None,
-        show_name=True,
-        image_url=None,
-        thumbnail_url=None,
-        timestamp=None,
-        hide_author=False,
-        hide_author_icon=False,
-        hide_timestamp=False,
+        user_name: Optional[str] = None,
+        user_display_avatar_url: Optional[str] = None,
+        theme: Optional[Literal["error", "success", "info", "warning"]] = None,
+        title: Optional[str] = None,
+        author_text: Optional[str] = None,
+        author_icon_url: Optional[str] = None,
+        author_url: Optional[str] = None,
+        description: Optional[str] = None,
+        color: Optional[int] = None,
+        footer_text: Optional[str] = None,
+        footer_icon_url: Optional[str] = None,
+        image_url: Optional[str] = None,
+        thumbnail_url: Optional[str] = None,
+        timestamp: Optional[datetime] = None,
+        hide_name_in_description: bool = False,
+        hide_time: bool = False,
     ) -> discord.Embed:
-        if not hide_author:
-            if not author_text:
-                author_text = ctx.author.name
-            elif show_name:
-                description = f"**{ctx.author.name}** {description}"
+        """
+        Create a standard Lumi embed with the given parameters.
+        """
 
-            if not hide_author_icon and not author_icon_url:
-                author_icon_url = ctx.author.display_avatar.url
+        theme_settings = {
+            "error": (CONST.COLOR_ERROR, CONST.CROSS_ICON),
+            "success": (CONST.COLOR_DEFAULT, CONST.CHECK_ICON),
+            "info": (CONST.COLOR_DEFAULT, CONST.INFO_ICON),
+            "warning": (CONST.COLOR_WARNING, CONST.WARNING_ICON),
+        }
+        if theme in theme_settings:
+            color, author_icon_url = theme_settings[theme]
 
-        if not footer_text:
-            footer_text = "Luminara"
-        if not footer_icon_url:
-            footer_icon_url = CONST.LUMI_LOGO_TRANSPARENT
+        if user_name and not hide_name_in_description:
+            description = f"**{user_name}** {description}"
 
-        embed = discord.Embed(
+        embed: discord.Embed = discord.Embed(
             title=title,
             description=description,
             color=color or CONST.COLOR_DEFAULT,
         )
-        if not hide_author:
-            embed.set_author(
-                name=author_text,
-                icon_url=None if hide_author_icon else author_icon_url,
-                url=author_url,
-            )
-        embed.set_footer(text=footer_text, icon_url=footer_icon_url)
-        if not hide_timestamp:
-            embed.timestamp = timestamp or datetime.datetime.now()
 
+        embed.set_author(
+            name=author_text or user_name or None,
+            icon_url=author_icon_url or user_display_avatar_url or None,
+            url=author_url,
+        )
+
+        embed.set_footer(
+            text=footer_text or CONST.TITLE,
+            icon_url=footer_icon_url or CONST.LUMI_LOGO_TRANSPARENT,
+        )
+
+        embed.timestamp = None if hide_time else (timestamp or datetime.now())
         if image_url:
             embed.set_image(url=image_url)
         if thumbnail_url:
             embed.set_thumbnail(url=thumbnail_url)
 
         return embed
-
-    @staticmethod
-    def create_error_embed(
-        ctx,
-        title=None,
-        author_text=None,
-        author_icon_url=None,
-        author_url=None,
-        description=None,
-        footer_text=None,
-        show_name=True,
-        image_url=None,
-        thumbnail_url=None,
-        timestamp=None,
-        hide_author=False,
-        hide_author_icon=False,
-        hide_timestamp=False,
-    ) -> discord.Embed:
-        return builder.create_embed(
-            ctx,
-            title=title,
-            author_text=author_text,
-            author_icon_url=author_icon_url or CONST.CROSS_ICON,
-            author_url=author_url,
-            description=description,
-            color=CONST.COLOR_ERROR,
-            footer_text=footer_text,
-            footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
-            show_name=show_name,
-            image_url=image_url,
-            thumbnail_url=thumbnail_url,
-            timestamp=timestamp,
-            hide_author=hide_author,
-            hide_author_icon=hide_author_icon,
-            hide_timestamp=hide_timestamp,
-        )
-
-    @staticmethod
-    def create_success_embed(
-        ctx,
-        title=None,
-        author_text=None,
-        author_icon_url=None,
-        author_url=None,
-        description=None,
-        footer_text=None,
-        show_name=True,
-        image_url=None,
-        thumbnail_url=None,
-        timestamp=None,
-        hide_author=False,
-        hide_author_icon=False,
-        hide_timestamp=False,
-    ) -> discord.Embed:
-        return builder.create_embed(
-            ctx,
-            title=title,
-            author_text=author_text,
-            author_icon_url=author_icon_url or CONST.CHECK_ICON,
-            author_url=author_url,
-            description=description,
-            color=CONST.COLOR_DEFAULT,
-            footer_text=footer_text,
-            footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
-            show_name=show_name,
-            image_url=image_url,
-            thumbnail_url=thumbnail_url,
-            timestamp=timestamp,
-            hide_author=hide_author,
-            hide_author_icon=hide_author_icon,
-            hide_timestamp=hide_timestamp,
-        )
-
-    @staticmethod
-    def create_info_embed(
-        ctx,
-        title=None,
-        author_text=None,
-        author_icon_url=None,
-        author_url=None,
-        description=None,
-        footer_text=None,
-        show_name=True,
-        image_url=None,
-        thumbnail_url=None,
-        timestamp=None,
-        hide_author=False,
-        hide_author_icon=False,
-        hide_timestamp=False,
-    ) -> discord.Embed:
-        return builder.create_embed(
-            ctx,
-            title=title,
-            author_text=author_text,
-            author_icon_url=author_icon_url or CONST.EXCLAIM_ICON,
-            author_url=author_url,
-            description=description,
-            color=CONST.COLOR_DEFAULT,
-            footer_text=footer_text,
-            footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
-            show_name=show_name,
-            image_url=image_url,
-            thumbnail_url=thumbnail_url,
-            timestamp=timestamp,
-            hide_author=hide_author,
-            hide_author_icon=hide_author_icon,
-            hide_timestamp=hide_timestamp,
-        )
-
-    @staticmethod
-    def create_warning_embed(
-        ctx,
-        title=None,
-        author_text=None,
-        author_icon_url=None,
-        author_url=None,
-        description=None,
-        footer_text=None,
-        show_name=True,
-        image_url=None,
-        thumbnail_url=None,
-        timestamp=None,
-        hide_author=False,
-        hide_author_icon=False,
-        hide_timestamp=False,
-    ) -> discord.Embed:
-        return builder.create_embed(
-            ctx,
-            title=title,
-            author_text=author_text,
-            author_icon_url=author_icon_url or CONST.WARNING_ICON,
-            author_url=author_url,
-            description=description,
-            color=CONST.COLOR_WARNING,
-            footer_text=footer_text,
-            footer_icon_url=CONST.LUMI_LOGO_TRANSPARENT,
-            show_name=show_name,
-            image_url=image_url,
-            thumbnail_url=thumbnail_url,
-            timestamp=timestamp,
-            hide_author=hide_author,
-            hide_author_icon=hide_author_icon,
-            hide_timestamp=hide_timestamp,
-        )

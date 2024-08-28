@@ -29,18 +29,15 @@ class Info(commands.Cog):
             ],
         )
 
-        embed: discord.Embed = builder.create_success_embed(
-            ctx,
+        embed: discord.Embed = builder.create_embed(
+            theme="info",
+            user_name=ctx.author.name,
+            author_text=f"{CONST.TITLE} v{CONST.VERSION}",
+            author_url=CONST.REPO_URL,
             description=description,
             footer_text=CONST.STRINGS["info_service_footer"],
-            show_name=False,
+            thumbnail_url=CONST.LUMI_LOGO_OPAQUE,
         )
-        embed.set_author(
-            name=f"{CONST.TITLE} v{CONST.VERSION}",
-            url=CONST.REPO_URL,
-            icon_url=CONST.CHECK_ICON,
-        )
-        embed.set_thumbnail(url=CONST.LUMI_LOGO_OPAQUE)
 
         await ctx.send(embed=embed)
 

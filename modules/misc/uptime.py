@@ -17,8 +17,9 @@ class Uptime(commands.Cog):
     async def uptime(self, ctx: commands.Context[commands.Bot]) -> None:
         unix_timestamp: int = int(self.start_time.timestamp())
 
-        embed: Embed = builder.create_success_embed(
-            ctx,
+        embed: Embed = builder.create_embed(
+            theme="info",
+            user_name=ctx.author.name,
             author_text=CONST.STRINGS["ping_author"],
             description=CONST.STRINGS["ping_uptime"].format(unix_timestamp),
             footer_text=CONST.STRINGS["ping_footer"].format(

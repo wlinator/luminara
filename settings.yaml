@@ -45,6 +45,7 @@ art:
     check: lumi_check.png
     cross: lumi_cross.png
     exclaim: lumi_exclaim.png
+    info: lumi_info.png?_=2
     hammer: lumi_hammer.png
     money_bag: lumi_money_bag.png
     money_coins: lumi_money_coins.png

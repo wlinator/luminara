@@ -28,8 +28,9 @@ class Sync(commands.Cog):
         self.bot.tree.copy_global_to(guild=guild)
         await self.bot.tree.sync(guild=guild)
 
-        embed = builder.create_success_embed(
-            ctx,
+        embed = builder.create_embed(
+            theme="success",
+            user_name=ctx.author.name,
             author_text=CONST.STRINGS["sync_author"],
             description=CONST.STRINGS["sync_description"],
         )

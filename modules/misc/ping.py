@@ -12,8 +12,9 @@ class Ping(commands.Cog):
         usage="ping",
     )
     async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
-        embed = builder.create_success_embed(
-            ctx,
+        embed = builder.create_embed(
+            theme="success",
+            user_name=ctx.author.name,
             author_text=CONST.STRINGS["ping_author"],
             description=CONST.STRINGS["ping_pong"],
             footer_text=CONST.STRINGS["ping_footer"].format(

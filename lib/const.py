@@ -85,6 +85,7 @@ class _constants:
     CHECK_ICON: str = _fetch_url + _s["art"]["icons"]["check"]
     CROSS_ICON: str = _fetch_url + _s["art"]["icons"]["cross"]
     EXCLAIM_ICON: str = _fetch_url + _s["art"]["icons"]["exclaim"]
+    INFO_ICON: str = _fetch_url + _s["art"]["icons"]["info"]
     HAMMER_ICON: str = _fetch_url + _s["art"]["icons"]["hammer"]
     MONEY_BAG_ICON: str = _fetch_url + _s["art"]["icons"]["money_bag"]
     MONEY_COINS_ICON: str = _fetch_url + _s["art"]["icons"]["money_coins"]

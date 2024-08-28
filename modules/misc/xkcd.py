@@ -23,8 +23,8 @@ async def print_comic(
             comic = _xkcd.get_random_comic(raw_comic_image=True)
 
         await interaction.response.send_message(
-            embed=builder.create_success_embed(
-                interaction,
+            embed=builder.create_embed(
+                theme="info",
                 author_text=CONST.STRINGS["xkcd_title"].format(comic.id, comic.title),
                 description=CONST.STRINGS["xkcd_description"].format(
                     comic.explanation_url,
@@ -32,14 +32,13 @@ async def print_comic(
                 ),
                 footer_text=CONST.STRINGS["xkcd_footer"],
                 image_url=comic.image_url,
-                show_name=False,
             ),
         )
 
     except HttpError:
         await interaction.response.send_message(
-            embed=builder.create_error_embed(
-                interaction,
+            embed=builder.create_embed(
+                theme="error",
                 author_text=CONST.STRINGS["xkcd_not_found_author"],
                 description=CONST.STRINGS["xkcd_not_found"],
                 footer_text=CONST.STRINGS["xkcd_footer"],
