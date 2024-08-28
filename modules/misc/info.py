@@ -37,6 +37,7 @@ class Info(commands.Cog):
             description=description,
             footer_text=CONST.STRINGS["info_service_footer"],
             thumbnail_url=CONST.LUMI_LOGO_OPAQUE,
+            hide_name_in_description=True,
         )
 
         await ctx.send(embed=embed)
