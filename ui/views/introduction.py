@@ -1,13 +1,14 @@
 from typing import Optional
 
 import discord
+from discord.ext import commands
 from discord.ui import Button, View
 
 
 class IntroductionStartButtons(View):
-    def __init__(self, ctx) -> None:
+    def __init__(self, ctx: commands.Context[commands.Bot]) -> None:
         super().__init__(timeout=60)
-        self.ctx = ctx
+        self.ctx: commands.Context[commands.Bot] = ctx
         self.clicked_start: bool = False
         self.clicked_stop: bool = False
         self.message: Optional[discord.Message] = None
@@ -41,9 +42,9 @@ class IntroductionStartButtons(View):
 
 
 class IntroductionFinishButtons(View):
-    def __init__(self, ctx) -> None:
+    def __init__(self, ctx: commands.Context[commands.Bot]) -> None:
         super().__init__(timeout=60)
-        self.ctx = ctx
+        self.ctx: commands.Context[commands.Bot] = ctx
         self.clicked_confirm: bool = False
         self.message: Optional[discord.Message] = None
 
