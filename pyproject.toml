@@ -21,6 +21,7 @@ typing-extensions = "^4.12.2"
 aiofiles = "^24.1.0"
 aiocache = "^0.12.2"
 aioconsole = "^0.7.1"
+psutil = "^6.0.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
