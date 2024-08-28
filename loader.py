@@ -52,4 +52,5 @@ class CogLoader(commands.Cog):
     async def setup(cls, bot: commands.Bot) -> None:
         cog_loader = cls(bot)
         await cog_loader.load_cog_from_dir(dir_name="modules")
+        await cog_loader.load_cog_from_dir(dir_name="handlers")
         await bot.add_cog(cog_loader)

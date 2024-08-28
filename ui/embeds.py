@@ -1,5 +1,6 @@
 import datetime
 
+from discord.ext import commands
 import discord
 
 from lib.const import CONST
@@ -8,7 +9,7 @@ from lib.const import CONST
 class builder:
     @staticmethod
     def create_embed(
-        ctx,
+        ctx: commands.Context[commands.Bot],
         title=None,
         author_text=None,
         author_icon_url=None,

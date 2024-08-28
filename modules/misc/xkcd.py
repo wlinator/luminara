@@ -22,7 +22,7 @@ async def print_comic(
         else:
             comic = _xkcd.get_random_comic(raw_comic_image=True)
 
-        await interaction.followup.send(
+        await interaction.response.send_message(
             embed=builder.create_success_embed(
                 interaction,
                 author_text=CONST.STRINGS["xkcd_title"].format(comic.id, comic.title),
@@ -37,7 +37,7 @@ async def print_comic(
         )
 
     except HttpError:
-        await interaction.followup.send(
+        await interaction.response.send_message(
             embed=builder.create_error_embed(
                 interaction,
                 author_text=CONST.STRINGS["xkcd_not_found_author"],
@@ -51,10 +51,7 @@ class Xkcd(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    xkcd: app_commands.Group = app_commands.Group(
-        name="xkcd",
-        description="Xkcd commands",
-    )
+    xkcd = app_commands.Group(name="xkcd", description="Get the latest xkcd comic")
 
     @xkcd.command(name="latest", description="Get the latest xkcd comic")
     async def xkcd_latest(self, interaction: discord.Interaction) -> None:
