@@ -22,4 +22,4 @@ RUN rm -rf .venv
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-CMD [ "poetry", "run", "python", "-OO", "./lumi.py" ]
+CMD [ "poetry", "run", "python", "-OO", "./main.py" ]
