@@ -13,7 +13,7 @@ class _parser:
         return self._read_file("settings.yaml", yaml.safe_load)
 
     def read_json(self, path: str) -> dict:
-        return self._read_file(f"localization/{path}.json", json.load)
+        return self._read_file(f"locales/{path}.json", json.load)
 
     def _read_file(self, file_path: str, load_func: Callable) -> dict:
         with open(file_path) as file:
