@@ -2,6 +2,7 @@ from discord.ext import commands
 from loguru import logger
 import asyncio
 from loader import CogLoader
+from db.database import run_migrations
 
 
 class Luminara(commands.Bot):
@@ -14,13 +15,15 @@ class Luminara(commands.Bot):
 
     async def setup(self) -> None:
         try:
-            pass
+            run_migrations()
         except Exception as e:
             logger.error(f"Failed to setup: {e}")
+            await self.shutdown()
+
         await self.load_cogs()
 
     async def load_cogs(self) -> None:
-        logger.info("Loading cogs...")
+        logger.debug("Loading cogs...")
         await CogLoader.setup(bot=self)
 
     @commands.Cog.listener()
