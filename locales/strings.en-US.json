@@ -191,6 +191,7 @@
     "intro_no_channel_author": "Channel Not Set",
     "intro_no_guild": "you're not in a server that supports introductions.",
     "intro_no_guild_author": "Server Not Supported",
+    "intro_post_confirmation_author": "Introduction Posted",
     "intro_post_confirmation": "your introduction has been posted in {0}!",
     "intro_preview_field": "**{0}:** {1}\n\n",
     "intro_question_footer": "Type your answer below.",
