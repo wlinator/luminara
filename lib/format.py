@@ -109,8 +109,11 @@ def get_invoked_name(ctx: commands.Context[commands.Bot]) -> str | None:
 
 def format_duration_to_seconds(duration: str) -> int:
     """
-    Formats a duration in seconds to a human-readable string.
+    Converts a duration string to seconds. If the input is just an integer, it returns that integer as seconds.
     """
+    if duration.isdigit():
+        return int(duration)
+
     parsed_duration: int = parse(duration)  # type: ignore
 
     if isinstance(parsed_duration, int):
