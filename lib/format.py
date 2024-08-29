@@ -114,12 +114,12 @@ def format_duration_to_seconds(duration: str) -> int:
     if duration.isdigit():
         return int(duration)
 
-    parsed_duration: int = parse(duration)  # type: ignore
+    try:
+        parsed_duration: int = parse(duration)  # type: ignore
+        return max(0, parsed_duration)
 
-    if isinstance(parsed_duration, int):
-        return parsed_duration
-
-    raise exceptions.LumiException(CONST.STRINGS["error_invalid_duration"].format(duration))
+    except Exception as e:
+        raise exceptions.LumiException(CONST.STRINGS["error_invalid_duration"].format(duration)) from e
 
 
 def format_seconds_to_duration_string(seconds: int) -> str:
