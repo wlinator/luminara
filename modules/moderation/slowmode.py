@@ -1,6 +1,7 @@
 import contextlib
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 from lib.const import CONST
@@ -44,7 +45,7 @@ class Slowmode(commands.Cog):
             return
 
         if duration < 0 or duration > 21600:  # 21600 seconds = 6 hours (Discord's max slowmode)
-            await ctx.send(CONST.STRINGS["slowmode_duration_error"])
+            await ctx.send(CONST.STRINGS["slowmode_invalid_duration"])
             return
 
         try:
@@ -52,6 +53,40 @@ class Slowmode(commands.Cog):
             await ctx.send(CONST.STRINGS["slowmode_success"].format(duration, channel.mention))
         except discord.Forbidden as error:
             raise LumiException(CONST.STRINGS["slowmode_forbidden"]) from error
+
+    @app_commands.command(
+        name="slowmode",
+        description="Set or view the slowmode for a channel",
+    )
+    @app_commands.checks.has_permissions(manage_channels=True)
+    async def slowmode_slash(
+        self,
+        interaction: discord.Interaction,
+        channel: discord.TextChannel,
+        duration: str | None = None,
+    ) -> None:
+        if duration is None:
+            current_slowmode = channel.slowmode_delay
+            await interaction.response.send_message(
+                CONST.STRINGS["slowmode_current_value"].format(channel.mention, current_slowmode),
+            )
+            return
+
+        try:
+            seconds = format_duration_to_seconds(duration)
+        except LumiException:
+            await interaction.response.send_message(CONST.STRINGS["slowmode_invalid_duration"], ephemeral=True)
+            return
+
+        if seconds < 0 or seconds > 21600:  # 21600 seconds = 6 hours (Discord's max slowmode)
+            await interaction.response.send_message(CONST.STRINGS["slowmode_invalid_duration"], ephemeral=True)
+            return
+
+        try:
+            await channel.edit(slowmode_delay=seconds)
+            await interaction.response.send_message(CONST.STRINGS["slowmode_success"].format(seconds, channel.mention))
+        except discord.Forbidden:
+            await interaction.response.send_message(CONST.STRINGS["slowmode_forbidden"], ephemeral=True)
 
 
 async def setup(bot: commands.Bot) -> None:
