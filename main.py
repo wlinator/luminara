@@ -7,6 +7,7 @@ from loguru import logger
 
 from lib.client import Luminara
 from lib.const import CONST
+from lib.help import LumiHelp
 from services.config_service import GuildConfig
 
 logger.remove()
@@ -30,6 +31,7 @@ async def main() -> None:
         allowed_mentions=discord.AllowedMentions(everyone=False),
         case_insensitive=True,
         strip_after_prefix=True,
+        help_command=LumiHelp(),
     )
 
     try:
