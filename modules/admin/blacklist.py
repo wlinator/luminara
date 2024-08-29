@@ -28,6 +28,7 @@ class Blacklist(commands.Cog):
             author_text=CONST.STRINGS["admin_blacklist_author"],
             description=CONST.STRINGS["admin_blacklist_description"].format(user.name),
             footer_text=CONST.STRINGS["admin_blacklist_footer"],
+            hide_time=True,
         )
 
         await ctx.send(embed=embed)
