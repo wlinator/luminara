@@ -4,6 +4,8 @@ import discord
 from discord.ext import commands
 
 from lib.const import CONST
+from lib.exceptions import LumiException
+from lib.format import format_duration_to_seconds
 from ui.embeds import Builder
 
 
@@ -32,11 +34,11 @@ class Slowmode(commands.Cog):
                 try:
                     channel = await commands.TextChannelConverter().convert(ctx, arg)
                 except commands.BadArgument:
-                    with contextlib.suppress(ValueError):
-                        duration = int(arg)
+                    with contextlib.suppress(LumiException):
+                        duration = format_duration_to_seconds(arg)
             else:
-                with contextlib.suppress(ValueError):
-                    duration = int(arg)
+                with contextlib.suppress(LumiException):
+                    duration = format_duration_to_seconds(arg)
 
         if not channel:
             await ctx.send(CONST.STRINGS["slowmode_channel_not_found"])

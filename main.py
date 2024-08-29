@@ -7,13 +7,15 @@ from loguru import logger
 
 from lib.client import Luminara
 from lib.const import CONST
+from services.config_service import GuildConfig
 
 logger.remove()
 logger.add(sys.stdout, format=CONST.LOG_FORMAT, colorize=True, level=CONST.LOG_LEVEL)
 
 
-async def get_prefix(bot, message):
-    return commands.when_mentioned_or(".")(bot, message)
+async def get_prefix(bot: Luminara, message: discord.Message) -> list[str]:
+    extras = GuildConfig.get_prefix(message)
+    return commands.when_mentioned_or(*extras)(bot, message)
 
 
 async def main() -> None:
