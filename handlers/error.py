@@ -47,8 +47,13 @@ async def handle_error(
         description = CONST.STRINGS["error_no_private_message_description"]
 
     elif isinstance(error, commands.NotOwner):
-        author_text = CONST.STRINGS["error_not_owner_author"]
-        description = CONST.STRINGS["error_not_owner_description"]
+        logger.warning(
+            CONST.STRINGS["error_not_owner"].format(
+                ctx.author.name,
+                ctx.command.qualified_name if ctx.command else CONST.STRINGS["error_not_owner_unknown"],
+            ),
+        )
+        return
 
     elif isinstance(error, commands.PrivateMessageOnly):
         author_text = CONST.STRINGS["error_private_message_only_author"]
@@ -100,6 +105,9 @@ class ErrorHandler(commands.Cog):
         command_type: str,
     ) -> None:
         if ctx.command is None:
+            return
+
+        if isinstance(error, commands.NotOwner | exceptions.Blacklisted):
             return
 
         log_msg = f"{ctx.author.name} executed {command_type}{ctx.command.qualified_name}"
