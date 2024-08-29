@@ -1,10 +1,14 @@
 import asyncio
+import os
+import platform
 from typing import Any
 
+import discord
 from discord.ext import commands
 from loguru import logger
 
 from db.database import run_migrations
+from lib.const import CONST
 from lib.loader import CogLoader
 
 
@@ -13,8 +17,20 @@ class Luminara(commands.Bot):
         super().__init__(*args, **kwargs)
         self.is_shutting_down: bool = False
         self.setup_task: asyncio.Task[None] = asyncio.create_task(self.setup())
-        self.strip_after_prefix = True
-        self.case_insensitive = True
+
+    async def on_ready(self) -> None:
+        logger.success(f"{CONST.TITLE} v{CONST.VERSION}")
+        logger.success(f"Logged in with ID {self.user.id if self.user else 'Unknown'}")
+        logger.success(f"discord.py API version: {discord.__version__}")
+        logger.success(f"Python version: {platform.python_version()}")
+        logger.success(f"Running on: {platform.system()} {platform.release()} ({os.name})")
+
+        if self.owner_ids:
+            for owner in self.owner_ids:
+                logger.info(f"Added bot administrator: {owner}")
+
+        if not self.setup_task.done():
+            await self.setup_task
 
     async def setup(self) -> None:
         try:
@@ -26,15 +42,7 @@ class Luminara(commands.Bot):
         await self.load_cogs()
 
     async def load_cogs(self) -> None:
-        logger.debug("Loading cogs...")
         await CogLoader.setup(bot=self)
-
-    @commands.Cog.listener()
-    async def on_ready(self) -> None:
-        logger.success(f"Logged in as {self.user}.")
-
-        if not self.setup_task.done():
-            await self.setup_task
 
     @commands.Cog.listener()
     async def on_disconnect(self) -> None:

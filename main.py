@@ -28,6 +28,8 @@ async def main() -> None:
         intents=discord.Intents.all(),
         command_prefix=get_prefix,
         allowed_mentions=discord.AllowedMentions(everyone=False),
+        case_insensitive=True,
+        strip_after_prefix=True,
     )
 
     try:
