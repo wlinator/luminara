@@ -1057,6 +1057,20 @@ files = [
 ]
 
 [[package]]
+name = "reactionmenu"
+version = "3.1.7"
+description = "A library to create a discord.py 2.0+ paginator. Supports pagination with buttons, reactions, and category selection using selects."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "reactionmenu-3.1.7-py3-none-any.whl", hash = "sha256:51a217c920382dfecbb2f05d60bd20b79ed9895e9f5663f6c0edb75e806f863a"},
+    {file = "reactionmenu-3.1.7.tar.gz", hash = "sha256:10da3c1966de2b6264fcdf72537348923c5e151501644375c25f430bfd870463"},
+]
+
+[package.dependencies]
+"discord.py" = ">=2.0.0"
+
+[[package]]
 name = "requests"
 version = "2.32.3"
 description = "Python HTTP for Humans."
@@ -1310,4 +1324,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "4a7a75036f4de7e0126a8f6b058eb3deb52f710becf44e4da6bac4a0ea0a1a2f"
+content-hash = "122c3bd137956c87143ead4ae71a7800669a9f379a62c93da21a7ef61231c0f5"
