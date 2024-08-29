@@ -1,14 +1,17 @@
-from discord.ext import commands
-from discord import Embed
-from lib.const import CONST
-from ui.embeds import builder
 from datetime import datetime
+
+import discord
+from discord import Embed
+from discord.ext import commands
+
+from lib.const import CONST
+from ui.embeds import Builder
 
 
 class Uptime(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
-        self.start_time: datetime = datetime.now()
+        self.start_time: datetime = discord.utils.utcnow()
 
     @commands.hybrid_command(
         name="uptime",
@@ -17,7 +20,7 @@ class Uptime(commands.Cog):
     async def uptime(self, ctx: commands.Context[commands.Bot]) -> None:
         unix_timestamp: int = int(self.start_time.timestamp())
 
-        embed: Embed = builder.create_embed(
+        embed: Embed = Builder.create_embed(
             theme="info",
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["ping_author"],

@@ -1,6 +1,7 @@
 from discord.ext import commands
+
 from lib.const import CONST
-from ui.embeds import builder
+from ui.embeds import Builder
 from ui.views.invite import InviteButton
 
 
@@ -15,7 +16,7 @@ class Invite(commands.Cog):
     )
     async def invite(self, ctx: commands.Context[commands.Bot]) -> None:
         await ctx.send(
-            embed=builder.create_embed(
+            embed=Builder.create_embed(
                 theme="success",
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["invite_author"],

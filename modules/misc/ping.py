@@ -1,6 +1,7 @@
 from discord.ext import commands
+
 from lib.const import CONST
-from ui.embeds import builder
+from ui.embeds import Builder
 
 
 class Ping(commands.Cog):
@@ -12,7 +13,7 @@ class Ping(commands.Cog):
         usage="ping",
     )
     async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
-        embed = builder.create_embed(
+        embed = Builder.create_embed(
             theme="success",
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["ping_author"],

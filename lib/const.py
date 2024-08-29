@@ -1,127 +1,132 @@
-import os
 import json
+import os
+from collections.abc import Callable
+from pathlib import Path
+from typing import Any, Final
+
 import yaml
-from functools import lru_cache
-from typing import Optional, Callable, Set, List, Dict
 
 
-class _parser:
+class Parser:
     """Internal parses class. Not intended to be used outside of this module."""
 
-    @lru_cache(maxsize=1024)
-    def read_s(self) -> dict:
-        return self._read_file("settings.yaml", yaml.safe_load)
+    def __init__(self):
+        self._cache: dict[str, Any] = {}
 
-    def read_json(self, path: str) -> dict:
-        return self._read_file(f"locales/{path}.json", json.load)
+    def read_s(self) -> dict[str, Any]:
+        if "settings" not in self._cache:
+            self._cache["settings"] = self._read_file("settings.yaml", yaml.safe_load)
+        return self._cache["settings"]
 
-    def _read_file(self, file_path: str, load_func: Callable) -> dict:
-        with open(file_path) as file:
+    def read_json(self, path: str) -> dict[str, Any]:
+        cache_key = f"json_{path}"
+        if cache_key not in self._cache:
+            self._cache[cache_key] = self._read_file(f"locales/{path}.json", json.load)
+        return self._cache[cache_key]
+
+    def _read_file(self, file_path: str, load_func: Callable[[Any], dict[str, Any]]) -> dict[str, Any]:
+        with Path(file_path).open() as file:
             return load_func(file)
 
 
-class _constants:
-    _p = _parser()
-    _s = _parser().read_s()
+class Constants:
+    _p: Final = Parser()
+    _s: Final = Parser().read_s()
 
     # bot credentials
-    TOKEN: Optional[str] = os.environ.get("TOKEN")
-    INSTANCE: Optional[str] = os.environ.get("INSTANCE")
-    XP_GAIN_PER_MESSAGE: int = int(os.environ.get("XP_GAIN_PER_MESSAGE", 1))
-    XP_GAIN_COOLDOWN: int = int(os.environ.get("XP_GAIN_COOLDOWN", 8))
-    DBX_TOKEN: Optional[str] = os.environ.get("DBX_OAUTH2_REFRESH_TOKEN")
-    DBX_APP_KEY: Optional[str] = os.environ.get("DBX_APP_KEY")
-    DBX_APP_SECRET: Optional[str] = os.environ.get("DBX_APP_SECRET")
-    MARIADB_USER: Optional[str] = os.environ.get("MARIADB_USER")
-    MARIADB_PASSWORD: Optional[str] = os.environ.get("MARIADB_PASSWORD")
-    MARIADB_ROOT_PASSWORD: Optional[str] = os.environ.get("MARIADB_ROOT_PASSWORD")
-    MARIADB_DATABASE: Optional[str] = os.environ.get("MARIADB_DATABASE")
+    TOKEN: Final[str | None] = os.environ.get("TOKEN")
+    INSTANCE: Final[str | None] = os.environ.get("INSTANCE")
+    XP_GAIN_PER_MESSAGE: Final[int] = int(os.environ.get("XP_GAIN_PER_MESSAGE", 1))
+    XP_GAIN_COOLDOWN: Final[int] = int(os.environ.get("XP_GAIN_COOLDOWN", 8))
+    DBX_TOKEN: Final[str | None] = os.environ.get("DBX_OAUTH2_REFRESH_TOKEN")
+    DBX_APP_KEY: Final[str | None] = os.environ.get("DBX_APP_KEY")
+    DBX_APP_SECRET: Final[str | None] = os.environ.get("DBX_APP_SECRET")
+    MARIADB_USER: Final[str | None] = os.environ.get("MARIADB_USER")
+    MARIADB_PASSWORD: Final[str | None] = os.environ.get("MARIADB_PASSWORD")
+    MARIADB_ROOT_PASSWORD: Final[str | None] = os.environ.get("MARIADB_ROOT_PASSWORD")
+    MARIADB_DATABASE: Final[str | None] = os.environ.get("MARIADB_DATABASE")
 
-    OWNER_IDS: Optional[Set[int]] = (
-        {int(id.strip()) for id in os.environ.get("OWNER_IDS", "").split(",") if id}
+    OWNER_IDS: Final[set[int] | None] = (
+        {int(owner_id.strip()) for owner_id in os.environ.get("OWNER_IDS", "").split(",") if owner_id}
         if "OWNER_IDS" in os.environ
         else None
     )
 
     # metadata
-    TITLE: str = _s["info"]["title"]
-    AUTHOR: str = _s["info"]["author"]
-    LICENSE: str = _s["info"]["license"]
-    VERSION: str = _s["info"]["version"]
-    REPO_URL: str = _s["info"]["repository_url"]
-    INVITE_URL: str = _s["info"]["invite_url"]
+    TITLE: Final[str] = _s["info"]["title"]
+    AUTHOR: Final[str] = _s["info"]["author"]
+    LICENSE: Final[str] = _s["info"]["license"]
+    VERSION: Final[str] = _s["info"]["version"]
+    REPO_URL: Final[str] = _s["info"]["repository_url"]
+    INVITE_URL: Final[str] = _s["info"]["invite_url"]
 
     # loguru
-    LOG_LEVEL: str = _s["logs"]["level"] or "DEBUG"
-    LOG_FORMAT: str = _s["logs"]["format"]
+    LOG_LEVEL: Final[str] = _s["logs"]["level"] or "DEBUG"
+    LOG_FORMAT: Final[str] = _s["logs"]["format"]
 
     # cogs
-    COG_IGNORE_LIST: Set[str] = (
-        set(_s["cogs"]["ignore"]) if _s["cogs"]["ignore"] else set()
-    )
+    COG_IGNORE_LIST: Final[set[str]] = set(_s["cogs"]["ignore"]) if _s["cogs"]["ignore"] else set()
 
     # images
-    ALLOWED_IMAGE_EXTENSIONS: List[str] = _s["images"]["allowed_image_extensions"]
-    BIRTHDAY_GIF_URL: str = _s["images"]["birthday_gif_url"]
+    ALLOWED_IMAGE_EXTENSIONS: Final[list[str]] = _s["images"]["allowed_image_extensions"]
+    BIRTHDAY_GIF_URL: Final[str] = _s["images"]["birthday_gif_url"]
 
     # colors
-    COLOR_DEFAULT: int = _s["colors"]["color_default"]
-    COLOR_WARNING: int = _s["colors"]["color_warning"]
-    COLOR_ERROR: int = _s["colors"]["color_error"]
+    COLOR_DEFAULT: Final[int] = _s["colors"]["color_default"]
+    COLOR_WARNING: Final[int] = _s["colors"]["color_warning"]
+    COLOR_ERROR: Final[int] = _s["colors"]["color_error"]
 
     # economy
-    DAILY_REWARD: int = _s["economy"]["daily_reward"]
-    BLACKJACK_MULTIPLIER: float = _s["economy"]["blackjack_multiplier"]
-    BLACKJACK_HIT_EMOJI: str = _s["economy"]["blackjack_hit_emoji"]
-    BLACKJACK_STAND_EMOJI: str = _s["economy"]["blackjack_stand_emoji"]
-    SLOTS_MULTIPLIERS: Dict[str, float] = _s["economy"]["slots_multipliers"]
+    DAILY_REWARD: Final[int] = _s["economy"]["daily_reward"]
+    BLACKJACK_MULTIPLIER: Final[float] = _s["economy"]["blackjack_multiplier"]
+    BLACKJACK_HIT_EMOJI: Final[str] = _s["economy"]["blackjack_hit_emoji"]
+    BLACKJACK_STAND_EMOJI: Final[str] = _s["economy"]["blackjack_stand_emoji"]
+    SLOTS_MULTIPLIERS: Final[dict[str, float]] = _s["economy"]["slots_multipliers"]
 
     # art from git repository
-    _fetch_url: str = _s["art"]["fetch_url"]
+    _fetch_url: Final[str] = _s["art"]["fetch_url"]
 
-    LUMI_LOGO_OPAQUE: str = _fetch_url + _s["art"]["logo"]["opaque"]
-    LUMI_LOGO_TRANSPARENT: str = _fetch_url + _s["art"]["logo"]["transparent"]
-    BOOST_ICON: str = _fetch_url + _s["art"]["icons"]["boost"]
-    CHECK_ICON: str = _fetch_url + _s["art"]["icons"]["check"]
-    CROSS_ICON: str = _fetch_url + _s["art"]["icons"]["cross"]
-    EXCLAIM_ICON: str = _fetch_url + _s["art"]["icons"]["exclaim"]
-    INFO_ICON: str = _fetch_url + _s["art"]["icons"]["info"]
-    HAMMER_ICON: str = _fetch_url + _s["art"]["icons"]["hammer"]
-    MONEY_BAG_ICON: str = _fetch_url + _s["art"]["icons"]["money_bag"]
-    MONEY_COINS_ICON: str = _fetch_url + _s["art"]["icons"]["money_coins"]
-    QUESTION_ICON: str = _fetch_url + _s["art"]["icons"]["question"]
-    STREAK_ICON: str = _fetch_url + _s["art"]["icons"]["streak"]
-    STREAK_BRONZE_ICON: str = _fetch_url + _s["art"]["icons"]["streak_bronze"]
-    STREAK_GOLD_ICON: str = _fetch_url + _s["art"]["icons"]["streak_gold"]
-    STREAK_SILVER_ICON: str = _fetch_url + _s["art"]["icons"]["streak_silver"]
-    WARNING_ICON: str = _fetch_url + _s["art"]["icons"]["warning"]
+    LUMI_LOGO_OPAQUE: Final[str] = _fetch_url + _s["art"]["logo"]["opaque"]
+    LUMI_LOGO_TRANSPARENT: Final[str] = _fetch_url + _s["art"]["logo"]["transparent"]
+    BOOST_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["boost"]
+    CHECK_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["check"]
+    CROSS_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["cross"]
+    EXCLAIM_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["exclaim"]
+    INFO_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["info"]
+    HAMMER_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["hammer"]
+    MONEY_BAG_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["money_bag"]
+    MONEY_COINS_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["money_coins"]
+    QUESTION_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["question"]
+    STREAK_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["streak"]
+    STREAK_BRONZE_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["streak_bronze"]
+    STREAK_GOLD_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["streak_gold"]
+    STREAK_SILVER_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["streak_silver"]
+    WARNING_ICON: Final[str] = _fetch_url + _s["art"]["icons"]["warning"]
 
     # art from imgur
-    FLOWERS_ART: str = _s["art"]["juicybblue"]["flowers"]
-    TEAPOT_ART: str = _s["art"]["juicybblue"]["teapot"]
-    MUFFIN_ART: str = _s["art"]["juicybblue"]["muffin"]
-    CLOUD_ART: str = _s["art"]["other"]["cloud"]
-    TROPHY_ART: str = _s["art"]["other"]["trophy"]
+    FLOWERS_ART: Final[str] = _s["art"]["juicybblue"]["flowers"]
+    TEAPOT_ART: Final[str] = _s["art"]["juicybblue"]["teapot"]
+    MUFFIN_ART: Final[str] = _s["art"]["juicybblue"]["muffin"]
+    CLOUD_ART: Final[str] = _s["art"]["other"]["cloud"]
+    TROPHY_ART: Final[str] = _s["art"]["other"]["trophy"]
 
     # emotes
-    EMOTES_SERVER_ID: int = _s["emotes"]["guild_id"]
-    EMOTE_IDS: Dict[str, int] = _s["emotes"]["emote_ids"]
+    EMOTES_SERVER_ID: Final[int] = _s["emotes"]["guild_id"]
+    EMOTE_IDS: Final[dict[str, int]] = _s["emotes"]["emote_ids"]
 
     # introductions (currently only usable in ONE guild)
-    INTRODUCTIONS_GUILD_ID: int = _s["introductions"]["intro_guild_id"]
-    INTRODUCTIONS_CHANNEL_ID: int = _s["introductions"]["intro_channel_id"]
-    INTRODUCTIONS_QUESTION_MAPPING: Dict[str, str] = _s["introductions"][
-        "intro_question_mapping"
-    ]
+    INTRODUCTIONS_GUILD_ID: Final[int] = _s["introductions"]["intro_guild_id"]
+    INTRODUCTIONS_CHANNEL_ID: Final[int] = _s["introductions"]["intro_channel_id"]
+    INTRODUCTIONS_QUESTION_MAPPING: Final[dict[str, str]] = _s["introductions"]["intro_question_mapping"]
 
     # Reponse strings
     # TODO: Implement switching between languages
-    STRINGS = _p.read_json("strings.en-US")
-    LEVEL_MESSAGES = _p.read_json("levels.en-US")
+    STRINGS: Final = _p.read_json("strings.en-US")
+    LEVEL_MESSAGES: Final = _p.read_json("levels.en-US")
 
-    _bday = _p.read_json("bdays.en-US")
-    BIRTHDAY_MESSAGES = _bday["birthday_messages"]
-    BIRTHDAY_MONTHS = _bday["months"]
+    _bday: Final = _p.read_json("bdays.en-US")
+    BIRTHDAY_MESSAGES: Final = _bday["birthday_messages"]
+    BIRTHDAY_MONTHS: Final = _bday["months"]
 
 
-CONST: _constants = _constants()
+CONST = Constants()

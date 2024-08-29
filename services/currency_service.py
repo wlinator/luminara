@@ -4,20 +4,19 @@ from db import database
 
 
 class Currency:
-    def __init__(self, user_id):
-        self.user_id = user_id
-        self.balance = Currency.fetch_or_create_balance(self.user_id)
+    def __init__(self, user_id: int) -> None:
+        self.user_id: int = user_id
+        self.balance: int = Currency.fetch_or_create_balance(self.user_id)
 
-    def add_balance(self, amount):
+    def add_balance(self, amount: int) -> None:
         self.balance += abs(amount)
 
-    def take_balance(self, amount):
+    def take_balance(self, amount: int) -> None:
         self.balance -= abs(amount)
-
         self.balance = max(self.balance, 0)
 
-    def push(self):
-        query = """
+    def push(self) -> None:
+        query: str = """
         UPDATE currency
         SET balance = %s
         WHERE user_id = %s
@@ -26,15 +25,15 @@ class Currency:
         database.execute_query(query, (round(self.balance), self.user_id))
 
     @staticmethod
-    def fetch_or_create_balance(user_id):
-        query = """
+    def fetch_or_create_balance(user_id: int) -> int:
+        query: str = """
         SELECT balance
         FROM currency
         WHERE user_id = %s
         """
 
         try:
-            balance = database.select_query_one(query, (user_id,))
+            balance: int | None = database.select_query_one(query, (user_id,))
         except (IndexError, TypeError):
             balance = None
 
@@ -52,31 +51,27 @@ class Currency:
         return balance
 
     @staticmethod
-    def load_leaderboard():
-        query = "SELECT user_id, balance FROM currency ORDER BY balance DESC"
-        data = database.select_query(query)
+    def load_leaderboard() -> list[tuple[int, int, int]]:
+        query: str = "SELECT user_id, balance FROM currency ORDER BY balance DESC"
+        data: list[tuple[int, int]] = database.select_query(query)
 
         return [(row[0], row[1], rank) for rank, row in enumerate(data, start=1)]
 
     @staticmethod
-    def format(num):
+    def format(num: int) -> str:
         locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
         return locale.format_string("%d", num, grouping=True)
 
     @staticmethod
-    def format_human(num):
-        num = float("{:.3g}".format(num))
-        magnitude = 0
-        while abs(num) >= 1000:
+    def format_human(num: int) -> str:
+        num_float: float = float(f"{num:.3g}")
+        magnitude: int = 0
+        while abs(num_float) >= 1000:
             magnitude += 1
-            num /= 1000.0
+            num_float /= 1000.0
 
-        return "{}{}".format(
-            "{:f}".format(num).rstrip("0").rstrip("."),
-            ["", "K", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "Oc", "No", "Dc"][
-                magnitude
-            ],
-        )
+        suffixes: list[str] = ["", "K", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
+        return f'{f"{num_float:f}".rstrip("0").rstrip(".")}{suffixes[magnitude]}'
 
         # A Thousand = K
         # Million = M

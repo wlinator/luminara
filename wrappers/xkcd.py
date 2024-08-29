@@ -258,9 +258,7 @@ class Client:
         HttpError
             If the request fails.
         """
-        comic_url = (
-            self.latest_comic_url() if comic_id <= 0 else self.comic_id_url(comic_id)
-        )
+        comic_url = self.latest_comic_url() if comic_id <= 0 else self.comic_id_url(comic_id)
 
         try:
             response = httpx.get(comic_url)

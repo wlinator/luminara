@@ -1,8 +1,9 @@
-from discord.ext import commands
 from discord import Embed
+from discord.ext import commands
+
 from lib.const import CONST
-from ui.embeds import builder
 from services.xp_service import XpService
+from ui.embeds import Builder
 
 
 class Level(commands.Cog):
@@ -25,7 +26,7 @@ class Level(commands.Cog):
             xp_data.level,
         )
 
-        embed: Embed = builder.create_embed(
+        embed: Embed = Builder.create_embed(
             theme="success",
             user_name=ctx.author.name,
             title=CONST.STRINGS["xp_level"].format(xp_data.level),

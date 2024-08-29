@@ -1,28 +1,28 @@
 from datetime import datetime
-from typing import Optional, Literal
+from typing import Literal
 
 import discord
 
 from lib.const import CONST
 
 
-class builder:
+class Builder:
     @staticmethod
     def create_embed(
-        user_name: Optional[str] = None,
-        user_display_avatar_url: Optional[str] = None,
-        theme: Optional[Literal["error", "success", "info", "warning"]] = None,
-        title: Optional[str] = None,
-        author_text: Optional[str] = None,
-        author_icon_url: Optional[str] = None,
-        author_url: Optional[str] = None,
-        description: Optional[str] = None,
-        color: Optional[int] = None,
-        footer_text: Optional[str] = None,
-        footer_icon_url: Optional[str] = None,
-        image_url: Optional[str] = None,
-        thumbnail_url: Optional[str] = None,
-        timestamp: Optional[datetime] = None,
+        user_name: str | None = None,
+        user_display_avatar_url: str | None = None,
+        theme: Literal["error", "success", "info", "warning"] | None = None,
+        title: str | None = None,
+        author_text: str | None = None,
+        author_icon_url: str | None = None,
+        author_url: str | None = None,
+        description: str | None = None,
+        color: int | None = None,
+        footer_text: str | None = None,
+        footer_icon_url: str | None = None,
+        image_url: str | None = None,
+        thumbnail_url: str | None = None,
+        timestamp: datetime | None = None,
         hide_name_in_description: bool = False,
         hide_time: bool = False,
     ) -> discord.Embed:
@@ -59,7 +59,7 @@ class builder:
             icon_url=footer_icon_url or CONST.LUMI_LOGO_TRANSPARENT,
         )
 
-        embed.timestamp = None if hide_time else (timestamp or datetime.now())
+        embed.timestamp = None if hide_time else (timestamp or discord.utils.utcnow())
         if image_url:
             embed.set_image(url=image_url)
         if thumbnail_url:

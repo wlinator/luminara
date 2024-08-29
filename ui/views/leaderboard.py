@@ -1,16 +1,17 @@
+import contextlib
 from datetime import datetime
 
 import discord
 from discord.ext import commands
 
 from lib.const import CONST
-from ui.embeds import builder
 from services.currency_service import Currency
 from services.daily_service import Dailies
 from services.xp_service import XpService
+from ui.embeds import Builder
 
 
-class LeaderboardCommandOptions(discord.ui.Select):
+class LeaderboardCommandOptions(discord.ui.Select[discord.ui.View]):
     """
     This class specifies the options for the leaderboard command:
     - XP
@@ -19,34 +20,35 @@ class LeaderboardCommandOptions(discord.ui.Select):
     """
 
     def __init__(self) -> None:
+        options: list[discord.SelectOption] = [
+            discord.SelectOption(
+                label="Levels",
+                description="See the top chatters of this server!",
+                emoji="🆙",
+                value="xp",
+            ),
+            discord.SelectOption(
+                label="Currency",
+                description="Who is the richest Lumi user?",
+                value="currency",
+                emoji="💸",
+            ),
+            discord.SelectOption(
+                label="Dailies",
+                description="See who has the biggest streak!",
+                value="dailies",
+                emoji="📅",
+            ),
+        ]
         super().__init__(
             placeholder="Select a leaderboard",
             min_values=1,
             max_values=1,
-            options=[
-                discord.SelectOption(
-                    label="Levels",
-                    description="See the top chatters of this server!",
-                    emoji="🆙",
-                    value="xp",
-                ),
-                discord.SelectOption(
-                    label="Currency",
-                    description="Who is the richest Lumi user?",
-                    value="currency",
-                    emoji="💸",
-                ),
-                discord.SelectOption(
-                    label="Dailies",
-                    description="See who has the biggest streak!",
-                    value="dailies",
-                    emoji="📅",
-                ),
-            ],
+            options=options,
         )
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        if self.view:
+        if isinstance(self.view, LeaderboardCommandView):
             await self.view.on_select(self.values[0], interaction)
 
 
@@ -56,15 +58,17 @@ class LeaderboardCommandView(discord.ui.View):
     what kind of leaderboard to show.
     """
 
+    ctx: commands.Context[commands.Bot]
+    options: LeaderboardCommandOptions
+
     def __init__(
         self,
         ctx: commands.Context[commands.Bot],
         options: LeaderboardCommandOptions,
     ) -> None:
+        super().__init__(timeout=180)
         self.ctx = ctx
         self.options = options
-
-        super().__init__(timeout=180)
         self.add_item(self.options)
 
     async def on_timeout(self) -> None:
@@ -72,7 +76,7 @@ class LeaderboardCommandView(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user and interaction.user != self.ctx.author:
-            embed = builder.create_embed(
+            embed = Builder.create_embed(
                 theme="error",
                 user_name=interaction.user.name,
                 description=CONST.STRINGS["xp_lb_cant_use_dropdown"],
@@ -86,7 +90,7 @@ class LeaderboardCommandView(discord.ui.View):
         if not self.ctx.guild:
             return
 
-        embed = builder.create_embed(
+        embed = Builder.create_embed(
             theme="success",
             user_name=interaction.user.name,
             thumbnail_url=CONST.FLOWERS_ART,
@@ -99,7 +103,12 @@ class LeaderboardCommandView(discord.ui.View):
 
         await interaction.response.edit_message(embed=embed)
 
-    async def populate_leaderboard(self, item: str, embed, icon):
+    async def populate_leaderboard(
+        self,
+        item: str,
+        embed: discord.Embed,
+        icon: str,
+    ) -> None:
         leaderboard_methods = {
             "xp": self._populate_xp_leaderboard,
             "currency": self._populate_currency_leaderboard,
@@ -107,11 +116,13 @@ class LeaderboardCommandView(discord.ui.View):
         }
         await leaderboard_methods[item](embed, icon)
 
-    async def _populate_xp_leaderboard(self, embed, icon):
+    async def _populate_xp_leaderboard(self, embed: discord.Embed, icon: str) -> None:
         if not self.ctx.guild:
             return
 
-        xp_lb = XpService.load_leaderboard(self.ctx.guild.id)
+        xp_lb: list[tuple[int, int, int, int]] = XpService.load_leaderboard(
+            self.ctx.guild.id,
+        )
         embed.set_author(name=CONST.STRINGS["xp_lb_author"], icon_url=icon)
 
         for rank, (user_id, xp, level, xp_needed_for_next_level) in enumerate(
@@ -133,20 +144,22 @@ class LeaderboardCommandView(discord.ui.View):
                 inline=False,
             )
 
-    async def _populate_currency_leaderboard(self, embed, icon):
+    async def _populate_currency_leaderboard(
+        self,
+        embed: discord.Embed,
+        icon: str,
+    ) -> None:
         if not self.ctx.guild:
             return
 
-        cash_lb = Currency.load_leaderboard()
+        cash_lb: list[tuple[int, int, int]] = Currency.load_leaderboard()
         embed.set_author(name=CONST.STRINGS["xp_lb_currency_author"], icon_url=icon)
         embed.set_thumbnail(url=CONST.TEAPOT_ART)
 
         for user_id, balance, rank in cash_lb[:5]:
-            try:
+            member: discord.Member | None = None
+            with contextlib.suppress(discord.HTTPException):
                 member = await self.ctx.guild.fetch_member(user_id)
-            except discord.HTTPException:
-                member = None
-
             name = member.name if member else str(user_id)
 
             embed.add_field(
@@ -157,29 +170,31 @@ class LeaderboardCommandView(discord.ui.View):
                 inline=False,
             )
 
-    async def _populate_dailies_leaderboard(self, embed, icon):
+    async def _populate_dailies_leaderboard(
+        self,
+        embed: discord.Embed,
+        icon: str,
+    ) -> None:
         if not self.ctx.guild:
             return
 
-        daily_lb = Dailies.load_leaderboard()
+        daily_lb: list[tuple[int, int, str, int]] = Dailies.load_leaderboard()
         embed.set_author(name=CONST.STRINGS["xp_lb_dailies_author"], icon_url=icon)
         embed.set_thumbnail(url=CONST.MUFFIN_ART)
 
         for user_id, streak, claimed_at, rank in daily_lb[:5]:
-            try:
+            member: discord.Member | None = None
+            with contextlib.suppress(discord.HTTPException):
                 member = await self.ctx.guild.fetch_member(user_id)
-            except discord.HTTPException:
-                member = None
+            name = member.name if member else str(user_id)
 
-            name = member.name if member else user_id
-
-            claimed_at = datetime.fromisoformat(claimed_at).date()
+            claimed_at_date = datetime.fromisoformat(claimed_at).date()
 
             embed.add_field(
                 name=f"#{rank} - {name}",
                 value=CONST.STRINGS["xp_lb_dailies_field_value"].format(
                     streak,
-                    claimed_at,
+                    claimed_at_date,
                 ),
                 inline=False,
             )

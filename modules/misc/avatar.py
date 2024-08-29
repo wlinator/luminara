@@ -1,10 +1,9 @@
 from io import BytesIO
-from discord.ext import commands
-from discord.ext.commands import MemberConverter
-from typing import Optional
+
 import discord
-from discord import File
 import httpx
+from discord import File
+from discord.ext import commands
 
 
 async def create_avatar_file(url: str) -> File:
@@ -42,7 +41,7 @@ class Avatar(commands.Cog):
     async def avatar(
         self,
         ctx: commands.Context[commands.Bot],
-        member: Optional[discord.Member] = None,
+        member: discord.Member | None = None,
     ) -> None:
         """
         Get the avatar of a member.
@@ -55,18 +54,12 @@ class Avatar(commands.Cog):
             The member to get the avatar of.
         """
         if member is None:
-            member = await MemberConverter().convert(ctx, str(ctx.author.id))
+            member = await commands.MemberConverter().convert(ctx, str(ctx.author.id))
 
-        guild_avatar: Optional[str] = (
-            member.guild_avatar.url if member.guild_avatar else None
-        )
-        profile_avatar: Optional[str] = member.avatar.url if member.avatar else None
+        guild_avatar: str | None = member.guild_avatar.url if member.guild_avatar else None
+        profile_avatar: str | None = member.avatar.url if member.avatar else None
 
-        files: list[File] = [
-            await create_avatar_file(avatar)
-            for avatar in [guild_avatar, profile_avatar]
-            if avatar
-        ]
+        files: list[File] = [await create_avatar_file(avatar) for avatar in [guild_avatar, profile_avatar] if avatar]
 
         if files:
             await ctx.send(files=files)

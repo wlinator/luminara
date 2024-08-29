@@ -1,10 +1,10 @@
-from discord.ext import commands
-from lib.const import CONST
-from ui.embeds import builder
-from discord import app_commands
 import discord
+from discord import app_commands
+from discord.ext import commands
+
+from lib.const import CONST
+from ui.embeds import Builder
 from wrappers.xkcd import Client, HttpError
-from typing import Optional
 
 _xkcd = Client()
 
@@ -12,7 +12,7 @@ _xkcd = Client()
 async def print_comic(
     interaction: discord.Interaction,
     latest: bool = False,
-    number: Optional[int] = None,
+    number: int | None = None,
 ) -> None:
     try:
         if latest:
@@ -23,7 +23,7 @@ async def print_comic(
             comic = _xkcd.get_random_comic(raw_comic_image=True)
 
         await interaction.response.send_message(
-            embed=builder.create_embed(
+            embed=Builder.create_embed(
                 theme="info",
                 author_text=CONST.STRINGS["xkcd_title"].format(comic.id, comic.title),
                 description=CONST.STRINGS["xkcd_description"].format(
@@ -37,7 +37,7 @@ async def print_comic(
 
     except HttpError:
         await interaction.response.send_message(
-            embed=builder.create_embed(
+            embed=Builder.create_embed(
                 theme="error",
                 author_text=CONST.STRINGS["xkcd_not_found_author"],
                 description=CONST.STRINGS["xkcd_not_found"],
@@ -61,8 +61,8 @@ class Xkcd(commands.Cog):
         await print_comic(interaction)
 
     @xkcd.command(name="search", description="Search for an xkcd comic")
-    async def xkcd_search(self, interaction: discord.Interaction, id: int) -> None:
-        await print_comic(interaction, number=id)
+    async def xkcd_search(self, interaction: discord.Interaction, comic_id: int) -> None:
+        await print_comic(interaction, number=comic_id)
 
 
 async def setup(bot: commands.Bot) -> None:

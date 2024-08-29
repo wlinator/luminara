@@ -1,5 +1,3 @@
-from typing import Optional
-
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
@@ -11,7 +9,7 @@ class IntroductionStartButtons(View):
         self.ctx: commands.Context[commands.Bot] = ctx
         self.clicked_start: bool = False
         self.clicked_stop: bool = False
-        self.message: Optional[discord.Message] = None
+        self.message: discord.Message | None = None
 
     async def on_timeout(self) -> None:
         for child in self.children:
@@ -24,7 +22,7 @@ class IntroductionStartButtons(View):
     async def start_button_callback(
         self,
         interaction: discord.Interaction,
-        button: Button,
+        button: Button[View],
     ) -> None:
         await interaction.response.edit_message(view=None)
         self.clicked_start = True
@@ -34,7 +32,7 @@ class IntroductionStartButtons(View):
     async def stop_button_callback(
         self,
         interaction: discord.Interaction,
-        button: Button,
+        button: Button[View],
     ) -> None:
         await interaction.response.edit_message(view=None)
         self.clicked_stop = True
@@ -46,7 +44,7 @@ class IntroductionFinishButtons(View):
         super().__init__(timeout=60)
         self.ctx: commands.Context[commands.Bot] = ctx
         self.clicked_confirm: bool = False
-        self.message: Optional[discord.Message] = None
+        self.message: discord.Message | None = None
 
     async def on_timeout(self) -> None:
         for child in self.children:
@@ -59,7 +57,7 @@ class IntroductionFinishButtons(View):
     async def confirm_button_callback(
         self,
         interaction: discord.Interaction,
-        button: Button,
+        button: Button[View],
     ) -> None:
         await interaction.response.edit_message(view=None)
         self.clicked_confirm = True
@@ -69,7 +67,7 @@ class IntroductionFinishButtons(View):
     async def stop_button_callback(
         self,
         interaction: discord.Interaction,
-        button: Button,
+        button: Button[View],
     ) -> None:
         await interaction.response.edit_message(view=None)
         self.stop()

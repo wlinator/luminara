@@ -1,8 +1,10 @@
-from typing import Optional
+from typing import cast
+
+from discord import Embed, Guild, Member
 from discord.ext import commands
-from discord import Embed, Guild
+
 from lib.const import CONST
-from ui.embeds import builder
+from ui.embeds import Builder
 from ui.views.leaderboard import LeaderboardCommandOptions, LeaderboardCommandView
 
 
@@ -16,17 +18,18 @@ class Leaderboard(commands.Cog):
         usage="leaderboard",
     )
     async def leaderboard(self, ctx: commands.Context[commands.Bot]) -> None:
-        guild: Optional[Guild] = ctx.guild
+        guild: Guild | None = ctx.guild
         if not guild:
             return
 
         options: LeaderboardCommandOptions = LeaderboardCommandOptions()
         view: LeaderboardCommandView = LeaderboardCommandView(ctx, options)
 
-        embed: Embed = builder.create_embed(
+        author: Member = cast(Member, ctx.author)
+        embed: Embed = Builder.create_embed(
             theme="info",
-            user_name=ctx.author.name,
-            thumbnail_url=ctx.author.display_avatar.url,
+            user_name=author.name,
+            thumbnail_url=author.display_avatar.url,
             hide_name_in_description=True,
         )
 

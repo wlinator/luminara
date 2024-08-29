@@ -1,8 +1,10 @@
-from loguru import logger
-from discord.ext import commands
-from lib.const import CONST
 from pathlib import Path
+
 import aiofiles.os
+from discord.ext import commands
+from loguru import logger
+
+from lib.const import CONST
 
 
 class CogLoader(commands.Cog):
@@ -17,11 +19,7 @@ class CogLoader(commands.Cog):
             logger.debug(f"Ignoring cog: {cog_name} because it is in the ignore list")
             return False
 
-        return (
-            path.suffix == ".py"
-            and not path.name.startswith("_")
-            and await aiofiles.os.path.isfile(path)
-        )
+        return path.suffix == ".py" and not path.name.startswith("_") and await aiofiles.os.path.isfile(path)
 
     async def load_cogs(self, path: Path) -> None:
         try:
@@ -34,9 +32,7 @@ class CogLoader(commands.Cog):
 
             elif await self.is_cog(path):
                 relative_path: Path = path.relative_to(Path(__file__).parent.parent)
-                module: str = (
-                    str(relative_path).replace("/", ".").replace("\\", ".")[:-3]
-                )
+                module: str = str(relative_path).replace("/", ".").replace("\\", ".")[:-3]
                 try:
                     await self.bot.load_extension(name=module)
                     logger.debug(f"Loaded cog: {module}")

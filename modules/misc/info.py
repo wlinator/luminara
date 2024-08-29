@@ -1,10 +1,12 @@
-from discord.ext import commands
-from lib.const import CONST
-from ui.embeds import builder
-import discord
 import os
 import platform
+
+import discord
 import psutil
+from discord.ext import commands
+
+from lib.const import CONST
+from ui.embeds import Builder
 
 
 class Info(commands.Cog):
@@ -29,7 +31,7 @@ class Info(commands.Cog):
             ],
         )
 
-        embed: discord.Embed = builder.create_embed(
+        embed: discord.Embed = Builder.create_embed(
             theme="info",
             user_name=ctx.author.name,
             author_text=f"{CONST.TITLE} v{CONST.VERSION}",

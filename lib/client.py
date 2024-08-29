@@ -1,15 +1,18 @@
+import asyncio
+from typing import Any
+
 from discord.ext import commands
 from loguru import logger
-import asyncio
-from lib.loader import CogLoader
+
 from db.database import run_migrations
+from lib.loader import CogLoader
 
 
 class Luminara(commands.Bot):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.is_shutting_down: bool = False
-        self.setup_task: asyncio.Task = asyncio.create_task(self.setup())
+        self.setup_task: asyncio.Task[None] = asyncio.create_task(self.setup())
         self.strip_after_prefix = True
         self.case_insensitive = True
 
@@ -47,9 +50,7 @@ class Luminara(commands.Bot):
 
         await self.close()
 
-        if tasks := [
-            task for task in asyncio.all_tasks() if task is not asyncio.current_task()
-        ]:
+        if tasks := [task for task in asyncio.all_tasks() if task is not asyncio.current_task()]:
             logger.debug(f"Cancelling {len(tasks)} outstanding tasks.")
 
             for task in tasks:

@@ -1,8 +1,8 @@
-from discord.ext import commands
 import discord
-from typing import Optional
-from ui.embeds import builder
+from discord.ext import commands
+
 from lib.const import CONST
+from ui.embeds import Builder
 
 
 class Sync(commands.Cog):
@@ -18,7 +18,7 @@ class Sync(commands.Cog):
     async def sync(
         self,
         ctx: commands.Context[commands.Bot],
-        guild: Optional[discord.Guild] = None,
+        guild: discord.Guild | None = None,
     ) -> None:
         if not guild:
             guild = ctx.guild
@@ -28,7 +28,7 @@ class Sync(commands.Cog):
         self.bot.tree.copy_global_to(guild=guild)
         await self.bot.tree.sync(guild=guild)
 
-        embed = builder.create_embed(
+        embed = Builder.create_embed(
             theme="success",
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["sync_author"],

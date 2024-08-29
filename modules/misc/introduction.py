@@ -1,11 +1,8 @@
-import asyncio
-from typing import Dict, Optional
-
 import discord
 from discord.ext import commands
 
 from lib.const import CONST
-from ui.embeds import builder
+from ui.embeds import Builder
 from ui.views.introduction import (
     IntroductionFinishButtons,
     IntroductionStartButtons,
@@ -22,16 +19,14 @@ class Introduction(commands.Cog):
         usage="introduction",
     )
     async def introduction(self, ctx: commands.Context[commands.Bot]) -> None:
-        guild: Optional[discord.Guild] = self.bot.get_guild(
+        guild: discord.Guild | None = self.bot.get_guild(
             CONST.INTRODUCTIONS_GUILD_ID,
         )
-        member: Optional[discord.Member] = (
-            guild.get_member(ctx.author.id) if guild else None
-        )
+        member: discord.Member | None = guild.get_member(ctx.author.id) if guild else None
 
         if not guild or not member:
             await ctx.send(
-                embed=builder.create_embed(
+                embed=Builder.create_embed(
                     theme="error",
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["intro_no_guild_author"],
@@ -41,17 +36,17 @@ class Introduction(commands.Cog):
             )
             return
 
-        question_mapping: Dict[str, str] = CONST.INTRODUCTIONS_QUESTION_MAPPING
-        channel: Optional[discord.abc.GuildChannel] = guild.get_channel(
+        question_mapping: dict[str, str] = CONST.INTRODUCTIONS_QUESTION_MAPPING
+        channel: discord.abc.GuildChannel | None = guild.get_channel(
             CONST.INTRODUCTIONS_CHANNEL_ID,
         )
 
         if not channel or isinstance(
             channel,
-            (discord.ForumChannel, discord.CategoryChannel),
+            discord.ForumChannel | discord.CategoryChannel,
         ):
             await ctx.send(
-                embed=builder.create_embed(
+                embed=Builder.create_embed(
                     theme="error",
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["intro_no_channel_author"],
@@ -61,11 +56,9 @@ class Introduction(commands.Cog):
             )
             return
 
-        view: IntroductionStartButtons | IntroductionFinishButtons = (
-            IntroductionStartButtons(ctx)
-        )
+        view: IntroductionStartButtons | IntroductionFinishButtons = IntroductionStartButtons(ctx)
         await ctx.send(
-            embed=builder.create_embed(
+            embed=Builder.create_embed(
                 theme="info",
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["intro_service_name"],
@@ -79,7 +72,7 @@ class Introduction(commands.Cog):
 
         if view.clicked_stop:
             await ctx.send(
-                embed=builder.create_embed(
+                embed=Builder.create_embed(
                     theme="error",
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["intro_stopped_author"],
@@ -97,96 +90,95 @@ class Introduction(commands.Cog):
                     discord.DMChannel,
                 )
 
-        answer_mapping: Dict[str, str] = {}
+            answer_mapping: dict[str, str] = {}
 
-        for key, question in question_mapping.items():
-            await ctx.send(
-                embed=builder.create_embed(
-                    theme="info",
-                    user_name=ctx.author.name,
-                    author_text=key,
-                    description=question,
-                    footer_text=CONST.STRINGS["intro_question_footer"],
-                ),
-            )
-
-            try:
-                answer: discord.Message = await self.bot.wait_for(
-                    "message",
-                    check=check,
-                    timeout=300,
+            for key, question in question_mapping.items():
+                await ctx.send(
+                    embed=Builder.create_embed(
+                        theme="info",
+                        user_name=ctx.author.name,
+                        author_text=key,
+                        description=question,
+                        footer_text=CONST.STRINGS["intro_question_footer"],
+                    ),
                 )
-                answer_content: str = answer.content.replace("\n", " ")
 
-                if len(answer_content) > 200:
+                try:
+                    answer: discord.Message = await self.bot.wait_for(
+                        "message",
+                        check=check,
+                        timeout=300,
+                    )
+                    answer_content: str = answer.content.replace("\n", " ")
+
+                    if len(answer_content) > 200:
+                        await ctx.send(
+                            embed=Builder.create_embed(
+                                theme="error",
+                                user_name=ctx.author.name,
+                                author_text=CONST.STRINGS["intro_too_long_author"],
+                                description=CONST.STRINGS["intro_too_long"],
+                                footer_text=CONST.STRINGS["intro_service_name"],
+                            ),
+                        )
+                        return
+
+                    answer_mapping[key] = answer_content
+
+                except TimeoutError:
                     await ctx.send(
-                        embed=builder.create_embed(
+                        embed=Builder.create_embed(
                             theme="error",
                             user_name=ctx.author.name,
-                            author_text=CONST.STRINGS["intro_too_long_author"],
-                            description=CONST.STRINGS["intro_too_long"],
+                            author_text=CONST.STRINGS["intro_timeout_author"],
+                            description=CONST.STRINGS["intro_timeout"],
                             footer_text=CONST.STRINGS["intro_service_name"],
                         ),
                     )
                     return
 
-                answer_mapping[key] = answer_content
+            description: str = "".join(
+                CONST.STRINGS["intro_preview_field"].format(key, value) for key, value in answer_mapping.items()
+            )
 
-            except asyncio.TimeoutError:
+            preview: discord.Embed = Builder.create_embed(
+                theme="info",
+                user_name=ctx.author.name,
+                author_text=ctx.author.name,
+                author_icon_url=ctx.author.display_avatar.url,
+                description=description,
+                footer_text=CONST.STRINGS["intro_content_footer"],
+            )
+            view = IntroductionFinishButtons(ctx)
+
+            await ctx.send(embed=preview, view=view)
+            await view.wait()
+
+            if view.clicked_confirm:
+                await channel.send(
+                    embed=preview,
+                    content=CONST.STRINGS["intro_content"].format(ctx.author.mention),
+                )
                 await ctx.send(
-                    embed=builder.create_embed(
+                    embed=Builder.create_embed(
+                        theme="info",
+                        user_name=ctx.author.name,
+                        author_text=CONST.STRINGS["intro_post_confirmation_author"],
+                        description=CONST.STRINGS["intro_post_confirmation"].format(
+                            channel.mention,
+                        ),
+                    ),
+                )
+            else:
+                await ctx.send(
+                    embed=Builder.create_embed(
                         theme="error",
                         user_name=ctx.author.name,
-                        author_text=CONST.STRINGS["intro_timeout_author"],
-                        description=CONST.STRINGS["intro_timeout"],
+                        author_text=CONST.STRINGS["intro_stopped_author"],
+                        description=CONST.STRINGS["intro_stopped"],
                         footer_text=CONST.STRINGS["intro_service_name"],
                     ),
                 )
-                return
-
-        description: str = "".join(
-            CONST.STRINGS["intro_preview_field"].format(key, value)
-            for key, value in answer_mapping.items()
-        )
-
-        preview: discord.Embed = builder.create_embed(
-            theme="info",
-            user_name=ctx.author.name,
-            author_text=ctx.author.name,
-            author_icon_url=ctx.author.display_avatar.url,
-            description=description,
-            footer_text=CONST.STRINGS["intro_content_footer"],
-        )
-        view = IntroductionFinishButtons(ctx)
-
-        await ctx.send(embed=preview, view=view)
-        await view.wait()
-
-        if view.clicked_confirm:
-            await channel.send(
-                embed=preview,
-                content=CONST.STRINGS["intro_content"].format(ctx.author.mention),
-            )
-            await ctx.send(
-                embed=builder.create_embed(
-                    theme="info",
-                    user_name=ctx.author.name,
-                    author_text=CONST.STRINGS["intro_post_confirmation_author"],
-                    description=CONST.STRINGS["intro_post_confirmation"].format(
-                        channel.mention,
-                    ),
-                ),
-            )
-        else:
-            await ctx.send(
-                embed=builder.create_embed(
-                    theme="error",
-                    user_name=ctx.author.name,
-                    author_text=CONST.STRINGS["intro_stopped_author"],
-                    description=CONST.STRINGS["intro_stopped"],
-                    footer_text=CONST.STRINGS["intro_service_name"],
-                ),
-            )
 
 
 async def setup(bot: commands.Bot) -> None:

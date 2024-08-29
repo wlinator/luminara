@@ -1,20 +1,20 @@
 import sys
 import traceback
+from typing import Any
 
 from discord.ext import commands
-from discord.ext.commands import Cog
 from loguru import logger
 
+from lib import exceptions
 from lib.const import CONST
-from ui.embeds import builder
-from lib import exceptions as LumiExceptions
+from ui.embeds import Builder
 
 
 async def handle_error(
     ctx: commands.Context[commands.Bot],
     error: commands.CommandError | commands.CheckFailure,
 ) -> None:
-    if isinstance(error, (commands.CommandNotFound, LumiExceptions.Blacklisted)):
+    if isinstance(error, commands.CommandNotFound | exceptions.Blacklisted):
         return
 
     author_text = None
@@ -22,11 +22,7 @@ async def handle_error(
     footer_text = None
     ephemeral = False
 
-    if isinstance(error, commands.MissingRequiredArgument):
-        author_text = CONST.STRINGS["error_bad_argument_author"]
-        description = CONST.STRINGS["error_bad_argument_description"].format(str(error))
-
-    elif isinstance(error, commands.BadArgument):
+    if isinstance(error, commands.MissingRequiredArgument | commands.BadArgument):
         author_text = CONST.STRINGS["error_bad_argument_author"]
         description = CONST.STRINGS["error_bad_argument_description"].format(str(error))
 
@@ -58,12 +54,12 @@ async def handle_error(
         author_text = CONST.STRINGS["error_private_message_only_author"]
         description = CONST.STRINGS["error_private_message_only_description"]
 
-    elif isinstance(error, LumiExceptions.BirthdaysDisabled):
+    elif isinstance(error, exceptions.BirthdaysDisabled):
         author_text = CONST.STRINGS["error_birthdays_disabled_author"]
         description = CONST.STRINGS["error_birthdays_disabled_description"]
         footer_text = CONST.STRINGS["error_birthdays_disabled_footer"]
 
-    elif isinstance(error, LumiExceptions.LumiException):
+    elif isinstance(error, exceptions.LumiException):
         author_text = CONST.STRINGS["error_lumi_exception_author"]
         description = CONST.STRINGS["error_lumi_exception_description"].format(
             str(error),
@@ -74,7 +70,7 @@ async def handle_error(
         description = CONST.STRINGS["error_unknown_error_description"]
 
     await ctx.send(
-        embed=builder.create_embed(
+        embed=Builder.create_embed(
             theme="error",
             user_name=ctx.author.name,
             author_text=author_text,
@@ -85,7 +81,7 @@ async def handle_error(
     )
 
 
-async def on_error(event: str, *args, **kwargs) -> None:
+async def on_error(event: str, *args: Any, **kwargs: Any) -> None:
     logger.exception(
         f"on_error INFO: errors.event.{event} | '*args': {args} | '**kwargs': {kwargs}",
     )
@@ -93,20 +89,25 @@ async def on_error(event: str, *args, **kwargs) -> None:
     traceback.print_exc()
 
 
-class ErrorHandler(Cog):
+class ErrorHandler(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @staticmethod
-    async def log_command_error(ctx, error, command_type):
-        log_msg = (
-            f"{ctx.author.name} executed {command_type}{ctx.command.qualified_name}"
-        )
+    async def log_command_error(
+        ctx: commands.Context[commands.Bot],
+        error: commands.CommandError | commands.CheckFailure,
+        command_type: str,
+    ) -> None:
+        if ctx.command is None:
+            return
+
+        log_msg = f"{ctx.author.name} executed {command_type}{ctx.command.qualified_name}"
 
         log_msg += " in DMs" if ctx.guild is None else f" | guild: {ctx.guild.name} "
         logger.exception(f"{log_msg} | FAILED: {error}")
 
-    @Cog.listener()
+    @commands.Cog.listener()
     async def on_command_error(
         self,
         ctx: commands.Context[commands.Bot],
@@ -119,7 +120,7 @@ class ErrorHandler(Cog):
             logger.exception(f"Error in on_command_error: {e}")
             traceback.print_exc()
 
-    @Cog.listener()
+    @commands.Cog.listener()
     async def on_app_command_error(
         self,
         ctx: commands.Context[commands.Bot],
@@ -132,8 +133,8 @@ class ErrorHandler(Cog):
             logger.exception(f"Error in on_app_command_error: {e}")
             traceback.print_exc()
 
-    @Cog.listener()
-    async def on_error(self, event: str, *args, **kwargs) -> None:
+    @commands.Cog.listener()
+    async def on_error(self, event: str, *args: Any, **kwargs: Any) -> None:
         await on_error(event, *args, **kwargs)
 
 

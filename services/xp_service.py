@@ -1,5 +1,5 @@
 import time
-from typing import Callable, Dict, List, Optional, Tuple
+from collections.abc import Callable
 
 from discord.ext import commands
 
@@ -24,7 +24,7 @@ class XpService:
         self.guild_id: int = guild_id
         self.xp: int = 0
         self.level: int = 0
-        self.cooldown_time: Optional[float] = None
+        self.cooldown_time: float | None = None
         self.xp_gain: int = CONST.XP_GAIN_PER_MESSAGE
         self.new_cooldown: int = CONST.XP_GAIN_COOLDOWN
 
@@ -70,7 +70,7 @@ class XpService:
         self.level = user_level
         self.cooldown_time = cooldown
 
-    def calculate_rank(self) -> Optional[int]:
+    def calculate_rank(self) -> int | None:
         """
         Determines the rank of a user in the guild based on their XP and level.
 
@@ -83,12 +83,12 @@ class XpService:
                 WHERE guild_id = %s
                 ORDER BY user_level DESC, user_xp DESC
                 """
-        data: List[Tuple[int, int, int]] = database.select_query(
+        data: list[tuple[int, int, int]] = database.select_query(
             query,
             (self.guild_id,),
         )
 
-        leaderboard: List[Tuple[int, int, int, int]] = [
+        leaderboard: list[tuple[int, int, int, int]] = [
             (row[0], row[1], row[2], rank) for rank, row in enumerate(data, start=1)
         ]
         return next(
@@ -97,7 +97,7 @@ class XpService:
         )
 
     @staticmethod
-    def load_leaderboard(guild_id: int) -> List[Tuple[int, int, int, int]]:
+    def load_leaderboard(guild_id: int) -> list[tuple[int, int, int, int]]:
         """
         Retrieves the guild's XP leaderboard.
 
@@ -113,9 +113,9 @@ class XpService:
                 WHERE guild_id = %s
                 ORDER BY user_level DESC, user_xp DESC
                 """
-        data: List[Tuple[int, int, int]] = database.select_query(query, (guild_id,))
+        data: list[tuple[int, int, int]] = database.select_query(query, (guild_id,))
 
-        leaderboard: List[Tuple[int, int, int, int]] = []
+        leaderboard: list[tuple[int, int, int, int]] = []
         for row in data:
             row_user_id: int = row[0]
             user_xp: int = row[1]
@@ -164,7 +164,7 @@ class XpService:
         Returns:
             int: The amount of XP needed for the next level.
         """
-        formula_mapping: Dict[Tuple[int, int], Callable[[int], int]] = {
+        formula_mapping: dict[tuple[int, int], Callable[[int], int]] = {
             (10, 19): lambda level: 12 * level + 28,
             (20, 29): lambda level: 15 * level + 29,
             (30, 39): lambda level: 18 * level + 30,
@@ -182,11 +182,7 @@ class XpService:
                 for level_range, formula in formula_mapping.items()
                 if level_range[0] <= current_level <= level_range[1]
             ),
-            (
-                10 * current_level + 27
-                if current_level < 10
-                else 42 * current_level + 37
-            ),
+            (10 * current_level + 27 if current_level < 10 else 42 * current_level + 37),
         )
 
 
@@ -203,9 +199,9 @@ class XpRewardService:
             guild_id (int): The ID of the guild.
         """
         self.guild_id: int = guild_id
-        self.rewards: Dict[int, Tuple[int, bool]] = self._fetch_rewards()
+        self.rewards: dict[int, tuple[int, bool]] = self._fetch_rewards()
 
-    def _fetch_rewards(self) -> Dict[int, Tuple[int, bool]]:
+    def _fetch_rewards(self) -> dict[int, tuple[int, bool]]:
         """
         Retrieves the XP rewards for the guild from the database.
 
@@ -218,7 +214,7 @@ class XpRewardService:
                 WHERE guild_id = %s
                 ORDER BY level DESC
                 """
-        data: List[Tuple[int, int, bool]] = database.select_query(
+        data: list[tuple[int, int, bool]] = database.select_query(
             query,
             (self.guild_id,),
         )
@@ -237,7 +233,8 @@ class XpRewardService:
             commands.BadArgument: If the server has more than 25 XP rewards.
         """
         if len(self.rewards) >= 25:
-            raise commands.BadArgument("A server can't have more than 25 XP rewards.")
+            msg = "A server can't have more than 25 XP rewards."
+            raise commands.BadArgument(msg)
 
         query: str = """
                 INSERT INTO level_rewards (guild_id, level, role_id, persistent)
@@ -264,7 +261,7 @@ class XpRewardService:
         database.execute_query(query, (self.guild_id, level))
         self.rewards.pop(level, None)
 
-    def get_role(self, level: int) -> Optional[int]:
+    def get_role(self, level: int) -> int | None:
         """
         Retrieves the role ID for a given level.
 
@@ -276,7 +273,7 @@ class XpRewardService:
         """
         return self.rewards.get(level, (None,))[0]
 
-    def should_replace_previous_reward(self, level: int) -> Tuple[Optional[int], bool]:
+    def should_replace_previous_reward(self, level: int) -> tuple[int | None, bool]:
         """
         Checks if the previous reward should be replaced based on the given level.
 

@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
-from discord.ui import View, Button
+from discord.ui import Button, View
+
 from lib.const import CONST
-from typing import List, Optional
 
 
 class BlackJackButtons(View):
@@ -12,14 +12,13 @@ class BlackJackButtons(View):
         self.clickedHit: bool = False
         self.clickedStand: bool = False
         self.clickedDoubleDown: bool = False
-        self.message: Optional[discord.Message] = None
+        self.message: discord.Message | None = None
 
     async def on_timeout(self) -> None:
-        self.children: List[discord.ui.Button] = []
+        self.children: list[discord.ui.Button[View]] = []
 
         for child in self.children:
-            if isinstance(child, Button):
-                child.disabled = True
+            child.disabled = True
 
     @discord.ui.button(
         label=CONST.STRINGS["blackjack_hit"],
@@ -29,7 +28,7 @@ class BlackJackButtons(View):
     async def hit_button_callback(
         self,
         interaction: discord.Interaction,
-        button: Button,
+        button: Button[View],
     ) -> None:
         self.clickedHit = True
         await interaction.response.defer()
@@ -43,7 +42,7 @@ class BlackJackButtons(View):
     async def stand_button_callback(
         self,
         interaction: discord.Interaction,
-        button: Button,
+        button: Button[View],
     ) -> None:
         self.clickedStand = True
         await interaction.response.defer()

@@ -92,8 +92,8 @@ info:
   invite_url: https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot
 
 introductions:
-  intro_guild_id: 719227135151046700
-  intro_channel_id: 973619250507972600
+  intro_guild_id: 1219635811977269371
+  intro_channel_id: 1219637688328523806
   intro_question_mapping:
     Nickname: how would you like to be identified in the server? (nickname)
     Age: how old are you?
