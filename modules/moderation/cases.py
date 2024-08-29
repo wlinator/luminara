@@ -18,6 +18,31 @@ from ui.embeds import Builder
 case_service = CaseService()
 
 
+def create_no_cases_embed(ctx: commands.Context[commands.Bot], author_text: str, description: str) -> discord.Embed:
+    return Builder.create_embed(
+        user_name=ctx.author.name,
+        author_text=author_text,
+        description=description,
+    )
+
+
+def create_case_view_menu(ctx: commands.Context[commands.Bot]) -> ViewMenu:
+    menu = ViewMenu(ctx, menu_type=ViewMenu.TypeEmbed, all_can_click=True, delete_on_timeout=True)
+
+    menu.add_button(
+        ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_FIRST_PAGE, emoji="⏮️"),
+    )
+    menu.add_button(
+        ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_PREVIOUS_PAGE, emoji="⏪"),
+    )
+    menu.add_button(ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_NEXT_PAGE, emoji="⏩"))
+    menu.add_button(
+        ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_LAST_PAGE, emoji="⏭️"),
+    )
+
+    return menu
+
+
 class Cases(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -29,10 +54,10 @@ class Cases(commands.Cog):
         case = case_service.fetch_case_by_guild_and_number(guild_id, case_number)
 
         if not case:
-            embed = Builder.create_embed(
-                user_name=ctx.author.name,
-                author_text=CONST.STRINGS["error_no_case_found_author"],
-                description=CONST.STRINGS["error_no_case_found_description"],
+            embed = create_no_cases_embed(
+                ctx,
+                CONST.STRINGS["error_no_case_found_author"],
+                CONST.STRINGS["error_no_case_found_description"],
             )
             await ctx.send(embed=embed)
             return
@@ -59,15 +84,15 @@ class Cases(commands.Cog):
         cases = case_service.fetch_cases_by_guild(guild_id)
 
         if not cases:
-            embed = Builder.create_embed(
-                user_name=ctx.author.name,
-                author_text=CONST.STRINGS["case_guild_no_cases_author"],
-                description=CONST.STRINGS["case_guild_no_cases"],
+            embed = create_no_cases_embed(
+                ctx,
+                CONST.STRINGS["case_guild_no_cases_author"],
+                CONST.STRINGS["case_guild_no_cases"],
             )
             await ctx.send(embed=embed)
             return
 
-        menu = ViewMenu(ctx, menu_type=ViewMenu.TypeEmbed, all_can_click=True, delete_on_timeout=True)
+        menu = create_case_view_menu(ctx)
 
         for i in range(0, len(cases), 10):
             chunk = cases[i : i + 10]
@@ -77,17 +102,6 @@ class Cases(commands.Cog):
                 CONST.STRINGS["case_guild_cases_author"],
             )
             menu.add_page(embed)
-
-        menu.add_button(
-            ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_FIRST_PAGE, emoji="⏮️"),
-        )
-        menu.add_button(
-            ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_PREVIOUS_PAGE, emoji="⏪"),
-        )
-        menu.add_button(ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_NEXT_PAGE, emoji="⏩"))
-        menu.add_button(
-            ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_LAST_PAGE, emoji="⏭️"),
-        )
 
         await menu.start()
 
@@ -100,16 +114,16 @@ class Cases(commands.Cog):
         guild_id = ctx.guild.id
         cases = case_service.fetch_cases_by_moderator(guild_id, moderator.id)
 
-        menu = ViewMenu(ctx, menu_type=ViewMenu.TypeEmbed, all_can_click=True, delete_on_timeout=True)
-
         if not cases:
-            embed = Builder.create_embed(
-                user_name=ctx.author.name,
-                author_text=CONST.STRINGS["case_mod_no_cases_author"],
-                description=CONST.STRINGS["case_mod_no_cases"],
+            embed = create_no_cases_embed(
+                ctx,
+                CONST.STRINGS["case_mod_no_cases_author"],
+                CONST.STRINGS["case_mod_no_cases"],
             )
             await ctx.send(embed=embed)
             return
+
+        menu = create_case_view_menu(ctx)
 
         for i in range(0, len(cases), 10):
             chunk = cases[i : i + 10]
@@ -119,17 +133,6 @@ class Cases(commands.Cog):
                 CONST.STRINGS["case_mod_cases_author"].format(moderator.name),
             )
             menu.add_page(embed)
-
-        menu.add_button(
-            ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_FIRST_PAGE, emoji="⏮️"),
-        )
-        menu.add_button(
-            ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_PREVIOUS_PAGE, emoji="⏪"),
-        )
-        menu.add_button(ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_NEXT_PAGE, emoji="⏩"))
-        menu.add_button(
-            ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_LAST_PAGE, emoji="⏭️"),
-        )
 
         await menu.start()
 
