@@ -20,6 +20,7 @@ case_service = CaseService()
 
 def create_no_cases_embed(ctx: commands.Context[commands.Bot], author_text: str, description: str) -> discord.Embed:
     return Builder.create_embed(
+        theme="info",
         user_name=ctx.author.name,
         author_text=author_text,
         description=description,
@@ -151,6 +152,7 @@ class Cases(commands.Cog):
         )
 
         embed = Builder.create_embed(
+            theme="success",
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["case_reason_update_author"],
             description=CONST.STRINGS["case_reason_update_description"].format(
