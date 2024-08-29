@@ -9,9 +9,9 @@ from lib.const import CONST
 class Builder:
     @staticmethod
     def create_embed(
+        theme: Literal["error", "success", "info", "warning", "default"],
         user_name: str | None = None,
         user_display_avatar_url: str | None = None,
-        theme: Literal["error", "success", "info", "warning"] | None = None,
         title: str | None = None,
         author_text: str | None = None,
         author_icon_url: str | None = None,
@@ -35,9 +35,9 @@ class Builder:
             "success": (CONST.COLOR_DEFAULT, CONST.CHECK_ICON),
             "info": (CONST.COLOR_DEFAULT, CONST.INFO_ICON),
             "warning": (CONST.COLOR_WARNING, CONST.WARNING_ICON),
+            "default": (color or CONST.COLOR_DEFAULT, None),
         }
-        if theme in theme_settings:
-            color, author_icon_url = theme_settings[theme]
+        color, author_icon_url = theme_settings[theme]
 
         if user_name and not hide_name_in_description:
             description = f"**{user_name}** {description}"
@@ -45,7 +45,7 @@ class Builder:
         embed: discord.Embed = discord.Embed(
             title=title,
             description=description,
-            color=color or CONST.COLOR_DEFAULT,
+            color=color,
         )
 
         embed.set_author(
