@@ -44,7 +44,7 @@ async def create_boost_embed(
     embed.set_author(name=user_name, icon_url=user_avatar_url)
     embed.set_image(url=image_url or CONST.BOOST_ICON)
     embed.set_footer(
-        text=f"Total server boosts: {boost_count}",
+        text=CONST.STRINGS["config_boost_total_count"].format(boost_count),
         icon_url=CONST.EXCLAIM_ICON,
     )
 

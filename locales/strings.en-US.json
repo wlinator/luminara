@@ -90,6 +90,7 @@
   "config_boost_module_disabled": "the boost module was successfully disabled.",
   "config_boost_template_field": "New Template:",
   "config_boost_template_updated": "the boost message template has been updated.",
+  "config_boost_total_count": "Total server boosts: {0}",
   "config_example_next_footer": "An example will be sent next.",
   "config_level_channel_set": "all level announcements will be sent in {0}.",
   "config_level_current_channel_set": "members will receive level announcements in their current channel.",
