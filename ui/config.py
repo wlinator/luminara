@@ -49,3 +49,25 @@ async def create_boost_embed(
     )
 
     return embed
+
+
+def create_greet_embed(
+    user_name: str,
+    user_avatar_url: str,
+    guild_name: str,
+    template: str | None = None,
+) -> discord.Embed:
+    embed: discord.Embed = discord.Embed(
+        color=discord.Colour.dark_embed(),
+        description=CONST.STRINGS["greet_default_description"].format(
+            guild_name,
+        ),
+    )
+    if template and embed.description is not None:
+        embed.description += CONST.STRINGS["greet_template_description"].format(
+            lib.format.template(template, user_name),
+        )
+
+    embed.set_thumbnail(url=user_avatar_url)
+
+    return embed

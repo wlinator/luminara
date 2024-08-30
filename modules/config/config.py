@@ -6,7 +6,7 @@ import lib.format
 from lib.const import CONST
 from services.config_service import GuildConfig
 from services.modlog_service import ModLogService
-from ui.boosts import create_boost_embed
+from ui.config import create_boost_embed, create_greet_embed
 from ui.embeds import Builder
 
 
@@ -107,9 +107,7 @@ class Config(commands.GroupCog, group_name="config"):
         channel : discord.TextChannel
             The channel to set as the birthday channel.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
         guild_config.birthday_channel_id = channel.id
         guild_config.push()
@@ -135,9 +133,7 @@ class Config(commands.GroupCog, group_name="config"):
         interaction : discord.Interaction
             The interaction to disable the birthday module for.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
 
         if not guild_config.birthday_channel_id:
@@ -172,9 +168,7 @@ class Config(commands.GroupCog, group_name="config"):
         channel : discord.TextChannel
             The channel to set as the level-up announcement channel.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
         guild_config.level_channel_id = channel.id
         guild_config.push()
@@ -203,9 +197,7 @@ class Config(commands.GroupCog, group_name="config"):
         channel : discord.TextChannel
             The channel to set as the boost announcement channel.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
         guild_config.boost_channel_id = channel.id
         guild_config.push()
@@ -229,9 +221,7 @@ class Config(commands.GroupCog, group_name="config"):
         interaction : discord.Interaction
             The interaction to disable the boost module for.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
 
         if not guild_config.boost_channel_id:
@@ -266,9 +256,7 @@ class Config(commands.GroupCog, group_name="config"):
         text : str
             The template text to set for boost messages.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
         guild_config.boost_message = text
         guild_config.push()
@@ -309,9 +297,7 @@ class Config(commands.GroupCog, group_name="config"):
         image_url : str | None
             The image URL to set for boost messages.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
 
         if image_url is None or image_url.lower() == "original":
@@ -350,6 +336,106 @@ class Config(commands.GroupCog, group_name="config"):
         )
         await interaction.followup.send(embed=example_embed, content=interaction.user.mention)
 
+    @greets.command(name="channel")
+    async def set_welcome_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
+        """
+        Set the welcome channel for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the welcome channel for.
+        channel : discord.TextChannel
+            The channel to set as the welcome channel.
+        """
+        assert interaction.guild
+        guild_config: GuildConfig = GuildConfig(interaction.guild.id)
+        guild_config.welcome_channel_id = channel.id
+        guild_config.push()
+
+        embed: discord.Embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_welcome_channel_set"].format(channel.mention),
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+    @greets.command(name="disable")
+    async def disable_welcome_module(self, interaction: discord.Interaction) -> None:
+        """
+        Disable the welcome module for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to disable the welcome module for.
+        """
+        assert interaction.guild
+        guild_config: GuildConfig = GuildConfig(interaction.guild.id)
+
+        if not guild_config.welcome_channel_id:
+            embed: discord.Embed = Builder.create_embed(
+                theme="warning",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["config_author"],
+                description=CONST.STRINGS["config_welcome_module_already_disabled"],
+            )
+        else:
+            guild_config.welcome_channel_id = None
+            guild_config.welcome_message = None
+            guild_config.push()
+            embed: discord.Embed = Builder.create_embed(
+                theme="success",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["config_author"],
+                description=CONST.STRINGS["config_welcome_module_disabled"],
+            )
+
+        await interaction.response.send_message(embed=embed)
+
+    @greets.command(name="template")
+    async def set_welcome_template(self, interaction: discord.Interaction, text: str) -> None:
+        """
+        Set the welcome message template for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the welcome message template for.
+        text : str
+            The welcome message template.
+        """
+        assert interaction.guild
+        guild_config: GuildConfig = GuildConfig(interaction.guild.id)
+        guild_config.welcome_message = text
+        guild_config.push()
+
+        embed: discord.Embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_welcome_template_updated"],
+            footer_text=CONST.STRINGS["config_example_next_footer"],
+        )
+        embed.add_field(
+            name=CONST.STRINGS["config_welcome_template_field"],
+            value=f"```{text}```",
+            inline=False,
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+        example_embed: discord.Embed = create_greet_embed(
+            user_name=interaction.user.name,
+            user_avatar_url=interaction.user.display_avatar.url,
+            guild_name=interaction.guild.name,
+            template=text,
+        )
+
+        await interaction.followup.send(embed=example_embed, content=interaction.user.mention)
+
     @levels.command(name="current_channel")
     async def set_level_current_channel(self, interaction: discord.Interaction) -> None:
         """
@@ -360,9 +446,7 @@ class Config(commands.GroupCog, group_name="config"):
         interaction : discord.Interaction
             The interaction to set the current channel as the level-up announcement channel for.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
         guild_config.level_channel_id = None
         guild_config.push()
@@ -389,9 +473,7 @@ class Config(commands.GroupCog, group_name="config"):
         interaction : discord.Interaction
             The interaction to disable the level-up module for.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
         guild_config.level_message_type = 0
         guild_config.push()
@@ -415,9 +497,7 @@ class Config(commands.GroupCog, group_name="config"):
         interaction : discord.Interaction
             The interaction to enable the level-up module for.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
 
         if guild_config.level_message_type != 0:
@@ -451,9 +531,7 @@ class Config(commands.GroupCog, group_name="config"):
         text : str
             The template text to set for level-up messages.
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
         guild_config.level_message = text
         guild_config.push()
@@ -494,9 +572,7 @@ class Config(commands.GroupCog, group_name="config"):
         level_type : str
             The type of level-up messages to set (e.g., "whimsical" or "generic").
         """
-        if not interaction.guild:
-            return
-
+        assert interaction.guild
         guild_config = GuildConfig(interaction.guild.id)
 
         embed = Builder.create_embed(
