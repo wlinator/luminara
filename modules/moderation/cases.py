@@ -50,6 +50,7 @@ class Cases(commands.Cog):
 
     @commands.hybrid_command(name="case", aliases=["c", "ca"], description="View a specific case by number")
     @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
     async def view_case_by_number(self, ctx: commands.Context[commands.Bot], case_number: int) -> None:
         guild_id = ctx.guild.id if ctx.guild else 0
         case = case_service.fetch_case_by_guild_and_number(guild_id, case_number)
@@ -77,6 +78,7 @@ class Cases(commands.Cog):
 
     @commands.hybrid_command(name="cases", description="View all cases in the guild")
     @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
     async def view_all_cases_in_guild(self, ctx: commands.Context[commands.Bot]) -> None:
         if not ctx.guild:
             raise LumiException(CONST.STRINGS["error_not_in_guild"])
@@ -108,6 +110,7 @@ class Cases(commands.Cog):
 
     @commands.hybrid_command(name="modcases", aliases=["mc", "modc"], description="View all cases in the guild")
     @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
     async def view_all_cases_by_mod(self, ctx: commands.Context[commands.Bot], moderator: discord.Member) -> None:
         if not ctx.guild:
             raise LumiException(CONST.STRINGS["error_not_in_guild"])
@@ -139,6 +142,7 @@ class Cases(commands.Cog):
 
     @commands.hybrid_command(name="editcase", aliases=["ec"], description="Edit the reason for a case")
     @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
     async def edit_case_reason(self, ctx: commands.Context[commands.Bot], case_number: int, *, new_reason: str):
         if not ctx.guild:
             raise LumiException(CONST.STRINGS["error_not_in_guild"])

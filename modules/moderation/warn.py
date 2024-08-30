@@ -17,6 +17,7 @@ class Warn(commands.Cog):
 
     @commands.hybrid_command(name="warn", description="Warn a user")
     @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
     async def warn(self, ctx: commands.Context[commands.Bot], target: discord.Member, *, reason: str | None = None):
         if not ctx.guild or not ctx.author or not ctx.bot.user:
             raise LumiException

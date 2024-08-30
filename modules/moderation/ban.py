@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 from typing import cast
 
 import discord
@@ -11,19 +12,26 @@ from lib.const import CONST
 from ui.embeds import Builder
 
 
-@commands.has_permissions(ban_members=True)
 class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.hybrid_command(name="ban")
-    async def ban(self, ctx: commands.Context[commands.Bot], target: discord.User, *, reason: str | None = None):
+    @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
+    async def ban(
+        self,
+        ctx: commands.Context[commands.Bot],
+        target: discord.Member | discord.User,
+        *,
+        reason: str | None = None,
+    ) -> None:
         """
         Ban a user from the guild.
 
         Parameters
         ----------
-        target: discord.User
+        target: discord.Member | discord.User
             The user to ban.
         reason: str | None
             The reason for the ban.
@@ -32,20 +40,22 @@ class Ban(commands.Cog):
         assert ctx.author
         assert ctx.bot.user
 
-        # see if user is in guild
-        member = await commands.MemberConverter().convert(ctx, str(target.id))
         output_reason = reason or CONST.STRINGS["mod_no_reason"]
+        formatted_reason = CONST.STRINGS["mod_reason"].format(
+            ctx.author.name,
+            lib.format.shorten(output_reason, 200),
+        )
 
-        # member -> user is in the guild, check role hierarchy
-        if member:
+        dm_sent = False
+        if isinstance(target, discord.Member):
             bot_member = await commands.MemberConverter().convert(ctx, str(ctx.bot.user.id))
-            await async_actionable(member, cast(discord.Member, ctx.author), bot_member)
+            await async_actionable(target, cast(discord.Member, ctx.author), bot_member)
 
-            try:
-                await member.send(
+            with contextlib.suppress(discord.HTTPException, discord.Forbidden):
+                await target.send(
                     embed=Builder.create_embed(
                         theme="warning",
-                        user_name=member.name,
+                        user_name=target.name,
                         author_text=CONST.STRINGS["mod_banned_author"],
                         description=CONST.STRINGS["mod_ban_dm"].format(
                             target.name,
@@ -57,51 +67,26 @@ class Ban(commands.Cog):
                 )
                 dm_sent = True
 
-            except (discord.HTTPException, discord.Forbidden):
-                dm_sent = False
+        await ctx.guild.ban(target, reason=formatted_reason)
 
-            await member.ban(
-                reason=CONST.STRINGS["mod_reason"].format(
-                    ctx.author.name,
-                    lib.format.shorten(output_reason, 200),
-                ),
-                delete_message_seconds=86400,
-            )
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=ctx.author.name,
+            author_text=CONST.STRINGS["mod_banned_author"],
+            description=CONST.STRINGS["mod_banned_user"].format(target.name),
+        )
+        if isinstance(target, discord.Member):
+            embed.set_footer(text=CONST.STRINGS["mod_dm_sent"] if dm_sent else CONST.STRINGS["mod_dm_not_sent"])
 
-            respond_task = ctx.send(
-                embed=Builder.create_embed(
-                    theme="success",
-                    user_name=ctx.author.name,
-                    author_text=CONST.STRINGS["mod_banned_author"],
-                    description=CONST.STRINGS["mod_banned_user"].format(target.id),
-                    footer_text=CONST.STRINGS["mod_dm_sent"] if dm_sent else CONST.STRINGS["mod_dm_not_sent"],
-                ),
-            )
-            create_case_task = create_case(ctx, target, "BAN", reason)
-            await asyncio.gather(respond_task, create_case_task, return_exceptions=True)
-
-        # not a member in this guild, so ban right away
-        else:
-            await ctx.guild.ban(
-                target,
-                reason=CONST.STRINGS["mod_reason"].format(
-                    ctx.author.name,
-                    lib.format.shorten(output_reason, 200),
-                ),
-            )
-
-            respond_task = ctx.send(
-                embed=Builder.create_embed(
-                    theme="success",
-                    user_name=ctx.author.name,
-                    author_text=CONST.STRINGS["mod_banned_author"],
-                    description=CONST.STRINGS["mod_banned_user"].format(target.id),
-                ),
-            )
-            create_case_task = create_case(ctx, target, "BAN", reason)
-            await asyncio.gather(respond_task, create_case_task)
+        await asyncio.gather(
+            ctx.send(embed=embed),
+            create_case(ctx, cast(discord.User, target), "BAN", reason),
+            return_exceptions=True,
+        )
 
     @commands.hybrid_command(name="unban")
+    @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
     async def unban(
         self,
         ctx: commands.Context[commands.Bot],
@@ -139,7 +124,7 @@ class Ban(commands.Cog):
                     theme="success",
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["mod_unbanned_author"],
-                    description=CONST.STRINGS["mod_unbanned"].format(target.id),
+                    description=CONST.STRINGS["mod_unbanned"].format(target.name),
                 ),
             )
             create_case_task = create_case(ctx, target, "UNBAN", reason)
