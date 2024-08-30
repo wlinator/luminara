@@ -657,6 +657,41 @@ class Config(commands.GroupCog, group_name="config"):
 
         await interaction.response.send_message(embed=success_embed)
 
+    @prefix.command(name="set")
+    async def set_prefix(self, interaction: discord.Interaction, prefix: str) -> None:
+        """
+        Set the prefix for the bot in the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the prefix for.
+        prefix : str
+            The prefix to set for the bot.
+        """
+        assert interaction.guild
+        if len(prefix) > 25:
+            embed = Builder.create_embed(
+                theme="error",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["config_author"],
+                description=CONST.STRINGS["config_prefix_too_long"],
+            )
+            await interaction.response.send_message(embed=embed)
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+        GuildConfig.set_prefix(guild_config.guild_id, prefix)
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_prefix_set"].format(prefix),
+        )
+
+        await interaction.response.send_message(embed=embed)
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Config(bot))
