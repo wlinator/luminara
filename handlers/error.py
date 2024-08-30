@@ -2,88 +2,22 @@ import sys
 import traceback
 from typing import Any
 
+import discord
+from discord import app_commands
 from discord.ext import commands
 from loguru import logger
 
 from lib import exceptions
 from lib.const import CONST
-from ui.embeds import Builder
 
-
-async def handle_error(
-    ctx: commands.Context[commands.Bot],
-    error: commands.CommandError | commands.CheckFailure,
-) -> None:
-    if isinstance(error, commands.CommandNotFound | exceptions.Blacklisted):
-        return
-
-    author_text = None
-    description = None
-    footer_text = None
-    ephemeral = False
-
-    if isinstance(error, commands.MissingRequiredArgument | commands.BadArgument):
-        author_text = CONST.STRINGS["error_bad_argument_author"]
-        description = CONST.STRINGS["error_bad_argument_description"].format(str(error))
-
-    elif isinstance(error, commands.BotMissingPermissions):
-        author_text = CONST.STRINGS["error_bot_missing_permissions_author"]
-        description = CONST.STRINGS["error_bot_missing_permissions_description"]
-
-    elif isinstance(error, commands.CommandOnCooldown):
-        author_text = CONST.STRINGS["error_command_cooldown_author"]
-        description = CONST.STRINGS["error_command_cooldown_description"].format(
-            int(error.retry_after // 60),
-            int(error.retry_after % 60),
-        )
-        ephemeral = True
-
-    elif isinstance(error, commands.MissingPermissions):
-        author_text = CONST.STRINGS["error_missing_permissions_author"]
-        description = CONST.STRINGS["error_missing_permissions_description"]
-
-    elif isinstance(error, commands.NoPrivateMessage):
-        author_text = CONST.STRINGS["error_no_private_message_author"]
-        description = CONST.STRINGS["error_no_private_message_description"]
-
-    elif isinstance(error, commands.NotOwner):
-        logger.warning(
-            CONST.STRINGS["error_not_owner"].format(
-                ctx.author.name,
-                ctx.command.qualified_name if ctx.command else CONST.STRINGS["error_not_owner_unknown"],
-            ),
-        )
-        return
-
-    elif isinstance(error, commands.PrivateMessageOnly):
-        author_text = CONST.STRINGS["error_private_message_only_author"]
-        description = CONST.STRINGS["error_private_message_only_description"]
-
-    elif isinstance(error, exceptions.BirthdaysDisabled):
-        author_text = CONST.STRINGS["error_birthdays_disabled_author"]
-        description = CONST.STRINGS["error_birthdays_disabled_description"]
-        footer_text = CONST.STRINGS["error_birthdays_disabled_footer"]
-
-    elif isinstance(error, exceptions.LumiException):
-        author_text = CONST.STRINGS["error_lumi_exception_author"]
-        description = CONST.STRINGS["error_lumi_exception_description"].format(
-            str(error),
-        )
-
-    else:
-        author_text = CONST.STRINGS["error_unknown_error_author"]
-        description = CONST.STRINGS["error_unknown_error_description"]
-
-    await ctx.send(
-        embed=Builder.create_embed(
-            theme="error",
-            user_name=ctx.author.name,
-            author_text=author_text,
-            description=description,
-            footer_text=footer_text,
-        ),
-        ephemeral=ephemeral,
-    )
+error_map: dict[type[Exception], str] = {
+    commands.BotMissingPermissions: CONST.STRINGS["error_bot_missing_permissions_description"],
+    commands.MissingPermissions: CONST.STRINGS["error_missing_permissions_description"],
+    commands.NoPrivateMessage: CONST.STRINGS["error_no_private_message_description"],
+    commands.NotOwner: CONST.STRINGS["error_not_owner_unknown"],
+    commands.PrivateMessageOnly: CONST.STRINGS["error_private_message_only_description"],
+    exceptions.BirthdaysDisabled: CONST.STRINGS["error_birthdays_disabled_description"],
+}
 
 
 async def on_error(event: str, *args: Any, **kwargs: Any) -> None:
@@ -94,26 +28,49 @@ async def on_error(event: str, *args: Any, **kwargs: Any) -> None:
     traceback.print_exc()
 
 
+async def log_command_error(
+    user_name: str,
+    command_name: str | None,
+    guild_name: str | None,
+    error: commands.CommandError | commands.CheckFailure | app_commands.AppCommandError,
+    command_type: str,
+) -> None:
+    if isinstance(error, commands.NotOwner | exceptions.Blacklisted):
+        return
+
+    log_msg = f"{user_name} executed {command_type}{command_name or 'Unknown'}"
+
+    log_msg += " in DMs" if guild_name is None else f" | guild: {guild_name} "
+    logger.error(f"{log_msg} | FAILED: {error}")
+
+
 class ErrorHandler(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @staticmethod
-    async def log_command_error(
-        ctx: commands.Context[commands.Bot],
-        error: commands.CommandError | commands.CheckFailure,
-        command_type: str,
+    async def cog_load(self):
+        tree = self.bot.tree
+        self._old_tree_error = tree.on_error
+        tree.on_error = self.on_app_command_error
+
+    async def on_app_command_error(
+        self,
+        interaction: discord.Interaction,
+        error: app_commands.AppCommandError,
     ) -> None:
-        if ctx.command is None:
+        if isinstance(error, commands.CommandNotFound | exceptions.Blacklisted):
             return
 
-        if isinstance(error, commands.NotOwner | exceptions.Blacklisted):
-            return
+        await log_command_error(
+            user_name=interaction.user.name,
+            command_name=interaction.command.qualified_name if interaction.command else None,
+            guild_name=interaction.guild.name if interaction.guild else None,
+            error=error,
+            command_type="/",
+        )
 
-        log_msg = f"{ctx.author.name} executed {command_type}{ctx.command.qualified_name}"
-
-        log_msg += " in DMs" if ctx.guild is None else f" | guild: {ctx.guild.name} "
-        logger.exception(f"{log_msg} | FAILED: {error}")
+        error_msg = error_map.get(type(error), str(error))
+        await interaction.response.send_message(content=f"❌ **{interaction.user.name}** {error_msg}", ephemeral=True)
 
     @commands.Cog.listener()
     async def on_command_error(
@@ -121,25 +78,19 @@ class ErrorHandler(commands.Cog):
         ctx: commands.Context[commands.Bot],
         error: commands.CommandError | commands.CheckFailure,
     ) -> None:
-        try:
-            await handle_error(ctx, error)
-            await self.log_command_error(ctx, error, ".")
-        except Exception as e:
-            logger.exception(f"Error in on_command_error: {e}")
-            traceback.print_exc()
+        if isinstance(error, commands.CommandNotFound | exceptions.Blacklisted):
+            return
 
-    @commands.Cog.listener()
-    async def on_app_command_error(
-        self,
-        ctx: commands.Context[commands.Bot],
-        error: commands.CommandError | commands.CheckFailure,
-    ) -> None:
-        try:
-            await handle_error(ctx, error)
-            await self.log_command_error(ctx, error, "/")
-        except Exception as e:
-            logger.exception(f"Error in on_app_command_error: {e}")
-            traceback.print_exc()
+        await log_command_error(
+            user_name=ctx.author.name,
+            command_name=ctx.command.qualified_name if ctx.command else None,
+            guild_name=ctx.guild.name if ctx.guild else None,
+            error=error,
+            command_type=".",
+        )
+
+        error_msg = error_map.get(type(error), str(error))
+        await ctx.send(content=f"❌ **{ctx.author.name}** {error_msg}")
 
     @commands.Cog.listener()
     async def on_error(self, event: str, *args: Any, **kwargs: Any) -> None:
