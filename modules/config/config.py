@@ -279,7 +279,7 @@ class Config(commands.GroupCog, group_name="config"):
 
         await interaction.response.send_message(embed=embed)
 
-        example_embed = await create_boost_embed(
+        example_embed = create_boost_embed(
             user_name=interaction.user.name,
             user_avatar_url=interaction.user.display_avatar.url,
             boost_count=interaction.guild.premium_subscription_count,
@@ -330,7 +330,7 @@ class Config(commands.GroupCog, group_name="config"):
 
         await interaction.response.send_message(embed=embed)
 
-        example_embed = await create_boost_embed(
+        example_embed = create_boost_embed(
             user_name=interaction.user.name,
             user_avatar_url=interaction.user.display_avatar.url,
             boost_count=interaction.guild.premium_subscription_count,

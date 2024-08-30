@@ -4,7 +4,7 @@ import lib.format
 from lib.const import CONST
 
 
-async def create_boost_embed(
+def create_boost_embed(
     user_name: str,
     user_avatar_url: str,
     boost_count: int,
