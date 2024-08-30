@@ -7,6 +7,7 @@ from lib.const import CONST
 from lib.exceptions import LumiException
 from services.config_service import GuildConfig
 from services.modlog_service import ModLogService
+from services.xp_service import XpRewardService
 from ui.config import create_boost_embed, create_greet_embed
 from ui.embeds import Builder
 
@@ -23,6 +24,7 @@ class Config(commands.GroupCog, group_name="config"):
     levels = app_commands.Group(name="levels", description="Configure the levels module")
     moderation = app_commands.Group(name="moderation", description="Configure the moderation module")
     prefix = app_commands.Group(name="prefix", description="Configure the prefix for the bot")
+    xpreward = app_commands.Group(name="xpreward", description="Configure the xp reward for the bot")
 
     @app_commands.command(name="show")
     async def config_help(self, interaction: discord.Interaction) -> None:
@@ -688,6 +690,104 @@ class Config(commands.GroupCog, group_name="config"):
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_prefix_set"].format(prefix),
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+    @xpreward.command(name="show")
+    async def show_xpreward(self, interaction: discord.Interaction) -> None:
+        """
+        Show the current XP rewards for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to show the XP rewards for.
+        """
+        assert interaction.guild
+        level_reward = XpRewardService(interaction.guild.id)
+
+        embed = Builder.create_embed(
+            theme="info",
+            user_name=interaction.user.name,
+            author_text="Level Rewards",
+            thumbnail_url=interaction.guild.icon.url if interaction.guild.icon else CONST.LUMI_LOGO_OPAQUE,
+            hide_name_in_description=True,
+        )
+
+        if not level_reward.rewards:
+            embed.description = CONST.STRINGS["config_xpreward_show_no_rewards"]
+        else:
+            for level in sorted(level_reward.rewards.keys()):
+                role_id, persistent = level_reward.rewards[level]
+                role = interaction.guild.get_role(role_id)
+
+                if embed.description is None:
+                    embed.description = ""
+
+                embed.description += f"\n**Level {level}** -> {role.mention if role else 'Role not found'}"
+
+                if persistent:
+                    embed.description += " (persistent)"
+
+        await interaction.response.send_message(embed=embed)
+
+    @xpreward.command(name="add")
+    async def add_xpreward(
+        self,
+        interaction: discord.Interaction,
+        level: int,
+        role: discord.Role,
+        persistent: bool,
+    ) -> None:
+        """
+        Add an XP reward for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to add the XP reward for.
+        level : int
+            The level to add the reward for.
+        role : discord.Role
+            The role to assign as a reward.
+        persistent : bool
+            Whether the reward is persistent.
+        """
+        assert interaction.guild
+        level_reward = XpRewardService(interaction.guild.id)
+        level_reward.add_reward(level, role.id, persistent)
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_xpreward_added"].format(level, role.mention),
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+    @xpreward.command(name="remove")
+    async def remove_xpreward(self, interaction: discord.Interaction, level: int) -> None:
+        """
+        Remove an XP reward for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to remove the XP reward for.
+        level : int
+            The level to remove the reward for.
+        """
+        assert interaction.guild
+        level_reward = XpRewardService(interaction.guild.id)
+        level_reward.remove_reward(level)
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_xpreward_removed"].format(level),
         )
 
         await interaction.response.send_message(embed=embed)
