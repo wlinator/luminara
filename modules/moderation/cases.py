@@ -30,16 +30,15 @@ def create_no_cases_embed(ctx: commands.Context[commands.Bot], author_text: str,
 def create_case_view_menu(ctx: commands.Context[commands.Bot]) -> ViewMenu:
     menu = ViewMenu(ctx, menu_type=ViewMenu.TypeEmbed, all_can_click=True, delete_on_timeout=True)
 
-    menu.add_button(
-        ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_FIRST_PAGE, emoji="⏮️"),
-    )
-    menu.add_button(
-        ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_PREVIOUS_PAGE, emoji="⏪"),
-    )
-    menu.add_button(ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_NEXT_PAGE, emoji="⏩"))
-    menu.add_button(
-        ViewButton(style=discord.ButtonStyle.secondary, custom_id=ViewButton.ID_GO_TO_LAST_PAGE, emoji="⏭️"),
-    )
+    buttons = [
+        (ViewButton.ID_GO_TO_FIRST_PAGE, "⏮️"),
+        (ViewButton.ID_PREVIOUS_PAGE, "⏪"),
+        (ViewButton.ID_NEXT_PAGE, "⏩"),
+        (ViewButton.ID_GO_TO_LAST_PAGE, "⏭️"),
+    ]
+
+    for custom_id, emoji in buttons:
+        menu.add_button(ViewButton(style=discord.ButtonStyle.secondary, custom_id=custom_id, emoji=emoji))
 
     return menu
 
