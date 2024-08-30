@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import lib.format
 from lib.const import CONST
+from lib.exceptions import LumiException
 from services.config_service import GuildConfig
 from services.modlog_service import ModLogService
 from ui.config import create_boost_embed, create_greet_embed
@@ -604,6 +605,57 @@ class Config(commands.GroupCog, group_name="config"):
             )
 
         await interaction.response.send_message(embed=embed)
+
+    @moderation.command(name="log")
+    async def set_mod_log_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
+        """
+        Set the moderation log channel for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the moderation log channel for.
+        channel : discord.TextChannel
+            The channel to set as the moderation log channel.
+        """
+        assert interaction.guild
+        mod_log = ModLogService()
+
+        info_embed = Builder.create_embed(
+            theme="info",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_modlog_info_author"],
+            description=CONST.STRINGS["config_modlog_info_description"].format(
+                interaction.guild.name,
+            ),
+            hide_name_in_description=True,
+        )
+        info_embed.add_field(
+            name=CONST.STRINGS["config_modlog_info_commands_name"],
+            value=CONST.STRINGS["config_modlog_info_commands_value"],
+            inline=False,
+        )
+        info_embed.add_field(
+            name=CONST.STRINGS["config_modlog_info_warning_name"],
+            value=CONST.STRINGS["config_modlog_info_warning_value"],
+            inline=False,
+        )
+
+        try:
+            await channel.send(embed=info_embed)
+        except discord.errors.Forbidden as e:
+            raise LumiException(CONST.STRINGS["config_modlog_permission_error"]) from e
+
+        mod_log.set_modlog_channel(interaction.guild.id, channel.id)
+
+        success_embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_modlog_channel_set"].format(channel.mention),
+        )
+
+        await interaction.response.send_message(embed=success_embed)
 
 
 async def setup(bot: commands.Bot) -> None:
