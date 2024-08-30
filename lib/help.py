@@ -1,4 +1,6 @@
+import os
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any
 
 from discord.ext import commands
@@ -30,15 +32,21 @@ class LumiHelp(commands.HelpCommand):
             hide_name_in_description=True,
         )
 
-        for cog, lumi_commands in mapping.items():
-            filtered: list[commands.Command[Any, Any, Any]] = await self.filter_commands(lumi_commands, sort=True)
+        modules_dir = Path(__file__).parent.parent / "modules"
+        module_names = [name for name in os.listdir(modules_dir) if Path(modules_dir / name).is_dir()]
 
-            if command_signatures := [self.get_command_qualified_name(c) for c in filtered]:
-                # Remove duplicates using set() and convert back to a list
-                unique_command_signatures: list[str] = list(set(command_signatures))
-                cog_name: str = getattr(cog, "qualified_name", "Help")
+        for module_name in module_names:
+            module_commands: list[commands.Command[Any, ..., Any]] = []
+            for cog, lumi_commands in mapping.items():
+                if cog and cog.__module__.startswith(f"modules.{module_name}"):
+                    filtered = await self.filter_commands(lumi_commands, sort=True)
+                    module_commands.extend(filtered)
+
+            if module_commands:
+                command_signatures = [self.get_command_qualified_name(c) for c in module_commands]
+                unique_command_signatures = list(set(command_signatures))
                 embed.add_field(
-                    name=cog_name,
+                    name=module_name.capitalize(),
                     value=", ".join(sorted(unique_command_signatures)),
                     inline=False,
                 )
