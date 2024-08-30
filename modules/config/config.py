@@ -2,9 +2,11 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from services.config_service import GuildConfig
 from services.modlog_service import ModLogService
+from ui.boosts import create_boost_embed
 from ui.embeds import Builder
 
 
@@ -14,15 +16,23 @@ class Config(commands.GroupCog, group_name="config"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    birthdays = app_commands.Group(name="birthdays", description="Birthday commands")
-    levels = app_commands.Group(name="levels", description="Level commands")
-    moderation = app_commands.Group(name="moderation", description="Moderation commands")
-    prefix = app_commands.Group(name="prefix", description="Prefix commands")
-    boosts = app_commands.Group(name="boosts", description="Boost commands")
-    greets = app_commands.Group(name="greets", description="Greet commands")
+    birthdays = app_commands.Group(name="birthdays", description="Configure the birthdays module")
+    boosts = app_commands.Group(name="boosts", description="Configure the boosts module")
+    greets = app_commands.Group(name="greets", description="Configure the greets module")
+    levels = app_commands.Group(name="levels", description="Configure the levels module")
+    moderation = app_commands.Group(name="moderation", description="Configure the moderation module")
+    prefix = app_commands.Group(name="prefix", description="Configure the prefix for the bot")
 
     @app_commands.command(name="show")
     async def config_help(self, interaction: discord.Interaction) -> None:
+        """
+        Show the current configuration for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to show the config for.
+        """
         assert interaction.guild
         guild_config: GuildConfig = GuildConfig(interaction.guild.id)
         guild: discord.Guild = interaction.guild
@@ -85,8 +95,18 @@ class Config(commands.GroupCog, group_name="config"):
 
         await interaction.response.send_message(embed=embed)
 
-    @birthdays.command(name="channel", description="The channel to set for birthday announcements")
+    @birthdays.command(name="channel")
     async def birthday_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
+        """
+        Set the birthday channel for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the birthday channel for.
+        channel : discord.TextChannel
+            The channel to set as the birthday channel.
+        """
         if not interaction.guild:
             return
 
@@ -107,6 +127,14 @@ class Config(commands.GroupCog, group_name="config"):
 
     @birthdays.command(name="disable")
     async def birthday_disable(self, interaction: discord.Interaction) -> None:
+        """
+        Disable the birthday module for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to disable the birthday module for.
+        """
         if not interaction.guild:
             return
 
@@ -129,6 +157,375 @@ class Config(commands.GroupCog, group_name="config"):
             )
             guild_config.birthday_channel_id = None
             guild_config.push()
+
+        await interaction.response.send_message(embed=embed)
+
+    @levels.command(name="channel")
+    async def set_level_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
+        """
+        Set the level-up announcement channel for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the level-up announcement channel for.
+        channel : discord.TextChannel
+            The channel to set as the level-up announcement channel.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+        guild_config.level_channel_id = channel.id
+        guild_config.push()
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_level_channel_set"].format(channel.mention),
+        )
+
+        if guild_config.level_message_type == 0:
+            embed.set_footer(text=CONST.STRINGS["config_level_module_disabled_warning"])
+
+        await interaction.response.send_message(embed=embed)
+
+    @boosts.command(name="channel")
+    async def set_boost_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
+        """
+        Set the boost announcement channel for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the boost announcement channel for.
+        channel : discord.TextChannel
+            The channel to set as the boost announcement channel.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+        guild_config.boost_channel_id = channel.id
+        guild_config.push()
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_boost_channel_set"].format(channel.mention),
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+    @boosts.command(name="disable")
+    async def disable_boost_module(self, interaction: discord.Interaction) -> None:
+        """
+        Disable the boost module for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to disable the boost module for.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+
+        if not guild_config.boost_channel_id:
+            embed = Builder.create_embed(
+                theme="warning",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["config_author"],
+                description=CONST.STRINGS["config_boost_module_already_disabled"],
+            )
+        else:
+            guild_config.boost_channel_id = None
+            guild_config.boost_message = None
+            guild_config.push()
+            embed = Builder.create_embed(
+                theme="success",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["config_author"],
+                description=CONST.STRINGS["config_boost_module_disabled"],
+            )
+
+        await interaction.response.send_message(embed=embed)
+
+    @boosts.command(name="template")
+    async def set_boost_template(self, interaction: discord.Interaction, text: str) -> None:
+        """
+        Set the boost message template for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the boost message template for.
+        text : str
+            The template text to set for boost messages.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+        guild_config.boost_message = text
+        guild_config.push()
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_boost_template_updated"],
+            footer_text=CONST.STRINGS["config_example_next_footer"],
+        )
+        embed.add_field(
+            name=CONST.STRINGS["config_boost_template_field"],
+            value=f"```{text}```",
+            inline=False,
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+        example_embed = await create_boost_embed(
+            user_name=interaction.user.name,
+            user_avatar_url=interaction.user.display_avatar.url,
+            boost_count=interaction.guild.premium_subscription_count,
+            template=text,
+            image_url=guild_config.boost_image_url,
+        )
+        await interaction.followup.send(embed=example_embed, content=interaction.user.mention)
+
+    @boosts.command(name="image")
+    async def set_boost_image(self, interaction: discord.Interaction, image_url: str | None) -> None:
+        """
+        Set the boost message image for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the boost message image for.
+        image_url : str | None
+            The image URL to set for boost messages.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+
+        if image_url is None or image_url.lower() == "original":
+            guild_config.boost_image_url = None
+            guild_config.push()
+            image_url = None
+        elif not image_url.endswith(tuple(CONST.ALLOWED_IMAGE_EXTENSIONS)):
+            raise ValueError(CONST.STRINGS["error_boost_image_url_invalid"])
+        elif not image_url.startswith(("http://", "https://")):
+            raise ValueError(CONST.STRINGS["error_image_url_invalid"])
+        else:
+            guild_config.boost_image_url = image_url
+            guild_config.push()
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_boost_image_updated"],
+            footer_text=CONST.STRINGS["config_example_next_footer"],
+        )
+        embed.add_field(
+            name=CONST.STRINGS["config_boost_image_field"],
+            value=image_url or CONST.STRINGS["config_boost_image_original"],
+            inline=False,
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+        example_embed = await create_boost_embed(
+            user_name=interaction.user.name,
+            user_avatar_url=interaction.user.display_avatar.url,
+            boost_count=interaction.guild.premium_subscription_count,
+            template=guild_config.boost_message,
+            image_url=image_url,
+        )
+        await interaction.followup.send(embed=example_embed, content=interaction.user.mention)
+
+    @levels.command(name="current_channel")
+    async def set_level_current_channel(self, interaction: discord.Interaction) -> None:
+        """
+        Set the current channel as the level-up announcement channel for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the current channel as the level-up announcement channel for.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+        guild_config.level_channel_id = None
+        guild_config.push()
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_level_current_channel_set"],
+        )
+
+        if guild_config.level_message_type == 0:
+            embed.set_footer(text=CONST.STRINGS["config_level_module_disabled_warning"])
+
+        await interaction.response.send_message(embed=embed)
+
+    @levels.command(name="disable")
+    async def disable_level_module(self, interaction: discord.Interaction) -> None:
+        """
+        Disable the level-up module for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to disable the level-up module for.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+        guild_config.level_message_type = 0
+        guild_config.push()
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_level_module_disabled"],
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+    @levels.command(name="enable")
+    async def enable_level_module(self, interaction: discord.Interaction) -> None:
+        """
+        Enable the level-up module for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to enable the level-up module for.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+
+        if guild_config.level_message_type != 0:
+            embed = Builder.create_embed(
+                theme="info",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["config_author"],
+                description=CONST.STRINGS["config_level_module_already_enabled"],
+            )
+        else:
+            guild_config.level_message_type = 1
+            guild_config.push()
+            embed = Builder.create_embed(
+                theme="success",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["config_author"],
+                description=CONST.STRINGS["config_level_module_enabled"],
+            )
+
+        await interaction.response.send_message(embed=embed)
+
+    @levels.command(name="template")
+    async def set_level_template(self, interaction: discord.Interaction, text: str) -> None:
+        """
+        Set the template for level-up messages for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the template for level-up messages for.
+        text : str
+            The template text to set for level-up messages.
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+        guild_config.level_message = text
+        guild_config.push()
+
+        preview = lib.format.template(text, "Lucas", 15)
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+            description=CONST.STRINGS["config_level_template_updated"],
+        )
+        embed.add_field(
+            name=CONST.STRINGS["config_level_template"],
+            value=f"```{text}```",
+            inline=False,
+        )
+        embed.add_field(
+            name=CONST.STRINGS["config_level_type_example"],
+            value=preview,
+            inline=False,
+        )
+
+        if guild_config.level_message_type == 0:
+            embed.set_footer(text=CONST.STRINGS["config_level_module_disabled_warning"])
+
+        await interaction.response.send_message(embed=embed)
+
+    @levels.command(name="type")
+    async def set_level_type(self, interaction: discord.Interaction, level_type: str) -> None:
+        """
+        Set the type of level-up messages for the server.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to set the type of level-up messages for.
+        level_type : str
+            The type of level-up messages to set (e.g., "whimsical" or "generic").
+        """
+        if not interaction.guild:
+            return
+
+        guild_config = GuildConfig(interaction.guild.id)
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["config_author"],
+        )
+
+        guild_config.level_message = None
+        if level_type == "whimsical":
+            guild_config.level_message_type = 1
+            guild_config.push()
+
+            embed.description = CONST.STRINGS["config_level_type_whimsical"]
+            embed.add_field(
+                name=CONST.STRINGS["config_level_type_example"],
+                value=CONST.STRINGS["config_level_type_whimsical_example"],
+                inline=False,
+            )
+        else:
+            guild_config.level_message_type = 2
+            guild_config.push()
+
+            embed.description = CONST.STRINGS["config_level_type_generic"]
+            embed.add_field(
+                name=CONST.STRINGS["config_level_type_example"],
+                value=CONST.STRINGS["config_level_type_generic_example"],
+                inline=False,
+            )
 
         await interaction.response.send_message(embed=embed)
 
