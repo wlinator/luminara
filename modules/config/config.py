@@ -90,11 +90,11 @@ class Config(commands.GroupCog, group_name="config"):
         else:
             modlog_status = CONST.STRINGS["config_show_moderation_log_not_configured"]
 
-            embed.add_field(
-                name=CONST.STRINGS["config_show_moderation_log"],
-                value=modlog_status,
-                inline=False,
-            )
+        embed.add_field(
+            name=CONST.STRINGS["config_show_moderation_log"],
+            value=modlog_status,
+            inline=False,
+        )
 
         await interaction.response.send_message(embed=embed)
 
