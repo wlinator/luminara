@@ -12,15 +12,24 @@ from services.reactions_service import CustomReactionsService
 from ui.embeds import Builder
 
 
+@app_commands.guild_only()
+@app_commands.default_permissions(manage_guild=True)
 class Triggers(commands.GroupCog, group_name="trigger"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    add = app_commands.Group(name="add", description="Add a trigger")
+    add = app_commands.Group(
+        name="add",
+        description="Add a trigger",
+        allowed_contexts=app_commands.AppCommandContext(
+            guild=True,
+            dm_channel=False,
+            private_channel=False,
+        ),
+        default_permissions=discord.Permissions(manage_guild=True),
+    )
 
     @add.command(name="response")
-    @app_commands.default_permissions(manage_guild=True)
-    @app_commands.guild_only()
     async def add_text_response(
         self,
         interaction: discord.Interaction,
@@ -85,8 +94,6 @@ class Triggers(commands.GroupCog, group_name="trigger"):
         await interaction.response.send_message(embed=embed)
 
     @add.command(name="emoji")
-    @app_commands.default_permissions(manage_guild=True)
-    @app_commands.guild_only()
     async def add_emoji_response(
         self,
         interaction: discord.Interaction,
@@ -151,8 +158,6 @@ class Triggers(commands.GroupCog, group_name="trigger"):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="delete")
-    @app_commands.default_permissions(manage_guild=True)
-    @app_commands.guild_only()
     async def remove_text_response(
         self,
         interaction: discord.Interaction,
@@ -188,7 +193,6 @@ class Triggers(commands.GroupCog, group_name="trigger"):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="list")
-    @app_commands.guild_only()
     async def list_reactions(self, interaction: discord.Interaction) -> None:
         """
         List all custom reactions for the current guild.
@@ -215,7 +219,7 @@ class Triggers(commands.GroupCog, group_name="trigger"):
             await interaction.response.send_message(embed=embed)
             return
 
-        menu = ViewMenu(interaction, menu_type=ViewMenu.TypeEmbed, all_can_click=True, delete_on_timeout=True)
+        menu = ViewMenu(interaction, menu_type=ViewMenu.TypeEmbed, all_can_click=True, remove_items_on_timeout=True)
 
         for reaction in reactions:
             embed: discord.Embed = Builder.create_embed(
