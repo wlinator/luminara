@@ -130,6 +130,84 @@ class Birthday(commands.GroupCog, group_name="birthday"):
 
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(name="remove")
+    async def remove_birthday(
+        self,
+        interaction: discord.Interaction,
+    ) -> None:
+        """
+        Remove your birthday.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction object.
+        """
+        assert interaction.guild
+        BirthdayService(interaction.user.id, interaction.guild.id).delete()
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["birthday_delete_success_author"],
+            description=CONST.STRINGS["birthday_delete_success_description"],
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="upcoming")
+    @birthdays_enabled()
+    async def upcoming_birthdays(
+        self,
+        interaction: discord.Interaction,
+    ) -> None:
+        """
+        View upcoming birthdays.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction object.
+        """
+        assert interaction.guild
+        upcoming_birthdays = BirthdayService.get_upcoming_birthdays(interaction.guild.id)
+
+        if not upcoming_birthdays:
+            embed = Builder.create_embed(
+                theme="warning",
+                user_name=interaction.user.name,
+                author_text=CONST.STRINGS["birthday_upcoming_no_birthdays_author"],
+                description=CONST.STRINGS["birthday_upcoming_no_birthdays"],
+            )
+            await interaction.response.send_message(embed=embed)
+            return
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=interaction.user.name,
+            author_text=CONST.STRINGS["birthday_upcoming_author"],
+            description="",
+        )
+        embed.set_thumbnail(url=CONST.LUMI_LOGO_TRANSPARENT)
+
+        birthday_lines: list[str] = []
+        for user_id, birthday in upcoming_birthdays[:10]:
+            try:
+                member = await interaction.guild.fetch_member(user_id)
+                birthday_date = datetime.datetime.strptime(birthday, "%m-%d").replace(tzinfo=tz)
+                formatted_birthday = birthday_date.strftime("%B %-d")
+                birthday_lines.append(
+                    CONST.STRINGS["birthday_upcoming_description_line"].format(
+                        member.name,
+                        formatted_birthday,
+                    ),
+                )
+            except (discord.HTTPException, ValueError):
+                continue
+
+        embed.description = "\n".join(birthday_lines)
+        await interaction.response.send_message(embed=embed)
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Birthday(bot))
