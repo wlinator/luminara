@@ -56,15 +56,26 @@ class Slowmode(commands.Cog):
     @commands.command(
         name="slowmode",
         aliases=["sm"],
-        usage="slowmode <duration> <channel>",
     )
     @commands.has_permissions(manage_channels=True)
+    @commands.bot_has_permissions(manage_channels=True)
+    @commands.guild_only()
     async def slowmode(
         self,
         ctx: commands.Context[commands.Bot],
         arg1: str | None = None,
         arg2: str | None = None,
     ) -> None:
+        """
+        Set or view the slowmode for a channel.
+
+        Parameters
+        ----------
+        arg1: str | None
+            The first argument. Defaults to None.
+        arg2: str | None
+            The second argument. Defaults to None.
+        """
         channel, duration = None, None
 
         for arg in (arg1, arg2):
@@ -83,15 +94,26 @@ class Slowmode(commands.Cog):
 
     @app_commands.command(
         name="slowmode",
-        description="Set or view the slowmode for a channel",
     )
     @app_commands.checks.has_permissions(manage_channels=True)
+    @app_commands.checks.bot_has_permissions(manage_channels=True)
+    @app_commands.guild_only()
     async def slowmode_slash(
         self,
         interaction: discord.Interaction,
         channel: discord.TextChannel,
         duration: str | None = None,
     ) -> None:
+        """
+        Set or view the slowmode for a channel.
+
+        Parameters
+        ----------
+        channel: discord.TextChannel
+            The channel to set the slowmode for.
+        duration: str | None
+            The duration of the slowmode. Defaults to None.
+        """
         await self._set_slowmode(interaction, channel, duration)
 
 

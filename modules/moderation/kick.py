@@ -15,10 +15,27 @@ class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.hybrid_command(name="kick", description="Kick a user")
+    @commands.hybrid_command(name="kick", aliases=["k"])
     @commands.has_permissions(kick_members=True)
+    @commands.bot_has_permissions(kick_members=True)
     @commands.guild_only()
-    async def kick(self, ctx: commands.Context[commands.Bot], target: discord.Member, *, reason: str | None = None):
+    async def kick(
+        self,
+        ctx: commands.Context[commands.Bot],
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ) -> None:
+        """
+        Kick a user from the guild.
+
+        Parameters
+        ----------
+        target: discord.Member
+            The user to kick.
+        reason: str | None
+            The reason for the kick. Defaults to None.
+        """
         assert ctx.guild
         assert ctx.author
         assert ctx.bot.user

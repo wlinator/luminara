@@ -18,6 +18,7 @@ class Ban(commands.Cog):
 
     @commands.hybrid_command(name="ban")
     @commands.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
     async def ban(
         self,
@@ -86,6 +87,7 @@ class Ban(commands.Cog):
 
     @commands.hybrid_command(name="unban")
     @commands.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
     async def unban(
         self,
