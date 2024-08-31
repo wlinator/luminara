@@ -125,8 +125,8 @@ class Constants:
     LEVEL_MESSAGES: Final = _p.read_json("levels.en-US")
 
     _bday: Final = _p.read_json("bdays.en-US")
-    BIRTHDAY_MESSAGES: Final = _bday["birthday_messages"]
-    BIRTHDAY_MONTHS: Final = _bday["months"]
+    BIRTHDAY_MESSAGES: Final[list[str]] = _bday["birthday_messages"]
+    BIRTHDAY_MONTHS: Final[list[str]] = _bday["months"]
 
 
 CONST = Constants()

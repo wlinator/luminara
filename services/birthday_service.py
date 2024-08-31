@@ -5,7 +5,7 @@ import pytz
 from db import database
 
 
-class Birthday:
+class BirthdayService:
     def __init__(self, user_id: int, guild_id: int) -> None:
         self.user_id: int = user_id
         self.guild_id: int = guild_id
