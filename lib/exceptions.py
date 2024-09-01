@@ -1,9 +1,10 @@
+from discord import app_commands
 from discord.ext import commands
 
 from lib.const import CONST
 
 
-class BirthdaysDisabled(commands.CheckFailure):
+class BirthdaysDisabled(commands.CheckFailure, app_commands.CheckFailure):
     """
     Raised when the birthdays module is disabled in ctx.guild.
     """

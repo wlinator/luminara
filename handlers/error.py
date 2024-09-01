@@ -53,6 +53,10 @@ class ErrorHandler(commands.Cog):
         self._old_tree_error = tree.on_error
         tree.on_error = self.on_app_command_error
 
+    async def cog_unload(self):
+        tree = self.bot.tree
+        tree.on_error = self._old_tree_error
+
     async def on_app_command_error(
         self,
         interaction: discord.Interaction,
