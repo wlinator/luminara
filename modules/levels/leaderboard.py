@@ -15,9 +15,16 @@ class Leaderboard(commands.Cog):
     @commands.hybrid_command(
         name="leaderboard",
         aliases=["lb"],
-        usage="leaderboard",
     )
     async def leaderboard(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Get the leaderboard for the server.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
         guild: Guild | None = ctx.guild
         if not guild:
             return

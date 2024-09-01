@@ -13,9 +13,16 @@ class Level(commands.Cog):
     @commands.hybrid_command(
         name="level",
         aliases=["rank", "lvl", "xp"],
-        usage="level",
     )
     async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Get the level of the user.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
         if not ctx.guild:
             return
 
