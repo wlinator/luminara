@@ -15,10 +15,26 @@ class Warn(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.hybrid_command(name="warn", description="Warn a user")
+    @commands.hybrid_command(name="warn", aliases=["w"])
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
-    async def warn(self, ctx: commands.Context[commands.Bot], target: discord.Member, *, reason: str | None = None):
+    async def warn(
+        self,
+        ctx: commands.Context[commands.Bot],
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ) -> None:
+        """
+        Warn a user.
+
+        Parameters
+        ----------
+        target: discord.Member
+            The user to warn.
+        reason: str | None
+            The reason for the warn. Defaults to None.
+        """
         if not ctx.guild or not ctx.author or not ctx.bot.user:
             raise LumiException
 
