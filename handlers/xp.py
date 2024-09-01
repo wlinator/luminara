@@ -5,6 +5,7 @@ import time
 
 import discord
 from discord.ext import commands
+from loguru import logger
 
 import lib.format
 from lib.client import Luminara
@@ -100,13 +101,12 @@ class XPHandler:
             reason: str = "Automated Level Reward"
 
             if role := self.guild.get_role(role_id):
-                with contextlib.suppress(
-                    discord.Forbidden,
-                    discord.NotFound,
-                    discord.HTTPException,
-                ):
+                try:
                     if isinstance(self.author, discord.Member):
                         await self.author.add_roles(role, reason=reason)
+                except (discord.Forbidden, discord.NotFound, discord.HTTPException) as e:
+                    logger.error(f"Failed to add role {role_id} to {self.author.id}: {e}")
+
             previous, replace = _rew.should_replace_previous_reward(_xp.level)
 
             if (
@@ -114,12 +114,10 @@ class XPHandler:
                 and isinstance(self.author, discord.Member)
                 and (role := self.guild.get_role(previous or role_id))
             ):
-                with contextlib.suppress(
-                    discord.Forbidden,
-                    discord.NotFound,
-                    discord.HTTPException,
-                ):
+                try:
                     await self.author.remove_roles(role, reason=reason)
+                except (discord.Forbidden, discord.NotFound, discord.HTTPException) as e:
+                    logger.error(f"Failed to replace role {previous} with {role_id} from {self.author.id}: {e}")
 
     async def get_level_channel(
         self,
