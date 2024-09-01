@@ -19,6 +19,17 @@ class Blacklist(commands.Cog):
         *,
         reason: str | None = None,
     ) -> None:
+        """
+        Blacklist a user from the bot.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        user : discord.User
+            The user to blacklist.
+        reason : str | None, optional
+        """
         blacklist_service = BlacklistUserService(user.id)
         blacklist_service.add_to_blacklist(reason)
 

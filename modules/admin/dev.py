@@ -17,13 +17,22 @@ class Dev(commands.Cog):
     @dev.command(
         name="sync_tree",
         aliases=["sync"],
-        usage="sync_tree [guild]",
     )
     async def sync(
         self,
         ctx: commands.Context[commands.Bot],
         guild: discord.Guild | None = None,
     ) -> None:
+        """
+        Sync the bot's tree to the specified guild.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        guild : discord.Guild | None, optional
+            The guild to sync the tree to, by default None.
+        """
         if guild:
             self.bot.tree.copy_global_to(guild=guild)
 
@@ -31,12 +40,24 @@ class Dev(commands.Cog):
 
         await ctx.send(content=CONST.STRINGS["dev_sync_tree"])
 
-    @dev.command(name="clear_tree", aliases=["clear"])
+    @dev.command(
+        name="clear_tree",
+        aliases=["clear"],
+    )
     async def sync_global(
         self,
         ctx: commands.Context[commands.Bot],
         guild: discord.Guild | None = None,
     ) -> None:
+        """
+        Clear the bot's tree for the specified guild.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        guild : discord.Guild | None, optional
+        """
         self.bot.tree.clear_commands(guild=guild)
 
         await ctx.send(content=CONST.STRINGS["dev_clear_tree"])

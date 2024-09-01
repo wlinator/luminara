@@ -12,7 +12,24 @@ class Award(commands.Cog):
 
     @commands.command(name="award")
     @commands.is_owner()
-    async def award_command(self, ctx: commands.Context[commands.Bot], user: discord.User, amount: int) -> None:
+    async def award_command(
+        self,
+        ctx: commands.Context[commands.Bot],
+        user: discord.User,
+        amount: int,
+    ) -> None:
+        """
+        Award a user with a specified amount of currency.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        user : discord.User
+            The user to award.
+        amount : int
+            The amount of currency to award.
+        """
         curr = Currency(user.id)
         curr.add_balance(amount)
         curr.push()

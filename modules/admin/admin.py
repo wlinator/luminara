@@ -13,7 +13,22 @@ class Sql(commands.Cog):
 
     @commands.command(name="sqlselect", aliases=["sqls"])
     @commands.is_owner()
-    async def select_cmd(self, ctx: commands.Context[commands.Bot], *, query: str) -> None:
+    async def select_cmd(
+        self,
+        ctx: commands.Context[commands.Bot],
+        *,
+        query: str,
+    ) -> None:
+        """
+        Execute a SQL SELECT query.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        query : str
+            The SQL query to execute.
+        """
         if query.lower().startswith("select "):
             query = query[7:]
 
@@ -45,7 +60,22 @@ class Sql(commands.Cog):
 
     @commands.command(name="sqlinject", aliases=["sqli"])
     @commands.is_owner()
-    async def inject_cmd(self, ctx: commands.Context[commands.Bot], *, query: str) -> None:
+    async def inject_cmd(
+        self,
+        ctx: commands.Context[commands.Bot],
+        *,
+        query: str,
+    ) -> None:
+        """
+        Execute a SQL INJECT query.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        query : str
+            The SQL query to execute.
+        """
         try:
             database.execute_query(query)
             embed = Builder.create_embed(
