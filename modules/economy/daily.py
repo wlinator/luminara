@@ -30,6 +30,7 @@ class Daily(commands.Cog):
         name="daily",
         aliases=["timely"],
     )
+    @commands.guild_only()
     async def daily(
         self,
         ctx: commands.Context[commands.Bot],

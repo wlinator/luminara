@@ -13,6 +13,7 @@ class Balance(commands.Cog):
         name="balance",
         aliases=["bal", "$"],
     )
+    @commands.guild_only()
     async def daily(
         self,
         ctx: commands.Context[commands.Bot],
