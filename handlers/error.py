@@ -31,7 +31,7 @@ async def on_error(event: str, *args: Any, **kwargs: Any) -> None:
 async def log_command_error(
     user_name: str,
     command_name: str | None,
-    guild_name: str | None,
+    guild_id: int | None,
     error: commands.CommandError | commands.CheckFailure | app_commands.AppCommandError,
     command_type: str,
 ) -> None:
@@ -40,8 +40,8 @@ async def log_command_error(
 
     log_msg = f"{user_name} executed {command_type}{command_name or 'Unknown'}"
 
-    log_msg += " in DMs" if guild_name is None else f" | guild: {guild_name} "
-    logger.error(f"{log_msg} | FAILED: {error}")
+    log_msg += " in DMs" if guild_id is None else f" | guild: {guild_id}"
+    logger.error(f"{log_msg} | {error.__module__}.{error.__class__.__name__}")
 
 
 class ErrorHandler(commands.Cog):
@@ -68,7 +68,7 @@ class ErrorHandler(commands.Cog):
         await log_command_error(
             user_name=interaction.user.name,
             command_name=interaction.command.qualified_name if interaction.command else None,
-            guild_name=interaction.guild.name if interaction.guild else None,
+            guild_id=interaction.guild.id if interaction.guild else None,
             error=error,
             command_type="/",
         )
@@ -88,7 +88,7 @@ class ErrorHandler(commands.Cog):
         await log_command_error(
             user_name=ctx.author.name,
             command_name=ctx.command.qualified_name if ctx.command else None,
-            guild_name=ctx.guild.name if ctx.guild else None,
+            guild_id=ctx.guild.id if ctx.guild else None,
             error=error,
             command_type=".",
         )
