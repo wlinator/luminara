@@ -1,3 +1,4 @@
+import asyncio
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -86,6 +87,11 @@ class Backup(commands.Cog):
     @tasks.loop(hours=1)
     async def do_backup(self) -> None:
         await backup()
+
+    @do_backup.before_loop
+    async def before_do_backup(self) -> None:
+        await self.bot.wait_until_ready()
+        await asyncio.sleep(30)
 
     @commands.command()
     async def backup(self, ctx: commands.Context[commands.Bot]) -> None:
