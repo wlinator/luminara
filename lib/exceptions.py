@@ -10,7 +10,7 @@ class BirthdaysDisabled(commands.CheckFailure, app_commands.CheckFailure):
     """
 
 
-class LumiException(commands.CommandError):
+class LumiException(commands.CommandError, app_commands.AppCommandError):
     """
     A generic exception to raise for quick error handling.
     """
@@ -23,7 +23,7 @@ class LumiException(commands.CommandError):
         return self.message
 
 
-class Blacklisted(commands.CommandError):
+class Blacklisted(commands.CommandError, app_commands.AppCommandError):
     """
     Raised when a user is blacklisted.
     """
