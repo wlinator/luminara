@@ -13,11 +13,16 @@ class Uptime(commands.Cog):
         self.bot: commands.Bot = bot
         self.start_time: datetime = discord.utils.utcnow()
 
-    @commands.hybrid_command(
-        name="uptime",
-        usage="uptime",
-    )
+    @commands.hybrid_command(name="uptime")
     async def uptime(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Uptime command.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
         unix_timestamp: int = int(self.start_time.timestamp())
 
         embed: Embed = Builder.create_embed(

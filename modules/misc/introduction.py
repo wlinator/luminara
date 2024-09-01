@@ -13,12 +13,16 @@ class Introduction(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.hybrid_command(
-        name="introduction",
-        aliases=["intro"],
-        usage="introduction",
-    )
+    @commands.hybrid_command(name="introduction", aliases=["intro"])
     async def introduction(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Introduction command.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
         guild: discord.Guild | None = self.bot.get_guild(
             CONST.INTRODUCTIONS_GUILD_ID,
         )

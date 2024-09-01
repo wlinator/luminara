@@ -36,7 +36,6 @@ class Avatar(commands.Cog):
     @commands.hybrid_command(
         name="avatar",
         aliases=["av"],
-        usage="avatar [user]",
     )
     async def avatar(
         self,

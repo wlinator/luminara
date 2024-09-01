@@ -52,16 +52,42 @@ class Xkcd(commands.Cog):
 
     xkcd = app_commands.Group(name="xkcd", description="Get the latest xkcd comic")
 
-    @xkcd.command(name="latest", description="Get the latest xkcd comic")
+    @xkcd.command(name="latest")
     async def xkcd_latest(self, interaction: discord.Interaction) -> None:
+        """
+        Get the latest xkcd comic.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to get the latest comic for.
+        """
         await print_comic(interaction, latest=True)
 
-    @xkcd.command(name="random", description="Get a random xkcd comic")
+    @xkcd.command(name="random")
     async def xkcd_random(self, interaction: discord.Interaction) -> None:
+        """
+        Get a random xkcd comic.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to get the random comic for.
+        """
         await print_comic(interaction)
 
-    @xkcd.command(name="search", description="Search for an xkcd comic")
+    @xkcd.command(name="search")
     async def xkcd_search(self, interaction: discord.Interaction, comic_id: int) -> None:
+        """
+        Get a specific xkcd comic.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to get the comic for.
+        comic_id : int
+            The ID of the comic to get.
+        """
         await print_comic(interaction, number=comic_id)
 
 

@@ -8,11 +8,16 @@ class Ping(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.hybrid_command(
-        name="ping",
-        usage="ping",
-    )
+    @commands.hybrid_command(name="ping")
     async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Ping command.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
         embed = Builder.create_embed(
             theme="success",
             user_name=ctx.author.name,

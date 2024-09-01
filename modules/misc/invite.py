@@ -9,12 +9,16 @@ class Invite(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.hybrid_command(
-        name="invite",
-        aliases=["inv"],
-        usage="invite",
-    )
+    @commands.hybrid_command(name="invite", aliases=["inv"])
     async def invite(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Invite command.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
         await ctx.send(
             embed=Builder.create_embed(
                 theme="success",

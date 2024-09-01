@@ -15,7 +15,6 @@ class Info(commands.Cog):
 
     @commands.hybrid_command(
         name="info",
-        usage="info",
     )
     async def info(self, ctx: commands.Context[commands.Bot]) -> None:
         memory_usage_in_mb: float = psutil.Process().memory_info().rss / (1024 * 1024)
