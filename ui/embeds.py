@@ -37,6 +37,7 @@ class Builder:
             "warning": (CONST.COLOR_WARNING, CONST.WARNING_ICON),
             "default": (color or CONST.COLOR_DEFAULT, None),
         }
+
         color, author_icon_url = theme_settings[theme]
 
         if user_name and not hide_name_in_description:
