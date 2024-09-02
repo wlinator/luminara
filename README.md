@@ -31,11 +31,13 @@ Additionally, you'll need to create a Discord bot application and obtain a token
 1. Copy the contents from [`docker-compose.prod.yml`](docker-compose.prod.yml) to a new file named `docker-compose.yml`
    in an empty directory.
 
-2. Copy the contents from [`.env.example`](.env.example) to a new file named `.env` in the same directory.
+3. Copy [settings.yaml](settings.yaml) to the same directory.
 
-3. Fill out the `.env` file with your specific configuration details.
+3. Copy the contents from [`.env.example`](.env.example) to a new file named `.env` in the same directory.
 
-4. Run the following command in your terminal:
+4. Fill out the `.env` file with your specific configuration details.
+
+5. Run the following command in your terminal:
 
    ```
    docker compose up -d --build

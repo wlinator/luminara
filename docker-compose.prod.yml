@@ -4,7 +4,9 @@ services:
     container_name: lumi-core
     restart: always
     volumes:
-      - ./settings.yaml:/usr/src/app/settings.yaml
+      - type: bind
+        source: ./settings.yaml
+        target: /usr/src/app/settings.yaml
     env_file:
       - path: ./.env
         required: true

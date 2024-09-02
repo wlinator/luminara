@@ -154,6 +154,7 @@ class Introduction(commands.Cog):
                 author_icon_url=ctx.author.display_avatar.url,
                 description=description,
                 footer_text=CONST.STRINGS["intro_content_footer"],
+                hide_name_in_description=True,
             )
             view = IntroductionFinishButtons(ctx)
 
