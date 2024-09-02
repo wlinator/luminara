@@ -3,6 +3,8 @@ services:
     image: ghcr.io/wlinator/luminara:3  # Remove "ghcr.io/" if you want to use the Docker Hub image.
     container_name: lumi-core
     restart: always
+    volumes:
+      - ./settings.yaml:/usr/src/app/settings.yaml
     env_file:
       - path: ./.env
         required: true
