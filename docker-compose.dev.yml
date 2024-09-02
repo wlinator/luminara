@@ -3,6 +3,14 @@ services:
     build: .
     container_name: lumi-core
     restart: always
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /usr/src/app/
+          ignore:
+            - .venv/
+            - data/
     env_file:
       - path: ./.env
         required: true

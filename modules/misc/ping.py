@@ -13,7 +13,7 @@ class Ping(commands.Cog):
     @commands.hybrid_command(name="ping")
     async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
         """
-        Ping command.
+        Show Luminara's latency.
 
         Parameters
         ----------

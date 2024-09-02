@@ -145,6 +145,7 @@
   "daily_success_claim_description": "you claimed your reward of **${0}**!",
   "default_level_up_message": "**{0}** you have reached **Level {1}**.",
   "dev_clear_tree": "The application command tree has been cleared.",
+  "dev_stop_note": "Stopping the bot...\n-# Note: if Luminara is running with Docker Compose, this will restart the container.",
   "dev_sync_tree": "The application command tree has been synced.",
   "error_actionable_hierarchy_bot": "I don't have permission to perform this action on this user due to role hierarchy.",
   "error_actionable_hierarchy_user": "you don't have permission to perform this action on this user due to role hierarchy.",
