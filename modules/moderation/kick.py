@@ -14,6 +14,7 @@ from ui.embeds import Builder
 class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.kick.usage = lib.format.generate_usage(self.kick)
 
     @commands.hybrid_command(name="kick", aliases=["k"])
     @commands.has_permissions(kick_members=True)

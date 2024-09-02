@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from services.currency_service import Currency
 from ui.embeds import Builder
@@ -8,13 +9,14 @@ from ui.embeds import Builder
 class Balance(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
+        self.balance.usage = lib.format.generate_usage(self.balance)
 
     @commands.hybrid_command(
         name="balance",
         aliases=["bal", "$"],
     )
     @commands.guild_only()
-    async def daily(
+    async def balance(
         self,
         ctx: commands.Context[commands.Bot],
     ) -> None:

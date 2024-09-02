@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from ui.embeds import Builder
 from ui.views.introduction import (
@@ -12,6 +13,7 @@ from ui.views.introduction import (
 class Introduction(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.introduction.usage = lib.format.generate_usage(self.introduction)
 
     @commands.hybrid_command(name="introduction", aliases=["intro"])
     async def introduction(self, ctx: commands.Context[commands.Bot]) -> None:

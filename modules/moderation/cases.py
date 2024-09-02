@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from reactionmenu import ViewButton, ViewMenu
 
+import lib.format
 from lib.case_handler import edit_case_modlog
 from lib.const import CONST
 from lib.exceptions import LumiException
@@ -46,6 +47,10 @@ def create_case_view_menu(ctx: commands.Context[commands.Bot]) -> ViewMenu:
 class Cases(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.view_case_by_number.usage = lib.format.generate_usage(self.view_case_by_number)
+        self.view_all_cases_in_guild.usage = lib.format.generate_usage(self.view_all_cases_in_guild)
+        self.view_all_cases_by_mod.usage = lib.format.generate_usage(self.view_all_cases_by_mod)
+        self.edit_case_reason.usage = lib.format.generate_usage(self.edit_case_reason)
 
     @commands.hybrid_command(name="case", aliases=["c", "ca"])
     @commands.has_permissions(manage_messages=True)

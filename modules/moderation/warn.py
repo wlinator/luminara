@@ -4,6 +4,7 @@ from typing import cast
 import discord
 from discord.ext import commands
 
+import lib.format
 from lib.actionable import async_actionable
 from lib.case_handler import create_case
 from lib.const import CONST
@@ -14,6 +15,7 @@ from ui.embeds import Builder
 class Warn(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.warn.usage = lib.format.generate_usage(self.warn)
 
     @commands.hybrid_command(name="warn", aliases=["w"])
     @commands.has_permissions(manage_messages=True)

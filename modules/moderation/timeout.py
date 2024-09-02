@@ -16,6 +16,8 @@ from ui.embeds import Builder
 class Timeout(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.timeout.usage = lib.format.generate_usage(self.timeout)
+        self.untimeout.usage = lib.format.generate_usage(self.untimeout)
 
     @commands.hybrid_command(name="timeout", aliases=["t", "to"])
     @commands.has_permissions(moderate_members=True)

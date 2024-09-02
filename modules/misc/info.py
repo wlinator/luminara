@@ -5,6 +5,7 @@ import discord
 import psutil
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from ui.embeds import Builder
 
@@ -12,6 +13,7 @@ from ui.embeds import Builder
 class Info(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.info.usage = lib.format.generate_usage(self.info)
 
     @commands.hybrid_command(
         name="info",

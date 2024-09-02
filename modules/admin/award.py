@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from services.currency_service import Currency
 from ui.embeds import Builder
@@ -9,6 +10,7 @@ from ui.embeds import Builder
 class Award(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.award_command.usage = lib.format.generate_usage(self.award_command)
 
     @commands.command(name="award", aliases=["aw"])
     @commands.is_owner()

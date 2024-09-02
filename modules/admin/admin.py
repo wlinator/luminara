@@ -1,6 +1,7 @@
 import mysql.connector
 from discord.ext import commands
 
+import lib.format
 from db import database
 from lib.const import CONST
 from lib.format import shorten
@@ -10,6 +11,8 @@ from ui.embeds import Builder
 class Sql(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.select_cmd.usage = lib.format.generate_usage(self.select_cmd)
+        self.inject_cmd.usage = lib.format.generate_usage(self.inject_cmd)
 
     @commands.command(name="sqlselect", aliases=["sqls"])
     @commands.is_owner()

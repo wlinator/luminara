@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from lib.exceptions import LumiException
 from services.currency_service import Currency
@@ -10,6 +11,7 @@ from ui.embeds import Builder
 class Give(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
+        self.give.usage = lib.format.generate_usage(self.give)
 
     @commands.hybrid_command(
         name="give",

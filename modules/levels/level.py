@@ -1,6 +1,7 @@
 from discord import Embed
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from services.xp_service import XpService
 from ui.embeds import Builder
@@ -9,12 +10,13 @@ from ui.embeds import Builder
 class Level(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.level.usage = lib.format.generate_usage(self.level)
 
     @commands.hybrid_command(
         name="level",
         aliases=["rank", "lvl", "xp"],
     )
-    async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def level(self, ctx: commands.Context[commands.Bot]) -> None:
         """
         Get the level of the user.
 

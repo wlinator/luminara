@@ -5,6 +5,8 @@ import httpx
 from discord import File
 from discord.ext import commands
 
+import lib.format
+
 
 async def create_avatar_file(url: str) -> File:
     """
@@ -32,6 +34,7 @@ async def create_avatar_file(url: str) -> File:
 class Avatar(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.avatar.usage = lib.format.generate_usage(self.avatar)
 
     @commands.hybrid_command(
         name="avatar",
@@ -45,7 +48,7 @@ class Avatar(commands.Cog):
         """
         Get the avatar of a member.
 
-        Parameters:
+        Parameters
         -----------
         ctx : ApplicationContext
             The discord context object.

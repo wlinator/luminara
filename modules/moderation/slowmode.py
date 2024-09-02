@@ -4,6 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from lib.exceptions import LumiException
 from lib.format import format_duration_to_seconds
@@ -12,6 +13,7 @@ from lib.format import format_duration_to_seconds
 class Slowmode(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.slowmode.usage = lib.format.generate_usage(self.slowmode)
 
     async def _set_slowmode(
         self,

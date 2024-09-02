@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from services.blacklist_service import BlacklistUserService
 from ui.embeds import Builder
@@ -9,6 +10,7 @@ from ui.embeds import Builder
 class Blacklist(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.blacklist_command.usage = lib.format.generate_usage(self.blacklist_command)
 
     @commands.command(name="blacklist")
     @commands.is_owner()

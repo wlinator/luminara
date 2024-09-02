@@ -41,7 +41,13 @@ async def log_command_error(
     log_msg = f"{user_name} executed {command_type}{command_name or 'Unknown'}"
 
     log_msg += " in DMs" if guild_id is None else f" | guild: {guild_id}"
-    logger.error(f"{log_msg} | {error.__module__}.{error.__class__.__name__}")
+
+    if CONST.INSTANCE == "dev":
+        logger.exception(
+            f"{log_msg} | {error.__module__}.{error.__class__.__name__} | {''.join(traceback.format_exception(type(error), error, error.__traceback__))}",
+        )
+    else:
+        logger.error(f"{log_msg} | {error.__module__}.{error.__class__.__name__}")
 
 
 class ErrorHandler(commands.Cog):

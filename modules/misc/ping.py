@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from ui.embeds import Builder
 
@@ -7,6 +8,7 @@ from ui.embeds import Builder
 class Ping(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.ping.usage = lib.format.generate_usage(self.ping)
 
     @commands.hybrid_command(name="ping")
     async def ping(self, ctx: commands.Context[commands.Bot]) -> None:

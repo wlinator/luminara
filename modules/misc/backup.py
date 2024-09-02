@@ -90,11 +90,6 @@ class Backup(commands.Cog):
         await self.bot.wait_until_ready()
         await asyncio.sleep(30)
 
-    @commands.command()
-    async def backup(self, ctx: commands.Context[commands.Bot]) -> None:
-        await backup()
-        await ctx.send("Backup successful.")
-
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Backup(bot))

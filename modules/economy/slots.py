@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 import discord
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from lib.exceptions import LumiException
 from services.currency_service import Currency
@@ -18,6 +19,7 @@ est = ZoneInfo("US/Eastern")
 class Slots(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
+        self.slots.usage = lib.format.generate_usage(self.slots)
 
     @commands.hybrid_command(
         name="slots",

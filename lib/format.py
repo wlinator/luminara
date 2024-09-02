@@ -1,4 +1,6 @@
+import inspect
 import textwrap
+from typing import Any
 
 import discord
 from discord.ext import commands
@@ -140,3 +142,57 @@ def format_seconds_to_duration_string(seconds: int) -> str:
         return f"{hours}h{minutes}m" if minutes > 0 else f"{hours}h"
 
     return f"{minutes}m"
+
+
+def generate_usage(
+    command: commands.Command[Any, Any, Any],
+    flag_converter: type[commands.FlagConverter] | None = None,
+) -> str:
+    """
+    Generate a usage string for a command with flags.
+    Credit to https://github.com/allthingslinux/tux (thanks kaizen ;p)
+
+    Parameters
+    ----------
+    command : commands.Command
+        The command for which to generate the usage string.
+    flag_converter : type[commands.FlagConverter]
+        The flag converter class for the command.
+
+    Returns
+    -------
+    str
+        The usage string for the command. Example: "ban [target] -[reason] -<silent>"
+    """
+
+    # Get the name of the command
+    command_name = command.qualified_name
+
+    # Start the usage string with the command name
+    usage = f"{command_name}"
+
+    # Get the parameters of the command (excluding the `ctx` and `flags` parameters)
+    parameters: dict[str, commands.Parameter] = command.clean_params
+
+    flag_prefix = getattr(flag_converter, "__commands_flag_prefix__", "-")
+    flags: dict[str, commands.Flag] = flag_converter.get_flags() if flag_converter else {}
+
+    # Add non-flag arguments to the usage string
+    for param_name, param in parameters.items():
+        # Ignore these parameters
+        if param_name in ["ctx", "flags"]:
+            continue
+        # Determine if the parameter is required
+        is_required = param.default == inspect.Parameter.empty
+        # Add the parameter to the usage string with required or optional wrapping
+        usage += f" <{param_name}>" if is_required else f" [{param_name}]"
+
+    # Add flag arguments to the usage string
+    for flag_name, flag_obj in flags.items():
+        # Determine if the flag is required or optional
+        if flag_obj.required:
+            usage += f" {flag_prefix}<{flag_name}>"
+        else:
+            usage += f" {flag_prefix}[{flag_name}]"
+
+    return usage

@@ -4,6 +4,7 @@ import discord
 from discord import Embed
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from ui.embeds import Builder
 
@@ -12,8 +13,9 @@ class Uptime(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
         self.start_time: datetime = discord.utils.utcnow()
+        self.uptime.usage = lib.format.generate_usage(self.uptime)
 
-    @commands.hybrid_command(name="uptime", aliases=["ut"])
+    @commands.hybrid_command(name="uptime")
     async def uptime(self, ctx: commands.Context[commands.Bot]) -> None:
         """
         Uptime command.

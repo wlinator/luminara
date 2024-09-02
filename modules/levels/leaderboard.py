@@ -3,6 +3,7 @@ from typing import cast
 from discord import Embed, Guild, Member
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from ui.embeds import Builder
 from ui.views.leaderboard import LeaderboardCommandOptions, LeaderboardCommandView
@@ -11,6 +12,7 @@ from ui.views.leaderboard import LeaderboardCommandOptions, LeaderboardCommandVi
 class Leaderboard(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
+        self.leaderboard.usage = lib.format.generate_usage(self.leaderboard)
 
     @commands.hybrid_command(
         name="leaderboard",

@@ -15,8 +15,10 @@ from ui.embeds import Builder
 class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.ban.usage = lib.format.generate_usage(self.ban)
+        self.unban.usage = lib.format.generate_usage(self.unban)
 
-    @commands.hybrid_command(name="ban")
+    @commands.hybrid_command(name="ban", aliases=["b"])
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()

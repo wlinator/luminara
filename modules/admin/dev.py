@@ -1,12 +1,15 @@
 import discord
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 
 
 class Dev(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.sync.usage = lib.format.generate_usage(self.sync)
+        self.clear.usage = lib.format.generate_usage(self.clear)
 
     @commands.group(name="dev", description="Lumi developer commands")
     @commands.guild_only()
@@ -44,7 +47,7 @@ class Dev(commands.Cog):
         name="clear_tree",
         aliases=["clear"],
     )
-    async def sync_global(
+    async def clear(
         self,
         ctx: commands.Context[commands.Bot],
         guild: discord.Guild | None = None,

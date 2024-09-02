@@ -4,7 +4,7 @@ from typing import cast
 import discord
 from discord.ext import commands
 
-import lib.format as formatter
+import lib.format
 from lib.actionable import async_actionable
 from lib.case_handler import create_case
 from lib.const import CONST
@@ -14,6 +14,7 @@ from ui.embeds import Builder
 class Softban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.softban.usage = lib.format.generate_usage(self.softban)
 
     @commands.hybrid_command(name="softban", aliases=["sb"])
     @commands.has_permissions(ban_members=True)
@@ -67,7 +68,7 @@ class Softban(commands.Cog):
             target,
             reason=CONST.STRINGS["mod_reason"].format(
                 ctx.author.name,
-                formatter.shorten(output_reason, 200),
+                lib.format.shorten(output_reason, 200),
             ),
             delete_message_seconds=86400,
         )

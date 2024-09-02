@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from loguru import logger
 
+import lib.format
 from lib.const import CONST
 from lib.exceptions import LumiException
 from services.currency_service import Currency
@@ -22,6 +23,7 @@ Hand = list[Card]
 class Blackjack(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
+        self.blackjack.usage = lib.format.generate_usage(self.blackjack)
 
     @commands.hybrid_command(
         name="blackjack",

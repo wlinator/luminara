@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 from discord import Embed
 from discord.ext import commands
 
+import lib.format
 from lib.const import CONST
 from services.currency_service import Currency
 from services.daily_service import Dailies
@@ -25,6 +26,7 @@ def seconds_until(hours: int, minutes: int) -> int:
 class Daily(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
+        self.daily.usage = lib.format.generate_usage(self.daily)
 
     @commands.hybrid_command(
         name="daily",
