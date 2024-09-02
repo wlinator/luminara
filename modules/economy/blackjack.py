@@ -202,6 +202,7 @@ class Blackjack(commands.Cog):
             description=description,
             footer_text=footer_text,
             footer_icon_url=CONST.MUFFIN_ART,
+            hide_name_in_description=True,
         )
 
     def create_end_game_embed(
@@ -223,6 +224,7 @@ class Blackjack(commands.Cog):
             ),
             footer_text=CONST.STRINGS["blackjack_footer"],
             footer_icon_url=CONST.MUFFIN_ART,
+            hide_name_in_description=True,
         )
 
         result = {
