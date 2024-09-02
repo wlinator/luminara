@@ -10,13 +10,7 @@ expand the bot's functionality. Please follow these guidelines when contributing
 2. **Clone Your Fork:** Clone your forked repository to your local machine.
 
 3. **Set Up Development Environment:**
-
-    * **Docker:** To run the bot, use this command to run your newly edited code:
-
-      ```bash
-      docker compose -f docker-compose.dev.yml up --build --watch
-      ```
-
+4. 
     * **Docker:** To run the bot, use this command to run your newly edited code:
 
       ```bash
