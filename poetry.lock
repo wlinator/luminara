@@ -18,14 +18,17 @@ redis = ["redis (>=4.2.0)"]
 
 [[package]]
 name = "aioconsole"
-version = "0.7.1"
+version = "0.8.0"
 description = "Asynchronous console and interfaces for asyncio"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "aioconsole-0.7.1-py3-none-any.whl", hash = "sha256:1867a7cc86897a87398e6e6fba302738548f1cf76cbc6c76e06338e091113bdc"},
-    {file = "aioconsole-0.7.1.tar.gz", hash = "sha256:a3e52428d32623c96746ec3862d97483c61c12a2f2dfba618886b709415d4533"},
+    {file = "aioconsole-0.8.0-py3-none-any.whl", hash = "sha256:a8f7d3049df0518f4e50de7d94c082097785b6a675befd62e8da5539d3d2f8ca"},
+    {file = "aioconsole-0.8.0.tar.gz", hash = "sha256:64c93c17ef878fc68b4b379b9ed7fbb96c6fbc1b4e9a8378f9f899299ebdd37f"},
 ]
+
+[package.extras]
+dev = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-repeat", "uvloop"]
 
 [[package]]
 name = "aiofiles"
@@ -1315,4 +1318,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "70d489a46ab888e4ed82b7447d5a02cde51e9062b735715d98cc3e4f089aadb6"
+content-hash = "afcd6c8045ed57e18a7865ae369581ba1086466680a5c319f905d55aa6147c02"
