@@ -1,5 +1,3 @@
-from typing import List, Optional, Tuple
-
 from db import database
 
 
@@ -7,7 +5,7 @@ class BlacklistUserService:
     def __init__(self, user_id: int) -> None:
         self.user_id: int = user_id
 
-    def add_to_blacklist(self, reason: Optional[str] = None) -> None:
+    def add_to_blacklist(self, reason: str | None = None) -> None:
         """
         Adds a user to the blacklist with the given reason.
 
@@ -37,5 +35,5 @@ class BlacklistUserService:
                 FROM blacklist_user
                 WHERE user_id = %s
                 """
-        result: List[Tuple[bool]] = database.select_query(query, (user_id,))
+        result: list[tuple[bool]] = database.select_query(query, (user_id,))
         return any(active for (active,) in result)

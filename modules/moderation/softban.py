@@ -1,66 +1,98 @@
 import asyncio
-from typing import Optional
+from typing import cast
 
 import discord
-from discord.ext.commands import MemberConverter, UserConverter
+from discord.ext import commands
 
-from lib import formatter
-from lib.constants import CONST
-from lib.embed_builder import EmbedBuilder
-from modules.moderation.utils.actionable import async_actionable
-from modules.moderation.utils.case_handler import create_case
+import lib.format
+from lib.actionable import async_actionable
+from lib.case_handler import create_case
+from lib.const import CONST
+from ui.embeds import Builder
 
 
-async def softban_user(ctx, target: discord.Member, reason: Optional[str] = None):
-    bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
-    await async_actionable(target, ctx.author, bot_member)
+class Softban(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.softban.usage = lib.format.generate_usage(self.softban)
 
-    output_reason = reason or CONST.STRINGS["mod_no_reason"]
+    @commands.hybrid_command(name="softban", aliases=["sb"])
+    @commands.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.guild_only()
+    async def softban(
+        self,
+        ctx: commands.Context[commands.Bot],
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ) -> None:
+        """
+        Softban a user from the guild.
 
-    try:
-        await target.send(
-            embed=EmbedBuilder.create_warning_embed(
-                ctx,
-                author_text=CONST.STRINGS["mod_softbanned_author"],
-                description=CONST.STRINGS["mod_softban_dm"].format(
-                    target.name,
-                    ctx.guild.name,
-                    output_reason,
+        Parameters
+        ----------
+        target: discord.Member
+            The user to softban.
+        reason: str | None
+            The reason for the softban. Defaults to None.
+        """
+        assert ctx.guild
+        assert ctx.author
+        assert ctx.bot.user
+
+        bot_member = await commands.MemberConverter().convert(ctx, str(ctx.bot.user.id))
+        await async_actionable(target, cast(discord.Member, ctx.author), bot_member)
+
+        output_reason = reason or CONST.STRINGS["mod_no_reason"]
+
+        try:
+            await target.send(
+                embed=Builder.create_embed(
+                    theme="warning",
+                    user_name=target.name,
+                    author_text=CONST.STRINGS["mod_softbanned_author"],
+                    description=CONST.STRINGS["mod_softban_dm"].format(
+                        target.name,
+                        ctx.guild.name,
+                        output_reason,
+                    ),
+                    hide_name_in_description=True,
                 ),
-                show_name=False,
+            )
+            dm_sent = True
+        except (discord.HTTPException, discord.Forbidden):
+            dm_sent = False
+
+        await ctx.guild.ban(
+            target,
+            reason=CONST.STRINGS["mod_reason"].format(
+                ctx.author.name,
+                lib.format.shorten(output_reason, 200),
+            ),
+            delete_message_seconds=86400,
+        )
+
+        await ctx.guild.unban(
+            target,
+            reason=CONST.STRINGS["mod_softban_unban_reason"].format(
+                ctx.author.name,
             ),
         )
-        dm_sent = True
-    except (discord.HTTPException, discord.Forbidden):
-        dm_sent = False
 
-    await ctx.guild.ban(
-        target,
-        reason=CONST.STRINGS["mod_reason"].format(
-            ctx.author.name,
-            formatter.shorten(output_reason, 200),
-        ),
-        delete_message_seconds=86400,
-    )
+        respond_task = ctx.send(
+            embed=Builder.create_embed(
+                theme="success",
+                user_name=target.name,
+                author_text=CONST.STRINGS["mod_softbanned_author"],
+                description=CONST.STRINGS["mod_softbanned_user"].format(target.name),
+                footer_text=CONST.STRINGS["mod_dm_sent"] if dm_sent else CONST.STRINGS["mod_dm_not_sent"],
+            ),
+        )
 
-    await ctx.guild.unban(
-        target,
-        reason=CONST.STRINGS["mod_softban_unban_reason"].format(
-            ctx.author.name,
-        ),
-    )
+        create_case_task = create_case(ctx, cast(discord.User, target), "SOFTBAN", reason)
+        await asyncio.gather(respond_task, create_case_task, return_exceptions=True)
 
-    respond_task = ctx.respond(
-        embed=EmbedBuilder.create_success_embed(
-            ctx,
-            author_text=CONST.STRINGS["mod_softbanned_author"],
-            description=CONST.STRINGS["mod_softbanned_user"].format(target.name),
-            footer_text=CONST.STRINGS["mod_dm_sent"]
-            if dm_sent
-            else CONST.STRINGS["mod_dm_not_sent"],
-        ),
-    )
 
-    target_user = await UserConverter().convert(ctx, str(target.id))
-    create_case_task = create_case(ctx, target_user, "SOFTBAN", reason)
-    await asyncio.gather(respond_task, create_case_task, return_exceptions=True)
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Softban(bot))

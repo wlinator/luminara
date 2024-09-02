@@ -1,18 +1,18 @@
-from typing import Optional
+import discord
+from discord import app_commands
+from discord.ext import commands
 
-from discord.ext import bridge
-
-from lib.constants import CONST
-from lib.embed_builder import EmbedBuilder
-from services.xkcd_service import Client, HttpError
+from lib.const import CONST
+from ui.embeds import Builder
+from wrappers.xkcd import Client, HttpError
 
 _xkcd = Client()
 
 
 async def print_comic(
-    ctx: bridge.Context,
+    interaction: discord.Interaction,
     latest: bool = False,
-    number: Optional[int] = None,
+    number: int | None = None,
 ) -> None:
     try:
         if latest:
@@ -22,9 +22,9 @@ async def print_comic(
         else:
             comic = _xkcd.get_random_comic(raw_comic_image=True)
 
-        await ctx.respond(
-            embed=EmbedBuilder.create_success_embed(
-                ctx,
+        await interaction.response.send_message(
+            embed=Builder.create_embed(
+                theme="info",
                 author_text=CONST.STRINGS["xkcd_title"].format(comic.id, comic.title),
                 description=CONST.STRINGS["xkcd_description"].format(
                     comic.explanation_url,
@@ -32,16 +32,64 @@ async def print_comic(
                 ),
                 footer_text=CONST.STRINGS["xkcd_footer"],
                 image_url=comic.image_url,
-                show_name=False,
             ),
         )
 
     except HttpError:
-        await ctx.respond(
-            embed=EmbedBuilder.create_error_embed(
-                ctx,
+        await interaction.response.send_message(
+            embed=Builder.create_embed(
+                theme="error",
                 author_text=CONST.STRINGS["xkcd_not_found_author"],
                 description=CONST.STRINGS["xkcd_not_found"],
                 footer_text=CONST.STRINGS["xkcd_footer"],
             ),
         )
+
+
+class Xkcd(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
+    xkcd = app_commands.Group(name="xkcd", description="Get the latest xkcd comic")
+
+    @xkcd.command(name="latest")
+    async def xkcd_latest(self, interaction: discord.Interaction) -> None:
+        """
+        Get the latest xkcd comic.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to get the latest comic for.
+        """
+        await print_comic(interaction, latest=True)
+
+    @xkcd.command(name="random")
+    async def xkcd_random(self, interaction: discord.Interaction) -> None:
+        """
+        Get a random xkcd comic.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to get the random comic for.
+        """
+        await print_comic(interaction)
+
+    @xkcd.command(name="search")
+    async def xkcd_search(self, interaction: discord.Interaction, comic_id: int) -> None:
+        """
+        Get a specific xkcd comic.
+
+        Parameters
+        ----------
+        interaction : discord.Interaction
+            The interaction to get the comic for.
+        comic_id : int
+            The ID of the comic to get.
+        """
+        await print_comic(interaction, number=comic_id)
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Xkcd(bot))

@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 from db import database
 
@@ -12,7 +12,7 @@ class CustomReactionsService:
         self,
         guild_id: int,
         message_content: str,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         message_content = message_content.lower()
         query = """
         SELECT * FROM custom_reactions
@@ -45,7 +45,7 @@ class CustomReactionsService:
             }
         return None
 
-    async def find_id(self, reaction_id: int) -> Optional[Dict[str, Any]]:
+    async def find_id(self, reaction_id: int) -> dict[str, Any] | None:
         query = """
         SELECT * FROM custom_reactions
         WHERE id = %s
@@ -70,7 +70,7 @@ class CustomReactionsService:
             }
         return None
 
-    async def find_all_by_guild(self, guild_id: int) -> List[Dict[str, Any]]:
+    async def find_all_by_guild(self, guild_id: int) -> list[dict[str, Any]]:
         query = """
         SELECT * FROM custom_reactions
         WHERE guild_id = %s
@@ -100,8 +100,8 @@ class CustomReactionsService:
         guild_id: int,
         creator_id: int,
         trigger_text: str,
-        response: Optional[str] = None,
-        emoji_id: Optional[int] = None,
+        response: str | None = None,
+        emoji_id: int | None = None,
         is_emoji: bool = False,
         is_full_match: bool = False,
         is_global: bool = True,
@@ -132,11 +132,11 @@ class CustomReactionsService:
     async def edit_custom_reaction(
         self,
         reaction_id: int,
-        new_response: Optional[str] = None,
-        new_emoji_id: Optional[int] = None,
-        is_emoji: Optional[bool] = None,
-        is_full_match: Optional[bool] = None,
-        is_global: Optional[bool] = None,
+        new_response: str | None = None,
+        new_emoji_id: int | None = None,
+        is_emoji: bool | None = None,
+        is_full_match: bool | None = None,
+        is_global: bool | None = None,
     ) -> bool:
         query = """
         UPDATE custom_reactions
@@ -156,7 +156,7 @@ class CustomReactionsService:
                 is_emoji,
                 is_full_match,
                 is_global,
-                datetime.now(timezone.utc),
+                datetime.now(UTC),
                 reaction_id,
             ),
         )
@@ -176,7 +176,7 @@ class CustomReactionsService:
         WHERE guild_id = %s
         """
         count = database.select_query_one(query, (guild_id,))
-        return count if count else 0
+        return count or 0
 
     async def increment_reaction_usage(self, reaction_id: int) -> bool:
         query = """

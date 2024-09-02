@@ -1,27 +1,36 @@
-from discord import ButtonStyle
-from discord.ext import bridge
-from discord.ui import Button, View
+from discord.ext import commands
 
-from lib.constants import CONST
-from lib.embed_builder import EmbedBuilder
-
-
-async def cmd(ctx: bridge.BridgeContext) -> None:
-    await ctx.respond(
-        embed=EmbedBuilder.create_success_embed(
-            ctx,
-            description=CONST.STRINGS["invite_description"],
-        ),
-        view=InviteButton(),
-    )
+import lib.format
+from lib.const import CONST
+from ui.embeds import Builder
+from ui.views.invite import InviteButton
 
 
-class InviteButton(View):
-    def __init__(self) -> None:
-        super().__init__(timeout=None)
-        invite_button: Button = Button(
-            label=CONST.STRINGS["invite_button_text"],
-            style=ButtonStyle.url,
-            url=CONST.INVITE_LINK,
+class Invite(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.invite.usage = lib.format.generate_usage(self.invite)
+
+    @commands.hybrid_command(name="invite", aliases=["inv"])
+    async def invite(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Invite command.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
+        await ctx.send(
+            embed=Builder.create_embed(
+                theme="success",
+                user_name=ctx.author.name,
+                author_text=CONST.STRINGS["invite_author"],
+                description=CONST.STRINGS["invite_description"],
+            ),
+            view=InviteButton(),
         )
-        self.add_item(invite_button)
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Invite(bot))

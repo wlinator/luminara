@@ -1,48 +1,82 @@
 import asyncio
-from typing import Optional
+from typing import cast
 
 import discord
-from discord.ext.commands import UserConverter, MemberConverter
+from discord.ext import commands
 
-from lib.constants import CONST
-from lib.embed_builder import EmbedBuilder
-from modules.moderation.utils.actionable import async_actionable
-from modules.moderation.utils.case_handler import create_case
+import lib.format
+from lib.actionable import async_actionable
+from lib.case_handler import create_case
+from lib.const import CONST
+from lib.exceptions import LumiException
+from ui.embeds import Builder
 
 
-async def warn_user(ctx, target: discord.Member, reason: Optional[str]):
-    bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
-    await async_actionable(target, ctx.author, bot_member)
+class Warn(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.warn.usage = lib.format.generate_usage(self.warn)
 
-    output_reason = reason or CONST.STRINGS["mod_no_reason"]
+    @commands.hybrid_command(name="warn", aliases=["w"])
+    @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
+    async def warn(
+        self,
+        ctx: commands.Context[commands.Bot],
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ) -> None:
+        """
+        Warn a user.
 
-    dm_task = target.send(
-        embed=EmbedBuilder.create_warning_embed(
-            ctx,
-            author_text=CONST.STRINGS["mod_warned_author"],
-            description=CONST.STRINGS["mod_warn_dm"].format(
-                target.name,
-                ctx.guild.name,
-                output_reason,
+        Parameters
+        ----------
+        target: discord.Member
+            The user to warn.
+        reason: str | None
+            The reason for the warn. Defaults to None.
+        """
+        if not ctx.guild or not ctx.author or not ctx.bot.user:
+            raise LumiException
+
+        bot_member = await commands.MemberConverter().convert(ctx, str(ctx.bot.user))
+        await async_actionable(target, cast(discord.Member, ctx.author), bot_member)
+
+        output_reason = reason or CONST.STRINGS["mod_no_reason"]
+
+        dm_task = target.send(
+            embed=Builder.create_embed(
+                theme="info",
+                user_name=target.name,
+                author_text=CONST.STRINGS["mod_warned_author"],
+                description=CONST.STRINGS["mod_warn_dm"].format(
+                    target.name,
+                    ctx.guild.name,
+                    output_reason,
+                ),
+                hide_name_in_description=True,
             ),
-            show_name=False,
-        ),
-    )
+        )
 
-    respond_task = ctx.respond(
-        embed=EmbedBuilder.create_success_embed(
-            ctx,
-            author_text=CONST.STRINGS["mod_warned_author"],
-            description=CONST.STRINGS["mod_warned_user"].format(target.name),
-        ),
-    )
+        respond_task = ctx.send(
+            embed=Builder.create_embed(
+                theme="success",
+                user_name=ctx.author.name,
+                author_text=CONST.STRINGS["mod_warned_author"],
+                description=CONST.STRINGS["mod_warned_user"].format(target.name),
+            ),
+        )
 
-    target_user = await UserConverter().convert(ctx, str(target.id))
-    create_case_task = create_case(ctx, target_user, "WARN", reason)
+        create_case_task = create_case(ctx, cast(discord.User, target), "WARN", reason)
 
-    await asyncio.gather(
-        dm_task,
-        respond_task,
-        create_case_task,
-        return_exceptions=True,
-    )
+        await asyncio.gather(
+            dm_task,
+            respond_task,
+            create_case_task,
+            return_exceptions=True,
+        )
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Warn(bot))

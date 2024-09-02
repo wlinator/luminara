@@ -1,39 +1,11 @@
 from io import BytesIO
-from typing import Optional
 
+import discord
 import httpx
-from discord import File, Member
-from discord.ext import bridge
+from discord import File
+from discord.ext import commands
 
-client: httpx.AsyncClient = httpx.AsyncClient()
-
-
-async def get_avatar(ctx: bridge.Context, member: Member) -> None:
-    """
-    Get the avatar of a member.
-
-    Parameters:
-    -----------
-    ctx : ApplicationContext
-        The discord context object.
-    member : Member
-        The member to get the avatar of.
-    """
-    guild_avatar: Optional[str] = (
-        member.guild_avatar.url if member.guild_avatar else None
-    )
-    profile_avatar: Optional[str] = member.avatar.url if member.avatar else None
-
-    files: list[File] = [
-        await create_avatar_file(avatar)
-        for avatar in [guild_avatar, profile_avatar]
-        if avatar
-    ]
-
-    if files:
-        await ctx.respond(files=files)
-    else:
-        await ctx.respond(content="member has no avatar.")
+import lib.format
 
 
 async def create_avatar_file(url: str) -> File:
@@ -50,9 +22,52 @@ async def create_avatar_file(url: str) -> File:
     File
         The discord file.
     """
+    client: httpx.AsyncClient = httpx.AsyncClient()
     response: httpx.Response = await client.get(url, timeout=10)
     response.raise_for_status()
     image_data: bytes = response.content
     image_file: BytesIO = BytesIO(image_data)
     image_file.seek(0)
     return File(image_file, filename="avatar.png")
+
+
+class Avatar(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.avatar.usage = lib.format.generate_usage(self.avatar)
+
+    @commands.hybrid_command(
+        name="avatar",
+        aliases=["av"],
+    )
+    async def avatar(
+        self,
+        ctx: commands.Context[commands.Bot],
+        member: discord.Member | None = None,
+    ) -> None:
+        """
+        Get the avatar of a member.
+
+        Parameters
+        -----------
+        ctx : ApplicationContext
+            The discord context object.
+        member : Member
+            The member to get the avatar of.
+        """
+        if member is None:
+            member = await commands.MemberConverter().convert(ctx, str(ctx.author.id))
+
+        guild_avatar: str | None = member.guild_avatar.url if member.guild_avatar else None
+        profile_avatar: str | None = member.avatar.url if member.avatar else None
+
+        files: list[File] = [await create_avatar_file(avatar) for avatar in [guild_avatar, profile_avatar] if avatar]
+
+        if files:
+            await ctx.send(files=files)
+        else:
+            await ctx.send(content="member has no avatar.")
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Avatar(bot))

@@ -1,32 +1,37 @@
-from datetime import datetime
+from discord.ext import commands
 
-from discord.ext import bridge
-
-from lib.constants import CONST
-from lib.embed_builder import EmbedBuilder
-
-
-async def ping(self, ctx: bridge.BridgeContext) -> None:
-    embed = EmbedBuilder.create_success_embed(
-        ctx,
-        author_text=CONST.STRINGS["ping_author"],
-        description=CONST.STRINGS["ping_pong"],
-        footer_text=CONST.STRINGS["ping_footer"].format(
-            round(1000 * self.client.latency),
-        ),
-    )
-    await ctx.respond(embed=embed)
+import lib.format
+from lib.const import CONST
+from ui.embeds import Builder
 
 
-async def uptime(self, ctx: bridge.BridgeContext, start_time: datetime) -> None:
-    unix_timestamp: int = int(round(self.start_time.timestamp()))
+class Ping(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.ping.usage = lib.format.generate_usage(self.ping)
 
-    embed = EmbedBuilder.create_success_embed(
-        ctx,
-        author_text=CONST.STRINGS["ping_author"],
-        description=CONST.STRINGS["ping_uptime"].format(unix_timestamp),
-        footer_text=CONST.STRINGS["ping_footer"].format(
-            round(1000 * self.client.latency),
-        ),
-    )
-    await ctx.respond(embed=embed)
+    @commands.hybrid_command(name="ping")
+    async def ping(self, ctx: commands.Context[commands.Bot]) -> None:
+        """
+        Ping command.
+
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=ctx.author.name,
+            author_text=CONST.STRINGS["ping_author"],
+            description=CONST.STRINGS["ping_pong"],
+            footer_text=CONST.STRINGS["ping_footer"].format(
+                round(1000 * self.bot.latency),
+            ),
+        )
+
+        await ctx.send(embed=embed)
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Ping(bot))

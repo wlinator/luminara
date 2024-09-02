@@ -1,22 +1,50 @@
 from discord.ext import commands
 
+import lib.format
+from lib.const import CONST
 from services.currency_service import Currency
-from lib.constants import CONST
-from lib.embed_builder import EmbedBuilder
+from ui.embeds import Builder
 
 
-async def cmd(ctx: commands.Context[commands.Bot]) -> None:
-    ctx_currency = Currency(ctx.author.id)
-    balance = Currency.format(ctx_currency.balance)
+class Balance(commands.Cog):
+    def __init__(self, bot: commands.Bot) -> None:
+        self.bot: commands.Bot = bot
+        self.balance.usage = lib.format.generate_usage(self.balance)
 
-    embed = EmbedBuilder.create_success_embed(
-        ctx,
-        author_text=CONST.STRINGS["balance_author"].format(ctx.author.name),
-        author_icon_url=ctx.author.display_avatar.url,
-        description=CONST.STRINGS["balance_cash"].format(balance),
-        footer_text=CONST.STRINGS["balance_footer"],
-        show_name=False,
-        hide_timestamp=True,
+    @commands.hybrid_command(
+        name="balance",
+        aliases=["bal", "$"],
     )
+    @commands.guild_only()
+    async def balance(
+        self,
+        ctx: commands.Context[commands.Bot],
+    ) -> None:
+        """
+        Check your current balance.
 
-    await ctx.respond(embed=embed)
+        Parameters
+        ----------
+        ctx : commands.Context[commands.Bot]
+            The context of the command.
+        """
+
+        ctx_currency = Currency(ctx.author.id)
+        balance = Currency.format(ctx_currency.balance)
+
+        embed = Builder.create_embed(
+            theme="success",
+            user_name=ctx.author.name,
+            author_text=CONST.STRINGS["balance_author"].format(ctx.author.name),
+            author_icon_url=ctx.author.display_avatar.url,
+            description=CONST.STRINGS["balance_cash"].format(balance),
+            footer_text=CONST.STRINGS["balance_footer"],
+            hide_name_in_description=True,
+            hide_time=True,
+        )
+
+        await ctx.send(embed=embed)
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Balance(bot))

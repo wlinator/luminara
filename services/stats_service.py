@@ -4,21 +4,29 @@ from db import database
 
 
 class BlackJackStats:
-    def __init__(self, user_id, is_won, bet, payout, hand_player, hand_dealer):
-        self.user_id = user_id
-        self.is_won = is_won
-        self.bet = bet
-        self.payout = payout
-        self.hand_player = json.dumps(hand_player)
-        self.hand_dealer = json.dumps(hand_dealer)
+    def __init__(
+        self,
+        user_id: int,
+        is_won: bool,
+        bet: int,
+        payout: int,
+        hand_player: list[str],
+        hand_dealer: list[str],
+    ):
+        self.user_id: int = user_id
+        self.is_won: bool = is_won
+        self.bet: int = bet
+        self.payout: int = payout
+        self.hand_player: str = json.dumps(hand_player)
+        self.hand_dealer: str = json.dumps(hand_dealer)
 
-    def push(self):
-        query = """
+    def push(self) -> None:
+        query: str = """
         INSERT INTO blackjack (user_id, is_won, bet, payout, hand_player, hand_dealer)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
 
-        values = (
+        values: tuple[int, bool, int, int, str, str] = (
             self.user_id,
             self.is_won,
             self.bet,
@@ -30,8 +38,8 @@ class BlackJackStats:
         database.execute_query(query, values)
 
     @staticmethod
-    def get_user_stats(user_id):
-        query = """
+    def get_user_stats(user_id: int) -> dict[str, int]:
+        query: str = """
                 SELECT
                     COUNT(*) AS amount_of_games,
                     SUM(bet) AS total_bet,
@@ -41,13 +49,14 @@ class BlackJackStats:
                 FROM blackjack
                 WHERE user_id = %s;
                 """
+        result: tuple[int, int, int, int, int] = database.select_query(query, (user_id,))[0]
         (
             amount_of_games,
             total_bet,
             total_payout,
             winning_amount,
             losing_amount,
-        ) = database.select_query(query, (user_id,))[0]
+        ) = result
 
         return {
             "amount_of_games": amount_of_games,
@@ -58,13 +67,14 @@ class BlackJackStats:
         }
 
     @staticmethod
-    def get_total_rows_count():
-        query = """
+    def get_total_rows_count() -> int:
+        query: str = """
                 SELECT SUM(TABLE_ROWS)
                 FROM INFORMATION_SCHEMA.TABLES
                 """
 
-        return database.select_query_one(query)
+        result = database.select_query_one(query)
+        return int(result) if result is not None else 0
 
 
 class SlotsStats:
@@ -72,24 +82,24 @@ class SlotsStats:
     Handles statistics for the /slots command
     """
 
-    def __init__(self, user_id, is_won, bet, payout, spin_type, icons):
-        self.user_id = user_id
-        self.is_won = is_won
-        self.bet = bet
-        self.payout = payout
-        self.spin_type = spin_type
-        self.icons = json.dumps(icons)
+    def __init__(self, user_id: int, is_won: bool, bet: int, payout: int, spin_type: str, icons: list[str]):
+        self.user_id: int = user_id
+        self.is_won: bool = is_won
+        self.bet: int = bet
+        self.payout: int = payout
+        self.spin_type: str = spin_type
+        self.icons: str = json.dumps(icons)
 
-    def push(self):
+    def push(self) -> None:
         """
         Insert the services from any given slots game into the database
         """
-        query = """
+        query: str = """
         INSERT INTO slots (user_id, is_won, bet, payout, spin_type, icons)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
 
-        values = (
+        values: tuple[int, bool, int, int, str, str] = (
             self.user_id,
             self.is_won,
             self.bet,
@@ -101,11 +111,11 @@ class SlotsStats:
         database.execute_query(query, values)
 
     @staticmethod
-    def get_user_stats(user_id):
+    def get_user_stats(user_id: int) -> dict[str, int]:
         """
         Retrieve the Slots stats for a given user from the database.
         """
-        query = """
+        query: str = """
         SELECT
             COUNT(*) AS amount_of_games,
             SUM(bet) AS total_bet,
@@ -118,6 +128,7 @@ class SlotsStats:
         WHERE user_id = %s
         """
 
+        result: tuple[int, int, int, int, int, int, int] = database.select_query(query, (user_id,))[0]
         (
             amount_of_games,
             total_bet,
@@ -126,7 +137,7 @@ class SlotsStats:
             games_won_three_of_a_kind,
             games_won_three_diamonds,
             games_won_jackpot,
-        ) = database.select_query(query, (user_id,))[0]
+        ) = result
 
         return {
             "amount_of_games": amount_of_games,

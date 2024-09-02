@@ -1,58 +1,90 @@
 import asyncio
-from typing import Optional
+from typing import cast
 
 import discord
-from discord.ext.commands import UserConverter, MemberConverter
+from discord.ext import commands
 
-from lib import formatter
-from lib.constants import CONST
-from lib.embed_builder import EmbedBuilder
-from modules.moderation.utils.actionable import async_actionable
-from modules.moderation.utils.case_handler import create_case
+import lib.format
+from lib.actionable import async_actionable
+from lib.case_handler import create_case
+from lib.const import CONST
+from ui.embeds import Builder
 
 
-async def kick_user(cog, ctx, target: discord.Member, reason: Optional[str] = None):
-    bot_member = await MemberConverter().convert(ctx, str(ctx.bot.user.id))
-    await async_actionable(target, ctx.author, bot_member)
+class Kick(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.kick.usage = lib.format.generate_usage(self.kick)
 
-    output_reason = reason or CONST.STRINGS["mod_no_reason"]
+    @commands.hybrid_command(name="kick", aliases=["k"])
+    @commands.has_permissions(kick_members=True)
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def kick(
+        self,
+        ctx: commands.Context[commands.Bot],
+        target: discord.Member,
+        *,
+        reason: str | None = None,
+    ) -> None:
+        """
+        Kick a user from the guild.
 
-    try:
-        await target.send(
-            embed=EmbedBuilder.create_warning_embed(
-                ctx,
-                author_text=CONST.STRINGS["mod_kicked_author"],
-                description=CONST.STRINGS["mod_kick_dm"].format(
-                    target.name,
-                    ctx.guild.name,
-                    output_reason,
+        Parameters
+        ----------
+        target: discord.Member
+            The user to kick.
+        reason: str | None
+            The reason for the kick. Defaults to None.
+        """
+        assert ctx.guild
+        assert ctx.author
+        assert ctx.bot.user
+
+        bot_member = await commands.MemberConverter().convert(ctx, str(ctx.bot.user.id))
+        await async_actionable(target, cast(discord.Member, ctx.author), bot_member)
+
+        output_reason = reason or CONST.STRINGS["mod_no_reason"]
+
+        try:
+            await target.send(
+                embed=Builder.create_embed(
+                    theme="warning",
+                    user_name=target.name,
+                    author_text=CONST.STRINGS["mod_kicked_author"],
+                    description=CONST.STRINGS["mod_kick_dm"].format(
+                        target.name,
+                        ctx.guild.name,
+                        output_reason,
+                    ),
+                    hide_name_in_description=True,
                 ),
-                show_name=False,
+            )
+            dm_sent = True
+
+        except (discord.HTTPException, discord.Forbidden):
+            dm_sent = False
+
+        await target.kick(
+            reason=CONST.STRINGS["mod_reason"].format(
+                ctx.author.name,
+                lib.format.shorten(output_reason, 200),
             ),
         )
-        dm_sent = True
 
-    except (discord.HTTPException, discord.Forbidden):
-        dm_sent = False
+        respond_task = ctx.send(
+            embed=Builder.create_embed(
+                theme="success",
+                user_name=ctx.author.name,
+                author_text=CONST.STRINGS["mod_kicked_author"],
+                description=CONST.STRINGS["mod_kicked_user"].format(target.name),
+                footer_text=CONST.STRINGS["mod_dm_sent"] if dm_sent else CONST.STRINGS["mod_dm_not_sent"],
+            ),
+        )
 
-    await target.kick(
-        reason=CONST.STRINGS["mod_reason"].format(
-            ctx.author.name,
-            formatter.shorten(output_reason, 200),
-        ),
-    )
+        create_case_task = create_case(ctx, cast(discord.User, target), "KICK", reason)
+        await asyncio.gather(respond_task, create_case_task, return_exceptions=True)
 
-    respond_task = ctx.respond(
-        embed=EmbedBuilder.create_success_embed(
-            ctx,
-            author_text=CONST.STRINGS["mod_kicked_author"],
-            description=CONST.STRINGS["mod_kicked_user"].format(target.name),
-            footer_text=CONST.STRINGS["mod_dm_sent"]
-            if dm_sent
-            else CONST.STRINGS["mod_dm_not_sent"],
-        ),
-    )
 
-    target_user = await UserConverter().convert(ctx, str(target.id))
-    create_case_task = create_case(ctx, target_user, "KICK", reason)
-    await asyncio.gather(respond_task, create_case_task, return_exceptions=True)
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Kick(bot))
