@@ -36,6 +36,7 @@ class Constants:
     # bot credentials
     TOKEN: Final[str | None] = os.environ.get("TOKEN")
     INSTANCE: Final[str | None] = os.environ.get("INSTANCE")
+    OWNER_IDS: Final[set[int]] = {int(oid) for oid in os.environ.get("OWNER_IDS", "").split(",") if oid.strip()}
     XP_GAIN_PER_MESSAGE: Final[int] = int(os.environ.get("XP_GAIN_PER_MESSAGE", 1))
     XP_GAIN_COOLDOWN: Final[int] = int(os.environ.get("XP_GAIN_COOLDOWN", 8))
     DBX_TOKEN: Final[str | None] = os.environ.get("DBX_OAUTH2_REFRESH_TOKEN")
@@ -45,12 +46,6 @@ class Constants:
     MARIADB_PASSWORD: Final[str | None] = os.environ.get("MARIADB_PASSWORD")
     MARIADB_ROOT_PASSWORD: Final[str | None] = os.environ.get("MARIADB_ROOT_PASSWORD")
     MARIADB_DATABASE: Final[str | None] = os.environ.get("MARIADB_DATABASE")
-
-    OWNER_IDS: Final[set[int] | None] = (
-        {int(owner_id.strip()) for owner_id in os.environ.get("OWNER_IDS", "").split(",") if owner_id}
-        if "OWNER_IDS" in os.environ
-        else None
-    )
 
     # metadata
     TITLE: Final[str] = _s["info"]["title"]
