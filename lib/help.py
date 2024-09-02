@@ -98,11 +98,19 @@ class LuminaraHelp(commands.HelpCommand):
                     group_commands.extend(commands_list)
             if group_commands:
                 command_list = ", ".join(f"`{c.name}`" for c in group_commands)
-                embed.add_field(name=group.capitalize(), value=command_list, inline=False)
+                embed.add_field(
+                    name=group.capitalize(),
+                    value=command_list,
+                    inline=False,
+                )
 
         await self.get_destination().send(embed=embed)
 
-    async def _add_command_help_fields(self, embed: discord.Embed, command: commands.Command[Any, Any, Any]) -> None:
+    async def _add_command_help_fields(
+        self,
+        embed: discord.Embed,
+        command: commands.Command[Any, Any, Any],
+    ) -> None:
         """
         Adds fields with usage and alias information for a command to an embed.
 
@@ -159,7 +167,11 @@ class LuminaraHelp(commands.HelpCommand):
         )
 
         for command in group.commands:
-            embed.add_field(name=command.name, value=command.short_doc or "No description available.", inline=False)
+            embed.add_field(
+                name=command.name,
+                value=command.short_doc or "No description available.",
+                inline=False,
+            )
 
         await self.get_destination().send(embed=embed)
 
