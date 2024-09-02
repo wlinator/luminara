@@ -5,6 +5,10 @@ from lib.const import CONST
 
 
 class InviteButton(View):
+    """
+    A button with a Lumi invite link.
+    """
+
     def __init__(self) -> None:
         super().__init__(timeout=None)
         invite_button: Button[InviteButton] = Button(
