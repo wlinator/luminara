@@ -10,7 +10,7 @@ class Award(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="award")
+    @commands.command(name="award", aliases=["aw"])
     @commands.is_owner()
     async def award_command(
         self,

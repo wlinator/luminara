@@ -21,7 +21,7 @@ class Slots(commands.Cog):
 
     @commands.hybrid_command(
         name="slots",
-        description="Play the slots machine",
+        aliases=["slot"],
     )
     @commands.guild_only()
     async def slots(

@@ -13,7 +13,7 @@ class Uptime(commands.Cog):
         self.bot: commands.Bot = bot
         self.start_time: datetime = discord.utils.utcnow()
 
-    @commands.hybrid_command(name="uptime")
+    @commands.hybrid_command(name="uptime", aliases=["ut"])
     async def uptime(self, ctx: commands.Context[commands.Bot]) -> None:
         """
         Uptime command.

@@ -178,7 +178,7 @@ class Cases(commands.Cog):
 
         await menu.start()
 
-    @commands.hybrid_command(name="editcase", aliases=["ec"])
+    @commands.hybrid_command(name="editcase", aliases=["ec", "uc"])
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     async def edit_case_reason(

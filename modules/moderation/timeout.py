@@ -17,7 +17,7 @@ class Timeout(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.hybrid_command(name="timeout", aliases=["to"])
+    @commands.hybrid_command(name="timeout", aliases=["t", "to"])
     @commands.has_permissions(moderate_members=True)
     @commands.bot_has_permissions(moderate_members=True)
     @commands.guild_only()
