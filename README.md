@@ -28,16 +28,13 @@ Additionally, you'll need to create a Discord bot application and obtain a token
 
 ### Running Luminara:
 
-1. Copy the contents from [`docker-compose.prod.yml`](docker-compose.prod.yml) to a new file named `docker-compose.yml`
-   in an empty directory.
+1. Copy [`docker-compose.prod.yml`](docker-compose.prod.yml), [`settings.yaml`](settings.yaml), and [`.env.example`](.env.example) to an empty directory.
 
-3. Copy [settings.yaml](settings.yaml) to the same directory.
+2. Rename `docker-compose.prod.yml` to `docker-compose.yml`.
 
-3. Copy the contents from [`.env.example`](.env.example) to a new file named `.env` in the same directory.
+3. Rename `.env.example` to `.env` and fill it out with your specific configuration details.
 
-4. Fill out the `.env` file with your specific configuration details.
-
-5. Run the following command in your terminal:
+4. Run the following command in your terminal:
 
    ```
    docker compose up -d --build
