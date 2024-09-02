@@ -1,7 +1,7 @@
 import random
+from zoneinfo import ZoneInfo
 
 import discord
-import pytz
 from discord.ext import commands
 from loguru import logger
 
@@ -12,7 +12,7 @@ from services.stats_service import BlackJackStats
 from ui.embeds import Builder
 from ui.views.blackjack import BlackJackButtons
 
-EST = pytz.timezone("US/Eastern")
+EST = ZoneInfo("US/Eastern")
 ACTIVE_BLACKJACK_GAMES: dict[int, bool] = {}
 
 Card = str

@@ -2,9 +2,9 @@ import asyncio
 import datetime
 import random
 from collections import Counter
+from zoneinfo import ZoneInfo
 
 import discord
-import pytz
 from discord.ext import commands
 
 from lib.const import CONST
@@ -12,7 +12,7 @@ from lib.exceptions import LumiException
 from services.currency_service import Currency
 from services.stats_service import SlotsStats
 
-est = pytz.timezone("US/Eastern")
+est = ZoneInfo("US/Eastern")
 
 
 class Slots(commands.Cog):

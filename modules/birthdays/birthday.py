@@ -2,9 +2,9 @@ import asyncio
 import calendar
 import datetime
 import random
+from zoneinfo import ZoneInfo
 
 import discord
-import pytz
 from discord import app_commands
 from discord.ext import commands, tasks
 from loguru import logger
@@ -15,8 +15,6 @@ from services.birthday_service import BirthdayService
 from services.config_service import GuildConfig
 from ui.embeds import Builder
 
-tz = pytz.timezone("America/New_York")
-
 
 @app_commands.guild_only()
 @app_commands.default_permissions(manage_guild=True)
@@ -25,7 +23,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
         self.bot = bot
         self.daily_birthday_check.start()
 
-    @tasks.loop(time=datetime.time(hour=12, minute=0, tzinfo=pytz.UTC))
+    @tasks.loop(time=datetime.time(hour=12, minute=0, tzinfo=ZoneInfo("UTC")))
     async def daily_birthday_check(self):
         logger.info(CONST.STRINGS["birthday_check_started"])
         birthdays_today = BirthdayService.get_birthdays_today()
@@ -113,7 +111,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
         if not 1 <= day <= max_days:
             raise commands.BadArgument(CONST.STRINGS["birthday_add_invalid_date"])
 
-        date_obj = datetime.datetime(leap_year, month_index, day, tzinfo=tz)
+        date_obj = datetime.datetime(leap_year, month_index, day, tzinfo=ZoneInfo("US/Eastern"))
 
         birthday = BirthdayService(interaction.user.id, interaction.guild.id)
         birthday.set(date_obj)
@@ -194,7 +192,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
         for user_id, birthday in upcoming_birthdays[:10]:
             try:
                 member = await interaction.guild.fetch_member(user_id)
-                birthday_date = datetime.datetime.strptime(birthday, "%m-%d").replace(tzinfo=tz)
+                birthday_date = datetime.datetime.strptime(birthday, "%m-%d").replace(tzinfo=ZoneInfo("US/Eastern"))
                 formatted_birthday = birthday_date.strftime("%B %-d")
                 birthday_lines.append(
                     CONST.STRINGS["birthday_upcoming_description_line"].format(

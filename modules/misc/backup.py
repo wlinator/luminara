@@ -2,17 +2,14 @@ import asyncio
 import subprocess
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import dropbox  # type: ignore
-import pytz
 from discord.ext import commands, tasks
 from dropbox.files import FileMetadata  # type: ignore
 from loguru import logger
 
 from lib.const import CONST
-
-# Initialize timezone
-tz = pytz.timezone("America/New_York")
 
 # Initialize Dropbox client if instance is "main"
 _dbx: dropbox.Dropbox | None = None
@@ -47,7 +44,7 @@ async def create_db_backup() -> None:
         msg = "Dropbox client is not initialized"
         raise ValueError(msg)
 
-    backup_name: str = datetime.now(tz).strftime("%Y-%m-%d_%H%M") + "_lumi.sql"
+    backup_name: str = datetime.now(ZoneInfo("US/Eastern")).strftime("%Y-%m-%d_%H%M") + "_lumi.sql"
 
     run_db_dump()
     upload_backup_to_dropbox(backup_name)

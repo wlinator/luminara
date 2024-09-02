@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-
-import pytz
+from zoneinfo import ZoneInfo
 
 from db import database
 from lib.const import CONST
@@ -11,7 +10,7 @@ class Dailies:
     def __init__(self, user_id: int) -> None:
         self.user_id: int = user_id
         self.amount: int = 0
-        self.tz = pytz.timezone("US/Eastern")
+        self.tz = ZoneInfo("US/Eastern")
         self.time_now: datetime = datetime.now(tz=self.tz)
         self.reset_time: datetime = self.time_now.replace(
             hour=7,

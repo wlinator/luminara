@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
-import pytz
 from discord import Embed
 from discord.ext import commands
 
@@ -9,7 +9,7 @@ from services.currency_service import Currency
 from services.daily_service import Dailies
 from ui.embeds import Builder
 
-tz = pytz.timezone("US/Eastern")
+tz = ZoneInfo("US/Eastern")
 
 
 def seconds_until(hours: int, minutes: int) -> int:

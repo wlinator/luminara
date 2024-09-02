@@ -1,6 +1,5 @@
 import datetime
-
-import pytz
+from zoneinfo import ZoneInfo
 
 from db import database
 
@@ -35,8 +34,7 @@ class BirthdayService:
                 WHERE DATE_FORMAT(birthday, '%m-%d') = %s
                 """
 
-        tz = pytz.timezone("US/Eastern")
-        today: str = datetime.datetime.now(tz).strftime("%m-%d")
+        today: str = datetime.datetime.now(ZoneInfo("US/Eastern")).strftime("%m-%d")
 
         return database.select_query(query, (today,))
 
