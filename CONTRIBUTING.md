@@ -14,8 +14,16 @@ expand the bot's functionality. Please follow these guidelines when contributing
     * **Docker:** To run the bot, use this command to run your newly edited code:
 
       ```bash
-      docker compose -f docker-compose.dev.yml up --build
+      docker compose -f docker-compose.dev.yml up --build --watch
       ```
+
+    * **Docker:** To run the bot, use this command to run your newly edited code:
+
+      ```bash
+      docker compose -f docker-compose.dev.yml up --build --watch
+      ```
+
+      *Note: Adding `--watch` is recommended as it supports hot reloading. You can use the `.dev stop` command to trigger a rebuild with your latest changes.*
 
     * **Poetry:** While developing, it is recommended to install & configure poetry locally:
 
