@@ -7,11 +7,11 @@ from lib.const import CONST
 
 
 class Theme(Enum):
-    ERROR = "error"
-    SUCCESS = "success"
-    INFO = "info"
-    WARNING = "warning"
-    DEFAULT = "default"
+    ERROR = 1
+    SUCCESS = 2
+    INFO = 3
+    WARNING = 4
+    DEFAULT = 5
 
 
 class Builder:
