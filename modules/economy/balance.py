@@ -34,7 +34,7 @@ class Balance(commands.Cog):
         balance = Currency.format(ctx_currency.balance)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["balance_author"].format(ctx.author.name),
             author_icon_url=ctx.author.display_avatar.url,

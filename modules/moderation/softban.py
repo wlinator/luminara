@@ -50,7 +50,7 @@ class Softban(commands.Cog):
         try:
             await target.send(
                 embed=Builder.create_embed(
-                    theme="warning",
+                    Builder.WARNING,
                     user_name=target.name,
                     author_text=CONST.STRINGS["mod_softbanned_author"],
                     description=CONST.STRINGS["mod_softban_dm"].format(
@@ -83,7 +83,7 @@ class Softban(commands.Cog):
 
         respond_task = ctx.send(
             embed=Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=target.name,
                 author_text=CONST.STRINGS["mod_softbanned_author"],
                 description=CONST.STRINGS["mod_softbanned_user"].format(target.name),

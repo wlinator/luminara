@@ -37,7 +37,7 @@ class Blacklist(commands.Cog):
         blacklist_service.add_to_blacklist(reason)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["admin_blacklist_author"],
             description=CONST.STRINGS["admin_blacklist_description"].format(user.name),

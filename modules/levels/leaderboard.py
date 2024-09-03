@@ -37,7 +37,7 @@ class Leaderboard(commands.Cog):
 
         author: Member = cast(Member, ctx.author)
         embed: Embed = Builder.create_embed(
-            theme="info",
+            Builder.INFO,
             user_name=author.name,
             thumbnail_url=author.display_avatar.url,
             hide_name_in_description=True,

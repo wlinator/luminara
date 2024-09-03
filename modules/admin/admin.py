@@ -39,7 +39,7 @@ class Sql(commands.Cog):
         try:
             results = database.select_query(f"SELECT {query}")
             embed = Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["admin_sql_select_title"],
                 description=CONST.STRINGS["admin_sql_select_description"].format(
@@ -50,7 +50,7 @@ class Sql(commands.Cog):
             )
         except mysql.connector.Error as error:
             embed = Builder.create_embed(
-                theme="error",
+                Builder.ERROR,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["admin_sql_select_error_title"],
                 description=CONST.STRINGS["admin_sql_select_error_description"].format(
@@ -83,7 +83,7 @@ class Sql(commands.Cog):
         try:
             database.execute_query(query)
             embed = Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["admin_sql_inject_title"],
                 description=CONST.STRINGS["admin_sql_inject_description"].format(
@@ -93,7 +93,7 @@ class Sql(commands.Cog):
             )
         except mysql.connector.Error as error:
             embed = Builder.create_embed(
-                theme="error",
+                Builder.ERROR,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["admin_sql_inject_error_title"],
                 description=CONST.STRINGS["admin_sql_inject_error_description"].format(

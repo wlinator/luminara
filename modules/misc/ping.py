@@ -22,7 +22,7 @@ class Ping(commands.Cog):
             The context of the command.
         """
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["ping_author"],
             description=CONST.STRINGS["ping_pong"],

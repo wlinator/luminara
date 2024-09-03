@@ -24,7 +24,7 @@ class Invite(commands.Cog):
         """
         await ctx.send(
             embed=Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["invite_author"],
                 description=CONST.STRINGS["invite_description"],

@@ -199,7 +199,7 @@ class Blackjack(commands.Cog):
         )
 
         return Builder.create_embed(
-            theme="default",
+            Builder.DEFAULT,
             user_name=ctx.author.name,
             title=CONST.STRINGS["blackjack_title"],
             description=description,
@@ -218,7 +218,7 @@ class Blackjack(commands.Cog):
         status: int,
     ) -> discord.Embed:
         embed = Builder.create_embed(
-            theme="default",
+            Builder.DEFAULT,
             user_name=ctx.author.name,
             title=CONST.STRINGS["blackjack_title"],
             description=CONST.STRINGS["blackjack_description"].format(

@@ -70,7 +70,7 @@ class Timeout(commands.Cog):
 
         dm_task = target.send(
             embed=Builder.create_embed(
-                theme="warning",
+                Builder.WARNING,
                 user_name=target.name,
                 author_text=CONST.STRINGS["mod_timed_out_author"],
                 description=CONST.STRINGS["mod_timeout_dm"].format(
@@ -85,7 +85,7 @@ class Timeout(commands.Cog):
 
         respond_task = ctx.send(
             embed=Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=target.name,
                 author_text=CONST.STRINGS["mod_timed_out_author"],
                 description=CONST.STRINGS["mod_timed_out_user"].format(target.name),
@@ -138,7 +138,7 @@ class Timeout(commands.Cog):
 
             respond_task = ctx.send(
                 embed=Builder.create_embed(
-                    theme="success",
+                    Builder.SUCCESS,
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["mod_untimed_out_author"],
                     description=CONST.STRINGS["mod_untimed_out"].format(target.name),
@@ -152,7 +152,7 @@ class Timeout(commands.Cog):
         except discord.HTTPException:
             await ctx.send(
                 embed=Builder.create_embed(
-                    theme="warning",
+                    Builder.WARNING,
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["mod_not_timed_out_author"],
                     description=CONST.STRINGS["mod_not_timed_out"].format(target.name),

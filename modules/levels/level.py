@@ -37,7 +37,7 @@ class Level(commands.Cog):
         )
 
         embed: Embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             title=CONST.STRINGS["xp_level"].format(xp_data.level),
             footer_text=CONST.STRINGS["xp_server_rank"].format(rank or "NaN"),

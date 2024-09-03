@@ -58,7 +58,7 @@ class Ban(commands.Cog):
             with contextlib.suppress(discord.HTTPException, discord.Forbidden):
                 await target.send(
                     embed=Builder.create_embed(
-                        theme="warning",
+                        Builder.WARNING,
                         user_name=target.name,
                         author_text=CONST.STRINGS["mod_banned_author"],
                         description=CONST.STRINGS["mod_ban_dm"].format(
@@ -74,7 +74,7 @@ class Ban(commands.Cog):
         await ctx.guild.ban(target, reason=formatted_reason)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["mod_banned_author"],
             description=CONST.STRINGS["mod_banned_user"].format(target.name),
@@ -126,7 +126,7 @@ class Ban(commands.Cog):
 
             respond_task = ctx.send(
                 embed=Builder.create_embed(
-                    theme="success",
+                    Builder.SUCCESS,
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["mod_unbanned_author"],
                     description=CONST.STRINGS["mod_unbanned"].format(target.name),
@@ -138,7 +138,7 @@ class Ban(commands.Cog):
         except (discord.NotFound, discord.HTTPException):
             await ctx.send(
                 embed=Builder.create_embed(
-                    theme="error",
+                    Builder.ERROR,
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["mod_not_banned_author"],
                     description=CONST.STRINGS["mod_not_banned"].format(target.id),

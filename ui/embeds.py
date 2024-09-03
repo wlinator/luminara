@@ -1,15 +1,29 @@
 from datetime import datetime
-from typing import Literal
+from enum import Enum
 
 import discord
 
 from lib.const import CONST
 
 
+class Theme(Enum):
+    ERROR = "error"
+    SUCCESS = "success"
+    INFO = "info"
+    WARNING = "warning"
+    DEFAULT = "default"
+
+
 class Builder:
+    ERROR = Theme.ERROR
+    SUCCESS = Theme.SUCCESS
+    INFO = Theme.INFO
+    WARNING = Theme.WARNING
+    DEFAULT = Theme.DEFAULT
+
     @staticmethod
     def create_embed(
-        theme: Literal["error", "success", "info", "warning", "default"],
+        theme: Theme,
         user_name: str | None = None,
         user_display_avatar_url: str | None = None,
         title: str | None = None,
@@ -29,38 +43,34 @@ class Builder:
         """
         Create a standard Lumi embed with the given parameters.
         """
-
         theme_settings = {
-            "error": (CONST.COLOR_ERROR, CONST.CROSS_ICON),
-            "success": (CONST.COLOR_DEFAULT, CONST.CHECK_ICON),
-            "info": (CONST.COLOR_DEFAULT, CONST.INFO_ICON),
-            "warning": (CONST.COLOR_WARNING, CONST.WARNING_ICON),
-            "default": (color or CONST.COLOR_DEFAULT, None),
+            Theme.ERROR: (CONST.COLOR_ERROR, CONST.CROSS_ICON),
+            Theme.SUCCESS: (CONST.COLOR_DEFAULT, CONST.CHECK_ICON),
+            Theme.INFO: (CONST.COLOR_DEFAULT, CONST.INFO_ICON),
+            Theme.WARNING: (CONST.COLOR_WARNING, CONST.WARNING_ICON),
+            Theme.DEFAULT: (color or CONST.COLOR_DEFAULT, None),
         }
 
-        color, author_icon_url = theme_settings[theme]
+        embed_color, theme_icon = theme_settings[theme]
 
         if user_name and not hide_name_in_description:
-            description = f"**{user_name}** {description}"
+            description = f"**{user_name}** {description or ''}"
 
-        embed: discord.Embed = discord.Embed(
+        embed = discord.Embed(
             title=title,
             description=description,
-            color=color,
+            color=embed_color,
+            timestamp=None if hide_time else (timestamp or discord.utils.utcnow()),
         )
 
         embed.set_author(
-            name=author_text or user_name or None,
-            icon_url=author_icon_url or user_display_avatar_url or None,
+            name=author_text or user_name,
+            icon_url=author_icon_url or theme_icon or user_display_avatar_url,
             url=author_url,
         )
 
-        embed.set_footer(
-            text=footer_text or CONST.TITLE,
-            icon_url=footer_icon_url or CONST.LUMI_LOGO_TRANSPARENT,
-        )
+        embed.set_footer(text=footer_text or CONST.TITLE, icon_url=footer_icon_url or CONST.LUMI_LOGO_TRANSPARENT)
 
-        embed.timestamp = None if hide_time else (timestamp or discord.utils.utcnow())
         if image_url:
             embed.set_image(url=image_url)
         if thumbnail_url:
