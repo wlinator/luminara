@@ -41,7 +41,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config: GuildConfig = GuildConfig(interaction.guild.id)
         guild: discord.Guild = interaction.guild
         embed: discord.Embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_show_author"].format(guild.name),
             thumbnail_url=guild.icon.url if guild.icon else CONST.LUMI_LOGO_TRANSPARENT,
@@ -117,7 +117,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_birthday_channel_set"].format(
@@ -142,7 +142,7 @@ class Config(commands.GroupCog, group_name="config"):
 
         if not guild_config.birthday_channel_id:
             embed = Builder.create_embed(
-                theme="warning",
+                Builder.WARNING,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_birthday_module_already_disabled"],
@@ -150,7 +150,7 @@ class Config(commands.GroupCog, group_name="config"):
 
         else:
             embed = Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_birthday_module_disabled"],
@@ -178,7 +178,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_level_channel_set"].format(channel.mention),
@@ -207,7 +207,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_boost_channel_set"].format(channel.mention),
@@ -230,7 +230,7 @@ class Config(commands.GroupCog, group_name="config"):
 
         if not guild_config.boost_channel_id:
             embed = Builder.create_embed(
-                theme="warning",
+                Builder.WARNING,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_boost_module_already_disabled"],
@@ -240,7 +240,7 @@ class Config(commands.GroupCog, group_name="config"):
             guild_config.boost_message = None
             guild_config.push()
             embed = Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_boost_module_disabled"],
@@ -266,7 +266,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_boost_template_updated"],
@@ -317,7 +317,7 @@ class Config(commands.GroupCog, group_name="config"):
             guild_config.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_boost_image_updated"],
@@ -358,7 +358,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed: discord.Embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_welcome_channel_set"].format(channel.mention),
@@ -381,7 +381,7 @@ class Config(commands.GroupCog, group_name="config"):
 
         if not guild_config.welcome_channel_id:
             embed: discord.Embed = Builder.create_embed(
-                theme="warning",
+                Builder.WARNING,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_welcome_module_already_disabled"],
@@ -391,7 +391,7 @@ class Config(commands.GroupCog, group_name="config"):
             guild_config.welcome_message = None
             guild_config.push()
             embed: discord.Embed = Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_welcome_module_disabled"],
@@ -417,7 +417,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed: discord.Embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_welcome_template_updated"],
@@ -456,7 +456,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_level_current_channel_set"],
@@ -483,7 +483,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_level_module_disabled"],
@@ -506,7 +506,7 @@ class Config(commands.GroupCog, group_name="config"):
 
         if guild_config.level_message_type != 0:
             embed = Builder.create_embed(
-                theme="info",
+                Builder.INFO,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_level_module_already_enabled"],
@@ -515,7 +515,7 @@ class Config(commands.GroupCog, group_name="config"):
             guild_config.level_message_type = 1
             guild_config.push()
             embed = Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_level_module_enabled"],
@@ -543,7 +543,7 @@ class Config(commands.GroupCog, group_name="config"):
         preview = lib.format.template(text, "Lucas", 15)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_level_template_updated"],
@@ -580,7 +580,7 @@ class Config(commands.GroupCog, group_name="config"):
         guild_config = GuildConfig(interaction.guild.id)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
         )
@@ -625,7 +625,7 @@ class Config(commands.GroupCog, group_name="config"):
         mod_log = ModLogService()
 
         info_embed = Builder.create_embed(
-            theme="info",
+            Builder.INFO,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_modlog_info_author"],
             description=CONST.STRINGS["config_modlog_info_description"].format(
@@ -652,7 +652,7 @@ class Config(commands.GroupCog, group_name="config"):
         mod_log.set_modlog_channel(interaction.guild.id, channel.id)
 
         success_embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_modlog_channel_set"].format(channel.mention),
@@ -675,7 +675,7 @@ class Config(commands.GroupCog, group_name="config"):
         assert interaction.guild
         if len(prefix) > 25:
             embed = Builder.create_embed(
-                theme="error",
+                Builder.ERROR,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["config_author"],
                 description=CONST.STRINGS["config_prefix_too_long"],
@@ -687,7 +687,7 @@ class Config(commands.GroupCog, group_name="config"):
         GuildConfig.set_prefix(guild_config.guild_id, prefix)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_prefix_set"].format(prefix),
@@ -709,7 +709,7 @@ class Config(commands.GroupCog, group_name="config"):
         level_reward = XpRewardService(interaction.guild.id)
 
         embed = Builder.create_embed(
-            theme="info",
+            Builder.INFO,
             user_name=interaction.user.name,
             author_text="Level Rewards",
             thumbnail_url=interaction.guild.icon.url if interaction.guild.icon else CONST.LUMI_LOGO_OPAQUE,
@@ -760,7 +760,7 @@ class Config(commands.GroupCog, group_name="config"):
         level_reward.add_reward(level, role.id, persistent)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_xpreward_added"].format(level, role.mention),
@@ -785,7 +785,7 @@ class Config(commands.GroupCog, group_name="config"):
         level_reward.remove_reward(level)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["config_author"],
             description=CONST.STRINGS["config_xpreward_removed"].format(level),

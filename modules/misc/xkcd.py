@@ -25,7 +25,7 @@ async def print_comic(
 
         await interaction.response.send_message(
             embed=Builder.create_embed(
-                theme="info",
+                Builder.INFO,
                 author_text=CONST.STRINGS["xkcd_title"].format(comic.id, comic.title),
                 description=CONST.STRINGS["xkcd_description"].format(
                     comic.explanation_url,
@@ -39,7 +39,7 @@ async def print_comic(
     except HttpError:
         await interaction.response.send_message(
             embed=Builder.create_embed(
-                theme="error",
+                Builder.ERROR,
                 author_text=CONST.STRINGS["xkcd_not_found_author"],
                 description=CONST.STRINGS["xkcd_not_found"],
                 footer_text=CONST.STRINGS["xkcd_footer"],

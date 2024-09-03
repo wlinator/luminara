@@ -50,7 +50,7 @@ class Kick(commands.Cog):
         try:
             await target.send(
                 embed=Builder.create_embed(
-                    theme="warning",
+                    Builder.WARNING,
                     user_name=target.name,
                     author_text=CONST.STRINGS["mod_kicked_author"],
                     description=CONST.STRINGS["mod_kick_dm"].format(
@@ -75,7 +75,7 @@ class Kick(commands.Cog):
 
         respond_task = ctx.send(
             embed=Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["mod_kicked_author"],
                 description=CONST.STRINGS["mod_kicked_user"].format(target.name),

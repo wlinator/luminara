@@ -34,7 +34,7 @@ class Introduction(commands.Cog):
         if not guild or not member:
             await ctx.send(
                 embed=Builder.create_embed(
-                    theme="error",
+                    Builder.ERROR,
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["intro_no_guild_author"],
                     description=CONST.STRINGS["intro_no_guild"],
@@ -54,7 +54,7 @@ class Introduction(commands.Cog):
         ):
             await ctx.send(
                 embed=Builder.create_embed(
-                    theme="error",
+                    Builder.ERROR,
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["intro_no_channel_author"],
                     description=CONST.STRINGS["intro_no_channel"],
@@ -66,7 +66,7 @@ class Introduction(commands.Cog):
         view: IntroductionStartButtons | IntroductionFinishButtons = IntroductionStartButtons(ctx)
         await ctx.send(
             embed=Builder.create_embed(
-                theme="info",
+                Builder.INFO,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["intro_service_name"],
                 description=CONST.STRINGS["intro_start"].format(channel.mention),
@@ -80,7 +80,7 @@ class Introduction(commands.Cog):
         if view.clicked_stop:
             await ctx.send(
                 embed=Builder.create_embed(
-                    theme="error",
+                    Builder.ERROR,
                     user_name=ctx.author.name,
                     author_text=CONST.STRINGS["intro_stopped_author"],
                     description=CONST.STRINGS["intro_stopped"],
@@ -102,7 +102,7 @@ class Introduction(commands.Cog):
             for key, question in question_mapping.items():
                 await ctx.send(
                     embed=Builder.create_embed(
-                        theme="info",
+                        Builder.INFO,
                         user_name=ctx.author.name,
                         author_text=key,
                         description=question,
@@ -121,7 +121,7 @@ class Introduction(commands.Cog):
                     if len(answer_content) > 200:
                         await ctx.send(
                             embed=Builder.create_embed(
-                                theme="error",
+                                Builder.ERROR,
                                 user_name=ctx.author.name,
                                 author_text=CONST.STRINGS["intro_too_long_author"],
                                 description=CONST.STRINGS["intro_too_long"],
@@ -135,7 +135,7 @@ class Introduction(commands.Cog):
                 except TimeoutError:
                     await ctx.send(
                         embed=Builder.create_embed(
-                            theme="error",
+                            Builder.ERROR,
                             user_name=ctx.author.name,
                             author_text=CONST.STRINGS["intro_timeout_author"],
                             description=CONST.STRINGS["intro_timeout"],
@@ -149,7 +149,7 @@ class Introduction(commands.Cog):
             )
 
             preview: discord.Embed = Builder.create_embed(
-                theme="info",
+                Builder.INFO,
                 user_name=ctx.author.name,
                 author_text=ctx.author.name,
                 author_icon_url=ctx.author.display_avatar.url,
@@ -169,7 +169,7 @@ class Introduction(commands.Cog):
                 )
                 await ctx.send(
                     embed=Builder.create_embed(
-                        theme="info",
+                        Builder.INFO,
                         user_name=ctx.author.name,
                         author_text=CONST.STRINGS["intro_post_confirmation_author"],
                         description=CONST.STRINGS["intro_post_confirmation"].format(
@@ -180,7 +180,7 @@ class Introduction(commands.Cog):
             else:
                 await ctx.send(
                     embed=Builder.create_embed(
-                        theme="error",
+                        Builder.ERROR,
                         user_name=ctx.author.name,
                         author_text=CONST.STRINGS["intro_stopped_author"],
                         description=CONST.STRINGS["intro_stopped"],

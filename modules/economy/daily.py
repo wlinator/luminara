@@ -52,7 +52,7 @@ class Daily(commands.Cog):
             wait_time: datetime = datetime.now(tz) + timedelta(seconds=seconds_until(7, 0))
             unix_time: int = int(round(wait_time.timestamp()))
             error_embed: Embed = Builder.create_embed(
-                theme="error",
+                Builder.ERROR,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["daily_already_claimed_author"],
                 description=CONST.STRINGS["daily_already_claimed_description"].format(
@@ -70,7 +70,7 @@ class Daily(commands.Cog):
         ctx_daily.refresh()
 
         embed: Embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["daily_success_claim_author"],
             description=CONST.STRINGS["daily_success_claim_description"].format(

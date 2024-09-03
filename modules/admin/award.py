@@ -38,7 +38,7 @@ class Award(commands.Cog):
         curr.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["admin_award_title"],
             description=CONST.STRINGS["admin_award_description"].format(

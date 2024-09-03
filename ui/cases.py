@@ -20,7 +20,7 @@ def create_case_embed(
     duration: int | None = None,
 ) -> discord.Embed:
     embed: discord.Embed = Builder.create_embed(
-        theme="info",
+        Builder.INFO,
         user_name=ctx.author.name,
         author_text=CONST.STRINGS["case_new_case_author"],
         thumbnail_url=target.display_avatar.url,
@@ -82,7 +82,7 @@ def create_case_list_embed(
     author_text: str,
 ) -> discord.Embed:
     embed: discord.Embed = Builder.create_embed(
-        theme="info",
+        Builder.INFO,
         user_name=ctx.author.name,
         author_text=author_text,
         hide_name_in_description=True,

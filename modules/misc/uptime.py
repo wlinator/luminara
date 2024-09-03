@@ -29,7 +29,7 @@ class Uptime(commands.Cog):
         unix_timestamp: int = int(self.start_time.timestamp())
 
         embed: Embed = Builder.create_embed(
-            theme="info",
+            Builder.INFO,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["ping_author"],
             description=CONST.STRINGS["ping_uptime"].format(unix_timestamp),

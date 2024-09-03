@@ -46,7 +46,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
 
                     message = random.choice(CONST.BIRTHDAY_MESSAGES)
                     embed = Builder.create_embed(
-                        theme="success",
+                        Builder.SUCCESS,
                         author_text="Happy Birthday!",
                         description=message.format(member.name),
                         hide_name_in_description=True,
@@ -118,7 +118,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
         birthday.set(date_obj)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["birthday_add_success_author"],
             description=CONST.STRINGS["birthday_add_success_description"].format(
@@ -146,7 +146,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
         BirthdayService(interaction.user.id, interaction.guild.id).delete()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["birthday_delete_success_author"],
             description=CONST.STRINGS["birthday_delete_success_description"],
@@ -173,7 +173,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
 
         if not upcoming_birthdays:
             embed = Builder.create_embed(
-                theme="warning",
+                Builder.WARNING,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["birthday_upcoming_no_birthdays_author"],
                 description=CONST.STRINGS["birthday_upcoming_no_birthdays"],
@@ -182,7 +182,7 @@ class Birthday(commands.GroupCog, group_name="birthday"):
             return
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["birthday_upcoming_author"],
             description="",

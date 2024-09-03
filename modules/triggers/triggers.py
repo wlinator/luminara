@@ -77,7 +77,7 @@ class Triggers(commands.GroupCog, group_name="trigger"):
             raise LumiException(CONST.STRINGS["triggers_not_added"])
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["triggers_add_author"],
             description="",
@@ -141,7 +141,7 @@ class Triggers(commands.GroupCog, group_name="trigger"):
             raise LumiException(CONST.STRINGS["triggers_not_added"])
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["triggers_add_author"],
             description="",
@@ -184,7 +184,7 @@ class Triggers(commands.GroupCog, group_name="trigger"):
         await reaction_service.delete_custom_reaction(reaction_id)
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             author_text=CONST.STRINGS["triggers_delete_author"],
             description=CONST.STRINGS["triggers_delete_description"],
@@ -210,7 +210,7 @@ class Triggers(commands.GroupCog, group_name="trigger"):
         reactions: list[dict[str, Any]] = await reaction_service.find_all_by_guild(guild_id)
         if not reactions:
             embed: discord.Embed = Builder.create_embed(
-                theme="warning",
+                Builder.WARNING,
                 user_name=interaction.user.name,
                 author_text=CONST.STRINGS["triggers_no_reactions_title"],
                 description=CONST.STRINGS["triggers_no_reactions_description"],
@@ -224,7 +224,7 @@ class Triggers(commands.GroupCog, group_name="trigger"):
 
         for reaction in reactions:
             embed: discord.Embed = Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=interaction.user.name,
                 title=CONST.STRINGS["triggers_list_custom_reaction_id"].format(
                     reaction["id"],

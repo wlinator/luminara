@@ -56,7 +56,7 @@ class Give(commands.Cog):
         target_currency.push()
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             description=CONST.STRINGS["give_success"].format(
                 Currency.format(amount),

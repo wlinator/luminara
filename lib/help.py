@@ -49,7 +49,7 @@ class LuminaraHelp(commands.HelpCommand):
             The created embed.
         """
         return Builder.create_embed(
-            theme="info",
+            Builder.INFO,
             author_text=author,
             description=description,
             footer_text=CONST.STRINGS["help_footer"],
@@ -185,7 +185,7 @@ class LuminaraHelp(commands.HelpCommand):
             The error message to be sent.
         """
         embed = Builder.create_embed(
-            theme="error",
+            Builder.ERROR,
             title="Error in help command",
             description=error,
         )

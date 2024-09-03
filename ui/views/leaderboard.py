@@ -78,7 +78,7 @@ class LeaderboardCommandView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user and interaction.user != self.ctx.author:
             embed = Builder.create_embed(
-                theme="error",
+                Builder.ERROR,
                 user_name=interaction.user.name,
                 description=CONST.STRINGS["xp_lb_cant_use_dropdown"],
                 hide_name_in_description=True,
@@ -92,7 +92,7 @@ class LeaderboardCommandView(discord.ui.View):
             return
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=interaction.user.name,
             thumbnail_url=CONST.FLOWERS_ART,
             hide_name_in_description=True,

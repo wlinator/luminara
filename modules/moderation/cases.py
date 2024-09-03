@@ -22,7 +22,7 @@ case_service = CaseService()
 
 def create_no_cases_embed(ctx: commands.Context[Luminara], author_text: str, description: str) -> discord.Embed:
     return Builder.create_embed(
-        theme="info",
+        Builder.INFO,
         user_name=ctx.author.name,
         author_text=author_text,
         description=description,
@@ -216,7 +216,7 @@ class Cases(commands.Cog):
         )
 
         embed = Builder.create_embed(
-            theme="success",
+            Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["case_reason_update_author"],
             description=CONST.STRINGS["case_reason_update_description"].format(

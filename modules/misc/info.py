@@ -34,7 +34,7 @@ class Info(commands.Cog):
         )
 
         embed: discord.Embed = Builder.create_embed(
-            theme="info",
+            Builder.INFO,
             user_name=ctx.author.name,
             author_text=f"{CONST.TITLE} v{CONST.VERSION}",
             author_url=CONST.REPO_URL,

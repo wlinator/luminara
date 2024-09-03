@@ -48,7 +48,7 @@ class Warn(commands.Cog):
 
         dm_task = target.send(
             embed=Builder.create_embed(
-                theme="info",
+                Builder.INFO,
                 user_name=target.name,
                 author_text=CONST.STRINGS["mod_warned_author"],
                 description=CONST.STRINGS["mod_warn_dm"].format(
@@ -62,7 +62,7 @@ class Warn(commands.Cog):
 
         respond_task = ctx.send(
             embed=Builder.create_embed(
-                theme="success",
+                Builder.SUCCESS,
                 user_name=ctx.author.name,
                 author_text=CONST.STRINGS["mod_warned_author"],
                 description=CONST.STRINGS["mod_warned_user"].format(target.name),
