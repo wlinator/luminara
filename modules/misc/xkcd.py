@@ -2,6 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from lib.client import Luminara
 from lib.const import CONST
 from ui.embeds import Builder
 from wrappers.xkcd import Client, HttpError
@@ -47,7 +48,7 @@ async def print_comic(
 
 
 class Xkcd(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
 
     xkcd = app_commands.Group(name="xkcd", description="Get the latest xkcd comic")
@@ -91,5 +92,5 @@ class Xkcd(commands.Cog):
         await print_comic(interaction, number=comic_id)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Xkcd(bot))

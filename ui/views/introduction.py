@@ -2,11 +2,13 @@ import discord
 from discord.ext import commands
 from discord.ui import Button, View
 
+from lib.client import Luminara
+
 
 class IntroductionStartButtons(View):
-    def __init__(self, ctx: commands.Context[commands.Bot]) -> None:
+    def __init__(self, ctx: commands.Context[Luminara]) -> None:
         super().__init__(timeout=60)
-        self.ctx: commands.Context[commands.Bot] = ctx
+        self.ctx: commands.Context[Luminara] = ctx
         self.clicked_start: bool = False
         self.clicked_stop: bool = False
         self.message: discord.Message | None = None
@@ -40,9 +42,9 @@ class IntroductionStartButtons(View):
 
 
 class IntroductionFinishButtons(View):
-    def __init__(self, ctx: commands.Context[commands.Bot]) -> None:
+    def __init__(self, ctx: commands.Context[Luminara]) -> None:
         super().__init__(timeout=60)
-        self.ctx: commands.Context[commands.Bot] = ctx
+        self.ctx: commands.Context[Luminara] = ctx
         self.clicked_confirm: bool = False
         self.message: discord.Message | None = None
 

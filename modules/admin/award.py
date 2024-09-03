@@ -2,13 +2,14 @@ import discord
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from services.currency_service import Currency
 from ui.embeds import Builder
 
 
 class Award(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.award_command.usage = lib.format.generate_usage(self.award_command)
 
@@ -16,7 +17,7 @@ class Award(commands.Cog):
     @commands.is_owner()
     async def award_command(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         user: discord.User,
         amount: int,
     ) -> None:
@@ -25,7 +26,7 @@ class Award(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         user : discord.User
             The user to award.
@@ -49,5 +50,5 @@ class Award(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Award(bot))

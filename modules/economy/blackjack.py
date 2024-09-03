@@ -6,6 +6,7 @@ from discord.ext import commands
 from loguru import logger
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from lib.exceptions import LumiException
 from services.currency_service import Currency
@@ -21,8 +22,8 @@ Hand = list[Card]
 
 
 class Blackjack(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
-        self.bot: commands.Bot = bot
+    def __init__(self, bot: Luminara) -> None:
+        self.bot: Luminara = bot
         self.blackjack.usage = lib.format.generate_usage(self.blackjack)
 
     @commands.hybrid_command(
@@ -32,7 +33,7 @@ class Blackjack(commands.Cog):
     @commands.guild_only()
     async def blackjack(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         bet: int,
     ) -> None:
         """
@@ -40,7 +41,7 @@ class Blackjack(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         bet : int
             The amount to bet.
@@ -64,7 +65,7 @@ class Blackjack(commands.Cog):
         finally:
             del ACTIVE_BLACKJACK_GAMES[ctx.author.id]
 
-    async def play_blackjack(self, ctx: commands.Context[commands.Bot], currency: Currency, bet: int) -> None:
+    async def play_blackjack(self, ctx: commands.Context[Luminara], currency: Currency, bet: int) -> None:
         deck = self.get_new_deck()
         player_hand, dealer_hand = self.initial_deal(deck)
         multiplier = CONST.BLACKJACK_MULTIPLIER
@@ -136,7 +137,7 @@ class Blackjack(commands.Cog):
 
     async def handle_game_end(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         response_message: discord.Message | None,
         currency: Currency,
         bet: int,
@@ -175,7 +176,7 @@ class Blackjack(commands.Cog):
 
     def create_game_embed(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         bet: int,
         player_hand: Hand,
         dealer_hand: Hand,
@@ -209,7 +210,7 @@ class Blackjack(commands.Cog):
 
     def create_end_game_embed(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         bet: int,
         player_value: int,
         dealer_value: int,
@@ -299,5 +300,5 @@ class Blackjack(commands.Cog):
         return value
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Blackjack(bot))

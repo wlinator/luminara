@@ -6,6 +6,7 @@ from discord import File
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 
 
 async def create_avatar_file(url: str) -> File:
@@ -32,7 +33,7 @@ async def create_avatar_file(url: str) -> File:
 
 
 class Avatar(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.avatar.usage = lib.format.generate_usage(self.avatar)
 
@@ -42,7 +43,7 @@ class Avatar(commands.Cog):
     )
     async def avatar(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         member: discord.Member | None = None,
     ) -> None:
         """
@@ -69,5 +70,5 @@ class Avatar(commands.Cog):
             await ctx.send(content="member has no avatar.")
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Avatar(bot))

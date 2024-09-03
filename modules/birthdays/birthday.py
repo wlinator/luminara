@@ -10,6 +10,7 @@ from discord.ext import commands, tasks
 from loguru import logger
 
 from lib.checks import birthdays_enabled
+from lib.client import Luminara
 from lib.const import CONST
 from services.birthday_service import BirthdayService
 from services.config_service import GuildConfig
@@ -19,7 +20,7 @@ from ui.embeds import Builder
 @app_commands.guild_only()
 @app_commands.default_permissions(manage_guild=True)
 class Birthday(commands.GroupCog, group_name="birthday"):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.daily_birthday_check.start()
 
@@ -207,5 +208,5 @@ class Birthday(commands.GroupCog, group_name="birthday"):
         await interaction.response.send_message(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Birthday(bot))

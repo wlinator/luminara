@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from lib.exceptions import LumiException
 from services.config_service import GuildConfig
@@ -15,7 +16,7 @@ from ui.embeds import Builder
 @app_commands.guild_only()
 @app_commands.default_permissions(administrator=True)
 class Config(commands.GroupCog, group_name="config"):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
 
     birthdays = app_commands.Group(name="birthdays", description="Configure the birthdays module")
@@ -793,5 +794,5 @@ class Config(commands.GroupCog, group_name="config"):
         await interaction.response.send_message(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Config(bot))

@@ -8,13 +8,14 @@ from discord.ext import commands
 import lib.format
 from lib.actionable import async_actionable
 from lib.case_handler import create_case
+from lib.client import Luminara
 from lib.const import CONST
 from lib.exceptions import LumiException
 from ui.embeds import Builder
 
 
 class Timeout(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.timeout.usage = lib.format.generate_usage(self.timeout)
         self.untimeout.usage = lib.format.generate_usage(self.untimeout)
@@ -25,7 +26,7 @@ class Timeout(commands.Cog):
     @commands.guild_only()
     async def timeout(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         target: discord.Member,
         duration: str,
         reason: str | None = None,
@@ -106,7 +107,7 @@ class Timeout(commands.Cog):
     @commands.guild_only()
     async def untimeout(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         target: discord.Member,
         reason: str | None = None,
     ) -> None:
@@ -159,5 +160,5 @@ class Timeout(commands.Cog):
             )
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Timeout(bot))

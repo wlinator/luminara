@@ -6,19 +6,20 @@ import psutil
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from ui.embeds import Builder
 
 
 class Info(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.info.usage = lib.format.generate_usage(self.info)
 
     @commands.hybrid_command(
         name="info",
     )
-    async def info(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def info(self, ctx: commands.Context[Luminara]) -> None:
         memory_usage_in_mb: float = psutil.Process().memory_info().rss / (1024 * 1024)
         # total_rows: str = Currency.format(BlackJackStats.get_total_rows_count())
 
@@ -46,5 +47,5 @@ class Info(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Info(bot))

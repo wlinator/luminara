@@ -6,6 +6,7 @@ from reactionmenu import ViewButton, ViewMenu
 
 import lib.format
 from lib.case_handler import edit_case_modlog
+from lib.client import Luminara
 from lib.const import CONST
 from lib.exceptions import LumiException
 from lib.format import format_case_number
@@ -19,7 +20,7 @@ from ui.embeds import Builder
 case_service = CaseService()
 
 
-def create_no_cases_embed(ctx: commands.Context[commands.Bot], author_text: str, description: str) -> discord.Embed:
+def create_no_cases_embed(ctx: commands.Context[Luminara], author_text: str, description: str) -> discord.Embed:
     return Builder.create_embed(
         theme="info",
         user_name=ctx.author.name,
@@ -28,7 +29,7 @@ def create_no_cases_embed(ctx: commands.Context[commands.Bot], author_text: str,
     )
 
 
-def create_case_view_menu(ctx: commands.Context[commands.Bot]) -> ViewMenu:
+def create_case_view_menu(ctx: commands.Context[Luminara]) -> ViewMenu:
     menu = ViewMenu(ctx, menu_type=ViewMenu.TypeEmbed, all_can_click=True, delete_on_timeout=True)
 
     buttons = [
@@ -45,7 +46,7 @@ def create_case_view_menu(ctx: commands.Context[commands.Bot]) -> ViewMenu:
 
 
 class Cases(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.view_case_by_number.usage = lib.format.generate_usage(self.view_case_by_number)
         self.view_all_cases_in_guild.usage = lib.format.generate_usage(self.view_all_cases_in_guild)
@@ -57,7 +58,7 @@ class Cases(commands.Cog):
     @commands.guild_only()
     async def view_case_by_number(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         case_number: int | None = None,
     ) -> None:
         """
@@ -101,14 +102,14 @@ class Cases(commands.Cog):
     @commands.guild_only()
     async def view_all_cases_in_guild(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
     ) -> None:
         """
         View all cases in the guild.
 
         Parameters
         ----------
-        ctx: commands.Context[commands.Bot]
+        ctx: commands.Context[Luminara]
             The context of the command.
         """
         if not ctx.guild:
@@ -144,7 +145,7 @@ class Cases(commands.Cog):
     @commands.guild_only()
     async def view_all_cases_by_mod(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         moderator: discord.Member,
     ) -> None:
         """
@@ -188,7 +189,7 @@ class Cases(commands.Cog):
     @commands.guild_only()
     async def edit_case_reason(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         case_number: int,
         *,
         new_reason: str,
@@ -232,5 +233,5 @@ class Cases(commands.Cog):
         await update_tasks()
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Cases(bot))

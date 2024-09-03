@@ -5,6 +5,7 @@ from discord import Embed
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from services.currency_service import Currency
 from services.daily_service import Dailies
@@ -24,8 +25,8 @@ def seconds_until(hours: int, minutes: int) -> int:
 
 
 class Daily(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
-        self.bot: commands.Bot = bot
+    def __init__(self, bot: Luminara) -> None:
+        self.bot: Luminara = bot
         self.daily.usage = lib.format.generate_usage(self.daily)
 
     @commands.hybrid_command(
@@ -35,14 +36,14 @@ class Daily(commands.Cog):
     @commands.guild_only()
     async def daily(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
     ) -> None:
         """
         Claim your daily reward.
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         """
         ctx_daily: Dailies = Dailies(ctx.author.id)
@@ -81,5 +82,5 @@ class Daily(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Daily(bot))

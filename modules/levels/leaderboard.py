@@ -4,27 +4,28 @@ from discord import Embed, Guild, Member
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from ui.embeds import Builder
 from ui.views.leaderboard import LeaderboardCommandOptions, LeaderboardCommandView
 
 
 class Leaderboard(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
-        self.bot: commands.Bot = bot
+    def __init__(self, bot: Luminara) -> None:
+        self.bot: Luminara = bot
         self.leaderboard.usage = lib.format.generate_usage(self.leaderboard)
 
     @commands.hybrid_command(
         name="leaderboard",
         aliases=["lb"],
     )
-    async def leaderboard(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def leaderboard(self, ctx: commands.Context[Luminara]) -> None:
         """
         Get the leaderboard for the server.
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         """
         guild: Guild | None = ctx.guild
@@ -48,5 +49,5 @@ class Leaderboard(commands.Cog):
         await ctx.send(embed=embed, view=view)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Leaderboard(bot))

@@ -8,12 +8,13 @@ from discord.ext import commands
 import lib.format
 from lib.actionable import async_actionable
 from lib.case_handler import create_case
+from lib.client import Luminara
 from lib.const import CONST
 from ui.embeds import Builder
 
 
 class Ban(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.ban.usage = lib.format.generate_usage(self.ban)
         self.unban.usage = lib.format.generate_usage(self.unban)
@@ -24,7 +25,7 @@ class Ban(commands.Cog):
     @commands.guild_only()
     async def ban(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         target: discord.Member | discord.User,
         *,
         reason: str | None = None,
@@ -93,7 +94,7 @@ class Ban(commands.Cog):
     @commands.guild_only()
     async def unban(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         target: discord.User,
         *,
         reason: str | None = None,
@@ -145,5 +146,5 @@ class Ban(commands.Cog):
             )
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Ban(bot))

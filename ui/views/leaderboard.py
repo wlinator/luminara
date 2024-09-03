@@ -4,6 +4,7 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 
+from lib.client import Luminara
 from lib.const import CONST
 from services.currency_service import Currency
 from services.daily_service import Dailies
@@ -58,12 +59,12 @@ class LeaderboardCommandView(discord.ui.View):
     what kind of leaderboard to show.
     """
 
-    ctx: commands.Context[commands.Bot]
+    ctx: commands.Context[Luminara]
     options: LeaderboardCommandOptions
 
     def __init__(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         options: LeaderboardCommandOptions,
     ) -> None:
         super().__init__(timeout=180)

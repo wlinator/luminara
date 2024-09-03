@@ -3,13 +3,14 @@ from discord.ext import commands
 
 import lib.format
 from db import database
+from lib.client import Luminara
 from lib.const import CONST
 from lib.format import shorten
 from ui.embeds import Builder
 
 
 class Sql(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.select_cmd.usage = lib.format.generate_usage(self.select_cmd)
         self.inject_cmd.usage = lib.format.generate_usage(self.inject_cmd)
@@ -18,7 +19,7 @@ class Sql(commands.Cog):
     @commands.is_owner()
     async def select_cmd(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         *,
         query: str,
     ) -> None:
@@ -27,7 +28,7 @@ class Sql(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         query : str
             The SQL query to execute.
@@ -65,7 +66,7 @@ class Sql(commands.Cog):
     @commands.is_owner()
     async def inject_cmd(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         *,
         query: str,
     ) -> None:
@@ -74,7 +75,7 @@ class Sql(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         query : str
             The SQL query to execute.
@@ -105,5 +106,5 @@ class Sql(commands.Cog):
         await ctx.send(embed=embed, ephemeral=True)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Sql(bot))

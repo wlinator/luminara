@@ -5,19 +5,20 @@ from discord import app_commands
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from lib.exceptions import LumiException
 from lib.format import format_duration_to_seconds
 
 
 class Slowmode(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.slowmode.usage = lib.format.generate_usage(self.slowmode)
 
     async def _set_slowmode(
         self,
-        ctx: commands.Context[commands.Bot] | discord.Interaction,
+        ctx: commands.Context[Luminara] | discord.Interaction,
         channel: discord.TextChannel,
         duration: str | None,
     ) -> None:
@@ -46,7 +47,7 @@ class Slowmode(commands.Cog):
 
     async def _send_response(
         self,
-        ctx: commands.Context[commands.Bot] | discord.Interaction,
+        ctx: commands.Context[Luminara] | discord.Interaction,
         content: str,
         ephemeral: bool = False,
     ) -> None:
@@ -64,7 +65,7 @@ class Slowmode(commands.Cog):
     @commands.guild_only()
     async def slowmode(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         arg1: str | None = None,
         arg2: str | None = None,
     ) -> None:
@@ -119,5 +120,5 @@ class Slowmode(commands.Cog):
         await self._set_slowmode(interaction, channel, duration)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Slowmode(bot))

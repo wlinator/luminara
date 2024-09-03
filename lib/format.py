@@ -7,6 +7,7 @@ from discord.ext import commands
 from pytimeparse import parse  # type: ignore
 
 from lib import exceptions
+from lib.client import Luminara
 from lib.const import CONST
 from services.config_service import GuildConfig
 
@@ -76,7 +77,7 @@ def format_case_number(case_number: int) -> str:
     return f"{case_number:03d}" if case_number < 1000 else str(case_number)
 
 
-def get_prefix(ctx: commands.Context[commands.Bot]) -> str:
+def get_prefix(ctx: commands.Context[Luminara]) -> str:
     """
     Attempts to retrieve the prefix for the given guild context.
 
@@ -92,7 +93,7 @@ def get_prefix(ctx: commands.Context[commands.Bot]) -> str:
         return "."
 
 
-def get_invoked_name(ctx: commands.Context[commands.Bot]) -> str | None:
+def get_invoked_name(ctx: commands.Context[Luminara]) -> str | None:
     """
     Attempts to get the alias of the command used. If the user used a SlashCommand, return the command name.
 
