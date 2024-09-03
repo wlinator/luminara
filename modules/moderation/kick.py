@@ -7,12 +7,13 @@ from discord.ext import commands
 import lib.format
 from lib.actionable import async_actionable
 from lib.case_handler import create_case
+from lib.client import Luminara
 from lib.const import CONST
 from ui.embeds import Builder
 
 
 class Kick(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.kick.usage = lib.format.generate_usage(self.kick)
 
@@ -22,7 +23,7 @@ class Kick(commands.Cog):
     @commands.guild_only()
     async def kick(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         target: discord.Member,
         *,
         reason: str | None = None,
@@ -86,5 +87,5 @@ class Kick(commands.Cog):
         await asyncio.gather(respond_task, create_case_task, return_exceptions=True)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Kick(bot))

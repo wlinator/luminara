@@ -2,13 +2,14 @@ import discord
 from discord.ext import commands
 from loguru import logger
 
+from lib.client import Luminara
 from services.blacklist_service import BlacklistUserService
 from services.config_service import GuildConfig
 from ui.config import create_boost_embed, create_greet_embed
 
 
 class EventHandler(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -76,7 +77,7 @@ class EventHandler(commands.Cog):
             )
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def on_command_completion(self, ctx: commands.Context[Luminara]) -> None:
         log_msg = f"{ctx.author.name} executed .{ctx.command.qualified_name if ctx.command else 'Unknown'}"
 
         if ctx.guild is not None:
@@ -94,5 +95,5 @@ class EventHandler(commands.Cog):
             logger.debug(f"{log_msg} in DMs")
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Luminara):
     await bot.add_cog(EventHandler(bot))

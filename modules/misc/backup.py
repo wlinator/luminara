@@ -9,6 +9,7 @@ from discord.ext import commands, tasks
 from dropbox.files import FileMetadata  # type: ignore
 from loguru import logger
 
+from lib.client import Luminara
 from lib.const import CONST
 
 # Initialize Dropbox client if instance is "main"
@@ -77,8 +78,8 @@ async def backup() -> None:
 
 
 class Backup(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
-        self.bot: commands.Bot = bot
+    def __init__(self, bot: Luminara) -> None:
+        self.bot: Luminara = bot
         self.do_backup.start()
 
     @tasks.loop(hours=1)
@@ -91,5 +92,5 @@ class Backup(commands.Cog):
         await asyncio.sleep(30)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Backup(bot))

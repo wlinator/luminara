@@ -2,13 +2,14 @@ import discord
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from services.blacklist_service import BlacklistUserService
 from ui.embeds import Builder
 
 
 class Blacklist(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.blacklist_command.usage = lib.format.generate_usage(self.blacklist_command)
 
@@ -16,7 +17,7 @@ class Blacklist(commands.Cog):
     @commands.is_owner()
     async def blacklist_command(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         user: discord.User,
         *,
         reason: str | None = None,
@@ -26,7 +27,7 @@ class Blacklist(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         user : discord.User
             The user to blacklist.
@@ -47,5 +48,5 @@ class Blacklist(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Blacklist(bot))

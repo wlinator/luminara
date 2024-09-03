@@ -2,13 +2,14 @@ import discord
 from discord.ext import commands
 from discord.ui import Button, View
 
+from lib.client import Luminara
 from lib.const import CONST
 
 
 class BlackJackButtons(View):
-    def __init__(self, ctx: commands.Context[commands.Bot]) -> None:
+    def __init__(self, ctx: commands.Context[Luminara]) -> None:
         super().__init__(timeout=180)
-        self.ctx: commands.Context[commands.Bot] = ctx
+        self.ctx: commands.Context[Luminara] = ctx
         self.clickedHit: bool = False
         self.clickedStand: bool = False
         self.clickedDoubleDown: bool = False

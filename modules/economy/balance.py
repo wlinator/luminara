@@ -1,14 +1,15 @@
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from services.currency_service import Currency
 from ui.embeds import Builder
 
 
 class Balance(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
-        self.bot: commands.Bot = bot
+    def __init__(self, bot: Luminara) -> None:
+        self.bot: Luminara = bot
         self.balance.usage = lib.format.generate_usage(self.balance)
 
     @commands.hybrid_command(
@@ -18,14 +19,14 @@ class Balance(commands.Cog):
     @commands.guild_only()
     async def balance(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
     ) -> None:
         """
         Check your current balance.
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         """
 
@@ -46,5 +47,5 @@ class Balance(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Balance(bot))

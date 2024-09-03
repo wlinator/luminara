@@ -6,6 +6,7 @@ from discord.ext import commands
 from reactionmenu import ViewButton, ViewMenu
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from lib.exceptions import LumiException
 from services.reactions_service import CustomReactionsService
@@ -15,7 +16,7 @@ from ui.embeds import Builder
 @app_commands.guild_only()
 @app_commands.default_permissions(manage_guild=True)
 class Triggers(commands.GroupCog, group_name="trigger"):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
 
     add = app_commands.Group(
@@ -282,5 +283,5 @@ class Triggers(commands.GroupCog, group_name="trigger"):
         await menu.start()
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Triggers(bot))

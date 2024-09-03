@@ -2,13 +2,14 @@ from discord import Embed
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from services.xp_service import XpService
 from ui.embeds import Builder
 
 
 class Level(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.level.usage = lib.format.generate_usage(self.level)
 
@@ -16,13 +17,13 @@ class Level(commands.Cog):
         name="level",
         aliases=["rank", "lvl", "xp"],
     )
-    async def level(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def level(self, ctx: commands.Context[Luminara]) -> None:
         """
         Get the level of the user.
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         """
         if not ctx.guild:
@@ -52,5 +53,5 @@ class Level(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Level(bot))

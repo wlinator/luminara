@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from loguru import logger
 
+from lib.client import Luminara
 from lib.exceptions import LumiException
 from services.case_service import CaseService
 from services.modlog_service import ModLogService
@@ -12,7 +13,7 @@ modlog_service = ModLogService()
 
 
 async def create_case(
-    ctx: commands.Context[commands.Bot],
+    ctx: commands.Context[Luminara],
     target: discord.User,
     action_type: str,
     reason: str | None = None,
@@ -93,7 +94,7 @@ async def create_case(
 
 
 async def edit_case_modlog(
-    ctx: commands.Context[commands.Bot],
+    ctx: commands.Context[Luminara],
     guild_id: int,
     case_number: int,
     new_reason: str,

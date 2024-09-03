@@ -4,13 +4,14 @@ from typing import Any
 import discord
 from discord.ext import commands
 
+from lib.client import Luminara
 from lib.const import CONST
 from lib.format import format_case_number, format_seconds_to_duration_string
 from ui.embeds import Builder
 
 
 def create_case_embed(
-    ctx: commands.Context[commands.Bot],
+    ctx: commands.Context[Luminara],
     target: discord.User,
     case_number: int,
     action_type: str,
@@ -76,7 +77,7 @@ def create_case_embed(
 
 
 def create_case_list_embed(
-    ctx: commands.Context[commands.Bot],
+    ctx: commands.Context[Luminara],
     cases: list[dict[str, Any]],
     author_text: str,
 ) -> discord.Embed:

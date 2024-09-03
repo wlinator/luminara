@@ -35,7 +35,7 @@ class Dev(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         guild : discord.Guild | None, optional
             The guild to sync the tree to, by default None.
@@ -61,7 +61,7 @@ class Dev(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         guild : discord.Guild | None, optional
         """

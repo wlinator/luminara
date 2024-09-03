@@ -8,6 +8,7 @@ import discord
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from lib.exceptions import LumiException
 from services.currency_service import Currency
@@ -17,8 +18,8 @@ est = ZoneInfo("US/Eastern")
 
 
 class Slots(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
-        self.bot: commands.Bot = bot
+    def __init__(self, bot: Luminara) -> None:
+        self.bot: Luminara = bot
         self.slots.usage = lib.format.generate_usage(self.slots)
 
     @commands.hybrid_command(
@@ -28,7 +29,7 @@ class Slots(commands.Cog):
     @commands.guild_only()
     async def slots(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         bet: int,
     ) -> None:
         """
@@ -36,7 +37,7 @@ class Slots(commands.Cog):
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         bet : int
             The amount to bet.
@@ -134,7 +135,7 @@ class Slots(commands.Cog):
 
     def slots_spinning(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         spinning_icons_amount: int,
         bet: str,
         results: list[int],
@@ -179,7 +180,7 @@ class Slots(commands.Cog):
 
     def slots_finished(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         payout_type: str,
         bet: str,
         payout: str,
@@ -251,5 +252,5 @@ class Slots(commands.Cog):
         return embed
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Slots(bot))

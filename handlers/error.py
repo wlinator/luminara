@@ -8,6 +8,7 @@ from discord.ext import commands
 from loguru import logger
 
 from lib import exceptions
+from lib.client import Luminara
 from lib.const import CONST
 
 error_map: dict[type[Exception], str] = {
@@ -51,7 +52,7 @@ async def log_command_error(
 
 
 class ErrorHandler(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: Luminara) -> None:
         self.bot = bot
 
     async def cog_load(self):
@@ -85,7 +86,7 @@ class ErrorHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(
         self,
-        ctx: commands.Context[commands.Bot],
+        ctx: commands.Context[Luminara],
         error: commands.CommandError | commands.CheckFailure,
     ) -> None:
         if isinstance(error, commands.CommandNotFound | exceptions.Blacklisted):
@@ -107,5 +108,5 @@ class ErrorHandler(commands.Cog):
         await on_error(event, *args, **kwargs)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(ErrorHandler(bot))

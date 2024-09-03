@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 import lib.format
+from lib.client import Luminara
 from lib.const import CONST
 from ui.embeds import Builder
 from ui.views.introduction import (
@@ -11,18 +12,18 @@ from ui.views.introduction import (
 
 
 class Introduction(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Luminara):
         self.bot = bot
         self.introduction.usage = lib.format.generate_usage(self.introduction)
 
     @commands.hybrid_command(name="introduction", aliases=["intro"])
-    async def introduction(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def introduction(self, ctx: commands.Context[Luminara]) -> None:
         """
         Introduction command.
 
         Parameters
         ----------
-        ctx : commands.Context[commands.Bot]
+        ctx : commands.Context[Luminara]
             The context of the command.
         """
         guild: discord.Guild | None = self.bot.get_guild(
@@ -188,5 +189,5 @@ class Introduction(commands.Cog):
                 )
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: Luminara) -> None:
     await bot.add_cog(Introduction(bot))
