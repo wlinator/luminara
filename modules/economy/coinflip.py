@@ -36,6 +36,18 @@ class Coinflip(commands.Cog):
         """
         result = random.choice(["heads", "tails"])
 
+        if prediction:
+            prediction = prediction.lower()
+            if prediction not in ["heads", "h", "tails", "t"]:
+                embed = Builder.create_embed(
+                    Builder.ERROR,
+                    user_name=ctx.author.name,
+                    author_text=CONST.STRINGS["coinflip_invalid_prediction_author"],
+                    description=CONST.STRINGS["coinflip_invalid_prediction_description"],
+                )
+                await ctx.send(embed=embed)
+                return
+
         flip_embed = Builder.create_embed(
             Builder.INFO,
             user_name=ctx.author.name,
@@ -61,31 +73,22 @@ class Coinflip(commands.Cog):
             await asyncio.sleep(0.5)
 
         if prediction:
-            prediction = prediction.lower()
-            if prediction in ["heads", "h", "tails", "t"]:
-                predicted_correctly = (prediction.startswith("h") and result == "heads") or (
-                    prediction.startswith("t") and result == "tails"
+            predicted_correctly = (prediction.startswith("h") and result == "heads") or (
+                prediction.startswith("t") and result == "tails"
+            )
+            if predicted_correctly:
+                embed = Builder.create_embed(
+                    Builder.SUCCESS,
+                    user_name=ctx.author.name,
+                    author_text=CONST.STRINGS["coinflip_correct_prediction_author"],
+                    description=CONST.STRINGS["coinflip_correct_prediction_description"].format(result),
                 )
-                if predicted_correctly:
-                    embed = Builder.create_embed(
-                        Builder.SUCCESS,
-                        user_name=ctx.author.name,
-                        author_text=CONST.STRINGS["coinflip_correct_prediction_author"],
-                        description=CONST.STRINGS["coinflip_correct_prediction_description"].format(result),
-                    )
-                else:
-                    embed = Builder.create_embed(
-                        Builder.ERROR,
-                        user_name=ctx.author.name,
-                        author_text=CONST.STRINGS["coinflip_wrong_prediction_author"],
-                        description=CONST.STRINGS["coinflip_wrong_prediction_description"].format(result),
-                    )
             else:
                 embed = Builder.create_embed(
                     Builder.ERROR,
                     user_name=ctx.author.name,
-                    author_text=CONST.STRINGS["coinflip_invalid_prediction_author"],
-                    description=CONST.STRINGS["coinflip_invalid_prediction_description"],
+                    author_text=CONST.STRINGS["coinflip_wrong_prediction_author"],
+                    description=CONST.STRINGS["coinflip_wrong_prediction_description"].format(result),
                 )
         else:
             embed = Builder.create_embed(
