@@ -11,13 +11,37 @@ from lib.const import CONST
 from lib.exceptions import LumiException
 from ui.embeds import Builder
 
-ACTIVE_COINFLIPS: dict[int, bool] = {}
+PREDICTION_MAPPING = {
+    "h": "heads",
+    "head": "heads",
+    "heads": "heads",
+    "t": "tails",
+    "tail": "tails",
+    "tails": "tails",
+}
+
+COIN_FLIP_DELAY = 0.5  # seconds
+
+
+class ActiveCoinflips:
+    def __init__(self):
+        self._flips: set[int] = set()
+
+    def add(self, user_id: int) -> bool:
+        if user_id in self._flips:
+            return False
+        self._flips.add(user_id)
+        return True
+
+    def remove(self, user_id: int) -> None:
+        self._flips.discard(user_id)
 
 
 class Coinflip(commands.Cog):
     def __init__(self, bot: Luminara) -> None:
         self.bot: Luminara = bot
         self.coinflip.usage = lib.format.generate_usage(self.coinflip)
+        self.active_coinflips = ActiveCoinflips()
 
     @commands.command(
         name="coinflip",
@@ -40,13 +64,6 @@ class Coinflip(commands.Cog):
         prediction : str, optional
             The predicted outcome ('heads', 'h', 'tails', or 't').
         """
-        if prediction:
-            prediction = prediction.lower()
-            if prediction in ["h", "head"]:
-                prediction = "heads"
-            elif prediction in ["t", "tail"]:
-                prediction = "tails"
-
         await self._coinflip(ctx, prediction)
 
     @app_commands.command(name="coinflip", description="Flip a coin. Optionally predict the outcome.")
@@ -82,16 +99,16 @@ class Coinflip(commands.Cog):
             author = ctx.user
             reply = ctx.followup.send
 
-        if author.id in ACTIVE_COINFLIPS:
+        if not self.active_coinflips.add(author.id):
             raise LumiException(CONST.STRINGS["error_already_flipping_coin_description"])
-
-        ACTIVE_COINFLIPS[author.id] = True
 
         try:
             result = random.choice(["heads", "tails"])
 
-            if prediction and prediction not in ["heads", "tails"]:
-                raise LumiException(CONST.STRINGS["coinflip_invalid_prediction_description"])
+            if prediction:
+                prediction = PREDICTION_MAPPING.get(prediction.lower())
+                if not prediction:
+                    raise LumiException(CONST.STRINGS["coinflip_invalid_prediction_description"])
 
             flip_embed = Builder.create_embed(
                 Builder.INFO,
@@ -106,20 +123,11 @@ class Coinflip(commands.Cog):
                 await ctx.response.send_message(embed=flip_embed)
                 flip_message = await ctx.original_response()
 
-            await asyncio.sleep(1)
+            # Add a short delay before starting the coin flip animation
+            await asyncio.sleep(COIN_FLIP_DELAY)
 
-            if flip_message is not None:
-                flip_embed.description = f"**{author.name}** " + CONST.STRINGS["coinflip_flipping_animation_1"]
-                await flip_message.edit(embed=flip_embed)
-                await asyncio.sleep(0.5)
-
-                flip_embed.description = f"**{author.name}** " + CONST.STRINGS["coinflip_flipping_animation_2"]
-                await flip_message.edit(embed=flip_embed)
-                await asyncio.sleep(0.5)
-
-                flip_embed.description = f"**{author.name}** " + CONST.STRINGS["coinflip_flipping_animation_3"]
-                await flip_message.edit(embed=flip_embed)
-                await asyncio.sleep(0.5)
+            if isinstance(flip_message, discord.Message):
+                await self._animate_coin_flip(flip_message, author.name)
 
             if prediction:
                 predicted_correctly = prediction == result
@@ -151,7 +159,23 @@ class Coinflip(commands.Cog):
             if flip_message is not None:
                 await flip_message.edit(embed=embed)
         finally:
-            del ACTIVE_COINFLIPS[author.id]
+            self.active_coinflips.remove(author.id)
+
+    async def _animate_coin_flip(self, flip_message: discord.Message, author_name: str) -> None:
+        animations = [
+            CONST.STRINGS["coinflip_flipping_animation_1"],
+            CONST.STRINGS["coinflip_flipping_animation_2"],
+            CONST.STRINGS["coinflip_flipping_animation_3"],
+        ]
+        for animation in animations:
+            flip_embed = Builder.create_embed(
+                Builder.INFO,
+                user_name=author_name,
+                author_text=CONST.STRINGS["coinflip_flipping_author"],
+                description=animation,
+            )
+            await flip_message.edit(embed=flip_embed)
+            await asyncio.sleep(COIN_FLIP_DELAY)
 
 
 async def setup(bot: Luminara) -> None:
