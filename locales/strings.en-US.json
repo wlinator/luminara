@@ -215,6 +215,7 @@
   "info_system": "**System:** {0} ({1})\n",
   "info_uptime": "**Uptime:** <t:{0}:R>\n",
   "inspirobot_author": "InspiroBot (AI Generated)",
+  "inspirobot_failed_to_get_image": "Failed to get image URL from InspiroBot: {0}",
   "intro_content": "Introduction by {0}",
   "intro_content_footer": "Type .intro in my DMs to start",
   "intro_no_channel": "the introduction channel is not set, please contact a moderator.",

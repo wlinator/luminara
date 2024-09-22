@@ -31,7 +31,7 @@ class Inspirobot(commands.Cog):
             try:
                 image_url = await InspiroBot().get_image()
             except Exception as e:
-                msg = f"Failed to get image URL from Inspirobot: {e}"
+                msg = CONST.STRINGS["inspirobot_failed_to_get_image"].format(e)
                 raise LumiException(msg) from e
 
         embed = Builder.create_embed(
