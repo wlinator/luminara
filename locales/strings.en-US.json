@@ -201,6 +201,7 @@
   "info_service_footer": "Info Service",
   "info_system": "**System:** {0} ({1})\n",
   "info_uptime": "**Uptime:** <t:{0}:R>\n",
+  "inspirobot_author": "InspiroBot (AI Generated)",
   "intro_content": "Introduction by {0}",
   "intro_content_footer": "Type .intro in my DMs to start",
   "intro_no_channel": "the introduction channel is not set, please contact a moderator.",

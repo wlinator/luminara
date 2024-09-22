@@ -14,7 +14,7 @@ class InspiroBot:
         str
             The URL of the image.
         """
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(self.base_url)
             response.raise_for_status()
             return response.text

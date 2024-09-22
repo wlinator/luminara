@@ -1,8 +1,8 @@
-from discord import app_commands
 from discord.ext import commands
 
 import lib.format
 from lib.client import Luminara
+from lib.const import CONST
 from lib.exceptions import LumiException
 from ui.embeds import Builder
 from wrappers.inspirobot import InspiroBot
@@ -17,9 +17,8 @@ class Inspirobot(commands.Cog):
         name="inspirobot",
         aliases=["inspiro", "ib"],
     )
-    @app_commands.describe(ephemeral="Whether to send the image ephemerally.")
     @commands.is_nsfw()
-    async def inspirobot(self, ctx: commands.Context[Luminara], *, ephemeral: bool = False) -> None:
+    async def inspirobot(self, ctx: commands.Context[Luminara]) -> None:
         """
         Get a random AI-generated motivational image from Inspirobot.
 
@@ -27,8 +26,6 @@ class Inspirobot(commands.Cog):
         ----------
         ctx : commands.Context[Luminara]
             The context of the command.
-        ephemeral : bool, optional
-            Whether to send the image ephemerally. Defaults to False.
         """
         async with ctx.typing():
             try:
@@ -39,10 +36,10 @@ class Inspirobot(commands.Cog):
 
         embed = Builder.create_embed(
             Builder.SUCCESS,
-            author_text="InspiroBot (AI Generated)",
+            author_text=CONST.STRINGS["inspirobot_author"],
             image_url=image_url,
         )
-        await ctx.send(embed=embed, ephemeral=ephemeral)
+        await ctx.send(embed=embed)
 
 
 async def setup(bot: Luminara) -> None:
