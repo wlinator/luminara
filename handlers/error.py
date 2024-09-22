@@ -17,6 +17,7 @@ error_map: dict[type[Exception], str] = {
     commands.NoPrivateMessage: CONST.STRINGS["error_no_private_message_description"],
     commands.NotOwner: CONST.STRINGS["error_not_owner_unknown"],
     commands.PrivateMessageOnly: CONST.STRINGS["error_private_message_only_description"],
+    commands.NSFWChannelRequired: CONST.STRINGS["error_nsfw_channel_required_description"],
     exceptions.BirthdaysDisabled: CONST.STRINGS["error_birthdays_disabled_description"],
 }
 
