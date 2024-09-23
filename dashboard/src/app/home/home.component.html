@@ -1,0 +1,33 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-200 text-gray-800">
+  <div class="container mx-auto px-4 py-16">
+    <div class="text-center">
+      <div
+        class="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-orange-200 to-orange-400 rounded-full overflow-hidden shadow-lg flex items-center justify-center">
+        <img src="https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_logo.png" alt="Luminara Logo"
+          class="w-full h-full object-cover">
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-4">{{ title }}</h1>
+      <p class="text-lg md:text-xl mb-6 text-gray-600">A general purpose Discord bot with a focus on robust moderation.
+      </p>
+      <!-- Button to login-->
+      <app-login-button></app-login-button>
+    </div>
+
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- widgets here-->
+      <app-home-widget icon="faGavel" title="Moderation"
+        description="Robust moderation tools to keep your server safe."></app-home-widget>
+      <app-home-widget icon="faSlidersH" title="Customization"
+        description="Fine-tune your server settings with ease."></app-home-widget>
+      <app-home-widget icon="faCode" title="Open Source"
+        description="Luminara is an open source project, you can view the source code on GitHub."
+        link="https://github.com/wlinator/luminara"></app-home-widget>
+      <app-home-widget icon="faLevelUpAlt" title="Leveling System"
+        description="Engage your community with a fun and interactive leveling system."></app-home-widget>
+      <app-home-widget icon="faCoins" title="Economy"
+        description="Create an in-server economy with virtual currency and items."></app-home-widget>
+      <app-home-widget icon="faSmile" title="Custom Reactions"
+        description="Set up custom reactions to enhance user interaction."></app-home-widget>
+    </div>
+  </div>
+</div>

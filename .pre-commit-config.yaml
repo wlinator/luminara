@@ -34,4 +34,4 @@ repos:
     hooks:
       - id: pyupgrade
 
-exclude: ".archive/"
+exclude: "dashboard/"

@@ -64,6 +64,7 @@ exclude = [
   "tests",
   ".archive",
   "stubs",
+  "dashboard",
 ]
 
 indent-width = 4
@@ -144,6 +145,7 @@ exclude = [
   "tests",
   ".archive",
   "stubs",
+  "dashboard",
 ]
 include = ["**/*.py"]
 pythonPlatform = "Linux"
