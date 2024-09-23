@@ -17,6 +17,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    
+  dashboard:
+    build: ./dashboard
+    container_name: lumi-dashboard
+    restart: always
+    ports:
+      - 8081:4200
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     image: mariadb
