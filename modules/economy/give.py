@@ -49,8 +49,8 @@ class Give(commands.Cog):
         if ctx_currency.balance < amount:
             raise LumiException(CONST.STRINGS["give_error_insufficient_funds"])
 
-        target_currency.add_balance(amount)
         ctx_currency.take_balance(amount)
+        target_currency.add_balance(amount)
 
         ctx_currency.push()
         target_currency.push()
@@ -58,10 +58,7 @@ class Give(commands.Cog):
         embed = Builder.create_embed(
             Builder.SUCCESS,
             user_name=ctx.author.name,
-            description=CONST.STRINGS["give_success"].format(
-                Currency.format(amount),
-                user.name,
-            ),
+            description=CONST.STRINGS["give_success"].format(Currency.format(amount), user.name),
         )
 
         await ctx.send(embed=embed)
