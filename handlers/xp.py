@@ -251,6 +251,9 @@ class XpListener(commands.Cog):
         if message.author.bot or message.guild is None:
             return
 
+        if message.channel.id in CONST.XP_EXCLUDED_CHANNEL_IDS:
+            return
+
         _xp: XPHandler = XPHandler(self.client, message)
         if _xp.process():
             await asyncio.gather(

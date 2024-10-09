@@ -123,5 +123,8 @@ class Constants:
     BIRTHDAY_MESSAGES: Final[list[str]] = _bday["birthday_messages"]
     BIRTHDAY_MONTHS: Final[list[str]] = _bday["months"]
 
+    # XP config at bot admin level
+    XP_EXCLUDED_CHANNEL_IDS: Final[list[int]] = _s["xp"]["excluded_channel_ids"]
+
 
 CONST = Constants()
