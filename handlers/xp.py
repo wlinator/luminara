@@ -74,7 +74,8 @@ class XPHandler:
         level_message: str | None = None  # Initialize level_message
 
         if isinstance(self.author, discord.Member):
-            level_message = await self.get_level_message(_gd, _xp, self.author)
+            mention = _gd.level_channel_id is not None
+            level_message = await self.get_level_message(_gd, _xp, self.author, mention)
 
         if level_message:
             level_channel: discord.TextChannel | None = await self.get_level_channel(
@@ -149,6 +150,7 @@ class XPHandler:
         guild_config: GuildConfig,
         level_config: XpService,
         author: discord.Member,
+        mention: bool = False,
     ) -> str | None:
         """
         Retrieves the level up message for the user.
@@ -165,17 +167,18 @@ class XPHandler:
             case 0:
                 level_message = None
             case 1:
-                level_message = XPHandler.messages_whimsical(level_config.level, author)
+                level_message = XPHandler.messages_whimsical(level_config.level, author, mention)
             case 2:
                 if not guild_config.level_message:
                     level_message = XPHandler.level_message_generic(
                         level_config.level,
                         author,
+                        mention,
                     )
                 else:
                     level_message = lib.format.template(
                         guild_config.level_message,
-                        author.name,
+                        author.mention if mention else author.name,
                         level_config.level,
                     )
             case _:
@@ -185,7 +188,7 @@ class XPHandler:
         return level_message
 
     @staticmethod
-    def level_message_generic(level: int, author: discord.Member) -> str:
+    def level_message_generic(level: int, author: discord.Member, mention: bool = False) -> str:
         """
         Generates a generic level up message.
 
@@ -196,10 +199,10 @@ class XPHandler:
         Returns:
             str: The generic level up message.
         """
-        return CONST.STRINGS["level_up"].format(author.name, level)
+        return CONST.STRINGS["level_up"].format(author.mention if mention else author.name, level)
 
     @staticmethod
-    def messages_whimsical(level: int, author: discord.Member) -> str:
+    def messages_whimsical(level: int, author: discord.Member, mention: bool = False) -> str:
         """
         Generates a whimsical level up message.
 
@@ -219,11 +222,11 @@ class XPHandler:
 
         if level_range is None:
             # Generic fallback
-            return XPHandler.level_message_generic(level, author)
+            return XPHandler.level_message_generic(level, author, mention)
 
         message_list = CONST.LEVEL_MESSAGES[level_range]
         random_message = random.choice(message_list)
-        start_string = CONST.STRINGS["level_up_prefix"].format(author.name)
+        start_string = CONST.STRINGS["level_up_prefix"].format(author.mention if mention else author.name)
         return start_string + random_message.format(level)
 
 
