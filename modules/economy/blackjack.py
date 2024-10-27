@@ -17,8 +17,8 @@ from ui.views.blackjack import BlackJackButtons
 EST = ZoneInfo("US/Eastern")
 ACTIVE_BLACKJACK_GAMES: dict[int, bool] = {}
 
-Card = str
-Hand = list[Card]
+Card = list[str]  # e.g. ["A", "♠"]
+Hand = list[Card]  # e.g. [["A", "♠"], ["10", "♡"]]
 
 
 class Blackjack(commands.Cog):
@@ -170,8 +170,8 @@ class Blackjack(commands.Cog):
             is_won=is_won,
             bet=bet,
             payout=int(payout) if is_won else 0,
-            hand_player=player_hand,
-            hand_dealer=dealer_hand,
+            hand_player=list(map(str, player_hand)),
+            hand_dealer=list(map(str, dealer_hand)),
         ).push()
 
     def create_game_embed(
@@ -183,9 +183,11 @@ class Blackjack(commands.Cog):
         player_value: int,
         dealer_value: int,
     ) -> discord.Embed:
-        player_hand_str = " + ".join(player_hand)
-        dealer_hand_str = f"{dealer_hand[0]} + " + (
-            CONST.STRINGS["blackjack_dealer_hidden"] if len(dealer_hand) < 2 else " + ".join(dealer_hand[1:])
+        player_hand_str = " + ".join(["".join(card) for card in player_hand])
+        dealer_hand_str = f"{''.join(dealer_hand[0])} + " + (
+            CONST.STRINGS["blackjack_dealer_hidden"]
+            if len(dealer_hand) < 2
+            else " + ".join(["".join(card) for card in dealer_hand[1:]])
         )
 
         description = (
@@ -281,7 +283,7 @@ class Blackjack(commands.Cog):
 
     def get_new_deck(self) -> list[Card]:
         deck = [
-            rank + suit
+            [rank, suit]
             for suit in ["♠", "♡", "♢", "♣"]
             for rank in ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
         ]
@@ -292,7 +294,7 @@ class Blackjack(commands.Cog):
         return deck.pop()
 
     def calculate_hand_value(self, hand: Hand) -> int:
-        value = sum(10 if rank in "JQK" else 11 if rank == "A" else int(rank) for card in hand for rank in card[:-1])
+        value = sum(10 if card[0] in "JQK" else 11 if card[0] == "A" else int(card[0]) for card in hand)
         aces = sum(card[0] == "A" for card in hand)
         while value > 21 and aces:
             value -= 10
