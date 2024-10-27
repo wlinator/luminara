@@ -50,8 +50,8 @@ class Constants:
     # metadata
     TITLE: Final[str] = _s["info"]["title"]
     AUTHOR: Final[str] = _s["info"]["author"]
-    LICENSE: Final[str] = _s["info"]["license"]
-    VERSION: Final[str] = _s["info"]["version"]
+    LICENSE: Final[str] = "GNU General Public License v3.0"
+    VERSION: Final[str] = "3.3.0"
     REPO_URL: Final[str] = _s["info"]["repository_url"]
     INVITE_URL: Final[str] = _s["info"]["invite_url"]
 
