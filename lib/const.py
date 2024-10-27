@@ -47,6 +47,10 @@ class Constants:
     MARIADB_ROOT_PASSWORD: Final[str | None] = os.environ.get("MARIADB_ROOT_PASSWORD")
     MARIADB_DATABASE: Final[str | None] = os.environ.get("MARIADB_DATABASE")
 
+    # twitch credentials
+    TWITCH_CLIENT_ID: Final[str | None] = os.environ.get("TWITCH_CLIENT_ID")
+    TWITCH_CLIENT_SECRET: Final[str | None] = os.environ.get("TWITCH_CLIENT_SECRET")
+
     # metadata
     TITLE: Final[str] = _s["info"]["title"]
     AUTHOR: Final[str] = _s["info"]["author"]
