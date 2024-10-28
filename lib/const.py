@@ -1,6 +1,7 @@
 import json
 import os
 from collections.abc import Callable
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
 
@@ -125,6 +126,9 @@ class Constants:
 
     # XP config at bot admin level
     XP_EXCLUDED_CHANNEL_IDS: Final[list[int]] = _s["xp"]["excluded_channel_ids"]
+
+    # UPTIME
+    BOOT_TIME: Final[datetime] = datetime.now(UTC)
 
 
 CONST = Constants()

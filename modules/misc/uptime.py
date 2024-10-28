@@ -1,6 +1,3 @@
-from datetime import datetime
-
-import discord
 from discord import Embed
 from discord.ext import commands
 
@@ -13,7 +10,6 @@ from ui.embeds import Builder
 class Uptime(commands.Cog):
     def __init__(self, bot: Luminara) -> None:
         self.bot: Luminara = bot
-        self.start_time: datetime = discord.utils.utcnow()
         self.uptime.usage = lib.format.generate_usage(self.uptime)
 
     @commands.hybrid_command(name="uptime")
@@ -26,7 +22,7 @@ class Uptime(commands.Cog):
         ctx : commands.Context[Luminara]
             The context of the command.
         """
-        unix_timestamp: int = int(self.start_time.timestamp())
+        unix_timestamp: int = int(CONST.BOOT_TIME.timestamp())
 
         embed: Embed = Builder.create_embed(
             Builder.INFO,

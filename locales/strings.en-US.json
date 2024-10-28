@@ -273,7 +273,7 @@
   "mod_warned_user": "user `{0}` has been warned.",
   "ping_author": "I'm online!",
   "ping_footer": "Latency: {0}ms",
-  "ping_pong": "pong!",
+  "ping_pong": "pong! (`{0}% CPU`, `{1}`)",
   "ping_uptime": "I've been online since <t:{0}:R>.",
   "slowmode_channel_not_found": "Channel not found.",
   "slowmode_current_value": "The current slowmode for {0} is **{1}s**.",
