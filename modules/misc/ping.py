@@ -25,7 +25,7 @@ class Ping(commands.Cog):
 
         # Process information
         process = psutil.Process()
-        cpu_usage = process.cpu_percent(interval=1)
+        cpu_usage = process.cpu_percent()
         memory_info = process.memory_info()
         used_memory = lib.format.format_size(memory_info.rss)
 
