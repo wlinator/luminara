@@ -1,3 +1,4 @@
+import psutil
 from discord.ext import commands
 
 import lib.format
@@ -14,18 +15,28 @@ class Ping(commands.Cog):
     @commands.hybrid_command(name="ping")
     async def ping(self, ctx: commands.Context[Luminara]) -> None:
         """
-        Show Luminara's latency.
+        Show Luminara's latency and other useful statistics.
 
         Parameters
         ----------
         ctx : commands.Context[Luminara]
             The context of the command.
         """
+
+        # Process information
+        process = psutil.Process()
+        cpu_usage = process.cpu_percent()
+        memory_info = process.memory_info()
+        used_memory = lib.format.format_size(memory_info.rss)
+
         embed = Builder.create_embed(
             Builder.SUCCESS,
             user_name=ctx.author.name,
             author_text=CONST.STRINGS["ping_author"],
-            description=CONST.STRINGS["ping_pong"],
+            description=CONST.STRINGS["ping_pong"].format(
+                cpu_usage,
+                used_memory,
+            ),
             footer_text=CONST.STRINGS["ping_footer"].format(
                 round(1000 * self.bot.latency),
             ),

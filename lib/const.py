@@ -1,6 +1,7 @@
 import json
 import os
 from collections.abc import Callable
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
 
@@ -51,7 +52,7 @@ class Constants:
     TITLE: Final[str] = _s["info"]["title"]
     AUTHOR: Final[str] = _s["info"]["author"]
     LICENSE: Final[str] = "GNU General Public License v3.0"
-    VERSION: Final[str] = "3.3.0"
+    VERSION: Final[str] = "3.3.1"
     REPO_URL: Final[str] = _s["info"]["repository_url"]
     INVITE_URL: Final[str] = _s["info"]["invite_url"]
 
@@ -125,6 +126,9 @@ class Constants:
 
     # XP config at bot admin level
     XP_EXCLUDED_CHANNEL_IDS: Final[list[int]] = _s["xp"]["excluded_channel_ids"]
+
+    # UPTIME
+    BOOT_TIME: Final[datetime] = datetime.now(UTC)
 
 
 CONST = Constants()

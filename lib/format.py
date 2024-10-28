@@ -197,3 +197,35 @@ def generate_usage(
             usage += f" {flag_prefix}[{flag_name}]"
 
     return usage
+
+
+def format_size(size_in_bytes: int, suffix: str = "B") -> str:
+    """
+    Convert bytes into a human-readable format.
+
+    Args:
+        size_in_bytes (int): The size in bytes.
+        suffix (str): The suffix to use (default is "B").
+
+    Returns:
+        str: The formatted size with appropriate unit.
+
+    Raises:
+        ValueError: If size_in_bytes is negative.
+    """
+    if size_in_bytes < 0:
+        msg = "Size in bytes must be a non-negative integer."
+        raise ValueError(msg)
+
+    factor: float = 1024.0
+    unit_index: int = 0
+    units: list[str] = ["", "K", "M", "G", "T", "P"]
+
+    # Convert to float before division operations
+    size: float = float(size_in_bytes)
+
+    while size >= factor and unit_index < len(units) - 1:
+        size /= factor
+        unit_index += 1
+
+    return f"{size:.2f}{units[unit_index]}{suffix}"
