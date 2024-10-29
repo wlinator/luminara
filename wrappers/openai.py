@@ -13,6 +13,7 @@ class OpenAIWrapper:
     def __init__(self):
         self.client = AsyncOpenAI(
             api_key=CONST.LLM_API_KEY,
+            base_url=CONST.LLM_API_URL,
         )
         self.model = CONST.LLM_MODEL
         self.max_tokens = CONST.LLM_MAX_TOKENS

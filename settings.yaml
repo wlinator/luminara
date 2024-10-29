@@ -106,8 +106,8 @@ introductions:
     EXTRAS: "EXTRAS: job status, zodiac sign, hobbies, etc. Tell us about yourself!"
 
 llm_config:
-  api_url: "https://api.openai.com/v1"
-  model: "gpt-4o"
+  api_url: "https://api.groq.com/openai/v1"
+  model: "gemma2-9b-it"
   max_tokens: 4096
   temperature: 1.0
   system_prompt: "Your responses adhere to Discord's Terms of Service, are SFW and helpful. You are responding to a request from a server that revolves around Linux."
