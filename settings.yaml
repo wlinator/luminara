@@ -107,7 +107,6 @@ introductions:
 
 llm_config:
   api_url: "https://api.openai.com/v1"
-  api_key: ""
   model: "gpt-4o"
   max_tokens: 4096
   temperature: 1.0

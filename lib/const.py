@@ -130,5 +130,13 @@ class Constants:
     # UPTIME
     BOOT_TIME: Final[datetime] = datetime.now(UTC)
 
+    # LLM Configuration
+    LLM_API_URL: Final[str] = _s["llm_config"]["api_url"]
+    LLM_API_KEY: Final[str] = os.environ.get("OPENAI_API_KEY", "")
+    LLM_MODEL: Final[str] = _s["llm_config"]["model"]
+    LLM_MAX_TOKENS: Final[int] = _s["llm_config"]["max_tokens"]
+    LLM_TEMPERATURE: Final[float] = _s["llm_config"]["temperature"]
+    LLM_SYSTEM_PROMPT: Final[str] = _s["llm_config"]["system_prompt"]
+
 
 CONST = Constants()
