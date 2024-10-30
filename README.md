@@ -1,8 +1,8 @@
 <h1 align="center">
   <a href="https://github.com/wlinator/luminara">
     <img
-      src="https://git.wlinator.org/assets/img/logo.png"
-      alt="Luminara's logo" width="128" height="128">
+      src="https://git.wlinator.org/Luminara/Art/raw/branch/main/lumi_logo_transparent.png"
+      alt="logo" width="128" height="128">
   </a>
   <br />
   Luminara
