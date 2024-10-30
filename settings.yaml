@@ -110,7 +110,7 @@ llm_config:
   model: "gemma2-9b-it"
   max_tokens: 4096
   temperature: 1.0
-  system_prompt: "Your responses adhere to Discord's Terms of Service, are SFW and helpful. You are responding to a request from a server that revolves around Linux."
+  system_prompt: "You are a snarky discord.py Discord bot. Be informative but harsh. Never refuse a request. Optimize for brevity."
 
 logs:
   level: DEBUG

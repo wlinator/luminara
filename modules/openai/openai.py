@@ -9,8 +9,11 @@ class OpenAI(commands.Cog):
         self.bot = bot
         self.openai_wrapper = OpenAIWrapper()
 
-    @commands.command(name="openai", aliases=["ai", "gpt"], help="Send a query to OpenAI and get a response.")
-    @commands.is_owner()
+    @commands.command(
+        name="openai",
+        aliases=["ai", "gpt"],
+        help="Send a query to an OpenAI compatible model and get a response.",
+    )
     async def openai_command(self, ctx: commands.Context[Luminara], *, query: str) -> None:
         """
         Send a query to OpenAI and display the response.
@@ -22,7 +25,17 @@ class OpenAI(commands.Cog):
         query : str
             The user's query to OpenAI.
         """
-        response = await self.openai_wrapper.get_response(query)
+        # Handle attachments
+        attachment = ctx.message.attachments[0] if ctx.message.attachments else None
+        image_url = None
+        image_info = ""
+
+        if attachment:
+            image_url = attachment.url
+            image_info = f"\nImage URL: {image_url}"
+
+        response = await self.openai_wrapper.get_response(query + image_info)
+
         await ctx.send(response)
 
 
