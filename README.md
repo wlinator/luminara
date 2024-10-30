@@ -9,7 +9,7 @@
 </h1>
 
 <div align="center">
-  <i>A General purpose Discord bot with a focus on robust moderation.</i>
+  <i>A general purpose Discord bot with a focus on robust moderation.</i>
   <br />
    <a href="https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot">
     Invite to Discord
