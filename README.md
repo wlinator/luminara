@@ -14,7 +14,7 @@
    <a href="https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot">
     Invite to Discord
   </a>
-   .
+   · 
   <a href="https://github.com/wlinator/luminara/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=">
     Report a Bug
   </a>
