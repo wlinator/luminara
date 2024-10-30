@@ -1,6 +1,42 @@
-# You can invite me with [this link](https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot). Thanks for using Luminara!
+<h1 align="center">
+  <a href="https://github.com/wlinator/luminara">
+    <img
+      src="https://git.wlinator.org/assets/img/logo.png"
+      alt="Luminara's logo" width="128" height="128">
+  </a>
+  <br />
+  Luminara
+</h1>
 
-![Lumi art](https://git.wlinator.org/assets/img/logo.png)
+<div align="center">
+  <i>A General purpose Discord bot with a focus on robust moderation.</i>
+  <br />
+   <a href="https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot">
+    Invite to Discord
+  </a>
+   .
+  <a href="https://github.com/wlinator/luminara/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=">
+    Report a Bug
+  </a>
+   · 
+  <a href="https://github.com/wlinator/luminara/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=">
+    Request a Feature
+  </a>
+  <br /> <br />  
+
+  [![Project
+  license](https://img.shields.io/badge/license-GPL--3.0--only-blue
+)](LICENSE)
+  ![Pull Requests
+  welcome](https://img.shields.io/badge/PRs-much_appreciated!-pink
+)
+
+</div>
+     
+
+
+---
+
 
 ## Self-Hosting
 
