@@ -87,7 +87,7 @@ images:
 info:
   title: Luminara
   author: wlinator
-  repository_url: https://git.wlinator.org/Luminara/Lumi
+  repository_url: https://git.wlinator.org/wlinator/luminara
   invite_url: https://discord.com/oauth2/authorize?client_id=1038050427272429588&permissions=8&scope=bot
 
 introductions:
