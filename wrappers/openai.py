@@ -50,8 +50,8 @@ class OpenAIWrapper:
             b64_image = b64encode(image_data).decode("utf-8")
             return f"Image Data: data:{image_type};base64,{b64_image}"
 
-        msg = "Either image_url or both image_data and image_type must be provided"
-        raise ValueError(msg)
+        emsg = "Either image_url or both image_data and image_type must be provided"
+        raise ValueError(emsg)
 
     async def get_response(
         self,
@@ -96,13 +96,16 @@ class OpenAIWrapper:
             max_tokens=self.max_tokens,
             temperature=self.temperature,
         )
-        return (
-            response.choices[0].message.content.strip()
-            if response.choices[0].message.content
-            else "No response was generated."
-        )
 
-    async def get_streaming_response(
+        payload: str | None = response.choices[0].message.content
+
+        if payload:
+            return payload.strip()
+
+        emsg = "No response was generated."
+        raise ValueError(emsg)
+
+    async def get_streaming_respons(
         self,
         prompt: str,
         image_url: str | None = None,
@@ -128,6 +131,7 @@ class OpenAIWrapper:
         str
             Chunks of the AI-generated response as they arrive.
         """
+
         content = [prompt]
 
         if image_url or image_data:
@@ -136,7 +140,7 @@ class OpenAIWrapper:
 
         messages: list[ChatCompletionMessageParam] = [
             {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": "\n".join(content)},  # Combine prompt and image info
+            {"role": "user", "content": "\n".join(content)},
         ]
 
         stream = await self.client.chat.completions.create(
