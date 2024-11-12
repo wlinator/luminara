@@ -88,7 +88,7 @@ class EventHandler(commands.Cog):
             try:
                 await member.add_roles(role, reason="Persistent level role upon joining.")
                 logger.info(
-                    f"Assigned persistent role '{role.name}' (ID: {role_id}) to user '{member.name}' (ID: {member.id})."
+                    f"Assigned persistent role '{role.name}' to user '{member.name}'."
                 )
             except (discord.Forbidden, discord.HTTPException) as e:
                 logger.error(
