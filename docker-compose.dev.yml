@@ -41,3 +41,36 @@ services:
     restart: always
     ports:
       - 8080:8080
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      ADMINER_DEFAULT_DRIVER: mysql
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DEFAULT_DB: ${MARIADB_DATABASE}
+      ADMINER_DEFAULT_USERNAME: ${MARIADB_USER}
+      ADMINER_DEFAULT_PASSWORD: ${MARIADB_PASSWORD}
+      ADMINER_DESIGN: dracula
+    command: ["sh", "-c", "php -S 0.0.0.0:8080 -t /var/www/html"]
+    configs:
+      - source: adminer-index.php
+        target: /var/www/html/index.php
+    depends_on:
+      db:
+        condition: service_healthy
+
+configs:
+  adminer-index.php:
+    content: |
+      <?php
+        if(!count($$_GET)) {
+          $$_POST['auth'] = [
+            'server' => $$_ENV['ADMINER_DEFAULT_SERVER'],
+            'username' => $$_ENV['ADMINER_DEFAULT_USERNAME'],
+            'password' => $$_ENV['ADMINER_DEFAULT_PASSWORD'],
+            'driver' => $$_ENV['ADMINER_DEFAULT_DRIVER'],
+            'db'    => $$_ENV['ADMINER_DEFAULT_DB'],
+          ];
+        }
+        include './adminer.php';
+      ?>
