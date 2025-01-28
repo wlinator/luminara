@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 from loguru import logger
@@ -52,7 +51,7 @@ class EventHandler(commands.Cog):
             member (discord.Member): The member who joined.
             config (GuildConfig): The guild configuration.
         """
-        
+
         # Initialize XP services
         xp_service = XpService(member.id, member.guild.id)
         xp_reward_service = XpRewardService(member.guild.id)
@@ -68,11 +67,7 @@ class EventHandler(commands.Cog):
         }
 
         # Filter roles that the user qualifies for based on their level
-        eligible_roles = [
-            (level, role_id)
-            for level, (role_id, _) in persistent_rewards.items()
-            if user_level >= level
-        ]
+        eligible_roles = [(level, role_id) for level, (role_id, _) in persistent_rewards.items() if user_level >= level]
 
         # Sort roles by level ascending to assign lower roles first
         eligible_roles.sort(key=lambda x: x[0])
@@ -82,17 +77,17 @@ class EventHandler(commands.Cog):
             role = member.guild.get_role(role_id)
             if role is None:
                 logger.warning(
-                    f"Role ID {role_id} for level {level} not found in guild '{member.guild.name}'."
+                    f"Role ID {role_id} for level {level} not found in guild '{member.guild.name}'.",
                 )
                 continue
             try:
                 await member.add_roles(role, reason="Persistent level role upon joining.")
                 logger.info(
-                    f"Assigned persistent role '{role.name}' to user '{member.name}'."
+                    f"Assigned persistent role '{role.name}' to user '{member.name}'.",
                 )
             except (discord.Forbidden, discord.HTTPException) as e:
                 logger.error(
-                    f"Failed to assign role '{role.name}' (ID: {role_id}) to user '{member.name}' (ID: {member.id}): {e}"
+                    f"Failed to assign role '{role.name}' (ID: {role_id}) to user '{member.name}' (ID: {member.id}): {e}",
                 )
 
     @commands.Cog.listener()
