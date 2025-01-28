@@ -24,7 +24,7 @@ expand the bot's functionality. Please follow these guidelines when contributing
       ```bash
       poetry install
       poetry shell
-      poetry pre-commit install
+      poetry run pre-commit install
       poetry run pre-commit run --all-files
       ```
 
