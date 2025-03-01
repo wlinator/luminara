@@ -54,7 +54,7 @@ class Dailies:
 
         return self.claimed_at < self.reset_time <= self.time_now
 
-    def streak_check(self) -> bool:
+    def is_streak_maintained(self) -> bool:
         """
         Three checks are performed, only one has to return True.
         1. the daily was claimed yesterday

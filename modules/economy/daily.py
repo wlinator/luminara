@@ -63,7 +63,7 @@ class Daily(commands.Cog):
             await ctx.send(embed=error_embed)
             return
 
-        ctx_daily.streak = ctx_daily.streak + 1 if ctx_daily.streak_check() else 1
+        ctx_daily.streak = ctx_daily.streak + 1 if ctx_daily.is_streak_maintained() else 1
         ctx_daily.claimed_at = datetime.now(tz=ctx_daily.tz)
         ctx_daily.amount = 100 * 12 * (ctx_daily.streak - 1)
 
